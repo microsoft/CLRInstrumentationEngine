@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests2_Release_x64.exe</ModuleName>
+    <MethodName>ArrayForeachTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>39</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>43</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>45</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>47</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>52</Offset>
+        <RepeatCount>4</RepeatCount>
+      </Instruction> 
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>73</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>81</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>86</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>90</Offset>
+      </Instruction>	  
+    </Instructions>	  
+  </InstrumentMethod>
+</InstrumentationTestScript>

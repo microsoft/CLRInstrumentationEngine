@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B722970C-63F2-42C6-BD43-CD64EAA4B944}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>HostExtensionLib</RootNamespace>
+    <ProjectName>Extensions.BaseLib</ProjectName>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">x86;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ExtensionsCommon\DecorationCallbacksInfoReader.h" />
+    <ClInclude Include="CallbacksEmitter.h" />
+    <ClInclude Include="ModuleMetaDataLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HostExtensionBase.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DecorationCallbacksInfoReader.cpp" />
+    <ClCompile Include="CallbacksEmitter.cpp" />
+    <ClCompile Include="MethodInfoDataContainerAdatpter.cpp" />
+    <ClCompile Include="ModuleMetaDataLoader.cpp" />
+    <ClCompile Include="HostExtensionBase.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExtensionsCommon\ExtensionsCommon.vcxproj">
+      <Project>{9d2f97f8-de2e-4463-a425-823a755159bc}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.targets" />
+</Project>

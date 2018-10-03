@@ -1,0 +1,22 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+#ifdef APSTUDIO_INVOKED
+    #error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+///////////////////////////////////////////////////////////////////////////////
+// Add manually edited resources here...
+
+#include "verstamp.h"
+
+// defines for the VS_VERSION block
+
+#define VER_FILETYPE        VFT_APP
+#define VER_FILESUBTYPE     VFT2_UNKNOWN
+
+#define VER_FILEDESCRIPTION_STR     "Microsoft Instrumentation Engine"
+#define VER_INTERNALNAME_STR        "MicrosoftInstrumentationEngine.dll"
+#define VER_ORIGINALFILENAME_STR    VER_INTERNALNAME_STR
+
+#include <common.ver>

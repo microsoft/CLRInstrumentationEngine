@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Debug_x64.exe</ModuleName>
+    <MethodName>IfTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>12</Offset>
+		<RepeatCount>2</RepeatCount>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>17</Offset>
+      </Instruction>	  
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>34</Offset>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

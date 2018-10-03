@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9D2F97F8-DE2E-4463-A425-823A755159BC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ExtensionsCommon</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EnablePREfast>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalIncludeDirectories>$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AgentTls.h" />
+    <ClInclude Include="AgentTrace.h" />
+    <ClInclude Include="AgentValidation.h" />
+    <ClInclude Include="banned.h" />
+    <ClInclude Include="DataItemContainer.h" />
+    <ClInclude Include="DecorationCallbackInfo.h" />
+    <ClInclude Include="DecorationCallbackRefInfo.h" />
+    <ClInclude Include="DecorationCallbacksInfo.h" />
+    <ClInclude Include="DecorationCallbacksInfoReader.h" />
+    <ClInclude Include="DecorationCallbacksInfoStaticReader.h" />
+    <ClInclude Include="Environment.h" />
+    <ClInclude Include="Exception.h" />
+    <ClInclude Include="CrtDiagnostics.h" />
+    <ClInclude Include="FormatMessage.h" />
+    <ClInclude Include="ICodeInjector.h" />
+    <ClInclude Include="ICodeInjectorFwd.h" />
+    <ClInclude Include="InstructionDefineExtensions.h" />
+    <ClInclude Include="InstrumentationEngineDefs.h" />
+    <ClInclude Include="InstrumentationEngineInfraPointerDefs.h" />
+    <ClInclude Include="InstrumentationEnginePointerDefs.h" />
+    <ClInclude Include="InstrumentationMethodUtils.h" />
+    <ClInclude Include="InteropHelpers.h" />
+    <ClInclude Include="InteropInstrumentationHandler.h" />
+    <ClInclude Include="MethodInfoDataContainerAdatpter.h" />
+    <ClInclude Include="MethodInstrumentationInfoCollection.h" />
+    <ClInclude Include="InstrumentationMethodBase.h" />
+    <ClInclude Include="DataContainerAdapter.h" />
+    <ClInclude Include="InstrumentationMethodExceptionsImplT.h" />
+    <ClInclude Include="LoadArgumentsHelper.h" />
+    <ClInclude Include="MethodInstrumentationInfoKey.h" />
+    <ClInclude Include="MethodRecord.h" />
+    <ClInclude Include="ModuleHandle.h" />
+    <ClInclude Include="NativeInstanceMethodInstrumentationInfo.h" />
+    <ClInclude Include="NativeInstanceMethodsCodeInjector.h" />
+    <ClInclude Include="ManagedRedirectCodeInjector.h" />
+    <ClInclude Include="ModuleUtils.h" />
+    <ClInclude Include="PathUtils.h" />
+    <ClInclude Include="Precompiled.h" />
+    <ClInclude Include="ProfilerHostServices.h" />
+    <ClInclude Include="ProfilerManagerHostBase.h" />
+    <ClInclude Include="ReflectionHelper.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextUtils.h" />
+    <ClInclude Include="WellKnownInstrumentationDefs.h" />
+    <ClInclude Include="WellKnownMethodInfo.h" />
+    <ClInclude Include="WellKnownTypeInfo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataContainerAdapter.cpp" />
+    <ClCompile Include="DataItemContainer.cpp" />
+    <ClCompile Include="CrtDiagnostics.cpp" />
+    <ClCompile Include="DecorationCallbackInfo.cpp" />
+    <ClCompile Include="DecorationCallbacksInfo.cpp" />
+    <ClCompile Include="DecorationCallbacksInfoReader.cpp" />
+    <ClCompile Include="DecorationCallbacksInfoStaticReader.cpp" />
+    <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="INativeMethodsStubs.h" />
+    <ClCompile Include="InstrumentationMethodBase.cpp" />
+    <ClCompile Include="InteropInstrumentationHandler.cpp" />
+    <ClCompile Include="LoadArgumentsHelper.cpp" />
+    <ClCompile Include="MethodInstrumentationInfoCollection.cpp" />
+    <ClCompile Include="MethodInstrumentationInfoKey.cpp" />
+    <ClCompile Include="ModuleHandle.cpp" />
+    <ClCompile Include="NativeInstanceMethodInstrumentationInfo.cpp" />
+    <ClCompile Include="NativeInstanceMethodsCodeInjector.cpp" />
+    <ClCompile Include="ManagedRedirectCodeInjector.cpp" />
+    <ClCompile Include="ModuleUtils.cpp" />
+    <ClCompile Include="PathUtils.cpp" />
+    <ClCompile Include="ProfilerManagerHostBase.cpp" />
+    <ClCompile Include="ReflectionHelper.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TextUtils.cpp" />
+    <ClCompile Include="WellKnownInstrumentationDefs.cpp" />
+    <ClCompile Include="WellKnownMethodInfo.cpp" />
+    <ClCompile Include="WellKnownTypeInfo.cpp" />
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.targets" />
+</Project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>ExceptionTests_Release_x64.exe</ModuleName>
+    <MethodName>ExceptionFinallyTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>5</Offset>
+        <RepeatCount>3</RepeatCount>		
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>17</Offset>	
+        <RepeatCount>3</RepeatCount>			
+      </Instruction>	  
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>22</Offset>	
+        <RepeatCount>3</RepeatCount>	
+      </Instruction>	 
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>51</Offset>	
+        <RepeatCount>3</RepeatCount>	
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>53</Offset>	
+        <RepeatCount>3</RepeatCount>	
+      </Instruction>	
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>55</Offset>	
+        <RepeatCount>3</RepeatCount>	
+      </Instruction>	
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>60</Offset>	
+        <RepeatCount>3</RepeatCount>	
+      </Instruction>	  
+    </Instructions>		
+  </InstrumentMethod>
+</InstrumentationTestScript>

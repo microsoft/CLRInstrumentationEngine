@@ -1,0 +1,26 @@
+<ExceptionTrace>
+    <ExceptionThrown>
+        <MethodName>ThrowSomeExceptions3</MethodName>
+        <MethodName>ThrowSomeExceptions2</MethodName>
+        <MethodName>ThrowSomeExceptions1</MethodName>
+        <MethodName>Main</MethodName>
+    </ExceptionThrown>
+    <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions3</ExceptionSearchFunctionEnter>
+    <ExceptionSearchFunctionLeave/>
+    <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions2</ExceptionSearchFunctionEnter>
+    <ExceptionSearchFunctionLeave/>
+    <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions1</ExceptionSearchFunctionEnter>
+    <ExceptionSearchCatcherFound>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions1</ExceptionSearchCatcherFound>
+    <ExceptionSearchFunctionLeave/>
+    <ExceptionUnwindFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions3</ExceptionUnwindFunctionEnter>
+    <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions3</ExceptionSearchFunctionEnter>
+    <ExceptionUnwindFinallyLeave/>
+    <ExceptionUnwindFunctionLeave/>
+    <ExceptionUnwindFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions2</ExceptionUnwindFunctionEnter>
+    <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions2</ExceptionSearchFunctionEnter>
+    <ExceptionUnwindFinallyLeave/>
+    <ExceptionUnwindFunctionLeave/>
+    <ExceptionUnwindFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions1</ExceptionUnwindFunctionEnter>
+    <ExceptionCatcherEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions1</ExceptionCatcherEnter>
+    <ExceptionCatcherLeave/>
+</ExceptionTrace>

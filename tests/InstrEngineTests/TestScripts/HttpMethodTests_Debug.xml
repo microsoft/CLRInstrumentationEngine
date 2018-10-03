@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>System.dll</ModuleName>
+    <MethodName>GetResponseAsync</MethodName>
+  </InstrumentMethod>
+</InstrumentationTestScript>

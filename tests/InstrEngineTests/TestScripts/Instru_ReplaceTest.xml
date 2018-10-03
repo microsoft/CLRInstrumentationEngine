@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
+    <MethodName>Instru_ReplaceTest</MethodName>
+    <Instructions>
+	  <Instruction>
+        <Opcode>ldc.i4.8</Opcode>
+        <Offset>0</Offset>		
+        <InstrumentationType>Replace</InstrumentationType>
+      </Instruction>
+	  <Instruction>
+        <Opcode>ldc.i4.2</Opcode>
+        <Offset>19</Offset>		
+        <InstrumentationType>Replace</InstrumentationType>
+      </Instruction>	
+	  <Instruction>
+        <Opcode>ldc.i4.4</Opcode>
+        <Offset>31</Offset>		
+        <InstrumentationType>Replace</InstrumentationType>
+      </Instruction>	  
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

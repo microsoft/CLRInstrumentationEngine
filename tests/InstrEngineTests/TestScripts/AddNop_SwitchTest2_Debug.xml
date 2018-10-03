@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Debug_x64.exe</ModuleName>
+    <MethodName>SwitchTest2</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>9</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>10</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>50</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>52</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>69</Offset>
+      </Instruction>	
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>71</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>101</Offset>
+      </Instruction>	
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>118</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>117</Offset>
+      </Instruction>	  
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

@@ -1,0 +1,39 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// ExtensionsHost.idl : IDL source for ExtensionsHost
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ExtensionsHost.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(23B7284F-6856-4F69-A331-7C8C155F1C68),
+	pointer_default(unique)
+]
+interface IExtensionHost : IUnknown{
+};
+
+[
+	uuid(AA3A9A24-7E3C-4DDB-872B-DD810CC5238D),
+	version(1.0),
+]
+library ExtensionsHostLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(CA487940-57D2-10BF-11B2-A3AD5A13CBC0)
+	]
+	coclass ExtensionHost
+	{
+		[default] interface IExtensionHost;
+	};
+};
+
+
+
+

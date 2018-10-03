@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
+    <MethodName>Instru_InsertAfterTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>0</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>5</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>40</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>49</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>54</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>67</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>75</Offset>
+        <InstrumentationType>InsertAfter</InstrumentationType>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

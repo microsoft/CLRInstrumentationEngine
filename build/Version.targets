@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <IncludePath>$(IncludePath);$(IntermediateOutputPath)\Include</IncludePath>
+    </PropertyGroup>
+
+<PropertyGroup>
+        <GeneratedFileName Condition=" '$(GeneratedFileName)' == '' ">bldver.h</GeneratedFileName>
+        <GeneratedFilePath>$(IntermediateOutputPath)\Include</GeneratedFilePath>
+        <RC_VERSION_INTERNAL_NAME Condition=" '$(RC_VERSION_INTERNAL_NAME)' == '' ">$(TargetName)</RC_VERSION_INTERNAL_NAME>
+        <RC_VERSION_ORIGINAL_FILE_NAME Condition=" '$(RC_VERSION_ORIGINAL_FILE_NAME)' == '' ">$(TargetFileName)</RC_VERSION_ORIGINAL_FILE_NAME>
+  <CommonBuildPropsLocation>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\Build</CommonBuildPropsLocation>
+    </PropertyGroup>
+
+    <Target Name="WriteGeneratedFile"
+                    BeforeTargets="ClCompile"
+                    DependsOnTargets="PrepareForBuild;GetReferenceAssemblyPaths">
+
+        <Message Importance="high" Text="Generate version file: $(GeneratedFilePath)"/>
+
+        <MakeDir Directories="$(GeneratedFilePath)"/>
+
+        <ItemGroup>
+          <GeneratedFileLine Include="#ifndef _BLDVER_H_"/>
+          <GeneratedFileLine Include="#define _BLDVER_H_"/>
+          <GeneratedFileLine Include="#define RC_VERSION_INTERNAL_NAME %22$(RC_VERSION_INTERNAL_NAME)\0%22" />
+          <GeneratedFileLine Include="#define RC_VERSION_ORIGINAL_FILE_NAME %22$(RC_VERSION_ORIGINAL_FILE_NAME)\0%22" />
+          <GeneratedFileLine Include="#define RC_VERSION_FILE_DESCRIPTION %22$(RC_VERSION_FILE_DESCRIPTION)\0%22" />
+          <GeneratedFileLine Include="#define INET_VERSION            %22$(AssemblyFileVersion)%22"/>
+          <GeneratedFileLine Include="#define INET_VER            $(FileVersionMajor),$(FileVersionMinor),$(FileVersionPatch),$(PreReleaseVersion)"/>
+          <GeneratedFileLine Include="#endif"/>
+        </ItemGroup>
+
+        <WriteLinesToFile File="$(GeneratedFilePath)\$(GeneratedFileName)" Lines="@(GeneratedFileLine)" Overwrite="true" />
+
+    <ItemGroup>
+        <ResourceCompile Include="$(CommonBuildPropsLocation)\bldver.rc" />
+    </ItemGroup>
+    </Target>
+
+</Project>

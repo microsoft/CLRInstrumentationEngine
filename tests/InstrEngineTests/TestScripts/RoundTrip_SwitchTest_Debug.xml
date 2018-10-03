@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Debug_x64.exe</ModuleName>
+    <MethodName>SwitchTest</MethodName>
+  </InstrumentMethod>
+</InstrumentationTestScript>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Generate AssemblyFileVersion and AssemblyVersion attributes. -->
+  <PropertyGroup>
+    <!--
+      Semantic Version. See http://semver.org for full details.
+      Update for every public release.
+    -->
+    <SemanticVersionMajor>1</SemanticVersionMajor>
+    <SemanticVersionMinor>0</SemanticVersionMinor>
+    <SemanticVersionPatch>14</SemanticVersionPatch>
+
+    <FileVersionMajor>15</FileVersionMajor>
+    <FileVersionMinor>1</FileVersionMinor>
+    <FileVersionPatch>0</FileVersionPatch>
+
+    <!--
+      Date when Semantic Version was changed.
+      Update for every public release.
+    -->
+    <SemanticVersionDate>2018-09-05</SemanticVersionDate>
+
+    <!--
+      Pre-release version is used to distinguish internally built NuGet packages.
+      Pre-release version = Minutes since semantic version was set, divided by 5 (to make it fit in a UInt16).
+      Pull the first number out of BUILD_BUILDNUMBER string before parsing as int since microbuild features
+      can append non-numeric characters on there.
+    -->
+    <PreReleaseVersion Condition="$(BUILD_BUILDNUMBER) != ''">$([MSBuild]::Modulo($([System.Int32]::Parse($([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), `\d*`).ToString()))), $([System.Uint16]::MaxValue)))</PreReleaseVersion>
+    <PreReleaseVersion Condition="$(BUILD_BUILDNUMBER) == ''">$([MSBuild]::Divide($([System.DateTime]::Now.Subtract($([System.DateTime]::Parse($(SemanticVersionDate)))).TotalMinutes), 5).ToString('F0'))</PreReleaseVersion>
+
+    <PackageAuthors>Microsoft</PackageAuthors>
+    <PackageOwners>microsoft,snapshotdebugger</PackageOwners> <!-- TODO: add AppInsights -->
+
+    <!-- Turn on dynamic assembly attribute generation -->
+    <AssemblyAttributesPath>$(IntermediateOutputPath)\AssemblyInfo.g.cs</AssemblyAttributesPath>
+    <GenerateAdditionalSources>true</GenerateAdditionalSources>
+    <AssemblyFileVersion>$(FileVersionMajor).$(FileVersionMinor).$(FileVersionPatch).$(PreReleaseVersion)</AssemblyFileVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</PackageVersion>
+    <PackageVersion Condition="'$(PublicRelease)' != 'True'">$([System.String]::Format('$(PackageVersion)-build{0:D5}', $([System.Int32]::Parse($(PreReleaseVersion)))))</PackageVersion>
+    <PackageAuthors>Microsoft</PackageAuthors>
+    <PackageAuthors Condition="'$(PublicRelease)' != 'True'">Microsoft</PackageAuthors>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(GenerateAssemblyFileVersionAttribute)' != 'false'">
+    <AssemblyAttributes Include="AssemblyVersion">
+      <_Parameter1>0.0.0.0</_Parameter1>
+    </AssemblyAttributes>
+    <AssemblyAttributes Include="AssemblyFileVersion">
+      <_Parameter1>$(AssemblyFileVersion)</_Parameter1>
+    </AssemblyAttributes>
+  </ItemGroup>
+</Project>
