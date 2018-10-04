@@ -2,8 +2,6 @@
 
 ## Supported Scenarios
 
-Issues specific to these domains will be listed below.
-
 Issues specific to these domains will be listed in the below links.
 
 * [Azure App Service](scenarios/azureappservice.md)

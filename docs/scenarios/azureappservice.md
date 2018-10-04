@@ -18,7 +18,7 @@ The CLR Instrumentation Engine [Environment Variables](..\environment_variables.
 
 ### As a Preinstalled Site Extension
 
-In order to enable the CLR Instrumentation Engine preinstalle site extension, go to your Azure App Service resource in the Azure Portal and add the below setting to the Application Settings:
+In order to enable the CLR Instrumentation Engine preinstalled site extension, go to your Azure App Service resource in the Azure Portal and add the below setting to the Application Settings:
 
 |Key|Value|
 |-|-|
