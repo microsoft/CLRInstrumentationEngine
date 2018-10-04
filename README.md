@@ -1,8 +1,8 @@
 ﻿# CLR Instrumentation Engine
 
-Develop Branch: [![Build status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/ClrInstrumentationEngine-develop-CI-QE)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=8828)
+Develop Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/%5BGitHub%5D%20ClrInstrumentationEngine-develop-CI-QE)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=10093)
 
-Master Branch: [![Build status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/ClrInstrumentationEngine-master-signed)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=4192)
+Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/%5BGitHub%5D%20ClrInstrumentationEngine-master-signed)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=10055)
 
 ## Overview
 
