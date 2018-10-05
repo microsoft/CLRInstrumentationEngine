@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+// 
 
 // ExtensionsHost.cpp : Implementation of DLL Exports.
 

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+// 
 
 // ProfilerManagerHost.h : Declaration of the CProfilerManagerHost
 

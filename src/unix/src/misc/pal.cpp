@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+// 
 
 // ported from coreclr\pal\inc\pal.h
 

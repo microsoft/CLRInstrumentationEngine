@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-     Licensed under the MIT License. -->
+      -->
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <!--
        TL;DR: Do not include <location path="%XDT_SITENAME%" xdt:Locator="Match(path)">

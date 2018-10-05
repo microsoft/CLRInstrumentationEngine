@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+// 
 
 #if !ISOLATION_IN_MSCORLIB
 #define FEATURE_COMINTEROP

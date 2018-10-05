@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-     Licensed under the MIT License. -->
+      -->
 <InstrumentationEngineConfiguration>
   <InstrumentationMethod>
     <Name>Nagler Instrumentation Test Harness</Name>
