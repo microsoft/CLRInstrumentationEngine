@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SubComponent>RawProfilerHook.Tests</SubComponent>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AFC55CC1-567F-4C8A-A801-638A673AFEB8}</ProjectGuid>
+    <Keyword>AtlProj</Keyword>
+    <ShouldSign>true</ShouldSign>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(NETFXKitsDir)\Include\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Midl>
+      <HeaderFileName>RawProfilerHook_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>RawProfilerHook_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>RawProfilerHook_p.c</ProxyFileName>
+      <TypeLibraryName>$(IntDir)RawProfilerHook.tlb</TypeLibraryName>
+      <DllDataFileName />
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <Link>
+      <ModuleDefinitionFile>.\RawProfilerHook.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CoRawProfilerHook.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <ClCompile Include="RawProfilerHook.cpp" />
+    <ClCompile Include="RawProfilerHook_i.c">
+      <CompileAsManaged>false</CompileAsManaged>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CoRawProfilerHook.h" />
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="RawProfilerHook_i.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RawProfilerHook.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="RawProfilerHook.idl" />
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.targets" />
+</Project>

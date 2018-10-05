@@ -1,0 +1,28 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
+// RawProfilerHook.idl : IDL source for RawProfilerHook
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (RawProfilerHook.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+    uuid(D17863F9-F85A-47CA-8BE7-6C85271510A2),
+    version(1.0),
+]
+library RawProfilerHookLib
+{
+    importlib("stdole2.tlb");
+    [
+        uuid(4BCBE156-37EC-4179-B051-0183C57BACF9)
+    ]
+    coclass CoRawProfilerHook
+    {
+        [default] interface IUnknown;
+    };
+};
+

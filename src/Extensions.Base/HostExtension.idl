@@ -1,0 +1,29 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
+// HostExtension.idl : IDL source for HostExtension
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (HostExtension.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(625D6AE4-C519-4881-B29A-8F76FFC22278),
+	version(1.0),
+]
+library HostExtensionLib
+{
+	importlib("stdole2.tlb");
+
+	[
+		uuid(E81C1F87-CCC7-4EC3-B27D-77A36E5A90AF)
+	]
+	coclass HostExtension
+	{
+		[default] interface IUnknown;
+	};
+};
+

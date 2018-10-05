@@ -1,0 +1,369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>InstrEngineTests</RootNamespace>
+    <AssemblyName>InstrEngineTests_$(Platform)</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\BasicManagedTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\BasicManagedTests2.cs" />
+    <EmbeddedResource Include="EmbeddedResources\ExceptionTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\InstruOperationsTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\MethodReplacementTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\LocalTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\RuntimeExceptionCallbacks.cs" />
+    <EmbeddedResource Include="EmbeddedResources\InjectToMscorlibTest.cs" />
+    <EmbeddedResource Include="EmbeddedResources\HttpMethodTests.cs" />
+    <Compile Include="PathUtils.cs" />
+    <Compile Include="RuntimeExceptionCallbacks.cs" />
+    <Compile Include="TestHttpMethods.cs" />
+    <Compile Include="TestParameters.cs" />
+    <Compile Include="TestInjectToMscorlib.cs" />
+    <Compile Include="TestLocals.cs" />
+    <Compile Include="TestMethodReplacement.cs" />
+    <Compile Include="TestOperand.cs" />
+    <Compile Include="TestRejit.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="ProfilerHelpers.cs" />
+    <Compile Include="TargetAppCompiler.cs" />
+    <Compile Include="TestAddInstruction.cs" />
+    <Compile Include="TestException.cs" />
+    <Compile Include="TestInstruOperations.cs" />
+    <Compile Include="TestRoundTrip.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Baselines\AddMultiNop_IfTest_Debug.xml">
+      <Link>Baselines\AddMultiNop_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_ArrayForeachTest.xml">
+      <Link>Baselines\AddNop_ArrayForeachTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_ForTest_Debug.xml">
+      <Link>Baselines\AddNop_ForTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_IfTest_Debug.xml">
+      <Link>Baselines\AddNop_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_SwitchTest2.xml">
+      <Link>Baselines\AddNop_SwitchTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_SwitchTest2_Debug.xml">
+      <Link>Baselines\AddNop_SwitchTest2_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_SwitchTest_Debug.xml">
+      <Link>Baselines\AddNop_SwitchTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddNop_WhileTest_Debug.xml">
+      <Link>Baselines\AddNop_WhileTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddOperandTest.xml">
+      <Link>Baselines\AddOperandTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\ExceptionFatClauseTest.xml">
+      <Link>Baselines\ExceptionFatClauseTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\ExceptionFinallyTest.xml">
+      <Link>Baselines\ExceptionFinallyTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\ExceptionMultiTryCatchTest.xml">
+      <Link>Baselines\ExceptionMultiTryCatchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\ExceptionTinyMethodTest.xml">
+      <Link>Baselines\ExceptionTinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\ExceptionTinyMethodTest2.xml">
+      <Link>Baselines\ExceptionTinyMethodTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\InjectToMscorlibTest.xml">
+      <Link>Baselines\InjectToMscorlibTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\InjectToMscorlibTest32.xml">
+      <Link>Baselines\InjectToMscorlibTest32.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_EmptyMethodRemoveAllTest.xml">
+      <Link>Baselines\Instru_EmptyMethodRemoveAllTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_InsertAfterTest.xml">
+      <Link>Baselines\Instru_InsertAfterTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_Locals.xml">
+      <Link>Baselines\Instru_Locals.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_LocalsExisting.xml">
+      <Link>Baselines\Instru_LocalsExisting.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_MethodBaselineTest.xml">
+      <Link>Baselines\Instru_MethodBaselineTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_RemoveAllTest.xml">
+      <Link>Baselines\Instru_RemoveAllTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_RemoveTest.xml">
+      <Link>Baselines\Instru_RemoveTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_RemoveTest2.xml">
+      <Link>Baselines\Instru_RemoveTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_ReplaceTest.xml">
+      <Link>Baselines\Instru_ReplaceTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\Instru_ReplaceTest2.xml">
+      <Link>Baselines\Instru_ReplaceTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_ForTest.xml">
+      <Link>Baselines\RoundTrip_ForTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_ForTest_Debug.xml">
+      <Link>Baselines\RoundTrip_ForTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_IfTest.xml">
+      <Link>Baselines\RoundTrip_IfTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_IfTest_Debug.xml">
+      <Link>Baselines\RoundTrip_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_MultiTryCatchTest.xml">
+      <Link>Baselines\RoundTrip_MultiTryCatchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_SwitchTest.xml">
+      <Link>Baselines\RoundTrip_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_SwitchTest_Debug.xml">
+      <Link>Baselines\RoundTrip_SwitchTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_WhileTest.xml">
+      <Link>Baselines\RoundTrip_WhileTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RoundTrip_WhileTest_Debug.xml">
+      <Link>Baselines\RoundTrip_WhileTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RuntimeExceptionCallbacks.xml">
+      <Link>Baselines\RuntimeExceptionCallbacks.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\TinyMethodTest.xml">
+      <Link>Baselines\TinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">
+      <Link>TestScripts\AddMultiNop_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_ArrayForeachTest.xml">
+      <Link>TestScripts\AddNop_ArrayForeachTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_ForTest_Debug.xml">
+      <Link>TestScripts\AddNop_ForTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_IfTest_Debug.xml">
+      <Link>TestScripts\AddNop_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_SwitchTest2.xml">
+      <Link>TestScripts\AddNop_SwitchTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_SwitchTest2_Debug.xml">
+      <Link>TestScripts\AddNop_SwitchTest2_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_SwitchTest_Debug.xml">
+      <Link>TestScripts\AddNop_SwitchTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddNop_WhileTest_Debug.xml">
+      <Link>TestScripts\AddNop_WhileTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\ExceptionFatClauseTest.xml">
+      <Link>TestScripts\ExceptionFatClauseTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\ExceptionFinallyTest.xml">
+      <Link>TestScripts\ExceptionFinallyTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\ExceptionMultiTryCatchTest.xml">
+      <Link>TestScripts\ExceptionMultiTryCatchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\ExceptionTinyMethodTest.xml">
+      <Link>TestScripts\ExceptionTinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\ExceptionTinyMethodTest2.xml">
+      <Link>TestScripts\ExceptionTinyMethodTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\InjectToMscorlibTest.xml">
+      <Link>TestScripts\InjectToMscorlibTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\InjectToMscorlibTest32.xml">
+      <Link>TestScripts\InjectToMscorlibTest32.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_EmptyMethodRemoveAllTest.xml">
+      <Link>TestScripts\Instru_EmptyMethodRemoveAllTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_InsertAfterTest.xml">
+      <Link>TestScripts\Instru_InsertAfterTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_Locals.xml">
+      <Link>TestScripts\Instru_Locals.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_LocalsExisting.xml">
+      <Link>TestScripts\Instru_LocalsExisting.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_MethodBaselineTest.xml">
+      <Link>TestScripts\Instru_MethodBaselineTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_RemoveAllTest.xml">
+      <Link>TestScripts\Instru_RemoveAllTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_RemoveTest.xml">
+      <Link>TestScripts\Instru_RemoveTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_RemoveTest2.xml">
+      <Link>TestScripts\Instru_RemoveTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_ReplaceTest.xml">
+      <Link>TestScripts\Instru_ReplaceTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Instru_ReplaceTest2.xml">
+      <Link>TestScripts\Instru_ReplaceTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_ForTest.xml">
+      <Link>TestScripts\RoundTrip_ForTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_ForTest_Debug.xml">
+      <Link>TestScripts\RoundTrip_ForTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_IfTest.xml">
+      <Link>TestScripts\RoundTrip_IfTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_IfTest_Debug.xml">
+      <Link>TestScripts\RoundTrip_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_MultiTryCatchTest.xml">
+      <Link>TestScripts\RoundTrip_MultiTryCatchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_SwitchTest.xml">
+      <Link>TestScripts\RoundTrip_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_SwitchTest_Debug.xml">
+      <Link>TestScripts\RoundTrip_SwitchTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_WhileTest.xml">
+      <Link>TestScripts\RoundTrip_WhileTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RoundTrip_WhileTest_Debug.xml">
+      <Link>TestScripts\RoundTrip_WhileTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RuntimeExceptionCallbacks.xml">
+      <Link>TestScripts\RuntimeExceptionCallbacks.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\TinyMethodTest.xml">
+      <Link>TestScripts\TinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

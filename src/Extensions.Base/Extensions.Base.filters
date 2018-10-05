@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{59d1ac4a-9f17-4cc2-a4cf-1ca5633fd758}</UniqueIdentifier>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HostExtension_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="HostExtensionExport.cpp" />
+    <ClCompile Include="HostExtension.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HostExtension_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="HostExtension.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HostExtension.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="HostExtension.idl" />
+  </ItemGroup>
+</Project>

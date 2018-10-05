@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>ExceptionTests_Release_x64.exe</ModuleName>
+    <MethodName>ExceptionMultiTryCatchTest</MethodName>
+  </InstrumentMethod>
+</InstrumentationTestScript>

@@ -1,0 +1,15 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {324F817A-7420-4E6D-B3C1-143FBED6D855} = s 'Instrumentation Engine Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Free'
+			}
+			Version = s '1.0'
+		}
+	}
+}

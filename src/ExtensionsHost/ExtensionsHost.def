@@ -1,0 +1,10 @@
+;; Copyright (c) Microsoft Corporation. All rights reserved.
+;; 
+
+; ExtensionsHost.def : Declares the module parameters.
+
+LIBRARY
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE

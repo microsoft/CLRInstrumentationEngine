@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>MethodReplacementTests_Release_x64.exe</ModuleName>
+    <MethodName>ReplacementMethodTest</MethodName>
+    <Instructions Baseline="True">
+      <Instruction>
+        <Opcode>ldc.i4.s</Opcode>
+        <Operand>12</Operand>
+      </Instruction>
+      <Instruction>
+       <Opcode>stloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldc.i4.s</Opcode>
+        <Operand>11</Operand>
+      </Instruction>
+      <Instruction>
+        <Opcode>stloc.1</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldloc.1</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>sub</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>stloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldc.i4.1</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>sub</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>stloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ldloc.0</Opcode>
+      </Instruction>
+      <Instruction>
+        <Opcode>ret</Opcode>
+      </Instruction>
+    </Instructions>
+    <CorIlMap>0 0 3 3 6 6 10 10 14 14</CorIlMap>
+  </InstrumentMethod>
+</InstrumentationTestScript>

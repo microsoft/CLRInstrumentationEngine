@@ -1,0 +1,3 @@
+# Use unix line endings on scripts so that they can be run on unix even when pulled with windows git
+*.sh text eol=lf
+*.awk text eol=lf

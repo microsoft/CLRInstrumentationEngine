@@ -1,0 +1,1392 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
+// Header files for the instrumentation engine
+// This is used to generate header files
+// but not to generate proxy stubs, tlb, or registration
+
+import "ocidl.idl";
+import "oleidl.idl";
+import "corprof.idl";
+
+[
+    uuid(54DD4A02-1C02-43FF-8EC8-FA4244B52E60)
+]
+library MicrosoftInstrumentationEngine
+{
+    interface IProfilerManager;
+    interface IProfilerManagerHost;
+    interface IProfilerManagerLogging;
+    interface IProfilerManagerLoggingHost;
+    interface IInstrumentationMethodHost;
+    interface IInstrumentationMethod;
+    interface IDataContainer;
+    interface IInstruction;
+    interface IExceptionSection;
+    interface IExceptionClause;
+    interface IEnumExceptionClauses;
+
+    interface IOperandInstruction;
+    interface IBranchInstruction;
+    interface ISwitchInstruction;
+
+    interface IInstructionGraph;
+    interface IMethodInfo;
+    interface IMethodInfo2;
+    interface IAssemblyInfo;
+    interface IEnumAssemblyInfo;
+    interface IModuleInfo;
+    interface IModuleInfo2;
+    interface IEnumModuleInfo;
+    interface IAppDomainInfo;
+    interface IEnumAppDomainInfo;
+    interface IInstrumentationMethod;
+    interface IInstructionGraph;
+    interface ILocalVariableCollection;
+    interface IType;
+    interface IAppDomainCollection;
+    interface ISignatureBuilder;
+    interface ITypeCreator;
+    interface IMethodLocal;
+    interface IMethodParameter;
+    interface IEnumMethodLocals;
+    interface IEnumMethodParameters;
+
+    interface ISingleRetDefaultInstrumentation;
+
+    [
+        object,
+        uuid(3A09AD0A-25C6-4093-93E1-3F64EB160A9D),
+        pointer_default(unique)
+    ]
+    interface IProfilerManager : IUnknown
+    {
+        // manipulating xml configuration files is hard from setup.
+        // So this lets the host push in a collection of config paths
+        // instead of a single file.
+        HRESULT SetupProfilingEnvironment([in] BSTR bstrConfigPath[], [in] UINT numConfigPaths);
+
+        // Allow hosts and instrumentation methods to get access to the raw profiler callback
+        // events (ICorProfilerCallback, ICorProfilerCallback2...).
+        // The events are multiplexed to each implementation and they fire AFTER
+        // the normal instrumentation methods have performed instrumentation etc..
+        //
+        // The initialize method will be called on each instance passing a wrapped
+        // ICorProfilerInfo instance which allows the host to add to the cor profiler event
+        // flags.
+        //
+        // NOTE: raw profiler hooks will need to be added during initialize if any changes
+        // to the profiler events are to be supported.
+        HRESULT AddRawProfilerHook([in]IUnknown* pUnkProfilerCallback);
+        HRESULT RemoveRawProfilerHook();
+
+        // Return the wrapped ICorProfilerInfo Instance
+        HRESULT GetCorProfilerInfo([out]IUnknown** ppCorProfiler);
+
+        // return the profiler host instance
+        HRESULT GetProfilerHost([out]IProfilerManagerHost** ppProfilerManagerHost);
+
+        // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
+        // to log to the profiler manager or optionally to the profiler host.
+        HRESULT GetLoggingInstance([out] IProfilerManagerLogging** ppLogging);
+
+        // By default, logging messages are written to the debug output port. However,
+        // hosts can optionally signup to receive them through an instance of IProfilerManagerLoggingHost
+        HRESULT SetLoggingHost([in] IProfilerManagerLoggingHost* pLoggingHost);
+
+        // Return the appdomain collection
+        HRESULT GetAppDomainCollection([out] IAppDomainCollection** ppAppDomainCollection);
+
+        // Creates a general purpose signature builder
+        HRESULT CreateSignatureBuilder([out] ISignatureBuilder** ppSignatureBuilder);
+
+        // Query the profiler manager for a pointer to another instrumentation method.
+        // Consumers can call QueryInterface to obtain an interface specific to that
+        // instrumentation method
+        HRESULT GetInstrumentationMethod([in]REFGUID cslid, [out]IUnknown** ppUnknown);
+
+        HRESULT RemoveInstrumentationMethod([in] IInstrumentationMethod* pInstrumentationMethod);
+
+        // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
+        HRESULT AddInstrumentationMethod([in]BSTR bstrModulePath, [in]BSTR bstrName, [in]BSTR bstrDescription, [in]BSTR bstrModule, [in]BSTR bstrClassGuid, [in]DWORD dwPriority, [out]IInstrumentationMethod** pInstrumentationMethod);
+
+        HRESULT GetRuntimeType([out]COR_PRF_RUNTIME_TYPE* pRuntimeType);
+    };
+
+    [
+        object,
+        uuid(DCB0764D-E18F-4F9A-91E8-6A40FCFE6775),
+        pointer_default(unique)
+    ]
+    interface IProfilerManager2 : IUnknown
+    {
+        // An instrumentation method may disable profiling of a process by calling this method.
+        // This will result in the instrumentation engine returning CORPROF_E_PROFILER_CANCEL_ACTIVATION
+        // from initialize, effectively disabling the profiler in the process.
+        HRESULT DisableProfiling();
+
+        // If metadata is modified outside of a module load callback. Call this method
+        // to get the clr to apply the changes.
+        HRESULT ApplyMetadata([in] IModuleInfo* pMethodInfo);
+    };
+
+    // The profiler manager host is loaded and created by the profiler manager during the call to initialize after the clr
+    // The instance is selected using the MicrosoftInstrumentationEngine_HostPath and MicrosoftInstrumentationEngine_Host
+    // environment variables which point to a full path to a dll and a guid to cocreate via DllGetClassObject.
+    // The profiler manager host should call SetupProfilingEnvironment to enable registered instrumentation methods and
+    // call AddRawProfilerHook to get access to the raw ICorProfiler events.
+    [
+        object,
+        uuid(BA9193B4-287F-4BF4-8E1B-00FCE33862EB),
+        pointer_default(unique)
+    ]
+    interface IProfilerManagerHost : IUnknown
+    {
+       HRESULT Initialize([in] IProfilerManager* pProfilerManager);
+    };
+
+    // logging levels in the instrumentation engine.
+    enum LoggingFlags
+    {
+        LoggingFlags_None = 0x0,                      // No logging
+        LoggingFlags_Errors = 0x1,                    // Log error messages
+        LoggingFlags_Trace = 0x2,                     // Log verbose trace messages
+        LoggingFlags_InstrumentationResults = 0x4     // Log full dumping of il results.
+    };
+
+    // Interface implemented by the profiler manager that is used by instrumentation methods to send logging messages to the instrumentation engine.
+    [
+        object,
+        uuid(9CFECED7-2123-4115-BF06-3693D1D19E22),
+        pointer_default(unique)
+    ]
+    interface IProfilerManagerLogging : IUnknown
+    {
+       // If trace logging in enabled in the profiler manager, trace messages are sent to the
+       // profiler manager through this function.
+       HRESULT LogMessage([in] const WCHAR* wszMessage);
+
+       // Errors detected during profiling will be sent to the host through this method
+       HRESULT LogError([in] const WCHAR* wszError);
+
+       // If instrumentation result tracing is enabled, the detailed results of each instrumented
+       // method will be sent to the profiler manager host through this method.
+       HRESULT LogDumpMessage([in] const WCHAR* wszMessage);
+
+       // Called to cause logging to be written to the debug output port (via DebugOutputString) as well
+       // as to the host.
+       HRESULT EnableDiagnosticLogToDebugPort([in] BOOL enable);
+
+       // Allows instrumentation methods and hosts to ask for the current logging level
+       HRESULT GetLoggingFlags([out] enum LoggingFlags* pLoggingFlags);
+
+       // Allows instrumentation methods and hosts to modify the current logging level
+       HRESULT SetLoggingFlags([in] enum LoggingFlags loggingFlags);
+    };
+
+    // Profiler manager hosts can implement this to receive and manage all tracing from the instrumentation engine.
+    // and instrumentation methods
+    [
+        object,
+        uuid(99F828EE-EA00-473C-A829-D400235C11C1),
+        pointer_default(unique)
+    ]
+    interface IProfilerManagerLoggingHost : IUnknown
+    {
+        // If trace logging in enabled in the profiler manager, trace messages are sent to the
+        // profiler manager through this function.
+        HRESULT LogMessage([in] const WCHAR* wszMessage);
+
+        // Errors detected during profiling will be sent to the host through this method
+        HRESULT LogError([in] const WCHAR* wszError);
+
+        // If instrumentation result tracing is enabled, the detailed results of each instrumented
+        // method will be sent to the profiler manager host through this method.
+        HRESULT LogDumpMessage([in] const WCHAR* wszMessage);
+    }
+
+    [
+        object,
+        uuid(0D92A8D9-6645-4803-B94B-06A1C4F4E633),
+        pointer_default(unique)
+    ]
+    interface IInstrumentationMethod : IUnknown
+    {
+         HRESULT Initialize([in] IProfilerManager* pProfilerManager);
+
+         HRESULT OnAppDomainCreated([in] IAppDomainInfo* pAppDomainInfo);
+         HRESULT OnAppDomainShutdown([in] IAppDomainInfo* pAppDomainInfo);
+
+         HRESULT OnAssemblyLoaded([in] IAssemblyInfo* pAssemblyInfo);
+         HRESULT OnAssemblyUnloaded([in] IAssemblyInfo* pAssemblyInfo);
+
+         HRESULT OnModuleLoaded([in] IModuleInfo* pModuleInfo);
+         HRESULT OnModuleUnloaded([in] IModuleInfo* pModuleInfo);
+
+         HRESULT OnShutdown();
+
+         // Instrumentation methods should return true if they want to instrument the method pointed to by IMethodInfo
+         HRESULT ShouldInstrumentMethod([in] IMethodInfo* pMethodInfo, [in] BOOL isRejit, [out] BOOL* pbInstrument);
+
+         // Called on instrumentation methods that return true to ShouldInstrumentMethod. This gives them the opportunity
+         // to replace the method body using the CreateBaseline api on the instruction graph. Only one instrumentation
+         // method can create the baseline. BeforeInstrumentMethod is called on instrumentation methods in priority order.
+         // Instrumentation methods should not perform any other instrumentation in this callback as a lower priority instrumentation
+         // method may replace the method body later
+         HRESULT BeforeInstrumentMethod([in] IMethodInfo* pMethodInfo, [in] BOOL isRejit);
+
+         // Called for methods where the instrumentation method returned true during ShouldInstrumentMethod.
+         // InstrumentMethod is called on instrumentation methods in priority order
+         HRESULT InstrumentMethod([in] IMethodInfo* pMethodInfo, [in] BOOL isRejit);
+
+         // Fires after all instrumentation is complete. This allows instrumentation methods to perform final
+         // bookkeeping such as recording local variable signatures which are not known until the final process
+         // is complete.
+         HRESULT OnInstrumentationComplete([in] IMethodInfo* pMethodInfo, [in] BOOL isRejit);
+
+         // Instrumentation engine asks each instrumentation method if inlining should be allowed
+         HRESULT AllowInlineSite([in] IMethodInfo* pMethodInfoInlinee, [in] IMethodInfo* pMethodInfoCaller, [out] BOOL* pbAllowInline);
+    };
+
+    // Interface implemented by instrumentation methods that want events about exceptions. The instrumentation engine
+    // must also set the COR_PRF_MONITOR_EXCEPTIONS flags on the instrumentation flags during initialize as the
+    // exception callbacks are not enabled by default.
+    [
+        object,
+        uuid(8310B758-6642-46AD-9423-DDA5F9E278AE),
+        pointer_default(unique)
+    ]
+    interface IInstrumentationMethodExceptionEvents : IUnknown
+    {
+        HRESULT ExceptionCatcherEnter(
+            [in] IMethodInfo* pMethodInfo,
+            [in] UINT_PTR   objectId
+            );
+
+        HRESULT ExceptionCatcherLeave();
+
+        HRESULT ExceptionSearchCatcherFound(
+            [in] IMethodInfo* pMethodInfo
+            );
+
+        HRESULT ExceptionSearchFilterEnter(
+            [in] IMethodInfo* pMethodInfo
+            );
+
+        HRESULT ExceptionSearchFilterLeave();
+
+        HRESULT ExceptionSearchFunctionEnter(
+            [in] IMethodInfo* pMethodInfo
+            );
+
+        HRESULT ExceptionSearchFunctionLeave();
+
+        HRESULT ExceptionThrown(
+            [in] UINT_PTR thrownObjectId
+            );
+
+        HRESULT ExceptionUnwindFinallyEnter(
+            [in] IMethodInfo* pMethodInfo
+            );
+
+        HRESULT ExceptionUnwindFinallyLeave();
+
+        HRESULT ExceptionUnwindFunctionEnter(
+            [in] IMethodInfo* pMethodInfo
+            );
+
+        HRESULT ExceptionUnwindFunctionLeave();
+    }
+
+    [
+        object,
+        uuid(2A4FDF66-FC5B-442D-8FAA-4137F023A4EA),
+        pointer_default(unique)
+    ]
+    interface IDataContainer : IUnknown
+    {
+        // Set an instance of a data item for a component. This object will be add-ref'd and
+        // continue to exist until someone sets it again passing null, or the data container
+        // is destroyed
+        HRESULT SetDataItem([in] const GUID* componentId, [in] const GUID* objectGuid, [in] IUnknown* pDataItem);
+
+        // return an addref'd pointer to a data item previously stored with SetDataItem.
+        // componentId is the guid of the object storing the item (i.e. the CoClass of instrumentation method or raw callback)
+        // objectGuid is a class guid of the object being stored returns the data item if it exists
+        HRESULT GetDataItem([in] const GUID* componentId, [in] const GUID* objectGuid, [out] IUnknown** ppDataItem);
+    };
+
+    // Drag the opcodes in from opcode.def
+    enum ILOrdinalOpcode
+    {
+    #define OPDEF(ord, code, name, opcodeLen, operandLen, type, alt, flags, pop, push) code = ord,
+    #include "ILOpcodes.h"
+    #undef OPDEF
+    };
+
+    // These are all possible the operand types, NOT all the built-in CLR types
+    enum ILOperandType
+    {
+        ILOperandType_None,
+        ILOperandType_Byte,
+        ILOperandType_Int,
+        ILOperandType_UShort,
+        ILOperandType_Long,
+        ILOperandType_Single,
+        ILOperandType_Double,
+        ILOperandType_Token,
+        ILOperandType_Switch
+    };
+
+    enum ILOpcodeFlags
+    {
+        ILOpcodeFlag_None = 0x0000,
+        ILOpcodeFlag_Meta = 0x0001,
+        ILOpcodeFlag_Unused = 0x0002,
+        ILOpcodeFlag_Branch = 0x0004
+    };
+
+
+    enum InstructionGeneration
+    {
+        Generation_Original = 0x1,
+        Generation_Baseline = 0x2,
+        Generation_New = 0x3,
+    };
+
+    enum InstructionTerminationType
+    {
+        TerminationType_FallThrough,       // Next instruction to execute in normal control flow is the next instruction in stream
+        TerminationType_Branch,            // Next instruction is branch target. (Cee_Br_S, Cee_Br, Cee_Leave, Cee_Leave_S)
+        TerminationType_ConditionalBranch, // Next instruction is conditional branch target.
+        TerminationType_Throw,             // Next instruction is unknown due to throw/rethrow. Same as BranchIndirect in msdis
+        TerminationType_Switch,            // Next instruction is a switch target
+        TerminationType_Call,              // Next instruction is a call target (Cee_Call, Cee_Jmp, Cee_NewObj)
+        TerminationType_IndirectCall,      // Next instruction is a dynamic call target (Cee_CALLI, Cee_JMPI, Cee_CALLVIRT)
+        TerminationType_Return,            // Next instruction return address. (Cee_Ret, Cee_Endfinally, Cee_Endfilter)
+        TerminationType_Trap			   // Next instruction is post switch (Cee_Break)
+    };
+
+    [
+        object,
+        uuid(E80D8434-2976-4242-8F3B-0C837C343F6C),
+        pointer_default(unique)
+    ]
+    interface IInstruction : IUnknown
+    {
+        HRESULT GetOffset([out] DWORD* pdwOffset);
+        HRESULT GetOriginalOffset([out] DWORD* pdwOffset);
+
+        HRESULT GetOpCodeName([out] BSTR* pbstrName);
+
+        HRESULT GetOpCode([out] enum ILOrdinalOpcode* pOpCode);
+
+        // Only single byte opcodes have short and long forms
+        HRESULT GetAlternateOrdinalOpcode([out] enum ILOrdinalOpcode* pOpCode);
+
+        HRESULT GetInstructionLength([out] DWORD* pdwLength);
+
+        HRESULT GetOpcodeFlags([out] enum ILOpcodeFlags* pFlags);
+        HRESULT GetOpcodeLength([out] DWORD* pdwLength);
+        HRESULT GetOperandType([out] enum ILOperandType* pType);
+        HRESULT GetOperandLength([out] DWORD* pdwLength);
+
+        // set to true if this instruction did not exist in the original instruction stream.
+        HRESULT GetIsNew([out] BOOL* pbValue);
+
+        // set to true of this instruction has been removed from the instruction stream.
+        HRESULT GetIsRemoved([out] BOOL* pbValue);
+
+        HRESULT GetIsBranch([out] BOOL* pbValue);
+        HRESULT GetIsSwitch([out] BOOL* pbValue);
+        HRESULT GetIsCallInstruction([out] BOOL* pbValue);
+
+        HRESULT GetTerminationType([out] enum InstructionTerminationType* pTerminationType);
+
+        HRESULT GetIsFallThrough([out] BOOL* pbIsFallThrough);
+
+        // Get the current next and previous instructions reflecting changes that instrumentation methods have made
+        HRESULT GetNextInstruction([out] IInstruction** ppNextInstruction);
+        HRESULT GetPreviousInstruction([out] IInstruction** ppPrevInstruction);
+
+        // Get the original instructions from the graph before any instrumentation method made chanages to it.
+        HRESULT GetOriginalNextInstruction([out] IInstruction** ppNextInstruction);
+        HRESULT GetOriginalPreviousInstruction([out] IInstruction** ppPrevInstruction);
+
+        HRESULT GetInstructionGeneration([out] enum InstructionGeneration* pInstructionGeneration);
+    };
+
+    [
+        object,
+        uuid(1F014299-F383-46CE-B7A6-1982C85F9FEA),
+        pointer_default(unique)
+    ]
+    interface IOperandInstruction : IUnknown
+    {
+        HRESULT GetOperandType([out] enum ILOperandType* pType);
+
+        // Operand length is available on IInstruction
+
+        HRESULT GetOperandValue(
+            [in] DWORD dwSize,
+            [out, size_is(dwSize), length_is(dwSize)] BYTE* pBytes
+            );
+
+        // Size of operand must match expected size from operand type
+        HRESULT SetOperandValue(
+            [in] DWORD dwSize,
+            [in, size_is(dwSize), length_is(dwSize)] BYTE* pBytes
+            );
+    };
+
+    [
+        object,
+        uuid(73728F9D-B4B5-4149-8396-A79C4726636E),
+        pointer_default(unique)
+    ]
+    interface IBranchInstruction : IUnknown
+    {
+        HRESULT IsShortBranch([out] BOOL* pbValue);
+
+        //Expand the branch to the long form
+        HRESULT ExpandBranch();
+
+        HRESULT GetBranchTarget([out] IInstruction** ppTarget);
+
+        HRESULT GetTargetOffset([out] DWORD* pOffset);
+
+        HRESULT SetBranchTarget([in] IInstruction* pTarget);
+    };
+
+    [
+        object,
+        uuid(66B79035-4F18-4689-A16D-95AF469460A3),
+        pointer_default(unique)
+    ]
+    interface ISwitchInstruction : IUnknown
+    {
+        HRESULT GetBranchTarget([in] DWORD index, [out] IInstruction** ppTarget);
+
+        HRESULT SetBranchTarget([in] DWORD index, [in] IInstruction* pTarget);
+        HRESULT RemoveBranchTargetAt([in] DWORD index);
+        HRESULT RemoveBranchTarget([in] IInstruction* pTarget);
+
+        HRESULT ReplaceBranchTarget([in] IInstruction* pOriginal, [in]  IInstruction *pNew);
+
+        HRESULT GetBranchCount([out] DWORD* pBranchCount);
+        HRESULT GetBranchOffset([in] DWORD index, [out] DWORD* pdwOffset);
+    };
+
+
+    [
+        object,
+        uuid(2A4A827A-046D-4927-BD90-CE9607607280),
+        pointer_default(unique)
+    ]
+    interface IEnumInstructions : IUnknown
+    {
+        HRESULT Next(
+        [in] ULONG celt,
+        [out, size_is(celt), length_is(celt)] IInstruction** rgelt,
+        [in] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumInstructions** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+
+    [
+        object,
+        uuid(9165F2D1-2D6D-4B89-B2AB-2CACA66CAA48),
+        pointer_default(unique)
+    ]
+    interface IInstructionGraph : IUnknown
+    {
+        HRESULT GetMethodInfo([out] IMethodInfo** ppMethodInfo);
+
+        // Get the current first and last instructions reflecting changes that instrumentation methods have made
+        HRESULT GetFirstInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetLastInstruction([out] IInstruction** ppInstruction);
+
+        HRESULT GetOriginalFirstInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetOriginalLastInstruction([out] IInstruction** ppInstruction);
+
+        HRESULT GetUninstrumentedFirstInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetUninstrumentedLastInstruction([out] IInstruction** ppInstruction);
+
+        HRESULT GetInstructionAtOffset([in] DWORD offset, [out] IInstruction** ppInstruction);
+        HRESULT GetInstructionAtOriginalOffset([in]  DWORD offset, [out] IInstruction** ppInstruction);
+
+        HRESULT GetInstructionAtUninstrumentedOffset([in] DWORD dwOffset, [out] IInstruction** ppInstruction);
+
+        // Insert an instruction before another instruction. jmp offsets that point to the original instruction
+        // are not updated to reflect this change
+        HRESULT InsertBefore([in] IInstruction* pInstructionOrig, [in] IInstruction* pInstructionNew);
+
+        // Insert an instruction after another instruction. jmp offsets that point to the next instruction after
+        // the other instruction are not updated to reflect this change
+        HRESULT InsertAfter([in] IInstruction* pInstructionOrig, [in] IInstruction* pInstructionNew);
+
+        // Insert an instruction before another instruction AND update jmp targets and exception ranges that used
+        // to point to the old instruction to point to the new instruction.
+        HRESULT InsertBeforeAndRetargetOffsets([in] IInstruction* pInstructionOrig, [in] IInstruction* pInstructionNew);
+
+        // Replace an instruction with another instruction. The old instruction continues to live in the original graph but is marked replaced
+        HRESULT Replace([in] IInstruction* pInstructionOrig, [in] IInstruction *pInstructionNew);
+
+        // Remove an instruction. The old instruction continues to live in the original graph but is marked deleted
+        HRESULT Remove([in] IInstruction *pInstructionOrig);
+
+        // Remove all instructions from the current graph. The original instructions are still accessible from the original first and original last
+        // methods. These are all marked deleted  and their original next fields are still set.
+        HRESULT RemoveAll();
+
+        // Removes all existing instructions from the graph and replaces them with a complete method body. The original instructions are preserved in a disjoint
+        // graph. Note that this changes the behavior of API's such as GetInstructionAtOriginalOffset; these will now retrieve the baseline instruction instead.
+        // This can only be called during the BeforeInstrumentMethod phase of the instrumentation and can only be called once
+        HRESULT CreateBaseline(
+            [in] LPCBYTE pCodeBase,
+            [in] LPCBYTE pEndOfCode,
+            [in] DWORD originalToBaselineCorIlMapSize,
+            [in, size_is(originalToBaselineCorIlMapSize)] COR_IL_MAP originalToBaselineCorIlMap[],
+            [in] DWORD baselineSequencePointSize,
+            [in, size_is(baselineSequencePointSize)]  DWORD baselineSequencePointList[]
+            );
+
+        // true if CreateBaseline has previously been called.
+        HRESULT HasBaselineBeenSet([out] BOOL* pHasBaselineBeenSet);
+
+        HRESULT ExpandBranches();
+    };
+
+    [
+        object,
+        uuid(85B0B99F-73D7-4C69-8659-BF6196F5264F),
+        pointer_default(unique)
+    ]
+    interface IEnumExceptionClauses : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IExceptionClause** rgelt,
+            [in] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumExceptionClauses** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(1D57EAF6-FCFE-4874-AA0E-C9D1DF714950),
+        pointer_default(unique)
+    ]
+    interface IExceptionClause : IUnknown
+    {
+        // flags is CorExceptionFlag
+        HRESULT GetFlags([out] DWORD* pFlags);
+        HRESULT GetTryFirstInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetTryLastInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetHandlerFirstInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetHandlerLastInstruction([out] IInstruction** ppInstruction);
+        HRESULT GetFilterFirstInstruction([out] IInstruction** ppInstruction);
+        // The token of the type in the catch block
+        HRESULT GetExceptionHandlerType([out] mdToken* pToken);
+
+        // flags is CorExceptionFlag
+        HRESULT SetFlags([in] DWORD flags);
+        HRESULT SetTryFirstInstruction([in] IInstruction* pInstruction);
+        HRESULT SetTryLastInstruction([in] IInstruction* pInstruction);
+        HRESULT SetHandlerFirstInstruction([in] IInstruction* pInstruction);
+        HRESULT SetHandlerLastInstruction([in] IInstruction* pInstruction);
+        HRESULT SetFilterFirstInstruction([in] IInstruction* pInstruction);
+        // The token of the type in the catch block
+        HRESULT SetExceptionHandlerType([in] mdToken token);
+    };
+
+    [
+        object,
+        uuid(42CE95A2-F814-4DCD-952F-68CE9801FDD3),
+        pointer_default(unique)
+    ]
+    interface IExceptionSection : IUnknown
+    {
+        HRESULT GetMethodInfo([out] IMethodInfo** ppMethodInfo);
+        HRESULT GetExceptionClauses([out] IEnumExceptionClauses** ppEnumExceptionClauses);
+        HRESULT AddExceptionClause([in] IExceptionClause* pExceptionClause);
+        HRESULT RemoveExceptionClause([in] IExceptionClause* pExceptionClause);
+        HRESULT RemoveAllExceptionClauses();
+
+        HRESULT AddNewExceptionClause(
+            [in] DWORD flags,   /*CorExceptionFlag*/
+            [in] IInstruction* pTryFirstInstruction,
+            [in] IInstruction* pTryLastInstruction,
+            [in] IInstruction* pHandlerFirstInstruction,
+            [in] IInstruction* pHandlerLastInstruction,
+            [in] IInstruction* pFilterLastInstruction,
+            [in] mdToken handlerTypeToken,
+            [out] IExceptionClause** ppExceptionClause
+            );
+    };
+
+    [
+        object,
+        uuid(CF059876-C5CA-4EBF-ACB9-9C58009CE31A),
+        pointer_default(unique)
+    ]
+    interface IInstructionFactory : IUnknown
+    {
+        // Create an instance of an instruction that takes no operands
+        HRESULT CreateInstruction([in] enum ILOrdinalOpcode opcode, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a byte operand
+        HRESULT CreateByteOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] BYTE operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a USHORT operand
+        HRESULT CreateUShortOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] USHORT operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a ULONG operand
+        HRESULT CreateIntOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] INT32 operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a 64 bit operand. The name "Long" in this case comes from the msil definition
+        // of a 64 bit value
+        HRESULT CreateLongOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] INT64 operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a float operand
+        HRESULT CreateFloatOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] float operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a double operand
+        HRESULT CreateDoubleOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] double operand, [out] IInstruction** ppInstruction);
+
+        // Create an instance of an instruction that takes a metadata token operand
+        HRESULT CreateTokenOperandInstruction([in] enum ILOrdinalOpcode opcode, [in] mdToken operand, [out] IInstruction** ppInstruction);
+
+        // Create a branch instruction
+        HRESULT CreateBranchInstruction([in] enum ILOrdinalOpcode opcode, [in] IInstruction* pBranchTarget, [out] IInstruction** ppInstruction);
+
+        // Create a switch instruction
+        HRESULT CreateSwitchInstruction([in] enum ILOrdinalOpcode opcode, [in] DWORD cBranchTargets, [in, size_is(cBranchTargets), length_is(cBranchTargets)] IInstruction** ppBranchTargets, [out] IInstruction** ppInstruction);
+
+
+        // Helpers that adjust the opcode to match the operand size
+
+        // Creates an operand instruction of type Cee_Ldc_I4, or Cee_Ldc_I4_S, Cee_Ldc_I4_0, Cee_Ldc_I4_1, Cee_Ldc_I4_2...
+        HRESULT CreateLoadConstInstruction([in] int value, [out] IInstruction** ppInstruction);
+
+        // Creates an operand instruction of type Cee_Ldloc, or (Cee_Ldloc_S, (Cee_Ldloc_0, Cee_Ldloc_1, Cee_Ldloc_1...
+        HRESULT CreateLoadLocalInstruction([in] USHORT index, [out] IInstruction** ppInstruction);
+
+        // Creates an operand instruction of type Cee_Ldloca, or Cee_Ldloca_S
+        HRESULT CreateLoadLocalAddressInstruction([in] USHORT index, [out] IInstruction** ppInstruction);
+
+        // Creates an operand instruction of type Cee_Stloc, or Cee_Stloc_S, Cee_Stloc_0, Cee_Stloc_1, Cee_Stloc_2...
+        HRESULT CreateStoreLocalInstruction([in] USHORT index, [out] IInstruction** ppInstruction);
+
+        // Creates an operand instruction of type Cee_Ldarg, or Cee_Ldarg_S, Cee_Ldarg_0, Cee_Ldarg_1, Cee_Ldarg_2...
+        HRESULT CreateLoadArgInstruction([in] USHORT index, [out] IInstruction** ppInstruction);
+
+        // Creates an operand instruction of type Cee_Ldarga or Cee_Ldarga_S
+        HRESULT CreateLoadArgAddressInstruction([in] USHORT index, [out] IInstruction** ppInstruction);
+
+        // Given a byte stream that points to MSIL, create new graph of IInstructions that represents
+        // that stream.
+        //
+        // 1) Each instruction in this stream will be marked as "New" and will not have the original
+        //    next and original previous fields set.
+        //
+        // 2) This graph will not have a method info set and cannot create exception sections or handlers.
+        HRESULT DecodeInstructionByteStream([in] DWORD cbMethod, [in] LPCBYTE instructionBytes, [out] IInstructionGraph** ppInstructionGraph);
+    }
+
+    [
+        object,
+        uuid(541A45B7-D194-47EE-9231-AB69D27D1D59),
+        pointer_default(unique)
+    ]
+    interface IEnumAppMethodInfo : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IEnumAppMethodInfo** rgelt,
+            [in] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+        );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumAppMethodInfo** ppenum
+        );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(CC21A894-F4DF-4726-8318-D6C24C4985B1),
+        pointer_default(unique)
+    ]
+    interface IMethodInfo : IUnknown
+    {
+        HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
+
+        HRESULT GetName([out]BSTR* pbstrName);
+        HRESULT GetFullName([out] BSTR* pbstrFullName);
+
+        // Obtain the graph of instructions.  Manipulating this graph will result in changes to the code
+        // a the end of jit or rejit.
+        HRESULT GetInstructions([out] IInstructionGraph** ppInstructionGraph);
+
+        // Create a local variable builder. Can be used to add new locals.
+        HRESULT GetLocalVariables([out] ILocalVariableCollection** ppLocalVariables);
+
+        HRESULT GetClassId([out] ClassID* pClassId);
+        HRESULT GetFunctionId([out] FunctionID* pFunctionID);
+        HRESULT GetMethodToken([out] mdToken* pToken);
+        HRESULT GetGenericParameterCount([out] DWORD* pCount);
+        HRESULT GetIsStatic([out] BOOL* pbValue);
+        HRESULT GetIsPublic([out] BOOL* pbValue);
+        HRESULT GetIsPrivate([out] BOOL* pbValue);
+        HRESULT GetIsPropertyGetter([out] BOOL* pbValue);
+        HRESULT GetIsPropertySetter([out] BOOL* pbValue);
+        HRESULT GetIsFinalizer([out] BOOL* pbValue);
+        HRESULT GetIsConstructor([out] BOOL* pbValue);
+        HRESULT GetIsStaticConstructor([out] BOOL* pbValue);
+
+        HRESULT GetParameters([out] IEnumMethodParameters** pMethodArgs);
+        HRESULT GetDeclaringType([out] IType** ppType);
+        HRESULT GetReturnType([out] IType** ppType);
+
+        // Get the cor signature for the method. Passing NULL for corSignature will return the required
+        // buffer size in pcbSignature
+        HRESULT GetCorSignature([in] DWORD cbBuffer, [out, length_is(cbBuffer), size_is(cbBuffer)] BYTE* pCorSignature, [out] DWORD* pcbSignature);
+
+        HRESULT GetLocalVarSigToken([out] mdToken* pToken);
+        HRESULT SetLocalVarSigToken([in] mdToken token);
+
+        HRESULT GetAttributes([out] /*CorMethodAttr*/ DWORD* pCorMethodAttr);
+
+        HRESULT GetRejitCodeGenFlags([out] DWORD* pRefitFlags);
+        HRESULT GetCodeRva([out] DWORD* pRva);
+        HRESULT MethodImplFlags([out] /*CorMethodImpl*/ UINT* pCorMethodImpl);
+
+        // Allow callers to adjust optimizations during a rejit. For instance, disable all optimizations against a method
+        HRESULT SetRejitCodeGenFlags([in] DWORD dwFlags);
+
+        HRESULT GetExceptionSection([out] IExceptionSection** ppExceptionSection);
+
+        HRESULT GetInstructionFactory([out] IInstructionFactory** ppInstructionFactory);
+
+        // Return the running count of the number of rejits for this methodinfo
+        HRESULT GetRejitCount([out] DWORD* pdwRejitCount);
+
+        // Obtain the max stack value for the method. This is calculated using the instruction graph
+        HRESULT GetMaxStack([out] DWORD* pMaxStack);
+
+        // Get an instance of single return default transformation.
+        // Ieally we need to have a generic method that will intantiate this class - it actually independent from the specific method
+        HRESULT GetSingleRetDefaultInstrumentation([out]ISingleRetDefaultInstrumentation** ppSingleRetDefaultInstrumentation);
+    }
+
+    [
+        object,
+        uuid(CDF098F7-D04A-4B58-B46E-184C4F223E5F),
+        pointer_default(unique)
+    ]
+    interface IMethodInfo2 : IMethodInfo
+    {
+        // Get the original local variables for the function.
+        // This is a read-only collection.
+        HRESULT GetOriginalLocalVariables([out] ILocalVariableCollection** ppLocalVariables);
+    }
+
+    [
+        object,
+        uuid(0BD963B1-FD87-4492-A417-152F3D0C9CBC),
+        pointer_default(unique)
+    ]
+    interface IModuleInfo : IUnknown
+    {
+        HRESULT GetModuleName([out] BSTR* pbstrModuleName);
+        HRESULT GetFullPath([out] BSTR* pbstrFullPath);
+
+        // Get info about the assembly that contains this module
+        HRESULT GetAssemblyInfo([out] IAssemblyInfo** ppAssemblyInfo);
+
+        HRESULT GetAppDomainInfo([out] IAppDomainInfo** ppAppDomainInfo);
+
+        HRESULT GetMetaDataImport([out] IUnknown** ppMetaDataImport);
+        HRESULT GetMetaDataAssemblyImport([out] IUnknown** ppMetaDataAssemblyImport);
+
+        // NOTE: It is expected that these fail for winmd files which do not support
+        // metadata emit.
+        HRESULT GetMetaDataEmit([out] IUnknown** ppMetaDataEmit);
+        HRESULT GetMetaDataAssemblyEmit([out] IUnknown** ppMetaDataAssemblyEmit);
+
+        HRESULT GetModuleID([out] ModuleID* pModuleId);
+
+        // Get the managed module version id
+        HRESULT GetMVID([out] GUID* pguidMvid);
+
+        HRESULT GetIsILOnly([out] BOOL* pbValue);
+        HRESULT GetIsMscorlib([out] BOOL* pbValue);
+        HRESULT GetIsDynamic([out] BOOL* pbValue);
+        HRESULT GetIsNgen([out] BOOL* pbValue);
+        HRESULT GetIsWinRT([out] BOOL* pbValue);
+        HRESULT GetIs64bit([out] BOOL* pbValue);
+
+        HRESULT GetImageBase([out] LPCBYTE* pbValue);
+
+        // Return the IMAGE_COR20_HEADER structure
+        HRESULT GetCorHeader([in] DWORD cbValue, [out, size_is(cbValue), length_is(cbValue)] BYTE* pbValue);
+
+        // Returns the modules entrypoint token. If the module has no entrypoint token, returns E_FAIL;
+        HRESULT GetEntrypointToken([out]DWORD* pdwEntrypointToken);
+
+        // Returns the VS_FIXEDFILEINFO for this module.
+        HRESULT GetModuleVersion([in] DWORD cbValue, [out, size_is(cbValue), length_is(cbValue)] BYTE* pbValue);
+
+        HRESULT RequestRejit([in] mdToken methodToken);
+
+        // Creates a type factory associated with this module.
+        HRESULT CreateTypeFactory([out] ITypeCreator** ppTypeFactory);
+
+        // Allow instrumentation methods to receive an instance of IMethodInfo for a FunctionID.
+        // This method info is only for obtaining information about the method and cannot be used
+        // for instrumenation.
+        HRESULT GetMethodInfoById([in] FunctionID functionID, [out] IMethodInfo** ppMethodInfo);
+
+        // Allow instrumentation methods to receive an instance of IMethodInfo for a token.
+        // This method info is only for obtaining information about the method and cannot be used
+        // for instrumenation.
+        HRESULT GetMethodInfoByToken([in] mdToken token, [out] IMethodInfo** ppMethodInfo);
+
+        HRESULT ImportModule(
+            [in] IUnknown* pSourceModuleMetadataImport,
+            [in] LPCBYTE* pSourceImage
+            );
+    };
+
+    [
+        object,
+        uuid(4200c448-7ede-4e61-ae67-b017d3021f12),
+        pointer_default(unique)
+    ]
+    interface IModuleInfo2 : IModuleInfo
+    {
+        HRESULT GetIsFlatLayout([out] BOOL* pbValue);
+        HRESULT ResolveRva([in] DWORD rva, [out] LPCBYTE* ppbResolvedAddress);
+    };
+
+    [
+        object,
+        uuid(683b3d0b-5cab-49ac-9242-c7de190c7764),
+        pointer_default(unique)
+    ]
+    interface IEnumModuleInfo : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IModuleInfo** rgelt,
+            [in] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumModuleInfo** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+
+    [
+        object,
+        uuid(110FE5BA-57CD-4308-86BE-487478ABE2CD),
+        pointer_default(unique)
+    ]
+    interface IAssemblyInfo : IUnknown
+    {
+        HRESULT GetAppDomainInfo([out] IAppDomainInfo** ppAppDomainInfo);
+
+        HRESULT GetModuleCount([out] ULONG* pcModuleInfos);
+        HRESULT GetModules([in] ULONG cModuleInfos, [out] IEnumModuleInfo** pModuleInfos);
+        HRESULT GetModuleById([in] ModuleID moduleId, [out] IModuleInfo** ppModuleInfo);
+        HRESULT GetModuleByMvid([in] GUID* pMvid, [out] IModuleInfo** ppModuleInfo);
+        HRESULT GetModulesByName([in] BSTR  pszModuleName, [out] IEnumModuleInfo** ppModuleInfo);
+
+        HRESULT GetModuleForMethod([in] mdToken token, [out] IModuleInfo** ppModuleInfo);
+        HRESULT GetModuleForType([in] BSTR pszTypeName, [in] mdToken tkResolutionScope, [out] mdToken* pTkTypeDef);
+
+
+        HRESULT GetManifestModule([out] IModuleInfo** ppModuleInfo);
+        HRESULT GetPublicKey([in] ULONG cbBytes, [out, size_is(cbBytes), length_is(cbBytes)] BYTE* pbBytes);
+        HRESULT GetPublicKeySize([out] ULONG* pcbBytes);
+
+        HRESULT GetPublicKeyToken([out] BSTR* pbstrPublicKeyToken);
+        HRESULT GetID([out] AssemblyID* pAssemblyId);
+        HRESULT GetName([out] BSTR* pbstrName);
+
+        HRESULT GetMetaDataToken([out] DWORD* pdwToken);
+    };
+
+
+    [
+        object,
+        uuid(71001B79-B50A-4103-9D19-FFCF9F6CE1E9),
+        pointer_default(unique)
+    ]
+    interface IEnumAssemblyInfo : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IAssemblyInfo** rgelt,
+            [out] ULONG* pceltFetched
+            );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumAssemblyInfo** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(A81A5232-4693-47E9-A74D-BB4C71164659),
+        pointer_default(unique)
+    ]
+    interface IAppDomainInfo : IUnknown
+    {
+        HRESULT GetAppDomainId([out] AppDomainID* pAppDomainId);
+        HRESULT GetIsSystemDomain([out] BOOL* pbValue);
+        HRESULT GetIsSharedDomain([out] BOOL* pbValue);
+        HRESULT GetIsDefaultDomain([out] BOOL* pbValue);
+
+        HRESULT GetName([out] BSTR* pbstrName);
+
+        HRESULT GetAssemblies([out] IEnumAssemblyInfo** ppAssemblyInfos);
+        HRESULT GetModules([out] IEnumModuleInfo** ppModuleInfos);
+
+        HRESULT GetAssemblyInfoById([in] AssemblyID assemblyID, [out] IAssemblyInfo** ppAssemblyInfo);
+        HRESULT GetAssemblyInfosByName([in] BSTR pszAssemblyName, [out] IEnumAssemblyInfo** ppAssemblyInfos);
+
+        HRESULT GetModuleCount([out] ULONG* pcModuleInfos);
+        HRESULT GetModuleInfoById([in] ModuleID moduleId, [out] IModuleInfo** ppModuleInfo);
+        HRESULT GetModuleInfosByMvid([in] GUID mvid, [out] IEnumModuleInfo** ppModuleInfo);
+        HRESULT GetModuleInfosByName([in] BSTR  pszModuleName, [out] IEnumModuleInfo** ppModuleInfo);
+    };
+
+    [
+        object,
+        uuid(C2A3E353-08BB-4A13-851E-07B1BB4AD57C),
+        pointer_default(unique)
+    ]
+    interface IEnumAppDomainInfo : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IAppDomainInfo** rgelt,
+            [in] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+        );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumAppDomainInfo** ppenum
+        );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(C79F6730-C5FB-40C4-B528-0A0248CA4DEB),
+        pointer_default(unique)
+    ]
+    interface IAppDomainCollection : IUnknown
+    {
+        HRESULT GetAppDomainCount([out] DWORD *pdwCount);
+        HRESULT GetAppDomainById([in] AppDomainID appDomainId, [out] IAppDomainInfo **ppAppDomainInfo);
+        HRESULT GetAppDomainIDs([in] DWORD cAppDomains, [out] DWORD *pcActual, [out, size_is(cAppDomains), length_is(cAppDomains)]AppDomainID *AppDomainIDs);
+        HRESULT GetAppDomains([out] IEnumAppDomainInfo **ppEnumAppDomains);
+
+        // NOTE: search all appdomains
+        HRESULT GetAssemblyInfoById([in] AssemblyID assemblyID, [out] IAssemblyInfo **ppAssemblyInfo);
+        HRESULT GetModuleInfoById([in] ModuleID moduleID, [out] IModuleInfo **ppModuleInfo);
+        HRESULT GetModuleInfosByMvid([in] GUID mvid, [out] IEnumModuleInfo **ppEnum);
+
+        // Obtain a method info instance from a function id. This method info is for querying information only,
+        // and cannot be used for instrumentation.
+        HRESULT GetMethodInfoById([in] FunctionID functionID, [out]IMethodInfo **ppMethodInfo);
+    };
+
+    [
+        object,
+        uuid(353F806F-6563-40E0-8EBE-B93A58C0145F),
+        pointer_default(unique)
+    ]
+    interface ILocalVariableCollection : IUnknown
+    {
+        HRESULT Initialize();
+        HRESULT GetCorSignature([out] ISignatureBuilder** ppSignature);
+        HRESULT GetCount([out]DWORD* pdwCount);
+        HRESULT AddLocal([in] IType* pType, [out, optional]DWORD* pIndex);
+        HRESULT ReplaceSignature([in] const BYTE* pSignature, [in] DWORD dwSigSize);
+
+        // Commits the newly added locals to the method local signature
+        HRESULT CommitSignature();
+    };
+
+    [
+        object,
+        uuid(61657FE7-BFBB-4B60-BBA7-1D3C326FA470),
+        pointer_default(unique)
+    ]
+    interface ILocalVariableCollection2 : ILocalVariableCollection
+    {
+        HRESULT GetEnum([out] IEnumMethodLocals** ppEnumMethodLocals);
+    }
+
+    [
+        object,
+        uuid(C4440146-7E2D-4B1A-8F69-D6E4817D7295),
+        pointer_default(unique)
+    ]
+    interface IEnumMethodLocals : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IMethodLocal** rgelt,
+            [out] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+        );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumMethodLocals** ppenum
+        );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+        );
+    };
+
+    [
+        object,
+        uuid(2DBC9FAB-93BD-4733-82FA-EA3B3D558A0B),
+        pointer_default(unique)
+    ]
+    interface IEnumMethodParameters : IUnknown
+    {
+        HRESULT Next(
+        [in] ULONG celt,
+        [out, size_is(celt), length_is(celt)] IMethodParameter** rgelt,
+        [out] ULONG* pceltFetched
+        );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumMethodParameters** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(F8C007DB-0D35-4726-9EDC-781590E30688),
+        pointer_default(unique)
+    ]
+    interface IMethodLocal : IUnknown
+    {
+        HRESULT GetType([out]IType** ppType);
+    };
+
+    [
+        object,
+        uuid(26255678-9F51-433F-89B1-51B978EB4C2B),
+        pointer_default(unique)
+    ]
+    interface IMethodParameter : IUnknown
+    {
+        HRESULT GetType([out]IType** ppType);
+    };
+
+    [
+        object,
+        uuid(F574823E-4863-4013-A4EA-C6D9943246E6),
+        pointer_default(unique)
+    ]
+    interface ISignatureBuilder : IUnknown
+    {
+        HRESULT Add([in] DWORD value);
+        HRESULT AddSignedInt([in] LONG value);
+        HRESULT AddToken([in] mdToken token);
+        HRESULT AddElementType([in] CorElementType type);
+        HRESULT AddData([in] const BYTE* pData, [in] DWORD cbSize);
+        HRESULT AddSignature([in] ISignatureBuilder* pSignature);
+        HRESULT Clear();
+        HRESULT GetSize([out] DWORD* pcbSize);
+        HRESULT GetCorSignature([in] DWORD cbBuffer, [out, length_is(cbBuffer), size_is(cbBuffer)] BYTE* pCorSignature, [out] DWORD* pcbSignature);
+        HRESULT GetCorSignaturePtr([out] const BYTE** ppSignature);
+    };
+
+    [
+        object,
+        uuid(5618BD13-12FC-4198-A39D-8ED60265AAC6),
+        pointer_default(unique)
+    ]
+    interface IEnumTypes : IUnknown
+    {
+        HRESULT Next(
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(celt)] IType** rgelt,
+            [out] ULONG* pceltFetched
+            );
+
+        HRESULT Skip(
+            [in] ULONG celt
+            );
+
+        HRESULT Reset(void);
+
+        HRESULT Clone(
+            [out]IEnumTypes** ppenum
+            );
+
+        HRESULT GetCount(
+            [out] DWORD* pLength
+            );
+    };
+
+    [
+        object,
+        uuid(33BD020E-372B-40F9-A735-4B4017ED56AC),
+        pointer_default(unique)
+    ]
+    interface ISignatureParser : IUnknown
+    {
+        HRESULT ParseMethodSignature(
+            [in] const BYTE* pSignature,
+            [in] ULONG cbSignature,
+            [out, optional] ULONG* pCallingConvention,
+            [out, optional] IType** ppReturnType,
+            [out, optional] IEnumTypes** ppEnumParameterTypes,
+            [out, optional] ULONG* pcGenericTypeParameters,
+            [out, optional] ULONG* pcbRead
+            );
+
+        HRESULT ParseLocalVarSignature(
+            [in] const BYTE* pSignature,
+            [in] ULONG cbSignature,
+            [out, optional] ULONG* pCallingConvention,
+            [out, optional] IEnumTypes** ppEnumTypes,
+            [out, optional] ULONG* pcbRead
+            );
+
+        HRESULT ParseTypeSequence(
+            [in] const BYTE* pBuffer,
+            [in] ULONG cbBuffer,
+            [in] ULONG cTypes,
+            [out, optional] IEnumTypes** ppEnumTypes,
+            [out, optional] ULONG* pcbRead
+            );
+    };
+
+    [
+        object,
+        uuid(6FC96859-ED89-4D9F-A7C9-1DAD7EC35F67),
+        pointer_default(unique)
+    ]
+    interface IType : IUnknown
+    {
+        HRESULT AddToSignature([in] ISignatureBuilder* pSignatureBuilder);
+        HRESULT GetCorElementType([out] CorElementType* pCorType);
+
+        HRESULT IsPrimitive([out]BOOL* pIsPrimitive);
+        HRESULT IsArray([out]BOOL* pIsArray);
+        HRESULT IsClass([out]BOOL* pIsClass);
+        HRESULT GetName([out]BSTR* pbstrName);
+
+        //GetBaseType();
+        //IsPublic
+        //IsSealed
+        //Equals
+    };
+
+    [
+        object,
+        uuid(77655B33-1B29-4285-9F2D-FF9526E3A0AA),
+        pointer_default(unique)
+    ]
+    interface ITokenType : IUnknown
+    {
+        // Return the token for this type. Can be any type of type token
+        // including mdTypeDef, mdTypeRef etc...
+        HRESULT GetToken([out] mdToken* pToken);
+
+        // Get the IModuleInfo that contains this token. Note that in the case
+        // of a typeref, this will be the module that defines the typeref, not the
+        // module that contains the type def. IMetadataImport can be used to resolve
+        // type in the other module.
+        HRESULT GetOwningModule([out] IModuleInfo** ppModuleInfo);
+    };
+
+    [
+        object,
+        uuid(06B9FD79-0386-4CF3-93DD-A23E95EBC225),
+		pointer_default(unique)
+    ]
+    interface ICompositeType : IUnknown
+    {
+        // Return the related type for this composite type.
+        HRESULT GetRelatedType([out] IType** ppType);
+    };
+
+    [
+        object,
+        uuid(1D5C1393-DC7E-4FEF-8A9D-A3DAF7A55C6E),
+        pointer_default(unique)
+    ]
+    interface IGenericParameterType : IUnknown
+    {
+        HRESULT GetPosition([out]ULONG* pPosition);
+    };
+
+    //TODO Finish remaining interfaces. Currently the type implementation classes do not expose any additional functionality
+    //beyond IType
+
+    // Type factory used to create types. There are 3 main scenarios this can be used in
+    // 1. Reading the types that exist in the module already.
+    // 2. Creating Objects that can be used to form signatures. (for example, to add to a local signature)
+    // 3. Types that need to be emitted to metadata [This not yet implemented]
+    [
+        object,
+        uuid(C6D612FA-B550-48E3-8859-DE440CF66627),
+        pointer_default(unique)
+    ]
+    interface ITypeCreator : IUnknown
+    {
+        HRESULT FromSignature([in] DWORD cbBuffer, [in] const BYTE* pCorSignature, [out] IType ** ppType, [out, optional] DWORD* pdwSigSize);
+        HRESULT FromCorElement([in] CorElementType type, [out] IType** ppType);
+        HRESULT FromToken([in] CorElementType type, [in] mdToken token, [out] IType** ppType);
+        //FromClassID
+    };
+
+    [
+        object,
+        uuid(2ED40F43-E51A-41A6-91FC-6FA9163C62E9),
+        pointer_default(unique)
+    ]
+    interface ISingleRetDefaultInstrumentation : IUnknown
+    {
+        HRESULT Initialize([in] IInstructionGraph* pInstructionGraph);
+        HRESULT ApplySingleRetDefaultInstrumentation();
+    };
+
+    [
+        object,
+        uuid(7A88FF19-F3A1-4C43-89DB-61DF376441B5),
+        pointer_default(unique)
+    ]
+    interface ISingleRetDefaultInstrumentation2 : ISingleRetDefaultInstrumentation
+    {
+        // Gets the instruction that is used as the branch target before
+        // the return instruction after the single return instrumentation
+        // has been applied. NULL if there was already only one return instruction
+        // before instrumentation was applied, and, therefore, no branch
+        // target had to be generated.
+        HRESULT GetBranchTargetInstruction([out] IInstruction** pInstruction);
+    };
+
+    [
+        object,
+        uuid(9B028F9E-E2E0-4A61-862B-A4E1158657D0),
+        pointer_default(unique)
+    ]
+    interface IInstrumentationMethodJitEvents : IUnknown
+    {
+        // Notifies that JIT compilation has started. This is for informational purposes
+        // only. Clients can reconstruct information like method names, module ids,
+        // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
+        // by the IProfilerManager interface. Clients should not attempt to use the
+        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
+        // Doing so may result in undefined behavior.
+        HRESULT JitStarted([in] FunctionID functionID, [in] BOOL isRejit);
+
+        // Notification that Just-in-time compile has completed after
+        // instrumentation has finished for all instrumentation methods.
+        // Note: this should be used for notification only. No further
+        // modifications to the method are allowed after this callback.
+        // Clients can reconstruct information like method names, module ids,
+        // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
+        // by the IProfilerManager interface. Clients should not attempt to use the
+        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
+        // Doing so may result in undefined behavior. This callback should be
+        // symmetrical will the JitStarted callback. That is, for each JitSTarted call, there
+        // should be one JitComplete call.
+        HRESULT JitComplete([in] FunctionID functionID, [in] BOOL isRejit, [in] HRESULT jitResult);
+    };
+
+}

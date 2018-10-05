@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{21036FD3-0A5B-403D-B7AF-4950ED156CC9}</ProjectGuid>
+    <Keyword>AtlProj</Keyword>
+    <ProjectName>InstrumentationEngine.Extensions.Base</ProjectName>
+    <ShouldSign>true</ShouldSign>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">x86;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Midl>
+      <HeaderFileName>HostExtension_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>HostExtension_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>HostExtension_p.c</ProxyFileName>
+      <TypeLibraryName>$(IntDir)HostExtension.tlb</TypeLibraryName>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <Link>
+      <ModuleDefinitionFile>.\HostExtension.def</ModuleDefinitionFile>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mscoree.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mscoree.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mscoree.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;mscoree.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions Condition="'$(Configuration)'=='Release'">/debugtype:cv,fixup %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+      <PrecompiledHeader />
+    </ClCompile>
+    <ClCompile Include="HostExtension.cpp" />
+    <ClCompile Include="HostExtensionExport.cpp" />
+    <ClCompile Include="HostExtension_i.c">
+      <CompileAsManaged>false</CompileAsManaged>
+      <PrecompiledHeader />
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="HostExtension.h" />
+    <ClInclude Include="HostExtension_i.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HostExtension.def" />
+    <Content Include="x64\Microsoft.InstrumentationEngine.Extensions.config" Condition="$(Platform) == 'x64'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Microsoft.InstrumentationEngine.Extensions.config</Link>
+    </Content>
+    <Content Include="x86\Microsoft.InstrumentationEngine.Extensions.config" Condition="$(Platform) == 'Win32'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Microsoft.InstrumentationEngine.Extensions.config</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="HostExtension.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExtensionsCommon\ExtensionsCommon.vcxproj">
+      <Project>{9d2f97f8-de2e-4463-a425-823a755159bc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Extensions.BaseLib\Extensions.BaseLib.vcxproj">
+      <Project>{b722970c-63f2-42c6-bd43-cd64eaa4b944}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Unmanaged.targets" />
+</Project>

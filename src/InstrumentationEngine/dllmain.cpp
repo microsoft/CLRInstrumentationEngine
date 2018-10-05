@@ -1,0 +1,130 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
+#include "stdafx.h"
+
+#include "ProfilerManager.h"
+#ifndef PLATFORM_UNIX
+
+#include "AtlModule.h"
+#include "refcount.h"
+
+extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
+
+BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
+{
+    switch (dwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+#ifdef DEBUG
+        // Uncomment this code to track down a memory leak based on allocation count
+        // The leak allocation count is the number in the {} when the leak is dumped
+        // _CrtSetBreakAlloc(/* LEAK ALLOCATION COUNT HERE */);
+
+        _CrtSetDbgFlag(
+            _CRTDBG_ALLOC_MEM_DF | // track allocations and mark them
+            _CRTDBG_LEAK_CHECK_DF // dump leak report at shutdown
+        );
+#endif
+        //INITIALIZE_REF_RECORDER(MicrosoftInstrumentationEngine::CRefCount::EnableRecorder);
+        break;
+
+    case DLL_PROCESS_DETACH:
+        //TERMINATE_REF_RECORDER;
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    default:
+        break;
+    }
+
+    return _AtlModule.DllMain(dwReason, lpReserved);
+}
+#endif // !PLATFORM_UNIX
+
+class CCrossPlatClassFactory : public IClassFactory, public CModuleRefCount
+{
+private:
+
+public:
+    DEFINE_DELEGATED_REFCOUNT_ADDREF(CCrossPlatClassFactory);
+    DEFINE_DELEGATED_REFCOUNT_RELEASE(CCrossPlatClassFactory);
+    STDMETHOD(STDMETHODCALLTYPE) QueryInterface(REFIID riid, PVOID *ppvObject) override
+    {
+        HRESULT hr = E_NOINTERFACE;
+
+        hr = ImplQueryInterface(
+            static_cast<IClassFactory*>(this),
+            riid, ppvObject
+        );
+
+        return hr;
+    }
+
+    // IClassFactory Methods
+public:
+    STDMETHOD(CreateInstance)(
+        _In_ IUnknown *pUnkOuter,
+        _In_   REFIID   riid,
+        _Out_ void **ppvObject
+        ) override
+    {
+        HRESULT hr = S_OK;
+
+        CComObject<CProfilerManager>* pProfilerManager;
+        IfFailRet(CComObject<CProfilerManager>::CreateInstance(&pProfilerManager));
+
+        IfFailRet(pProfilerManager->QueryInterface(riid, ppvObject));
+
+        return S_OK;
+    }
+
+    STDMETHOD(LockServer)(
+        _In_ BOOL fLock
+        ) override
+    {
+        return S_OK;
+    }
+};
+
+#ifndef PLATFORM_UNIX
+STDAPI DLLEXPORT(DllCanUnloadNow, 0)(void)
+{
+    return _AtlModule.DllCanUnloadNow();
+}
+
+STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
+{
+    CComPtr<IClassFactory> pClassFactory;
+    pClassFactory.Attach(new CCrossPlatClassFactory);
+
+    if (pClassFactory != nullptr)
+    {
+        return pClassFactory->QueryInterface(riid, ppv);
+    }
+
+    return E_NOINTERFACE;
+}
+
+STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
+{
+    return _AtlModule.DllRegisterServer(false);
+}
+
+STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
+{
+    return _AtlModule.DllRegisterServer(false);
+}
+#else
+extern "C" HRESULT __attribute__((visibility("default"))) DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
+{
+    CComPtr<IClassFactory> pClassFactory;
+    pClassFactory.Attach(new CCrossPlatClassFactory);
+
+    if (pClassFactory != nullptr)
+    {
+        return pClassFactory->QueryInterface(riid, ppv);
+    }
+
+    return E_NOINTERFACE;
+}
+#endif

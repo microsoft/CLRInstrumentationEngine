@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
+    <MethodName>Instru_EmptyMethodTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <InstrumentationType>RemoveAll</InstrumentationType>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

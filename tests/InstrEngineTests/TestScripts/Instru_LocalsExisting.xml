@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>LocalTests_Debug_x64.exe</ModuleName>
+    <MethodName>AddLocalsExisting</MethodName>
+    <Locals>
+      <Local Type="System.Byte" />
+      <Local Type="LocalTests.CustomType" />
+    </Locals>
+  </InstrumentMethod>
+</InstrumentationTestScript>

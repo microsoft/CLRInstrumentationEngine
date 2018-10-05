@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript Use32BitProfiler="True">
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Debug_x86.exe</ModuleName>
+    <MethodName>ForTest</MethodName>
+    <Instructions>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>30</Offset>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

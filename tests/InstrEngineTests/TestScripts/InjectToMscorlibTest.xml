@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>InjectToMscorlibTest_Release_x64.exe</ModuleName>
+    <MethodName>InjectToMscorlib</MethodName>
+    <PointTo>
+      <AssemblyName>mscorlib</AssemblyName>
+      <TypeName>System.Int32</TypeName>
+      <MethodName>Parse</MethodName>
+    </PointTo>
+  </InstrumentMethod>
+  <InjectAssembly>
+    <Target>mscorlib.dll</Target>
+    <Source>InjectToMscorlibTest_Release_x64.exe</Source>
+  </InjectAssembly>
+</InstrumentationTestScript>

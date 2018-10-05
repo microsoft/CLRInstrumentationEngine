@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <!--
+       TL;DR: Do not include <location path="%XDT_SITENAME%" xdt:Locator="Match(path)">
+
+       FACTS: 1) "path="%XDT_SITENAME%" in <location /> attribute enforces this file to only transform the site w3wp and not kudu w3wp.
+              2) The site w3wp looks at applicationHost.xdt (if exists) otherwise no-op.
+              3) the kudu w3wp looks at scmApplicationHost.xdt (if exists) otherwise applicationHost.xdt (if exists) otherwise no-op.
+              4) XDTs that omit <location /> will overwrite "previous" xdts that provide it for the given section, but will merge the section with previous XDTs that also omit it.
+                 Section refers to the root element under <location />.
+                 (see https://msdn.microsoft.com/library/dd465326.aspx#Anchor_2)
+              5) Preinstalled Site Extensions apply their XDTs before Private Site Extensions, and XDTs are transformed in alphabetical order by site extension name.
+                 eg. "Preinstall Z" xdt then "Private A" xdt then "Private B" xdt
+
+       SUMMARY: The preinstalled InstrumentationEngine must omit the <location /> attribute in this file in order to not be overwritten by private
+                site extensions (such as Microsoft.AspNetCore.AzureAppServices.SiteExtension or ApplicationInsights) who also omit the attribute.
+                Since the preinstalled InstrumentationEngine also declares an scmApplicationHost.xdt file, this file won't be used by the kudu w3wp.
+  -->
+  <system.webServer>
+    <runtime xdt:Transform="InsertIfMissing">
+      <environmentVariables xdt:Transform="InsertIfMissing">
+        <add name="COR_ENABLE_PROFILING" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="COR_PROFILER" value="{324F817A-7420-4E6D-B3C1-143FBED6D855}" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="COR_PROFILER_PATH_32" value="%XDT_EXTENSIONPATH%\Instrumentation32\MicrosoftInstrumentationEngine_x86.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="COR_PROFILER_PATH_64" value="%XDT_EXTENSIONPATH%\Instrumentation64\MicrosoftInstrumentationEngine_x64.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="CORECLR_ENABLE_PROFILING" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="CORECLR_PROFILER" value="{324F817A-7420-4E6D-B3C1-143FBED6D855}" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="CORECLR_PROFILER_PATH_32" value="%XDT_EXTENSIONPATH%\Instrumentation32\MicrosoftInstrumentationEngine_x86.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="CORECLR_PROFILER_PATH_64" value="%XDT_EXTENSIONPATH%\Instrumentation64\MicrosoftInstrumentationEngine_x64.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_Host" value="{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_HostPath_32" value="%XDT_EXTENSIONPATH%\Instrumentation32\Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_HostPath_64" value="%XDT_EXTENSIONPATH%\Instrumentation64\Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_LogLevel" value="Errors" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_IsPreinstalled" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+      </environmentVariables>
+    </runtime>
+  </system.webServer>
+</configuration>
