@@ -44,7 +44,7 @@ The CLR Instrumentation Engine follows the [Semantic Versioning](https://semver.
 
 ## Release
 
-Please read [Release](docs/release.md) for details on how we release new changes.
+Please read [Release](docs/release.md) for details on the release process.
 
 ## Encountering and reporting issues
 
