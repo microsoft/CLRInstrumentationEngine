@@ -20,7 +20,9 @@ In addition to the CLR which supports the full .NET Framework, Microsoft has als
 
 The CLR exposes a profiling API which reports events and messages of what is happening to during the execution of a managed process or application (such as what methods are JIT compiled or if a class is loaded). The problem is that only one profiler can interact with the CLR Profiler APIs at a time. The CLR Instrumentation Engine was written to address this by acting as a host and inverse multiplexes the APIs for multiple profiler clients.
 
-See the [MSDN Profiling Overview](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/profiling-overview) for more details.
+See the [MSDN Profiling Overview](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/profiling-overview) for more details about profilers in general.
+
+See the [Design Notes](..\DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
 ## Using the CLR Instrumentation Engine
 

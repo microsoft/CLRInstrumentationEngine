@@ -93,7 +93,7 @@ invoke_build()
     fi
     docker_run_args="$docker_run_args -v $LocalIncPath:/root/ClrInstrumentationEngine/inc"
 
-    build_cmd="/root/ClrInstrumentationEngine/src/build.sh $__BuildArch $__BuildType clean $__UnprocessedBuildArgs"
+    build_cmd="bash /root/ClrInstrumentationEngine/src/build.sh $__BuildArch $__BuildType clean $__UnprocessedBuildArgs"
     docker_run_args="$docker_run_args --net=host $__DockerImage $build_cmd"
     
     echo "executing: docker run $docker_run_args"
