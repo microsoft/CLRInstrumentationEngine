@@ -1727,7 +1727,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
             CCriticalSectionHolder holder(&m_csForJIT);
 
             CComPtr<CMethodInfo> pMethodInfo;
-            hr = GetOrCreateMethodInfo(functionId, &pMethodInfo);
+            hr = CreateMethodInfo(functionId, &pMethodInfo);
 
             // Class to call cleanup on the method info in the destructor.
             CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
@@ -1877,7 +1877,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITInlining(
 		BOOL bShouldInline = FALSE;
 
 		CComPtr<CMethodInfo> pInlineeMethodInfo;
-		hr = GetOrCreateMethodInfo(calleeId, &pInlineeMethodInfo);
+		hr = CreateMethodInfo(calleeId, &pInlineeMethodInfo);
 		if (FAILED(hr))
 		{
 			// No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
@@ -1894,7 +1894,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITInlining(
 
 		if (calleeId != callerId)
 		{
-			hr = GetOrCreateMethodInfo(callerId, &pInlineSiteMethodInfo);
+			hr = CreateMethodInfo(callerId, &pInlineSiteMethodInfo);
 			if (FAILED(hr) || pInlineSiteMethodInfo == nullptr)
 			{
 				// No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
@@ -3318,10 +3318,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
 
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetOrCreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::GetOrCreateMethodInfo"));
+    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3335,25 +3335,50 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetOrCreateMethodInfo(
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::GetOrCreateMethodInfo - no method info found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %x"), moduleId);
         return E_FAIL;
     }
 
+	// Check if a method info already exists for this function id.
     CComPtr<CMethodInfo> pMethodInfo;
     hr = pModuleInfo->GetMethodInfoById(functionId, &pMethodInfo);
-    if (FAILED(hr))
-    {
-        CLogging::LogMessage(_T("CProfilerManager::GetOrCreateMethodInfo - creating new method info"));
-        pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+	if (SUCCEEDED(hr))
+	{
+		// A method info already existed. It must have leaked in the collections, as both callers expect new ones to be created.
+		// Log an error and overwrite the collection. 
+		CComBSTR bstrMethodFullName;
+		IfFailRet(pMethodInfo->GetFullName(&bstrMethodFullName));
 
-        IfFailRet(pMethodInfo->Initialize(true, false));
+		mdToken token;
+		IfFailRet(pMethodInfo->GetMethodToken(&token));
 
-        IfFailRet(pModuleInfo->AddMethodInfo(functionId, pMethodInfo));
-    }
+		CComPtr<IModuleInfo> pExistingModuleInfo;
+		IfFailRet(pMethodInfo->GetModuleInfo(&pExistingModuleInfo));
+
+		ModuleID existingModuleId;
+		IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
+
+		CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:") WCHAR_SPEC _T(", MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+			functionId,
+			moduleId,
+			bstrMethodFullName.m_str,
+			token,
+			functionToken,
+			existingModuleId
+		);
+	}
+
+
+    CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - creating new method info"));
+    pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+
+    IfFailRet(pMethodInfo->Initialize(true, false));
+
+    IfFailRet(pModuleInfo->AddMethodInfo(functionId, pMethodInfo));
 
     *ppMethodInfo = pMethodInfo.Detach();
 
-    CLogging::LogMessage(_T("End CProfilerManager::GetOrCreateMethodInfo"));
+    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfo"));
 
     return S_OK;
 }
