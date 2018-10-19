@@ -26,7 +26,7 @@ Currently the CLR Instrumentation Engine is installed by:
 
 The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process. Please see [Getting Started](docs/getting_started.md) for more details.
 
-See the [Design Notes](..\DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
+See the [Design Notes](DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
 ## Building
 
