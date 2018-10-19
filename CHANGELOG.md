@@ -7,6 +7,11 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.16
+
++ Updates: 
+    + Always create new methodinfos (and log existing)
+
 # 1.0.15
 
 + New:
