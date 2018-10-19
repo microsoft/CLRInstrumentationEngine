@@ -202,9 +202,9 @@ namespace MicrosoftInstrumentationEngine
         // Returns the raw unwrapped profiler info instance.
         HRESULT GetRealCorProfilerInfo(ICorProfilerInfo** ppRealProfilerInfo);
 
-        HRESULT CREATEMETHODINFO(
-            _IN_ FUNCTIONID FUNCTIONID,
-            _OUT_ CMETHODINFO** PPMETHODINFO
+        HRESULT CreateMethodInfo(
+            _In_ FunctionID functionId,
+            _Out_ CMethodInfo** ppMethodInfo
         );
 
         HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
