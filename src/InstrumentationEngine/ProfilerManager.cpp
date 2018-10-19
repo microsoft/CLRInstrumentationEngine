@@ -1727,7 +1727,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
             CCriticalSectionHolder holder(&m_csForJIT);
 
             CComPtr<CMethodInfo> pMethodInfo;
-            hr = GetOrCreateMethodInfo(functionId, &pMethodInfo);
+            hr = CreateMethodInfo(functionId, &pMethodInfo);
 
             // Class to call cleanup on the method info in the destructor.
             CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
@@ -1872,86 +1872,86 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITInlining(
 
     CCriticalSectionHolder holder(&m_csForJIT);
 
-	if (m_attachedClrVersion != ClrVersion_2)
-	{
-		BOOL bShouldInline = FALSE;
+    if (m_attachedClrVersion != ClrVersion_2)
+    {
+        BOOL bShouldInline = FALSE;
 
-		CComPtr<CMethodInfo> pInlineeMethodInfo;
-		hr = GetOrCreateMethodInfo(calleeId, &pInlineeMethodInfo);
-		if (FAILED(hr))
-		{
-			// No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
-			*pfShouldInline = TRUE;
-			return S_OK;
-		}
-		CCleanupMethodInfo inlineeMethodInfoCleanup(pInlineeMethodInfo);
+        CComPtr<CMethodInfo> pInlineeMethodInfo;
+        hr = CreateMethodInfo(calleeId, &pInlineeMethodInfo);
+        if (FAILED(hr))
+        {
+            // No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
+            *pfShouldInline = TRUE;
+            return S_OK;
+        }
+        CCleanupMethodInfo inlineeMethodInfoCleanup(pInlineeMethodInfo);
 
-		mdToken inlineeToken;
-		IfFailRet(pInlineeMethodInfo->GetMethodToken(&inlineeToken));
+        mdToken inlineeToken;
+        IfFailRet(pInlineeMethodInfo->GetMethodToken(&inlineeToken));
 
-		CComPtr<CMethodInfo> pInlineSiteMethodInfo;
-		CCleanupMethodInfo inlineSiteMethodInfoCleanup;
+        CComPtr<CMethodInfo> pInlineSiteMethodInfo;
+        CCleanupMethodInfo inlineSiteMethodInfoCleanup;
 
-		if (calleeId != callerId)
-		{
-			hr = GetOrCreateMethodInfo(callerId, &pInlineSiteMethodInfo);
-			if (FAILED(hr) || pInlineSiteMethodInfo == nullptr)
-			{
-				// No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
-				*pfShouldInline = TRUE;
-				return S_OK;
-			}
+        if (calleeId != callerId)
+        {
+            hr = CreateMethodInfo(callerId, &pInlineSiteMethodInfo);
+            if (FAILED(hr) || pInlineSiteMethodInfo == nullptr)
+            {
+                // No method info. Probably a dynamic module. The engine cannot instrument dynamic code.
+                *pfShouldInline = TRUE;
+                return S_OK;
+            }
 
-			IfFailRet(inlineSiteMethodInfoCleanup.SetMethodInfo(pInlineSiteMethodInfo));
-		}
-		else
-		{
-			// method inlined into itself. Don't enable inlineSiteMethodInfoCleanup or this will be a double delete
-			pInlineSiteMethodInfo = pInlineeMethodInfo;
-		}
+            IfFailRet(inlineSiteMethodInfoCleanup.SetMethodInfo(pInlineSiteMethodInfo));
+        }
+        else
+        {
+            // method inlined into itself. Don't enable inlineSiteMethodInfoCleanup or this will be a double delete
+            pInlineSiteMethodInfo = pInlineeMethodInfo;
+        }
 
 
-		mdToken inlineSiteToken;
-		IfFailRet(pInlineSiteMethodInfo->GetMethodToken(&inlineSiteToken));
+        mdToken inlineSiteToken;
+        IfFailRet(pInlineSiteMethodInfo->GetMethodToken(&inlineSiteToken));
 
-		// Instrumentation engine asks each instrumentation method if inlining should be allowed for this function
-		IfFailRet(CallAllowInlineOnInstrumentationMethods(pInlineeMethodInfo, pInlineSiteMethodInfo, &bShouldInline));
+        // Instrumentation engine asks each instrumentation method if inlining should be allowed for this function
+        IfFailRet(CallAllowInlineOnInstrumentationMethods(pInlineeMethodInfo, pInlineSiteMethodInfo, &bShouldInline));
 
-		if (bShouldInline)
-		{
-			// instrumentation methods said to allow inlining. Try the raw callback
-			IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITInlining, callerId, calleeId, &bShouldInline));
-		}
+        if (bShouldInline)
+        {
+            // instrumentation methods said to allow inlining. Try the raw callback
+            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITInlining, callerId, calleeId, &bShouldInline));
+        }
 
-		CComPtr<IModuleInfo> pInlineeModuleInfo;
-		IfFailRet(pInlineeMethodInfo->GetModuleInfo(&pInlineeModuleInfo));
+        CComPtr<IModuleInfo> pInlineeModuleInfo;
+        IfFailRet(pInlineeMethodInfo->GetModuleInfo(&pInlineeModuleInfo));
 
-		CComPtr<IModuleInfo> pInlineSiteModuleInfo;
-		IfFailRet(pInlineSiteMethodInfo->GetModuleInfo(&pInlineSiteModuleInfo));
+        CComPtr<IModuleInfo> pInlineSiteModuleInfo;
+        IfFailRet(pInlineSiteMethodInfo->GetModuleInfo(&pInlineSiteModuleInfo));
 
-		CComPtr<CInlineSiteMap> pInlineSiteMap;
-		IfFailRet(((CModuleInfo*)pInlineeModuleInfo.p)->GetInlineSiteMap(&pInlineSiteMap));
+        CComPtr<CInlineSiteMap> pInlineSiteMap;
+        IfFailRet(((CModuleInfo*)pInlineeModuleInfo.p)->GetInlineSiteMap(&pInlineSiteMap));
 
-		if (bShouldInline)
-		{
-			// callbacks said to allow inlining for this function.
-			// Maintain map of caller to callee. If a rejit occurs on callee,
-			// also rejit caller. Note that caller may itself be inlined, so rejit it as well.
-			IfFailRet(pInlineSiteMap->AddInlineSite(inlineeToken, inlineSiteToken, pInlineSiteModuleInfo));
-		}
-		else
-		{
-			// Do not remove the inline site entry. Doing so means that the methods the inline were removed
-			// from will never rejit and therefore the inline site never comes back. If a method is rejitted
-			// that contains inline sites, those sites should be rejitted when the method in question rejits.
-		}
+        if (bShouldInline)
+        {
+            // callbacks said to allow inlining for this function.
+            // Maintain map of caller to callee. If a rejit occurs on callee,
+            // also rejit caller. Note that caller may itself be inlined, so rejit it as well.
+            IfFailRet(pInlineSiteMap->AddInlineSite(inlineeToken, inlineSiteToken, pInlineSiteModuleInfo));
+        }
+        else
+        {
+            // Do not remove the inline site entry. Doing so means that the methods the inline were removed
+            // from will never rejit and therefore the inline site never comes back. If a method is rejitted
+            // that contains inline sites, those sites should be rejitted when the method in question rejits.
+        }
 
-		*pfShouldInline = bShouldInline;
-	}
-	else
-	{
-		IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITInlining, callerId, calleeId, pfShouldInline));
-	}
+        *pfShouldInline = bShouldInline;
+    }
+    else
+    {
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITInlining, callerId, calleeId, pfShouldInline));
+    }
 
     PROF_CALLBACK_END
 
@@ -3318,10 +3318,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
 
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetOrCreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::GetOrCreateMethodInfo"));
+    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3335,25 +3335,50 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetOrCreateMethodInfo(
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::GetOrCreateMethodInfo - no method info found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %x"), moduleId);
         return E_FAIL;
     }
 
+    // Check if a method info already exists for this function id.
     CComPtr<CMethodInfo> pMethodInfo;
     hr = pModuleInfo->GetMethodInfoById(functionId, &pMethodInfo);
-    if (FAILED(hr))
+    if (SUCCEEDED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::GetOrCreateMethodInfo - creating new method info"));
-        pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+        // A method info already existed. It must have leaked in the collections, as both callers expect new ones to be created.
+        // Log an error and overwrite the collection. 
+        CComBSTR bstrMethodFullName;
+        IfFailRet(pMethodInfo->GetFullName(&bstrMethodFullName));
 
-        IfFailRet(pMethodInfo->Initialize(true, false));
+        mdToken token;
+        IfFailRet(pMethodInfo->GetMethodToken(&token));
 
-        IfFailRet(pModuleInfo->AddMethodInfo(functionId, pMethodInfo));
+        CComPtr<IModuleInfo> pExistingModuleInfo;
+        IfFailRet(pMethodInfo->GetModuleInfo(&pExistingModuleInfo));
+
+        ModuleID existingModuleId;
+        IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
+
+        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:") WCHAR_SPEC _T(", MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+            functionId,
+            moduleId,
+            bstrMethodFullName.m_str,
+            token,
+            functionToken,
+            existingModuleId
+        );
     }
+
+
+    CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - creating new method info"));
+    pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+
+    IfFailRet(pMethodInfo->Initialize(true, false));
+
+    IfFailRet(pModuleInfo->AddMethodInfo(functionId, pMethodInfo));
 
     *ppMethodInfo = pMethodInfo.Detach();
 
-    CLogging::LogMessage(_T("End CProfilerManager::GetOrCreateMethodInfo"));
+    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfo"));
 
     return S_OK;
 }

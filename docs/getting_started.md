@@ -22,7 +22,7 @@ The CLR exposes a profiling API which reports events and messages of what is hap
 
 See the [MSDN Profiling Overview](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/profiling-overview) for more details about profilers in general.
 
-See the [Design Notes](..\DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
+See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
 ## Using the CLR Instrumentation Engine
 
