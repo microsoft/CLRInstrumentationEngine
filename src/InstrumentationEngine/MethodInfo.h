@@ -180,6 +180,8 @@ namespace MicrosoftInstrumentationEngine
              return m_bIsInstrumented;
          }
 
+
+         HRESULT ClearInstrumentation();
          HRESULT ApplyFinalInstrumentation(bool isRejit);
 
          HRESULT MergeILInstrumentedCodeMap(_In_ ULONG cILMapEntries, _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[]);

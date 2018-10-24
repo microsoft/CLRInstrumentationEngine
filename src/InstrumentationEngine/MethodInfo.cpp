@@ -1334,6 +1334,12 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     return hr;
 }
 
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ClearInstrumentation()
+{
+    m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, false);
+    return S_OK;
+}
+
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(bool isRejit)
 {
     HRESULT hr = S_OK;
@@ -1345,7 +1351,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         CLogging::LogError(_T("CMethodInfo::ApplyFinalInstrumentation should only be called if a method body has been set for this function"));
         return E_FAIL;
     }
-
+    
     if (!isRejit)
     {
         CLogging::LogMessage(_T("CMethodInfo::ApplyFinalInstrumentation - Non-rejit case"));
@@ -1373,6 +1379,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
 
         IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
 
+        m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, true);
+
         // This will fail if no entries in CorILMap, plus there's no point in setting this in such a case anyway.
         if (m_dwCorILMapmLen > 0)
         {
@@ -1396,6 +1404,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pMethodBody));
 
         IfFailRet(m_pFunctionControl->SetILFunctionBody(cbMethodBody, pMethodBody));
+
+        m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, true);
 
         IfFailRet(m_pFunctionControl->SetCodegenFlags(m_dwRejitCodeGenFlags));
 

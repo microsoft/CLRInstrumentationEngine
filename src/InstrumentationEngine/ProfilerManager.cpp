@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
+#include "MethodJitInfo.h"
 #include "CorProfilerInfoWrapper.h"
 #include "AssemblyInfo.h"
 #include "CorProfilerFunctionControlWrapper.h"
@@ -11,6 +12,7 @@
 #include "MethodInfoCleanup.h"
 #include "InstrumentationMethod.h"
 #include "ConfigurationLoader.h"
+#include "InstrumentationMethodEvents.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -638,6 +640,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ApplyMetadata(_In_ IMo
 
     IfFailRet(pCorProfiler7->ApplyMetaData(moduleId));
 
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DWORD* pApiVer)
+{
+    IfNullRet(pApiVer);
+
+    *pApiVer = CLR_INSTRUMENTATION_ENGINE_API_VER;
     return S_OK;
 }
 
@@ -1728,6 +1738,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
 
             CComPtr<CMethodInfo> pMethodInfo;
             hr = CreateMethodInfo(functionId, &pMethodInfo);
+            pMethodInfo->ClearInstrumentation();
 
             // Class to call cleanup on the method info in the destructor.
             CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
@@ -1794,9 +1805,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationFinished
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
-       
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitComplete, functionId, FALSE, hrStatus));
+    CComPtr<CMethodJitInfo> pMethodJitInfo;
+    pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, false, 0, this));
+    IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END
 
@@ -2938,6 +2949,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
 
 		CComPtr<CMethodInfo> pMethodInfo;
 		IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
+        pMethodInfo->ClearInstrumentation();
 
 		// CreateMethodInfoForRejit adds the method info the token to method info map.
 		// This class is used to cleanup that reference after the rejit has finished
@@ -3023,9 +3035,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinish
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
-
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitComplete, functionId, TRUE, hrStatus));
+    CComPtr<CMethodJitInfo> pMethodJitInfo;
+    pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, true, rejitId, this));
+    IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END
 
