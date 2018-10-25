@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
+#include "MethodJitInfo.h"
 #include "CorProfilerInfoWrapper.h"
 #include "AssemblyInfo.h"
 #include "CorProfilerFunctionControlWrapper.h"
@@ -11,6 +12,7 @@
 #include "MethodInfoCleanup.h"
 #include "InstrumentationMethod.h"
 #include "ConfigurationLoader.h"
+#include "InstrumentationMethodEvents.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -641,6 +643,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ApplyMetadata(_In_ IMo
     return S_OK;
 }
 
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DWORD* pApiVer)
+{
+    IfNullRet(pApiVer);
+
+    *pApiVer = CLR_INSTRUMENTATION_ENGINE_API_VER;
+    return S_OK;
+}
+
 // ICorProfilerCallback methods
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     _In_ IUnknown *pICorProfilerInfoUnk)
@@ -697,14 +707,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     if (m_profilerCallbackHolder != nullptr)
     {
         CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
-		if (m_attachedClrVersion != ClrVersion_2)
-		{
-			pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
-		}
-		else
-		{
-			pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
-		}
+        if (m_attachedClrVersion != ClrVersion_2)
+        {
+            pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
+        }
+        else
+        {
+            pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
+        }
     }
 
     PROF_CALLBACK_END
@@ -805,9 +815,9 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::CalculateEventMask(DWORD
 
     CCriticalSectionHolder lock(&m_cs);
 
-	TInstrumentationMethodsCollection::const_iterator it;
-	for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-	{
+    TInstrumentationMethodsCollection::const_iterator it;
+    for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+    {
         result |= (*it).second;
     }
 
@@ -1135,20 +1145,20 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationStart
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
-	// NOTE: In all likelyhood, the appdomain was already created as it is needed for assembly and module loads
-	CComPtr<IAppDomainInfo> pAppDomainInfo;
-	hr = m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo);
-	if (FAILED(hr))
-	{
-		IfFailRet(ConstructAppDomainInfo(appDomainId, &pAppDomainInfo));
-	}
+    // NOTE: In all likelyhood, the appdomain was already created as it is needed for assembly and module loads
+    CComPtr<IAppDomainInfo> pAppDomainInfo;
+    hr = m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo);
+    if (FAILED(hr))
+    {
+        IfFailRet(ConstructAppDomainInfo(appDomainId, &pAppDomainInfo));
+    }
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
-	// send raw event to registered callbacks
-	IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationStarted, appDomainId));
+    // send raw event to registered callbacks
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationStarted, appDomainId));
 
     PROF_CALLBACK_END
 
@@ -1164,7 +1174,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationFinis
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     //Return if the appdomain didn't load correctly
     if (FAILED (hrStatus))
@@ -1183,7 +1193,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationFinis
     // Send event to instrumentation method
     SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAppDomainCreated, (IAppDomainInfo*)(pAppDomainInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     // send raw event to registered callbacks
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationFinished, appDomainId, hrStatus));
@@ -1223,7 +1233,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownFinis
     // block those calls for the duration.
     CCriticalSectionHolder holder(&m_csForAppDomains);
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo));
@@ -1243,14 +1253,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownFinis
     // Send the appdomain event to instrumentation methods
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAppDomainShutdown, (IAppDomainInfo*)(pAppDomainInfo)));
 
-	// Remove the appdomain from the appdomain collection.
+    // Remove the appdomain from the appdomain collection.
     IfFailRet(m_pAppDomainCollection->RemoveAppDomainInfo(appDomainId));
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
-	// send raw event to registered callbacks
-	IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownFinished, appDomainId, hrStatus));
+    // send raw event to registered callbacks
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownFinished, appDomainId, hrStatus));
 
-	PROF_CALLBACK_END
+    PROF_CALLBACK_END
 
     return S_OK;
 }
@@ -1291,7 +1301,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStartedImp
     // block those calls for the duration.
     CCriticalSectionHolder holder(&m_csForAppDomains);
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IModuleInfo> pModuleInfo;
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo);
@@ -1301,7 +1311,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStartedImp
         return S_OK;
     }
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadStarted, moduleId));
 
@@ -1315,9 +1325,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinishedIm
     // Because the CLR does not guarentee the order of appdomain shutdown and assembly / module unloads.
     // block those calls for the duration.
     CCriticalSectionHolder holder(&m_csForAppDomains);
-	CComPtr<IModuleInfo> pModuleInfo;
+    CComPtr<IModuleInfo> pModuleInfo;
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo);
     if (FAILED(hr))
     {
@@ -1326,11 +1336,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinishedIm
     }
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnModuleUnloaded, (IModuleInfo*)(pModuleInfo)));
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadFinished, moduleId, hrStatus));
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
     CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(pModuleInfo->GetAppDomainInfo(&pAppDomainInfo));
 
@@ -1346,7 +1356,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinishedIm
 
     // Let the module info cleanup the remaining circular references.
     IfFailRet(pRawModuleInfo->Dispose());
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     return hr;
 }
@@ -1359,7 +1369,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStartedI
     // block those calls for the duration.
     CCriticalSectionHolder holder(&m_csForAppDomains);
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
@@ -1369,7 +1379,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStartedI
         return S_OK;
     }
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadStarted, assemblyId));
 
@@ -1384,7 +1394,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished
     // block those calls for the duration.
     CCriticalSectionHolder holder(&m_csForAppDomains);
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
@@ -1405,7 +1415,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished
     // Send event to instrumentation methods
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAssemblyUnloaded, (IAssemblyInfo*)(pAssemblyInfo)));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     // Send the event to the raw callbacks
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadFinished, assemblyId, hrStatus));
@@ -1486,7 +1496,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadFinished(
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
     IfFailRet(ConstructAssemblyInfo(assemblyId, &pAssemblyInfo));
@@ -1494,7 +1504,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadFinished(
     // Send event to instrumentation methods
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAssemblyLoaded, (IAssemblyInfo*)(pAssemblyInfo)));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     // send raw event to registered callbacks
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyLoadFinished, assemblyId, hrStatus));
@@ -1607,7 +1617,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleAttachedToAssemb
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<IModuleInfo> pModuleInfo;
     // NOTE: it is expected that ConstructModuleInfo will fail for resource only modules.
@@ -1618,7 +1628,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleAttachedToAssemb
         IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnModuleLoaded, (IModuleInfo*)(pModuleInfo)));
     }
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleAttachedToAssembly, moduleId, AssemblyId));
 
@@ -1728,6 +1738,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
 
             CComPtr<CMethodInfo> pMethodInfo;
             hr = CreateMethodInfo(functionId, &pMethodInfo);
+            pMethodInfo->ClearILTransformationStatus();
 
             // Class to call cleanup on the method info in the destructor.
             CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
@@ -1794,9 +1805,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationFinished
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
-       
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitComplete, functionId, FALSE, hrStatus));
+    CComPtr<CMethodJitInfo> pMethodJitInfo;
+    pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, false, 0, this));
+    IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END
 
@@ -2342,11 +2353,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionThrown(
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionThrown, (UINT_PTR)thrownObjectId));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionThrown, thrownObjectId));
 
@@ -2363,14 +2374,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctio
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFunctionEnter, (IMethodInfo*)pMethodInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionEnter, functionId));
 
@@ -2385,11 +2396,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctio
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFunctionLeave));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionLeave));
 
@@ -2405,14 +2416,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterE
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFilterEnter, (IMethodInfo*)pMethodInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterEnter, functionId));
 
@@ -2427,15 +2438,15 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterL
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFilterLeave));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
-	IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterLeave));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterLeave));
 
-	PROF_CALLBACK_END
+    PROF_CALLBACK_END
 
     return S_OK;
 }
@@ -2448,14 +2459,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchCatcher
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchCatcherFound, (IMethodInfo*)pMethodInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchCatcherFound, functionId));
 
@@ -2502,14 +2513,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctio
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFunctionEnter, (IMethodInfo*)pMethodInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionEnter, functionId));
 
@@ -2524,11 +2535,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctio
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFunctionLeave));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionLeave));
 
@@ -2545,14 +2556,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinally
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFinallyEnter, (IMethodInfo*)pMethodInfo));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyEnter, functionId));
 
@@ -2567,11 +2578,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinally
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFinallyLeave));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyLeave));
 
@@ -2589,14 +2600,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherEnter(
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionCatcherEnter, (IMethodInfo*)pMethodInfo, objectId));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherEnter, functionId, (ObjectID)objectId));
 
@@ -2611,11 +2622,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherLeave(
 
     PROF_CALLBACK_BEGIN
 
-	IGNORE_IN_NET20_BEGIN
+    IGNORE_IN_NET20_BEGIN
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionCatcherLeave));
 
-	IGNORE_IN_NET20_END
+    IGNORE_IN_NET20_END
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherLeave));
 
@@ -2908,7 +2919,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationStarte
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
-    CComPtr<CMethodInfo> pInformationalMethodInfo;
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, TRUE));
 
@@ -2931,79 +2941,80 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
 
     PROF_CALLBACK_BEGIN
 
-	if (m_attachedClrVersion != ClrVersion_2)
-	{
-		// Only allow a single method to be instrumented at a time.
-		CCriticalSectionHolder holder(&m_csForJIT);
+    if (m_attachedClrVersion != ClrVersion_2)
+    {
+        // Only allow a single method to be instrumented at a time.
+        CCriticalSectionHolder holder(&m_csForJIT);
 
-		CComPtr<CMethodInfo> pMethodInfo;
-		IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
+        CComPtr<CMethodInfo> pMethodInfo;
+        IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
+        pMethodInfo->ClearILTransformationStatus();
 
-		// CreateMethodInfoForRejit adds the method info the token to method info map.
-		// This class is used to cleanup that reference after the rejit has finished
-		class CRemoveMethodInfoAfterRejit
-		{
-		private:
-			CComPtr<CModuleInfo> m_pModuleInfo;
-			mdToken m_methodToken;
+        // CreateMethodInfoForRejit adds the method info the token to method info map.
+        // This class is used to cleanup that reference after the rejit has finished
+        class CRemoveMethodInfoAfterRejit
+        {
+        private:
+            CComPtr<CModuleInfo> m_pModuleInfo;
+            mdToken m_methodToken;
 
-		public:
-			CRemoveMethodInfoAfterRejit(_In_ CModuleInfo* pModuleInfo, _In_ mdToken methodToken) : m_pModuleInfo(pModuleInfo), m_methodToken(methodToken)
-			{
-			}
+        public:
+            CRemoveMethodInfoAfterRejit(_In_ CModuleInfo* pModuleInfo, _In_ mdToken methodToken) : m_pModuleInfo(pModuleInfo), m_methodToken(methodToken)
+            {
+            }
 
-			~CRemoveMethodInfoAfterRejit()
-			{
-				if (m_pModuleInfo != nullptr)
-				{
-					m_pModuleInfo->SetRejitMethodInfo(m_methodToken, nullptr);
-					m_pModuleInfo.Release();
-				}
-			}
-		};
-		CRemoveMethodInfoAfterRejit methodInfoRemover(pMethodInfo->GetModuleInfo(), methodToken);
+            ~CRemoveMethodInfoAfterRejit()
+            {
+                if (m_pModuleInfo != nullptr)
+                {
+                    m_pModuleInfo->SetRejitMethodInfo(m_methodToken, nullptr);
+                    m_pModuleInfo.Release();
+                }
+            }
+        };
+        CRemoveMethodInfoAfterRejit methodInfoRemover(pMethodInfo->GetModuleInfo(), methodToken);
 
-		// Query if the instrumentation methods want to instrument and then have them actually instrument.
-		vector<CComPtr<IInstrumentationMethod>> toInstrument;
-		IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
+        // Query if the instrumentation methods want to instrument and then have them actually instrument.
+        vector<CComPtr<IInstrumentationMethod>> toInstrument;
+        IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
 
-		// Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-		// method body
-		IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+        // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+        // method body
+        IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
 
-		// Instrumentation methods to most of their instrumentation during InstrumentMethod
-		IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+        // Instrumentation methods to most of their instrumentation during InstrumentMethod
+        IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
 
-		CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
-		pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
+        CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
+        pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
 
-		if (!pWrappedCorProfilerFunctionControl)
-		{
-			return E_OUTOFMEMORY;
-		}
+        if (!pWrappedCorProfilerFunctionControl)
+        {
+            return E_OUTOFMEMORY;
+        }
 
-		// Send the event to the raw callbacks to give them a chance to instrument.
-		IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
+        // Send the event to the raw callbacks to give them a chance to instrument.
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
 
-		// If the method was instrumetned
-		if (pMethodInfo->IsInstrumented())
-		{
-			// Give the final instrumentation to the clr.
-			IfFailRet(pMethodInfo->ApplyFinalInstrumentation(true));
+        // If the method was instrumetned
+        if (pMethodInfo->IsInstrumented())
+        {
+            // Give the final instrumentation to the clr.
+            IfFailRet(pMethodInfo->ApplyFinalInstrumentation(true));
 
-			// Don't fail out with this call. It is too late to undo anything with a failure.
-			CallOnInstrumentationComplete(pMethodInfo, true);
-		}
+            // Don't fail out with this call. It is too late to undo anything with a failure.
+            CallOnInstrumentationComplete(pMethodInfo, true);
+        }
 
-		// Don't call cleanup on method info for rejit as we don't have the function id and the methodinfo only needs to survive for the
-		// duration of this call
-		// IfFailRet(pMethodInfo->Cleanup());
-	}
-	else
-	{
-		// Send the event to the raw callbacks to give them a chance to instrument.
-		IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, pFunctionControl));
-	}
+        // Don't call cleanup on method info for rejit as we don't have the function id and the methodinfo only needs to survive for the
+        // duration of this call
+        // IfFailRet(pMethodInfo->Cleanup());
+    }
+    else
+    {
+        // Send the event to the raw callbacks to give them a chance to instrument.
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, pFunctionControl));
+    }
 
     PROF_CALLBACK_END
 
@@ -3023,9 +3034,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinish
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
-
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitComplete, functionId, TRUE, hrStatus));
+    CComPtr<CMethodJitInfo> pMethodJitInfo;
+    pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, true, rejitId, this));
+    IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END
 
@@ -3038,9 +3049,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinish
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITError(
     _In_ ModuleID moduleId,
-	_In_ mdMethodDef methodId,
-	_In_ FunctionID functionId,
-	_In_ HRESULT hrStatus
+    _In_ mdMethodDef methodId,
+    _In_ FunctionID functionId,
+    _In_ HRESULT hrStatus
     )
 {
     HRESULT hr = S_OK;
@@ -3055,10 +3066,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITError(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences2(
-	_In_ ULONG cMovedObjectIDRanges,
-	_In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
-	_In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
-	_In_reads_(cMovedObjectIDRanges) SIZE_T cObjectIDRangeLength[]
+    _In_ ULONG cMovedObjectIDRanges,
+    _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
+    _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
+    _In_reads_(cMovedObjectIDRanges) SIZE_T cObjectIDRangeLength[]
 )
 {
     HRESULT hr = S_OK;
@@ -3073,9 +3084,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences2(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences2(
-	_In_ ULONG cSurvivingObjectIDRanges,
-	_In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
-	_In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[]
+    _In_ ULONG cSurvivingObjectIDRanges,
+    _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
+    _In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[]
 )
 {
     HRESULT hr = S_OK;
@@ -3091,10 +3102,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences2(
 
 // ICorProfilerCallback5 methods
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConditionalWeakTableElementReferences(
-	_In_ ULONG cRootRefs,
-	_In_reads_(cRootRefs) ObjectID keyRefIds[],
-	_In_reads_(cRootRefs) ObjectID valueRefIds[],
-	_In_reads_(cRootRefs) GCHandleID rootIds[]
+    _In_ ULONG cRootRefs,
+    _In_reads_(cRootRefs) ObjectID keyRefIds[],
+    _In_reads_(cRootRefs) ObjectID valueRefIds[],
+    _In_reads_(cRootRefs) GCHandleID rootIds[]
 )
 {
     HRESULT hr = S_OK;
@@ -3110,33 +3121,33 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConditionalWeakTableEl
 
 // ICorProfilerCallback6 methods
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetAssemblyReferences(
-	_In_ const WCHAR *wszAssemblyPath,
-	_In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider)
+    _In_ const WCHAR *wszAssemblyPath,
+    _In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider)
 {
-	HRESULT hr = S_OK;
+    HRESULT hr = S_OK;
 
-	PROF_CALLBACK_BEGIN
+    PROF_CALLBACK_BEGIN
 
-	IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback6::GetAssemblyReferences, wszAssemblyPath, pAsmRefProvider));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback6::GetAssemblyReferences, wszAssemblyPath, pAsmRefProvider));
 
-	PROF_CALLBACK_END
+    PROF_CALLBACK_END
 
-	return S_OK;
+    return S_OK;
 }
 
 //ICorProfilerCallback7 methods
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleInMemorySymbolsUpdated(
-	_In_ ModuleID moduleId)
+    _In_ ModuleID moduleId)
 {
-	HRESULT hr = S_OK;
+    HRESULT hr = S_OK;
 
-	PROF_CALLBACK_BEGIN
+    PROF_CALLBACK_BEGIN
 
-	IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback7::ModuleInMemorySymbolsUpdated, moduleId));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback7::ModuleInMemorySymbolsUpdated, moduleId));
 
-	PROF_CALLBACK_END
+    PROF_CALLBACK_END
 
-	return S_OK;
+    return S_OK;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAppDomainInfo(
@@ -3533,9 +3544,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetInstrumentationMeth
 
     // Linear search the instrumentation methods. This should be called very rarely, so an index
     // will likely just add memory overhead.
-	TInstrumentationMethodsCollection::const_iterator it;
-	for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-	{
+    TInstrumentationMethodsCollection::const_iterator it;
+    for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+    {
         if ((*it).first->GetClassId() == cslid)
         {
             CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
@@ -3570,9 +3581,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallShouldInstrumentOn
 
         // Holding the lock during the callback functions is dangerous since rentrant
         // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-       	TInstrumentationMethodsCollection::const_iterator it;
-		for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-		{
+        TInstrumentationMethodsCollection::const_iterator it;
+        for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+        {
             CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
             IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
 
@@ -3608,9 +3619,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallOnInstrumentationC
 
     CCriticalSectionHolder lock(&m_cs);
 
-	TInstrumentationMethodsCollection::const_iterator it;
-	for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-	{
+    TInstrumentationMethodsCollection::const_iterator it;
+    for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+    {
         CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
         IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
 
@@ -3664,9 +3675,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstr
     CCriticalSectionHolder lock(&m_cs);
 
     BOOL bShouldAllowInline = TRUE;
-	TInstrumentationMethodsCollection::const_iterator it;
-	for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-	{
+    TInstrumentationMethodsCollection::const_iterator it;
+    for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+    {
         CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
         IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
 

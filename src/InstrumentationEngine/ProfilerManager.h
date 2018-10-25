@@ -26,6 +26,7 @@ namespace MicrosoftInstrumentationEngine
 #endif
                      public IProfilerManager,
                      public IProfilerManager2,
+                     public IProfilerManager3,
                      public IProfilerManagerLogging,
                      public ICorProfilerCallback7
     {
@@ -216,6 +217,7 @@ namespace MicrosoftInstrumentationEngine
         BEGIN_COM_MAP(CProfilerManager)
             COM_INTERFACE_ENTRY(IProfilerManager)
             COM_INTERFACE_ENTRY(IProfilerManager2)
+            COM_INTERFACE_ENTRY(IProfilerManager3)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -292,6 +294,33 @@ namespace MicrosoftInstrumentationEngine
                 hr = (pInstrumentationMethod->*method)(parameters...);
 
                 CLogging::LogMessage(_T("Finished Sending event to Instrumentation Method. hr=%04x"), hr);
+            }
+
+            return hr;
+        }
+
+        template<typename TFunc, typename... TParameters>
+        HRESULT ForEachInstrumentationMethod(TFunc func, TParameters... parameters)
+        {
+            HRESULT hr = S_OK;
+            vector<CComPtr<IInstrumentationMethod>> callbackVector;
+
+            {
+                CCriticalSectionHolder lock(&m_cs);
+
+                // Holding the lock during the callback functions is dangerous since rentrant
+                // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+                for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
+                {
+                    CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
+                    IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
+                    callbackVector.push_back(pRawInstrumentationMethod);
+                }
+            }
+
+            for (auto pInstrumentationMethod : callbackVector)
+            {
+                hr = func(pInstrumentationMethod, parameters...);
             }
 
             return hr;
@@ -419,6 +448,10 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(DisableProfiling)();
 
         STDMETHOD(ApplyMetadata)(_In_ IModuleInfo* pMethodInfo);
+
+    // IProfilerManager3 Methods
+    public:
+        STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer);
 
     // IProfilerManagerLogging Methods
     public:
