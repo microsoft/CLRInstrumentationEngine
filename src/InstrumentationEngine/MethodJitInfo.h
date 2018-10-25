@@ -47,12 +47,12 @@ namespace MicrosoftInstrumentationEngine
 
     public:
         // IMethodJitInfo
-        STDMETHOD(GetFunctionID)(_Out_ FunctionID* pFunctionId);
-        STDMETHOD(GetIsRejit)(_Out_ BOOL* pIsRejit);
-        STDMETHOD(GetJitHR)(_Out_ HRESULT* pHr);
-        STDMETHOD(GetILTransformationStatus)(_Out_ BOOL* pIsTransformed);
-        STDMETHOD(GetRejitId)(_Out_ ReJITID* pRejitId);
-        STDMETHOD(GetModuleInfo)(_Out_ IModuleInfo** ppModuleInfo);
+        STDMETHOD(GetFunctionID)(_Out_ FunctionID* pFunctionId) override;
+        STDMETHOD(GetIsRejit)(_Out_ BOOL* pIsRejit) override;
+        STDMETHOD(GetJitHR)(_Out_ HRESULT* pHr) override;
+        STDMETHOD(GetILTransformationStatus)(_Out_ BOOL* pIsTransformed) override;
+        STDMETHOD(GetRejitId)(_Out_ ReJITID* pRejitId) override;
+        STDMETHOD(GetModuleInfo)(_Out_ IModuleInfo** ppModuleInfo) override;
 
     private:
         HRESULT EnsureInitialized();
