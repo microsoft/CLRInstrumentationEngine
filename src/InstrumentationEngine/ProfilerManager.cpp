@@ -2919,7 +2919,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationStarte
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
-    CComPtr<CMethodInfo> pInformationalMethodInfo;
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, TRUE));
 
