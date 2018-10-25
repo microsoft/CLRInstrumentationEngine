@@ -144,8 +144,8 @@ library MicrosoftInstrumentationEngine
     interface IProfilerManager3 : IUnknown
     {
         // Sets the value of pSupported to true if and only if this version of IProfilerManager 
-        // will supports the interface with the given iid. Useful for instrumentation methods require
-        // particular callbacks or versions of an interface.
+        // will supports the interface with the given iid. Used to ensure that the linked version
+        // of the api is at least as new as the one that the client compiled against.
         HRESULT GetApiVersion([out] DWORD* pApiVer);
     };
 
