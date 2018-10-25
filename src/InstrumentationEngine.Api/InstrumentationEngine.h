@@ -8099,8 +8099,8 @@ EXTERN_C const IID IID_IMethodJitInfo;
         virtual HRESULT STDMETHODCALLTYPE GetJitHR( 
             /* [out] */ HRESULT *pHResult) = 0;
         
-        virtual HRESULT STDMETHODCALLTYPE GetIsInstrumented( 
-            /* [out] */ BOOL *pIsInstrumented) = 0;
+        virtual HRESULT STDMETHODCALLTYPE GetILTransformationStatus( 
+            /* [out] */ BOOL *pIsTranformed) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfo( 
             /* [out] */ IModuleInfo **ppModuleInfo) = 0;
@@ -8142,9 +8142,9 @@ EXTERN_C const IID IID_IMethodJitInfo;
             IMethodJitInfo * This,
             /* [out] */ HRESULT *pHResult);
         
-        HRESULT ( STDMETHODCALLTYPE *GetIsInstrumented )( 
+        HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
             IMethodJitInfo * This,
-            /* [out] */ BOOL *pIsInstrumented);
+            /* [out] */ BOOL *pIsTranformed);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
             IMethodJitInfo * This,
@@ -8185,8 +8185,8 @@ EXTERN_C const IID IID_IMethodJitInfo;
 #define IMethodJitInfo_GetJitHR(This,pHResult)	\
     ( (This)->lpVtbl -> GetJitHR(This,pHResult) ) 
 
-#define IMethodJitInfo_GetIsInstrumented(This,pIsInstrumented)	\
-    ( (This)->lpVtbl -> GetIsInstrumented(This,pIsInstrumented) ) 
+#define IMethodJitInfo_GetILTransformationStatus(This,pIsTranformed)	\
+    ( (This)->lpVtbl -> GetILTransformationStatus(This,pIsTranformed) ) 
 
 #define IMethodJitInfo_GetModuleInfo(This,ppModuleInfo)	\
     ( (This)->lpVtbl -> GetModuleInfo(This,ppModuleInfo) ) 

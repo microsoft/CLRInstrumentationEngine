@@ -1025,7 +1025,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetIsFlatLayout(_Out_ BOOL*
     return S_OK;
 }
 
-void MicrosoftInstrumentationEngine::CModuleInfo::SetIsMethodInstrumented(_In_ mdMethodDef methodDef, bool isInstrumented)
+void MicrosoftInstrumentationEngine::CModuleInfo::SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented)
 {
     if (isInstrumented)
     {

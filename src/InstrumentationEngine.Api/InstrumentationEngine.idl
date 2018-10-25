@@ -1415,23 +1415,27 @@ library MicrosoftInstrumentationEngine
     ]
     interface IMethodJitInfo : IUnknown
     {
-        // Sets pFunctionId to the id of the function that was just rejit.
+        // Gets the function id of the compiled method. Note, one method may be compiled multiple
+        // times due to rejits or due to language features such as generics. Each compilation of
+        // the method will have a different function id.
         HRESULT GetFunctionID([out] FunctionID* pFunctionId);
 
-        // Sets pIsRejit to true if the JIT occurred as a result of a rejit.
+        // Gets the rejit status of the method. Sets *pIsRejit to true if the
+        // method was rejitted; false otherwise.
         HRESULT GetIsRejit([out] BOOL* pIsRejit);
 
-        // Gets the rejit id of this method if it is a rejit. Returns S_FALS, and sets
-        // pRejitId to 0 otherwise;
+        // Gets the rejit id of this method if it is a rejit. Returns S_FALSE, and sets
+        // *pRejitId to 0 otherwise;
         HRESULT GetRejitId([out] ReJITID* pRejitId);
 
-        // Sets pHResult to the hresult of the rejit attempt.
+        // Gets the HRESULT of the JIT process. Used to check whether errors occurred during JIT.
         HRESULT GetJitHR([out] HRESULT* pHResult);
 
-        // Sets pIsInstrumented to true if any instrumentation method performed IL instrumentation on
-        // the method that was jitted.
-        HRESULT GetIsInstrumented([out] BOOL* pIsInstrumented);
+        // Gets the status of whether or not IL transformations were applied to the method before
+        // JIT occurred. Sets *pIsTransformed to true if transformations were made; false otherwise.
+        HRESULT GetILTransformationStatus([out] BOOL* pIsTranformed);
 
+        // Gets the module info for the compiled method.
         HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
     };
 

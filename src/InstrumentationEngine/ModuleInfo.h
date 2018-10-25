@@ -7,7 +7,6 @@
 #include "MethodInfo.h"
 #include "CachedILMethodBody.h"
 #include "InlineSiteMap.h"
-#include <unordered_set>
 
 using namespace ATL;
 
@@ -128,7 +127,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT GetInlineSiteMap(_Out_ CInlineSiteMap** ppInilineSiteMap);
 
-        void SetIsMethodInstrumented(_In_ mdMethodDef methodDef, bool isInstrumented);
+        void SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented);
         bool GetIsMethodInstrumented(_In_ mdMethodDef methodDef);
 
         // IModuleInfo methods

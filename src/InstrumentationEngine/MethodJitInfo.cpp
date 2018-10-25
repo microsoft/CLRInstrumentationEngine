@@ -28,14 +28,12 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
-    HRESULT CMethodJitInfo::GetIsInstrumented(_Out_ BOOL* pIsInstrumented)
+    HRESULT CMethodJitInfo::GetILTransformationStatus(_Out_ BOOL* pIsTransformed)
     {
-        IfNullRet(pIsInstrumented);
-
+        IfNullRet(pIsTransformed);
         HRESULT hr;
         IfFailRet(EnsureInitialized());
-        *pIsInstrumented = m_isInstrumented;
-
+        *pIsTransformed = m_isTransformed;
         return S_OK;
     }
 
@@ -63,9 +61,12 @@ namespace MicrosoftInstrumentationEngine
             return m_initializeResult;
         }
 
-        auto initialize = [this]() -> HRESULT
+        if (m_pModuleInfo == nullptr)
         {
-            if (m_pModuleInfo == nullptr)
+            // A lambda is used here so that we can use IfFailRet inside this function
+            // to cache the initialization result without having to add another function to 
+            // the class interface.
+            auto initialize = [this]() -> HRESULT
             {
                 HRESULT hr;
                 CComPtr<IAppDomainCollection> pAppDomainCollection;
@@ -82,13 +83,15 @@ namespace MicrosoftInstrumentationEngine
 
                 CModuleInfo* pModuleInfo = static_cast<CModuleInfo*>(m_pModuleInfo.p);
 
-                m_isInstrumented = pModuleInfo->GetIsMethodInstrumented(m_methodToken);
-            }
+                m_isTransformed = pModuleInfo->GetIsMethodInstrumented(m_methodToken);
 
-            return S_OK;
-        };
+                return S_OK;
+            };
 
-        m_initializeResult = initialize();
+            // cache the result of initializatin so that we don't try again on failure.
+            m_initializeResult = initialize();
+        }
+
         return m_initializeResult;
     }
 }

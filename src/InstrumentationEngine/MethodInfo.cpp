@@ -1324,6 +1324,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
         return E_FAIL;
     }
 
+    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
     m_pFinalRenderedMethod.Allocate(cbMethodSize);
     memcpy(m_pFinalRenderedMethod, pMethodHeader, cbMethodSize);
 
@@ -1334,9 +1335,9 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ClearInstrumentation()
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ClearILTransformationStatus()
 {
-    m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, false);
+    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, false);
     return S_OK;
 }
 
@@ -1379,7 +1380,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
 
         IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
 
-        m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, true);
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
 
         // This will fail if no entries in CorILMap, plus there's no point in setting this in such a case anyway.
         if (m_dwCorILMapmLen > 0)
@@ -1405,7 +1406,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
 
         IfFailRet(m_pFunctionControl->SetILFunctionBody(cbMethodBody, pMethodBody));
 
-        m_pModuleInfo->SetIsMethodInstrumented(m_tkFunction, true);
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
 
         IfFailRet(m_pFunctionControl->SetCodegenFlags(m_dwRejitCodeGenFlags));
 

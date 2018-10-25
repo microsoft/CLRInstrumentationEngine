@@ -302,7 +302,7 @@ namespace MicrosoftInstrumentationEngine
         template<typename TFunc, typename... TParameters>
         HRESULT ForEachInstrumentationMethod(TFunc func, TParameters... parameters)
         {
-            HRESULT hr;
+            HRESULT hr = S_OK;
             vector<CComPtr<IInstrumentationMethod>> callbackVector;
 
             {
@@ -320,10 +320,10 @@ namespace MicrosoftInstrumentationEngine
 
             for (auto pInstrumentationMethod : callbackVector)
             {
-                IfFailRet(func(pInstrumentationMethod, parameters...));
+                hr = func(pInstrumentationMethod, parameters...);
             }
 
-            return S_OK;
+            return hr;
         }
 
         template<typename TInterfaceType, typename TReturnType, typename... TParameters>

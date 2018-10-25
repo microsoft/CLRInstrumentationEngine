@@ -17,7 +17,7 @@ namespace MicrosoftInstrumentationEngine
         ReJITID m_rejitId;
         CComPtr<CProfilerManager> m_pProfilerManager;
         
-        BOOL m_isInstrumented = false;
+        BOOL m_isTransformed = false;
         CComPtr<IModuleInfo> m_pModuleInfo;
         mdMethodDef m_methodToken = mdTokenNil;
         HRESULT m_initializeResult = S_OK;
@@ -50,7 +50,7 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(GetFunctionID)(_Out_ FunctionID* pFunctionId);
         STDMETHOD(GetIsRejit)(_Out_ BOOL* pIsRejit);
         STDMETHOD(GetJitHR)(_Out_ HRESULT* pHr);
-        STDMETHOD(GetIsInstrumented)(_Out_ BOOL* pIsInstrumented);
+        STDMETHOD(GetILTransformationStatus)(_Out_ BOOL* pIsTransformed);
         STDMETHOD(GetRejitId)(_Out_ ReJITID* pRejitId);
         STDMETHOD(GetModuleInfo)(_Out_ IModuleInfo** ppModuleInfo);
 
