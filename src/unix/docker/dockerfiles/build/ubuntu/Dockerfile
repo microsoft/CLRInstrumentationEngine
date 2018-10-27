@@ -1,24 +1,31 @@
 # This image is based on the public Ubuntu 16.04 LTS image
 FROM ubuntu:16.04
 
-# Get Mono
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-RUN echo "deb http://download.mono-project.com/repo/debian wheezy main" | tee /etc/apt/sources.list.d/mono-xamarin.list
-RUN apt-get update
-RUN apt-get install -y mono-devel
-RUN apt-get install -y mono-complete
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl
 
-# Dependencies
-RUN apt-get install -y cmake clang-3.5 libunwind8 libunwind8-dev uuid-dev
+# Install .NET Core 2.1 SDK
+# REFERENCE: https://www.microsoft.com/net/download/linux-package-manager/ubuntu16-04/sdk-2.1.403
+RUN curl -SL --output packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb
 
-# Add git
-RUN apt-get install -y git
+RUN apt-get install -y --no-install-recommends apt-transport-https \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends dotnet-sdk-2.1
 
-# Add unzip
-RUN apt-get install -y unzip
+# Trigger first run experience by running arbitrary cmd to populate local package cache
+RUN dotnet help
 
-# Add libxml2
-RUN apt-get install -y libxml2-dev
-
-# Add curl
-RUN apt-get install libcurl3
+# CLR Instrumentation Engine Build Prerequisites
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        clang-3.5 \
+        cmake \
+        git \
+        libunwind8-dev \
+        libxml2-dev \
+        make \
+        uuid-dev
