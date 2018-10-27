@@ -3499,6 +3499,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
         {
             CLogging::LogMessage(_T("Asking Instrumentation Method to instrument"));
 
+			if (CLogging::AllowLogEntry(LoggingFlags_InstrumentationResults))
+			{
+				CComBSTR bstrMethodFullName;
+				((CMethodInfo*)pMethodInfo)->GetFullName(&bstrMethodFullName);
+
+				CLogging::LogDumpMessage(_T("CProfilerManager::CallInstrumentOnInstrumentationMethods for ") WCHAR_SPEC, bstrMethodFullName.m_str);
+			}
+
             hr = pCurrInstrumentationMethod->InstrumentMethod(pMethodInfo, isRejit);
 
             CLogging::LogMessage(_T("Instrumentation Method finished instrumenting. Result hr is:. hr=%04x"), hr);

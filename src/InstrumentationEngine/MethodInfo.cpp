@@ -1461,6 +1461,21 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
 
     CComPtr<IInstruction> pInstruction;
 
+	CLogging::LogDumpMessage(_T("    <OriginalInstructions><![CDATA[\r\n"));
+
+	pInstructionGraph->GetOriginalFirstInstruction(&pInstruction);
+
+	while (pInstruction != NULL)
+	{
+		((CInstruction*)pInstruction.p)->LogInstruction();
+
+		CComPtr<IInstruction> pTemp = pInstruction;
+		pInstruction.Release();
+		pTemp->GetOriginalNextInstruction(&pInstruction);
+	}
+
+	CLogging::LogDumpMessage(_T("    ]]></OriginalInstructions>\r\n"));
+
     CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
 
     pInstructionGraph->GetFirstInstruction(&pInstruction);
@@ -1712,7 +1727,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     CLogging::LogDumpMessage(_T("    <IsPropSetter>%1d</IsPropSetter>\r\n"), isPropSetter);
     CLogging::LogDumpMessage(_T("    <IsFinalizer>%1d</IsFinalizer>\r\n"), isFinalizer);
     CLogging::LogDumpMessage(_T("    <IsConstructor>%1d</IsConstructor>\r\n"), isConstructor);
-    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor);
+    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor & isStatic);
     CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>\r\n"), declaringTypeToken);
 
     tstring strRetValType = GetCorElementTypeString(pReturnType);

@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 param(
     [switch] $IncludeTests,
@@ -134,9 +134,9 @@ if (!$SkipBuild)
         Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
     }
 
-    if (Test-Path "$repoPath\obj\$configuration")
+    if (Test-Path "$repoPath\obj\")
     {
-        Remove-Item -Force -Recurse "$repoPath\obj\$configuration"
+        Remove-Item -Force -Recurse "$repoPath\obj\"
     }
 
     # Build InstrumentationEngine.sln
