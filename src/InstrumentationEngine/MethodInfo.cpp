@@ -1712,7 +1712,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     this->GetMaxStack(&maxStack);
 	
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
-	CLogging::LogDumpMessage(_T("<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
+	CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
     CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
     CLogging::LogDumpMessage(_T("    <Name>") WCHAR_SPEC _T("</Name>\r\n"), bstrMethodName.m_str);
     CLogging::LogDumpMessage(_T("    <FullName>") WCHAR_SPEC _T("</FullName>\r\n"), bstrMethodFullName.m_str);

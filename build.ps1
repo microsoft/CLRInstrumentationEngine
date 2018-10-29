@@ -96,7 +96,7 @@ $VsRequirements = @(
 
 Write-Verbose -Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
-$filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
+$filterArgs = "-latest -prerelease -version `"[15.0,16.0)`" -requires $($VsRequirements -join ' ') -property installationPath"
 $installationPath = Invoke-ExpressionHelper -Executable $vswhere -Arguments $filterArgs -Activity 'Determine MSBuild location'
 if (!$installationPath)
 {
