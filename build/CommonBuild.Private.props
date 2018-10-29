@@ -39,6 +39,9 @@
   <PropertyGroup>
     <InstrumentationEngineApiInc>$(EnlistmentRoot)\src\InstrumentationEngine.Api</InstrumentationEngineApiInc>
   </PropertyGroup>
+  <PropertyGroup>
+    <CoreClrPalVersion>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\src\unix\dependencies\CoreCLRPAL.Version.txt'))</CoreClrPalVersion>
+  </PropertyGroup>
 
   <PropertyGroup Label="Configuration">
     <SpectreMitigation>Spectre</SpectreMitigation>

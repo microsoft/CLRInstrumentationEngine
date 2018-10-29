@@ -1,0 +1,20 @@
+﻿<Project>
+  <PropertyGroup>
+    <SubComponent>$(TargetFramework)</SubComponent>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+  </PropertyGroup>
+  <!-- This must be a relative or absolute path, not computed, so that dotnet restore on Linux finds this correctly. -->
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.CoreCLRPAL" Version="$(CoreClrPalVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+</Project>
