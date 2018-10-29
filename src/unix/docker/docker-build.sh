@@ -79,19 +79,25 @@ invoke_build()
     if [ -L "$LocalSrcPath" ]; then
        LocalSrcPath=$(readlink $LocalSrcPath)
     fi
-    local docker_run_args="--name clrie-build -v $LocalSrcPath:/root/ClrInstrumentationEngine/src"
+    local docker_run_args="--name clrie-build -v $LocalSrcPath:/root/ClrInstrumentationEngine/src:ro"
 
     local LocalToolsPath=$EnlistmentRoot/tools
     if [ -L "$LocalToolsPath" ]; then
        LocalToolsPath=$(readlink $LocalToolsPath)
     fi
-    docker_run_args="$docker_run_args -v $LocalToolsPath:/root/ClrInstrumentationEngine/tools"
+    docker_run_args="$docker_run_args -v $LocalToolsPath:/root/ClrInstrumentationEngine/tools:ro"
 
     local LocalIncPath=$EnlistmentRoot/inc
     if [ -L "$LocalIncPath" ]; then
        LocalIncPath=$(readlink $LocalIncPath)
     fi
-    docker_run_args="$docker_run_args -v $LocalIncPath:/root/ClrInstrumentationEngine/inc"
+    docker_run_args="$docker_run_args -v $LocalIncPath:/root/ClrInstrumentationEngine/inc:ro"
+
+    local LocalBuildPath=$EnlistmentRoot/build
+    if [ -L "$LocalBuildPath" ]; then
+       LocalBuildPath=$(readlink $LocalBuildPath)
+    fi
+    docker_run_args="$docker_run_args -v $LocalBuildPath:/root/ClrInstrumentationEngine/build:ro"
 
     build_cmd="bash /root/ClrInstrumentationEngine/src/build.sh $__BuildArch $__BuildType clean $__UnprocessedBuildArgs"
     docker_run_args="$docker_run_args --net=host $__DockerImage $build_cmd"
