@@ -1461,20 +1461,20 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
 
     CComPtr<IInstruction> pInstruction;
 
-    CLogging::LogDumpMessage(_T("    <OriginalInstructions><![CDATA[\r\n"));
+    CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA[\r\n"));
 
     pInstructionGraph->GetOriginalFirstInstruction(&pInstruction);
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction();
+        ((CInstruction*)pInstruction.p)->LogInstruction(true);
 
         CComPtr<IInstruction> pTemp = pInstruction;
         pInstruction.Release();
         pTemp->GetOriginalNextInstruction(&pInstruction);
     }
 
-    CLogging::LogDumpMessage(_T("    ]]></OriginalInstructions>\r\n"));
+    CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>\r\n"));
 
     CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
 
@@ -1482,7 +1482,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction();
+        ((CInstruction*)pInstruction.p)->LogInstruction(false);
 
         CComPtr<IInstruction> pTemp = pInstruction;
         pInstruction.Release();
