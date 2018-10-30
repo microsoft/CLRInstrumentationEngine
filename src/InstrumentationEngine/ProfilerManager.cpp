@@ -3509,6 +3509,23 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     mdToken functionToken;
                     IfFailRet(m_pRealProfilerInfo->GetFunctionInfo(functionId, &classId, &moduleId, &functionToken));
 
+                    // Get ModuleInfo
+
+                    ULONG cchModulePath = 0;
+                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, 0, &cchModulePath, nullptr, nullptr));
+
+                    CAutoVectorPtr<WCHAR> wszModulePath(new WCHAR[cchModulePath]);
+                    if (wszModulePath == nullptr)
+                    {
+                        return E_OUTOFMEMORY;
+                    }
+
+                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, wszModulePath, nullptr));
+
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: ") WCHAR_SPEC _T("\r\n"), wszModulePath);
+
+                    // Get MethodInfo
+
                     CComPtr<IMetaDataImport2> pMetadataImport;
                     IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead, IID_IMetaDataImport, (IUnknown**)&pMetadataImport));
 
@@ -3518,9 +3535,8 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     std::vector<WCHAR> nameBuilder(cbMethodName);
                     ULONG rva;
                     IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, nameBuilder.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
-                    CComBSTR bstrMethodName = nameBuilder.data();
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for ") WCHAR_SPEC _T(" with rva 0x%08x\r\n"), bstrMethodName.m_str, rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: ") WCHAR_SPEC _T(", rva 0x%08x\r\n"), nameBuilder.data(), rva);
                 }
                 else
                 {
