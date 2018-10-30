@@ -12,6 +12,8 @@ Please format the changes as follows:
   + Added API version levels to IProfilerManager via new IProfilerManager3 api
   + Added IMethodJitInfo api
   + Added IInstrumentationMethodJitEvents2 api
++ Update
+  + Added more dump logs around OriginalIL, Pid, and Module/Method names during Instrumentation
 
 # 1.0.16
 
