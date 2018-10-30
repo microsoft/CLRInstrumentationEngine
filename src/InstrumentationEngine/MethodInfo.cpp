@@ -1461,13 +1461,28 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
 
     CComPtr<IInstruction> pInstruction;
 
+    CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA[\r\n"));
+
+    pInstructionGraph->GetOriginalFirstInstruction(&pInstruction);
+
+    while (pInstruction != NULL)
+    {
+        ((CInstruction*)pInstruction.p)->LogInstruction(true);
+
+        CComPtr<IInstruction> pTemp = pInstruction;
+        pInstruction.Release();
+        pTemp->GetOriginalNextInstruction(&pInstruction);
+    }
+
+    CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>\r\n"));
+
     CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
 
     pInstructionGraph->GetFirstInstruction(&pInstruction);
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction();
+        ((CInstruction*)pInstruction.p)->LogInstruction(false);
 
         CComPtr<IInstruction> pTemp = pInstruction;
         pInstruction.Release();
@@ -1695,8 +1710,9 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
 
     DWORD maxStack;
     this->GetMaxStack(&maxStack);
-
+	
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
+	CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
     CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
     CLogging::LogDumpMessage(_T("    <Name>") WCHAR_SPEC _T("</Name>\r\n"), bstrMethodName.m_str);
     CLogging::LogDumpMessage(_T("    <FullName>") WCHAR_SPEC _T("</FullName>\r\n"), bstrMethodFullName.m_str);
@@ -1711,7 +1727,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     CLogging::LogDumpMessage(_T("    <IsPropSetter>%1d</IsPropSetter>\r\n"), isPropSetter);
     CLogging::LogDumpMessage(_T("    <IsFinalizer>%1d</IsFinalizer>\r\n"), isFinalizer);
     CLogging::LogDumpMessage(_T("    <IsConstructor>%1d</IsConstructor>\r\n"), isConstructor);
-    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor);
+    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor & isStatic);
     CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>\r\n"), declaringTypeToken);
 
     tstring strRetValType = GetCorElementTypeString(pReturnType);

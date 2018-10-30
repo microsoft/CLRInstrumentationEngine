@@ -57,7 +57,8 @@ HRESULT CProfilerManagerHost::LogDumpMessage(_In_ const WCHAR* wszMessage)
     //Convert results to Utf-8.
     std::vector<char> buffer(dwLen + 1);
     int written = WideCharToMultiByte(CP_UTF8, 0, wszMessage, dwLen, buffer.data(), (int)buffer.size(), nullptr, nullptr);
-    if (written > 0)
+    if (written > 0 &&
+        wcsncmp(wszMessage, L"[TestIgnore]", 12) != 0)
     {
         WriteFile(m_hOutputFile, buffer.data(), written, &cActual, nullptr);
     }

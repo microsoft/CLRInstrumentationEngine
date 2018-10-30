@@ -142,7 +142,8 @@ namespace RawProfilerHook.Tests
                                     {
                                         errors += traceLine + "\r\n";
                                     }
-                                    if (traceLine.Length != 0)
+                                    if (traceLine.Length != 0 &&
+                                        !traceLine.StartsWith("[TestIgnore]"))
                                     {
                                         Trace.WriteLine(traceLine);
                                     }

@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 param(
     [switch] $IncludeTests,
@@ -96,7 +96,7 @@ $VsRequirements = @(
 
 Write-Verbose -Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
-$filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
+$filterArgs = "-latest -prerelease -version `"[15.0,16.0)`" -requires $($VsRequirements -join ' ') -property installationPath"
 $installationPath = Invoke-ExpressionHelper -Executable $vswhere -Arguments $filterArgs -Activity 'Determine MSBuild location'
 if (!$installationPath)
 {
@@ -134,9 +134,9 @@ if (!$SkipBuild)
         Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
     }
 
-    if (Test-Path "$repoPath\obj\$configuration")
+    if (Test-Path "$repoPath\obj\")
     {
-        Remove-Item -Force -Recurse "$repoPath\obj\$configuration"
+        Remove-Item -Force -Recurse "$repoPath\obj\"
     }
 
     # Build InstrumentationEngine.sln

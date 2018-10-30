@@ -3327,8 +3327,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
     return S_OK;
 }
 
-
-
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
@@ -3498,6 +3496,54 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
         for (CComPtr<IInstrumentationMethod> pCurrInstrumentationMethod : toInstrument)
         {
             CLogging::LogMessage(_T("Asking Instrumentation Method to instrument"));
+
+            if (CLogging::AllowLogEntry(LoggingFlags_InstrumentationResults))
+            {
+                if (!isRejit)
+                {
+                    FunctionID functionId = 0;
+                    ((CMethodInfo*)pMethodInfo)->GetFunctionId(&functionId);
+
+                    ClassID classId;
+                    ModuleID moduleId;
+                    mdToken functionToken;
+                    IfFailRet(m_pRealProfilerInfo->GetFunctionInfo(functionId, &classId, &moduleId, &functionToken));
+
+                    // Get ModuleInfo
+
+                    ULONG cchModulePath = 0;
+                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, 0, &cchModulePath, nullptr, nullptr));
+
+                    std::vector<WCHAR> modulePath(cchModulePath);
+                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, modulePath.data(), nullptr));
+
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: ") WCHAR_SPEC _T("\r\n"), modulePath.data());
+
+                    // Get MethodInfo
+
+                    CComPtr<IMetaDataImport2> pMetadataImport;
+                    IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead, IID_IMetaDataImport, (IUnknown**)&pMetadataImport));
+
+                    DWORD cbMethodName;
+                    IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, nullptr, 0, &cbMethodName, nullptr, nullptr, nullptr, nullptr, nullptr));
+
+                    std::vector<WCHAR> methodName(cbMethodName);
+                    ULONG rva;
+                    IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, methodName.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
+
+                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: ") WCHAR_SPEC _T(", rva 0x%08x\r\n"), methodName.data(), rva);
+                }
+                else
+                {
+                    CComBSTR bstrMethodFullName;
+                    ((CMethodInfo*)pMethodInfo)->GetFullName(&bstrMethodFullName);
+
+                    ULONG rva;
+                    ((CMethodInfo*)pMethodInfo)->GetCodeRva(&rva);
+
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for ") WCHAR_SPEC _T(" with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
+                }
+            }
 
             hr = pCurrInstrumentationMethod->InstrumentMethod(pMethodInfo, isRejit);
 
