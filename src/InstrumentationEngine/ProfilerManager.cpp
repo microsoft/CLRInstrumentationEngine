@@ -3514,15 +3514,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     ULONG cchModulePath = 0;
                     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, 0, &cchModulePath, nullptr, nullptr));
 
-                    CAutoVectorPtr<WCHAR> wszModulePath(new WCHAR[cchModulePath]);
-                    if (wszModulePath == nullptr)
-                    {
-                        return E_OUTOFMEMORY;
-                    }
+                    std::vector<WCHAR> modulePath(cchModulePath);
+                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, modulePath.data(), nullptr));
 
-                    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, wszModulePath, nullptr));
-
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: ") WCHAR_SPEC _T("\r\n"), wszModulePath);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: ") WCHAR_SPEC _T("\r\n"), modulePath.data());
 
                     // Get MethodInfo
 
@@ -3532,11 +3527,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     DWORD cbMethodName;
                     IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, nullptr, 0, &cbMethodName, nullptr, nullptr, nullptr, nullptr, nullptr));
 
-                    std::vector<WCHAR> nameBuilder(cbMethodName);
+                    std::vector<WCHAR> methodName(cbMethodName);
                     ULONG rva;
-                    IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, nameBuilder.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
+                    IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, methodName.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: ") WCHAR_SPEC _T(", rva 0x%08x\r\n"), nameBuilder.data(), rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: ") WCHAR_SPEC _T(", rva 0x%08x\r\n"), methodName.data(), rva);
                 }
                 else
                 {
