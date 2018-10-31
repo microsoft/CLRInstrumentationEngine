@@ -141,7 +141,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT EmitIL(_In_ BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
 
-        HRESULT LogInstruction();
+        HRESULT LogInstruction(_In_ BOOL ignoreTest);
 
     private:
         HRESULT GetSignatureInfoFromCallToken(

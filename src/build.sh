@@ -10,8 +10,8 @@ print_install_instructions()
     if [ "$OSName" == "Linux" ]; then
         echo ""case
         echo "To prepare a machine for building ClrInstrumentationEngine. Install the following:"
-        echo "  # Install mono"
-        echo "  Follow the instructions here: https://github.com/dotnet/coreclr/blob/master/Documentation/building/linux-instructions.md#install-mono"
+        echo "  # Install dotnet"
+        echo "  Follow the instructions here: https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x"
         echo ""
         echo "  # Install required packages"
         echo "  sudo apt-get install cmake clang-3.5 libunwind8 libunwind8-dev uuid-dev"
@@ -84,8 +84,8 @@ check_prereqs()
     # Check for clang
     hash clang-$__ClangMajorVersion.$__ClangMinorVersion 2>/dev/null ||  hash clang$__ClangMajorVersion$__ClangMinorVersion 2>/dev/null ||  hash clang 2>/dev/null || { echo >&2 "Please install clang before running this script"; print_install_instructions; exit 1; }
 
-    # Check for mono
-    hash mono 2>/dev/null || { echo >&2 "Please install mono before running this script"; print_install_instructions; exit 1; }
+    # Check for dotnet
+    hash dotnet 2>/dev/null || { echo >&2 "Please install dotnet before running this script"; print_install_instructions; exit 1; }
 
     # make sure the linker we are using is at least gnu binutils ld >= 2.24 when on linux
     if [ "$OSName" == "Linux" ]; then
@@ -255,7 +255,7 @@ restore_build_dependencies()
     # Check if $PALRoot/lib is a directory instead of a link
     if [[ -d $PALRoot/lib ]] && [[ ! -h $PALRoot/lib ]]; then
         # If UseLocalPAL.sh has been run then we don't need to restore dependencies
-        echo "Using local CoreCLR PAL instead of package version. Skipping nuget restore."
+        echo "Using local CoreCLR PAL instead of package version. Skipping dotnet restore."
         return
     fi
 
@@ -287,7 +287,7 @@ restore_build_dependencies()
     esac
     _ToolNugetRuntimeId=$_ToolNugetRuntimeId-$__BuildArch
 
-    CoreClrPALLinkTarget=$__PackagesDir/$__CoreCLRPALPackageId.$Version_CoreCLR_PAL/runtimes/$_ToolNugetRuntimeId
+    CoreClrPALLinkTarget=$__PackagesDir/$__CoreCLRPALPackageId/$Version_CoreCLR_PAL/runtimes/$_ToolNugetRuntimeId
 
     if [ -h $PALRoot/lib ]; then
         CurrentCoreClrPALLinkTarget="$(readlink "$PALRoot/lib")"
@@ -303,11 +303,13 @@ restore_build_dependencies()
         exit 1
     fi
 
-    # Pull down the CoreCLRPAL
-    mono "$EnlistmentRoot/tools/NuGet/NuGet.exe" install $__CoreCLRPALPackageId -Version $Version_CoreCLR_PAL -OutputDirectory $__PackagesDir -ConfigFile $__NuGetConfigPath
+    # Restore NuGet packages
+    dotnet restore "$EnlistmentRoot/src/NativeDependencies/NativeDependencies.csproj" \
+        --configfile "$__NuGetConfigPath" \
+        --packages "$__PackagesDir"
 
     if [ $? -ne 0 ]; then
-        echo "Error: Unable to restore package with nuget.exe."
+        echo "Error: Unable to restore package with dotnet."
         exit 1
     fi
 
@@ -322,7 +324,7 @@ restore_build_dependencies()
         exit 1
     fi
 
-    cp -r $__PackagesDir/$__CoreCLRPALPackageId.$Version_CoreCLR_PAL/inc $PALRoot/inc
+    cp -r $__PackagesDir/$__CoreCLRPALPackageId/$Version_CoreCLR_PAL/inc $PALRoot/inc
     if [ $? -ne 0 ]; then
         echo "ERROR: Unable to copy PALRoot/inc contents."
         exit 1
@@ -390,9 +392,9 @@ __CleanBuild=false
 __VerboseBuild=false
 __ClangMajorVersion=3
 __ClangMinorVersion=5
-__NuGetPath="$__PackagesDir/nuget.exe"
 __NuGetConfigPath="$EnlistmentRoot/src/unix/dependencies/nuget.config"
-__CoreCLRPALPackageId="Microsoft.VisualStudio.Debugger.CoreCLRPAL"
+# Package name is used in file system and "dotnet restore" will restore packages using lowercase characters in the filesystem.
+__CoreCLRPALPackageId="microsoft.visualstudio.debugger.coreclrpal"
 
 for i in "$@"
     do

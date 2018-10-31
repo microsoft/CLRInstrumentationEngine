@@ -7,6 +7,7 @@
 // These have to go after ModuleInfo.h because of cyclical dependencies...
 #include "ProfilerManager.h"
 #include "TypeCreator.h"
+
 #ifdef _WINDOWS_
 #include "AssemblyInjector.h"
 #endif
@@ -1022,4 +1023,21 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetIsFlatLayout(_Out_ BOOL*
     *pbValue = m_bIsFlatLayout;
 
     return S_OK;
+}
+
+void MicrosoftInstrumentationEngine::CModuleInfo::SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented)
+{
+    if (isInstrumented)
+    {
+        m_instrumentedMethods.emplace(methodDef);
+    }
+    else
+    {
+        m_instrumentedMethods.erase(methodDef);
+    }
+}
+
+bool MicrosoftInstrumentationEngine::CModuleInfo::GetIsMethodInstrumented(_In_ mdMethodDef methodDef)
+{
+    return (m_instrumentedMethods.find(methodDef) != m_instrumentedMethods.end());
 }

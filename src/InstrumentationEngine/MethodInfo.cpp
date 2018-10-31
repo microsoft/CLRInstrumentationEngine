@@ -1324,6 +1324,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
         return E_FAIL;
     }
 
+    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
     m_pFinalRenderedMethod.Allocate(cbMethodSize);
     memcpy(m_pFinalRenderedMethod, pMethodHeader, cbMethodSize);
 
@@ -1332,6 +1333,12 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     CLogging::LogMessage(_T("End CMethodInfo::SetFinalRenderedFunctionBody"));
 
     return hr;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ClearILTransformationStatus()
+{
+    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, false);
+    return S_OK;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(bool isRejit)
@@ -1345,7 +1352,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         CLogging::LogError(_T("CMethodInfo::ApplyFinalInstrumentation should only be called if a method body has been set for this function"));
         return E_FAIL;
     }
-
+    
     if (!isRejit)
     {
         CLogging::LogMessage(_T("CMethodInfo::ApplyFinalInstrumentation - Non-rejit case"));
@@ -1373,6 +1380,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
 
         IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
 
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
+
         // This will fail if no entries in CorILMap, plus there's no point in setting this in such a case anyway.
         if (m_dwCorILMapmLen > 0)
         {
@@ -1396,6 +1405,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pMethodBody));
 
         IfFailRet(m_pFunctionControl->SetILFunctionBody(cbMethodBody, pMethodBody));
+
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
 
         IfFailRet(m_pFunctionControl->SetCodegenFlags(m_dwRejitCodeGenFlags));
 
@@ -1450,13 +1461,28 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
 
     CComPtr<IInstruction> pInstruction;
 
+    CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA[\r\n"));
+
+    pInstructionGraph->GetOriginalFirstInstruction(&pInstruction);
+
+    while (pInstruction != NULL)
+    {
+        ((CInstruction*)pInstruction.p)->LogInstruction(true);
+
+        CComPtr<IInstruction> pTemp = pInstruction;
+        pInstruction.Release();
+        pTemp->GetOriginalNextInstruction(&pInstruction);
+    }
+
+    CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>\r\n"));
+
     CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
 
     pInstructionGraph->GetFirstInstruction(&pInstruction);
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction();
+        ((CInstruction*)pInstruction.p)->LogInstruction(false);
 
         CComPtr<IInstruction> pTemp = pInstruction;
         pInstruction.Release();
@@ -1684,8 +1710,9 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
 
     DWORD maxStack;
     this->GetMaxStack(&maxStack);
-
+	
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
+	CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
     CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
     CLogging::LogDumpMessage(_T("    <Name>") WCHAR_SPEC _T("</Name>\r\n"), bstrMethodName.m_str);
     CLogging::LogDumpMessage(_T("    <FullName>") WCHAR_SPEC _T("</FullName>\r\n"), bstrMethodFullName.m_str);
@@ -1700,7 +1727,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     CLogging::LogDumpMessage(_T("    <IsPropSetter>%1d</IsPropSetter>\r\n"), isPropSetter);
     CLogging::LogDumpMessage(_T("    <IsFinalizer>%1d</IsFinalizer>\r\n"), isFinalizer);
     CLogging::LogDumpMessage(_T("    <IsConstructor>%1d</IsConstructor>\r\n"), isConstructor);
-    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor);
+    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor & isStatic);
     CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>\r\n"), declaringTypeToken);
 
     tstring strRetValType = GetCorElementTypeString(pReturnType);
