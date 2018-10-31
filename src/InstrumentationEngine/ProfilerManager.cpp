@@ -1749,7 +1749,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
                 CComBSTR name;
                 if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
                 {
-                    CLogging::LogMessage(_T("JITCompilation FullMethodName ") WCHAR_SPEC, name.m_str);
+                    CLogging::LogMessage(_T("JITCompilation FullMethodName %s"), name.m_str);
                 }
                 else
                 {
@@ -3258,7 +3258,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
     if (FAILED(hr) || hr == S_FALSE)
     {
         // If this module is resource only, don't continue to construct a module info.
-        CLogging::LogMessage(WCHAR_SPEC _T(" is a metadata only assembly and will not be tracked with a module info instance."), wszModulePath.m_p);
+        CLogging::LogMessage(_T("%s is a metadata only assembly and will not be tracked with a module info instance."), wszModulePath.m_p);
         return E_FAIL;
     }
 
@@ -3367,7 +3367,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ 
         ModuleID existingModuleId;
         IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
 
-        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:") WCHAR_SPEC _T(", MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
             functionId,
             moduleId,
             bstrMethodFullName.m_str,
@@ -3517,7 +3517,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     std::vector<WCHAR> modulePath(cchModulePath);
                     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, modulePath.data(), nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: ") WCHAR_SPEC _T("\r\n"), modulePath.data());
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: %s\r\n"), modulePath.data());
 
                     // Get MethodInfo
 
@@ -3531,7 +3531,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     ULONG rva;
                     IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, methodName.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: ") WCHAR_SPEC _T(", rva 0x%08x\r\n"), methodName.data(), rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: %s, rva 0x%08x\r\n"), methodName.data(), rva);
                 }
                 else
                 {
@@ -3541,7 +3541,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     ULONG rva;
                     ((CMethodInfo*)pMethodInfo)->GetCodeRva(&rva);
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for ") WCHAR_SPEC _T(" with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for %s with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
                 }
             }
 

@@ -149,7 +149,7 @@ void MicrosoftInstrumentationEngine::CLogging::EnableLoggingToFile(_In_ LoggingF
 #endif
         if (!s_outputFile)
         {
-            CLogging::LogError(_T("Unable to create or open log file at '") WCHAR_SPEC _T("'."), wszFilePath);
+            CLogging::LogError(_T("Unable to create or open log file at '%s'."), wszFilePath);
         }
     }
     else
