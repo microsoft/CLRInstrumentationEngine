@@ -4,7 +4,7 @@
 
 IL Rewriting instrumentation is a fundamental technique used by diagnostic tools for monitoring applications or extracting information out of a process. This allows a diagnostic tool the opportunity to modify or replace the IL (intermediate language) form of a method before it is jit compiled and executed.
 
-Within the CLR, IL Rewriting is enabled using the [ICorProriler](https://msdn.microsoft.com/en-us/library/ms233177.aspx) apis. Examples of thing clients do with these apis are:
+Within the CLR, IL Rewriting is enabled using the [ICorProfiler](https://msdn.microsoft.com/en-us/library/ms233177.aspx) apis. Examples of thing clients do with these apis are:
 
 1. Modify the IL for a method
 2. Add or remove metadata to an application at module load time

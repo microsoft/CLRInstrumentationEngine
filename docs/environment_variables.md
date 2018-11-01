@@ -32,6 +32,7 @@ MicrosoftInstrumentationEngine_LogLevel|"Errors"|Filters event logs. Currently o
 ## Optional and Miscellaneous Variables
 
 These are the environment variables and values that aid in troubleshooting the CLR Instrumentation Engine:
+
 | Variable | Value | Description |
 |-|-|-|
 MicrosoftInstrumentationEngine_DebugWait|1|Suspends the process until the debugger is attached.
