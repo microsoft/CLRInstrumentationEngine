@@ -8,8 +8,10 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.17
+
 + Update
   + Added more dump logs around OriginalIL, Pid, and Module/Method names during Instrumentation
+
 # 1.0.16
 
 + Updates: 
