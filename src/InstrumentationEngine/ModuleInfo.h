@@ -55,7 +55,6 @@ namespace MicrosoftInstrumentationEngine
         unordered_map<mdMethodDef, CComPtr<CMethodInfo>> m_methodInfosByToken;
 
         unordered_map<mdToken, std::shared_ptr<CCachedILMethodBody>> m_methodTokenToCachedILMap;
-        unordered_set<mdMethodDef> m_instrumentedMethods;
 
         CComPtr<ITypeCreator> m_pTypeFactory;
 
@@ -126,9 +125,6 @@ namespace MicrosoftInstrumentationEngine
         HRESULT SetRejitMethodInfo(_In_ mdToken token, _In_opt_ CMethodInfo* pMethodInfo);
 
         HRESULT GetInlineSiteMap(_Out_ CInlineSiteMap** ppInilineSiteMap);
-
-        void SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented);
-        bool GetIsMethodInstrumented(_In_ mdMethodDef methodDef);
 
         // IModuleInfo methods
     public:

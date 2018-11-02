@@ -169,8 +169,7 @@ namespace MicrosoftInstrumentationEngine
             _Out_ ULONG* pcbMethodSize
             );
 
-        // Called after the raw profiler hook has instrumented the function. Sets the IL transformation
-        // status of this method to true.
+        // Called after the raw profiler hook has instrumented the function.
         HRESULT SetFinalRenderedFunctionBody(
             _In_ LPCBYTE pMethodHeader,
             _In_ ULONG cbMethodSize
@@ -181,11 +180,6 @@ namespace MicrosoftInstrumentationEngine
              return m_bIsInstrumented;
          }
 
-         // Clears the cached il transformation status of this method. This is done before any instrumentation method
-         // or raw profiler hook performs any instrumentation on the method.
-         HRESULT ClearILTransformationStatus();
-
-         // Applys all IL transformations and sets the IL cached transformation status of this method to true.
          HRESULT ApplyFinalInstrumentation(bool isRejit);
 
          HRESULT MergeILInstrumentedCodeMap(_In_ ULONG cILMapEntries, _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[]);

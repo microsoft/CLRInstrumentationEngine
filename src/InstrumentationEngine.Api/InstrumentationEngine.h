@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0620 
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0620 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -278,13 +278,6 @@ typedef interface IProfilerManager2 IProfilerManager2;
 #endif 	/* __IProfilerManager2_FWD_DEFINED__ */
 
 
-#ifndef __IProfilerManager3_FWD_DEFINED__
-#define __IProfilerManager3_FWD_DEFINED__
-typedef interface IProfilerManager3 IProfilerManager3;
-
-#endif 	/* __IProfilerManager3_FWD_DEFINED__ */
-
-
 #ifndef __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 typedef interface IInstrumentationMethodExceptionEvents IInstrumentationMethodExceptionEvents;
@@ -369,20 +362,6 @@ typedef interface IInstrumentationMethodJitEvents IInstrumentationMethodJitEvent
 #endif 	/* __IInstrumentationMethodJitEvents_FWD_DEFINED__ */
 
 
-#ifndef __IMethodJitInfo_FWD_DEFINED__
-#define __IMethodJitInfo_FWD_DEFINED__
-typedef interface IMethodJitInfo IMethodJitInfo;
-
-#endif 	/* __IMethodJitInfo_FWD_DEFINED__ */
-
-
-#ifndef __IInstrumentationMethodJitEvents2_FWD_DEFINED__
-#define __IInstrumentationMethodJitEvents2_FWD_DEFINED__
-typedef interface IInstrumentationMethodJitEvents2 IInstrumentationMethodJitEvents2;
-
-#endif 	/* __IInstrumentationMethodJitEvents2_FWD_DEFINED__ */
-
-
 /* header files for imported files */
 #include "ocidl.h"
 #include "corprof.h"
@@ -434,8 +413,6 @@ extern "C"{
 
 
 
-
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 1 )
 
 
 enum LoggingFlags
@@ -6457,86 +6434,6 @@ EXTERN_C const IID IID_IProfilerManager2;
 #endif 	/* __IProfilerManager2_INTERFACE_DEFINED__ */
 
 
-#ifndef __IProfilerManager3_INTERFACE_DEFINED__
-#define __IProfilerManager3_INTERFACE_DEFINED__
-
-/* interface IProfilerManager3 */
-/* [unique][uuid][object] */ 
-
-
-EXTERN_C const IID IID_IProfilerManager3;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("0B097E56-55EE-4EC4-B2F4-380B82448B63")
-    IProfilerManager3 : public IUnknown
-    {
-    public:
-        virtual HRESULT STDMETHODCALLTYPE GetApiVersion( 
-            /* [out] */ DWORD *pApiVer) = 0;
-        
-    };
-    
-    
-#else 	/* C style interface */
-
-    typedef struct IProfilerManager3Vtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IProfilerManager3 * This,
-            /* [in] */ REFIID riid,
-            /* [annotation][iid_is][out] */ 
-            _COM_Outptr_  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IProfilerManager3 * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            IProfilerManager3 * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetApiVersion )( 
-            IProfilerManager3 * This,
-            /* [out] */ DWORD *pApiVer);
-        
-        END_INTERFACE
-    } IProfilerManager3Vtbl;
-
-    interface IProfilerManager3
-    {
-        CONST_VTBL struct IProfilerManager3Vtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define IProfilerManager3_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IProfilerManager3_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IProfilerManager3_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IProfilerManager3_GetApiVersion(This,pApiVer)	\
-    ( (This)->lpVtbl -> GetApiVersion(This,pApiVer) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __IProfilerManager3_INTERFACE_DEFINED__ */
-
-
 #ifndef __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__
 
@@ -8070,234 +7967,6 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents;
 
 
 #endif 	/* __IInstrumentationMethodJitEvents_INTERFACE_DEFINED__ */
-
-
-#ifndef __IMethodJitInfo_INTERFACE_DEFINED__
-#define __IMethodJitInfo_INTERFACE_DEFINED__
-
-/* interface IMethodJitInfo */
-/* [unique][uuid][object] */ 
-
-
-EXTERN_C const IID IID_IMethodJitInfo;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("A2A780D6-F337-406C-BA57-F10FBD6C46F9")
-    IMethodJitInfo : public IUnknown
-    {
-    public:
-        virtual HRESULT STDMETHODCALLTYPE GetFunctionID( 
-            /* [out] */ FunctionID *pFunctionId) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetIsRejit( 
-            /* [out] */ BOOL *pIsRejit) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetRejitId( 
-            /* [out] */ ReJITID *pRejitId) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetJitHR( 
-            /* [out] */ HRESULT *pHResult) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetILTransformationStatus( 
-            /* [out] */ BOOL *pIsTranformed) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetModuleInfo( 
-            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
-        
-    };
-    
-    
-#else 	/* C style interface */
-
-    typedef struct IMethodJitInfoVtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IMethodJitInfo * This,
-            /* [in] */ REFIID riid,
-            /* [annotation][iid_is][out] */ 
-            _COM_Outptr_  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IMethodJitInfo * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            IMethodJitInfo * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
-            IMethodJitInfo * This,
-            /* [out] */ FunctionID *pFunctionId);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
-            IMethodJitInfo * This,
-            /* [out] */ BOOL *pIsRejit);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
-            IMethodJitInfo * This,
-            /* [out] */ ReJITID *pRejitId);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
-            IMethodJitInfo * This,
-            /* [out] */ HRESULT *pHResult);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
-            IMethodJitInfo * This,
-            /* [out] */ BOOL *pIsTranformed);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
-            IMethodJitInfo * This,
-            /* [out] */ IModuleInfo **ppModuleInfo);
-        
-        END_INTERFACE
-    } IMethodJitInfoVtbl;
-
-    interface IMethodJitInfo
-    {
-        CONST_VTBL struct IMethodJitInfoVtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define IMethodJitInfo_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IMethodJitInfo_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IMethodJitInfo_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IMethodJitInfo_GetFunctionID(This,pFunctionId)	\
-    ( (This)->lpVtbl -> GetFunctionID(This,pFunctionId) ) 
-
-#define IMethodJitInfo_GetIsRejit(This,pIsRejit)	\
-    ( (This)->lpVtbl -> GetIsRejit(This,pIsRejit) ) 
-
-#define IMethodJitInfo_GetRejitId(This,pRejitId)	\
-    ( (This)->lpVtbl -> GetRejitId(This,pRejitId) ) 
-
-#define IMethodJitInfo_GetJitHR(This,pHResult)	\
-    ( (This)->lpVtbl -> GetJitHR(This,pHResult) ) 
-
-#define IMethodJitInfo_GetILTransformationStatus(This,pIsTranformed)	\
-    ( (This)->lpVtbl -> GetILTransformationStatus(This,pIsTranformed) ) 
-
-#define IMethodJitInfo_GetModuleInfo(This,ppModuleInfo)	\
-    ( (This)->lpVtbl -> GetModuleInfo(This,ppModuleInfo) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __IMethodJitInfo_INTERFACE_DEFINED__ */
-
-
-#ifndef __IInstrumentationMethodJitEvents2_INTERFACE_DEFINED__
-#define __IInstrumentationMethodJitEvents2_INTERFACE_DEFINED__
-
-/* interface IInstrumentationMethodJitEvents2 */
-/* [unique][uuid][object] */ 
-
-
-EXTERN_C const IID IID_IInstrumentationMethodJitEvents2;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("DC5B373D-C38D-4299-83D9-129B6ACCEE2F")
-    IInstrumentationMethodJitEvents2 : public IInstrumentationMethodJitEvents
-    {
-    public:
-        virtual HRESULT STDMETHODCALLTYPE JitComplete( 
-            /* [in] */ IMethodJitInfo *pJitInfo) = 0;
-        
-    };
-    
-    
-#else 	/* C style interface */
-
-    typedef struct IInstrumentationMethodJitEvents2Vtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ REFIID riid,
-            /* [annotation][iid_is][out] */ 
-            _COM_Outptr_  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IInstrumentationMethodJitEvents2 * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            IInstrumentationMethodJitEvents2 * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *JitStarted )( 
-            IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ FunctionID functionID,
-            /* [in] */ BOOL isRejit);
-        
-        HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
-            IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ FunctionID functionID,
-            /* [in] */ BOOL isRejit,
-            /* [in] */ HRESULT jitResult);
-        
-        HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
-            IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ IMethodJitInfo *pJitInfo);
-        
-        END_INTERFACE
-    } IInstrumentationMethodJitEvents2Vtbl;
-
-    interface IInstrumentationMethodJitEvents2
-    {
-        CONST_VTBL struct IInstrumentationMethodJitEvents2Vtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define IInstrumentationMethodJitEvents2_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IInstrumentationMethodJitEvents2_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IInstrumentationMethodJitEvents2_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IInstrumentationMethodJitEvents2_JitStarted(This,functionID,isRejit)	\
-    ( (This)->lpVtbl -> JitStarted(This,functionID,isRejit) ) 
-
-#define IInstrumentationMethodJitEvents2_JitComplete(This,functionID,isRejit,jitResult)	\
-    ( (This)->lpVtbl -> JitComplete(This,functionID,isRejit,jitResult) ) 
-
-
-#define IInstrumentationMethodJitEvents2_JitComplete(This,pJitInfo)	\
-    ( (This)->lpVtbl -> JitComplete(This,pJitInfo) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __IInstrumentationMethodJitEvents2_INTERFACE_DEFINED__ */
 
 #endif /* __MicrosoftInstrumentationEngine_LIBRARY_DEFINED__ */
 

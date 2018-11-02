@@ -9,8 +9,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0620 
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0620 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -171,9 +171,6 @@ MIDL_DEFINE_GUID(IID, IID_ISingleRetDefaultInstrumentation,0x2ED40F43,0xE51A,0x4
 MIDL_DEFINE_GUID(IID, IID_IProfilerManager2,0xDCB0764D,0xE18F,0x4F9A,0x91,0xE8,0x6A,0x40,0xFC,0xFE,0x67,0x75);
 
 
-MIDL_DEFINE_GUID(IID, IID_IProfilerManager3,0x0B097E56,0x55EE,0x4EC4,0xB2,0xF4,0x38,0x0B,0x82,0x44,0x8B,0x63);
-
-
 MIDL_DEFINE_GUID(IID, IID_IInstrumentationMethodExceptionEvents,0x8310B758,0x6642,0x46AD,0x94,0x23,0xDD,0xA5,0xF9,0xE2,0x78,0xAE);
 
 
@@ -208,12 +205,6 @@ MIDL_DEFINE_GUID(IID, IID_ISingleRetDefaultInstrumentation2,0x7A88FF19,0xF3A1,0x
 
 
 MIDL_DEFINE_GUID(IID, IID_IInstrumentationMethodJitEvents,0x9B028F9E,0xE2E0,0x4A61,0x86,0x2B,0xA4,0xE1,0x15,0x86,0x57,0xD0);
-
-
-MIDL_DEFINE_GUID(IID, IID_IMethodJitInfo,0xA2A780D6,0xF337,0x406C,0xBA,0x57,0xF1,0x0F,0xBD,0x6C,0x46,0xF9);
-
-
-MIDL_DEFINE_GUID(IID, IID_IInstrumentationMethodJitEvents2,0xDC5B373D,0xC38D,0x4299,0x83,0xD9,0x12,0x9B,0x6A,0xCC,0xEE,0x2F);
 
 #undef MIDL_DEFINE_GUID
 

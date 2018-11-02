@@ -54,12 +54,6 @@ library MicrosoftInstrumentationEngine
 
     interface ISingleRetDefaultInstrumentation;
 
-    // Api version level. This must be updated every time any change is made in any API definition.
-    // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number, 
-    // the client can be guaranteed that at least every interface and enumeration defined in
-    // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 1;
-
     [
         object,
         uuid(3A09AD0A-25C6-4093-93E1-3F64EB160A9D),
@@ -134,19 +128,6 @@ library MicrosoftInstrumentationEngine
         // If metadata is modified outside of a module load callback. Call this method
         // to get the clr to apply the changes.
         HRESULT ApplyMetadata([in] IModuleInfo* pMethodInfo);
-    };
-
-    [
-        object,
-        uuid(0B097E56-55EE-4EC4-B2F4-380B82448B63),
-        pointer_default(unique)
-    ]
-    interface IProfilerManager3 : IUnknown
-    {
-        // Sets the value of pSupported to true if and only if this version of IProfilerManager 
-        // will supports the interface with the given iid. Used to ensure that the linked version
-        // of the api is at least as new as the one that the client compiled against.
-        HRESULT GetApiVersion([out] DWORD* pApiVer);
     };
 
     // The profiler manager host is loaded and created by the profiler manager during the call to initialize after the clr
@@ -1406,59 +1387,6 @@ library MicrosoftInstrumentationEngine
         // symmetrical will the JitStarted callback. That is, for each JitSTarted call, there
         // should be one JitComplete call.
         HRESULT JitComplete([in] FunctionID functionID, [in] BOOL isRejit, [in] HRESULT jitResult);
-    };
-
-    [
-        object,
-        uuid(A2A780D6-F337-406C-BA57-F10FBD6C46F9),
-        pointer_default(unique)
-    ]
-    interface IMethodJitInfo : IUnknown
-    {
-        // Gets the function id of the compiled method. Note, one method may be compiled multiple
-        // times due to rejits or due to language features such as generics. Each compilation of
-        // the method will have a different function id.
-        HRESULT GetFunctionID([out] FunctionID* pFunctionId);
-
-        // Gets the rejit status of the method. Sets *pIsRejit to true if the
-        // method was rejitted; false otherwise.
-        HRESULT GetIsRejit([out] BOOL* pIsRejit);
-
-        // Gets the rejit id of this method if it is a rejit. Returns S_FALSE, and sets
-        // *pRejitId to 0 otherwise;
-        HRESULT GetRejitId([out] ReJITID* pRejitId);
-
-        // Gets the HRESULT of the JIT process. Used to check whether errors occurred during JIT.
-        HRESULT GetJitHR([out] HRESULT* pHResult);
-
-        // Gets the status of whether or not IL transformations were applied to the method before
-        // JIT occurred. Sets *pIsTransformed to true if transformations were made; false otherwise.
-        HRESULT GetILTransformationStatus([out] BOOL* pIsTranformed);
-
-        // Gets the module info for the compiled method.
-        HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
-    };
-
-    [
-        object,
-        uuid(DC5B373D-C38D-4299-83D9-129B6ACCEE2F),
-        pointer_default(unique)
-    ]
-    interface IInstrumentationMethodJitEvents2 : IInstrumentationMethodJitEvents
-    {
-        // Notification that Just-in-time compile has completed after
-        // instrumentation has finished for all instrumentation methods.
-        // Note: this should be used for notification only. No further
-        // modifications to the method are allowed after this callback.
-        // Clients can reconstruct information like method names, module ids,
-        // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
-        // by the IProfilerManager interface. Clients should not attempt to use the
-        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
-        // Doing so may result in undefined behavior. This callback should be
-        // symmetrical will the JitStarted callback. That is, for each JitSTarted call, there
-        // should be one JitComplete call. If the client implements IInstrumentationMethodJitEvents2,
-        // then IInstrumentationMethodJitEvents::JitComplete() will not be called.
-        HRESULT JitComplete([in] IMethodJitInfo* pJitInfo);
     };
 
 }
