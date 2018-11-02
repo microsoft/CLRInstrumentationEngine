@@ -12,7 +12,7 @@ A private site extension is a nuget package that can be manually installed by th
 
 A preinstalled site extension is a folder that is shipped by the Kudu team into the %ProgramFiles(x86)%\SiteExtensions folder on every Azure App Service machine and is enabled through the Azure App Service Application Settings. These files are restricted to read-only access and cannot be modified.
 
-The CLR Instrumentation Engine [Environment Variables](..\environment_variables.md) are enabled through an applicationHost.xdt file. When a private site extension is installed or a preinstalled site extension is enabled, the applicationHost.xdt file in that site extension is consumed by the web app process during startup. Some site extensions also provide an scmApplicationHost.xdt file which is consumed by the Kudu process.
+The CLR Instrumentation Engine [Environment Variables](../environment_variables.md) are enabled through an applicationHost.xdt file. When a private site extension is installed or a preinstalled site extension is enabled, the applicationHost.xdt file in that site extension is consumed by the web app process during startup. Some site extensions also provide an scmApplicationHost.xdt file which is consumed by the Kudu process.
 
 ## Enabling the CLR Instrumentation Engine
 
@@ -36,11 +36,11 @@ The CLR Instrumentation Engine is not shipped as a standalone private site exten
 
 In order for the Instrumentation Engine to pick up your instrumentation method, you will need to declare environment variables that point to a *.config file which references your instrumentation method assembly.
 
-Please see [Configuration](..\configuration.md) for details about the config file and environment variables.
+Please see [Configuration](../configuration.md) for details about the config file and environment variables.
 
 ## Patching or debugging the CLR Instrumentation Engine
 
-Please see [Build](..\build.md) to build the CLR Instrumentation Engine binaries locally.
+Please see [Build](../build.md) to build the CLR Instrumentation Engine binaries locally.
 
 If you would like to test your changes in your Azure App Service, it is recommended that you either install the Application Insights private site extension and patch or create a custom private site extension with an applicationHost.xdt file that enables the required environment variables. You will not be able to patch the preinstalled site extension.
 
