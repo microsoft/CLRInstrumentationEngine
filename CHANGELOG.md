@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.18
++ Update
+  + Fixed bug that causes an AV when jit compiling dynamic methods.
+
 # 1.0.17
 + New
   + Added API version levels to IProfilerManager via new IProfilerManager3 api

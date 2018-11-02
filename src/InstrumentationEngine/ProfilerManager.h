@@ -890,6 +890,10 @@ namespace MicrosoftInstrumentationEngine
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+
+        HRESULT ClearILTransformationStatus(_In_ FunctionID functionId);
+
+        HRESULT ClearILTransformationStatus(_In_ ModuleID, _In_ mdMethodDef functionToken);
     };
 
     class CInitializeHolder
