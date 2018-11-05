@@ -1738,7 +1738,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
 
             CComPtr<CMethodInfo> pMethodInfo;
             hr = CreateMethodInfo(functionId, &pMethodInfo);
-            pMethodInfo->ClearILTransformationStatus();
+            ClearILTransformationStatus(functionId);
 
             // Class to call cleanup on the method info in the destructor.
             CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
@@ -2948,7 +2948,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
 
         CComPtr<CMethodInfo> pMethodInfo;
         IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
-        pMethodInfo->ClearILTransformationStatus();
+        ClearILTransformationStatus(moduleId, methodToken);
 
         // CreateMethodInfoForRejit adds the method info the token to method info map.
         // This class is used to cleanup that reference after the rejit has finished
@@ -3744,4 +3744,23 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstr
 
     CLogging::LogMessage(_T("End CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
     return hr;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(FunctionID functionId)
+{
+    HRESULT hr;
+    ClassID classId;
+    ModuleID moduleId;
+    mdMethodDef token;
+    IfFailRet(m_pRealProfilerInfo->GetFunctionInfo(functionId, &classId, &moduleId, &token));
+    return ClearILTransformationStatus(moduleId, token);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(ModuleID moduleId, mdMethodDef functionToken)
+{
+    HRESULT hr;
+    CComPtr<IModuleInfo> pModuleInfo;
+    IfFailRet(m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo));
+    static_cast<CModuleInfo*>(pModuleInfo.p)->SetMethodIsTransformed(functionToken, false);
+    return S_OK;
 }

@@ -1335,12 +1335,6 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ClearILTransformationStatus()
-{
-    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, false);
-    return S_OK;
-}
-
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(bool isRejit)
 {
     HRESULT hr = S_OK;
