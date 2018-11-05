@@ -453,7 +453,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportAssemblyRef(_In_
         }
     }
 
-    CLogging::LogError(_T("Adding new assembly refs not supported: ") WCHAR_SPEC, szName);
+    CLogging::LogError(_T("Adding new assembly refs not supported: %s"), szName);
     return E_NOTIMPL;
 }
 HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportFieldDef(_In_ mdFieldDef sourceFieldDef, _Out_ mdFieldDef *pTargetFieldDef)
