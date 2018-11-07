@@ -4,13 +4,13 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "CorHdr.h"
-#include "SingatureValidator.h"
+#include "SignatureValidator.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace InstrumentationEngineLibTests
 {
-    TEST_CLASS(SingatureValidatorTests)
+    TEST_CLASS(SignatureValidatorTests)
     {
     public:
 
