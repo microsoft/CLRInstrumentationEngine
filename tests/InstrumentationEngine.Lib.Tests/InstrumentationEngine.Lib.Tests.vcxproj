@@ -95,7 +95,7 @@
     <ClCompile Include="CConfigurationLoaderTests.cpp" />
     <ClCompile Include="InstrumentationMethodTests.cpp" />
     <ClCompile Include="LoggingTests.cpp" />
-    <ClCompile Include="SingatureValidatorTests.cpp" />
+    <ClCompile Include="SignatureValidatorTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

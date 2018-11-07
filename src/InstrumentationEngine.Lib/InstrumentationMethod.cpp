@@ -5,7 +5,7 @@
 #include "InstrumentationEngine.h"
 #include "InstrumentationMethod.h"
 #ifndef PLATFORM_UNIX
-#include "SingatureValidator.h"
+#include "SignatureValidator.h"
 #endif
 
 
