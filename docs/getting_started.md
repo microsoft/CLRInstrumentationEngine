@@ -26,11 +26,21 @@ See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instr
 
 ## Using the CLR Instrumentation Engine
 
+### What do I include with my project?
+
 ### How do I enable the CLR Instrumentation Engine?
 
 When a managed process starts execution, it must first load the CLR. Once the CLR is initialized, it then checks environment variables to see if a Profiler should be loaded.
 
 See [Environment Variables](environment_variables.md) for more details.
+
+Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
+
+`MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
+
+### How do I write an Instrumentation Method?
+
+A simple example of an InstrumentationMethod can be found in [InstrumentationMethod.cpp](../tests/InstrEngineTests/ProfilerHost/InstrumentationMethod.cpp).
 
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 

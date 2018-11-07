@@ -26,8 +26,17 @@ ClassGuid|The CLSID of the implementation module.
 Priority|Integer ordering for InstrumentationMethod consumption. Higher priority applies earlier.
 
 ### Config Environment Variable
+
 The CLR Instrumentation Engine checks for environment variables with these prefixes:
 * 64bit: `MicrosoftInstrumentationEngine_ConfigPath64_`
 * 32bit: `MicrosoftInstrumentationEngine_ConfigPath32_`
 
 The value of these variables should be a **full path** to the *.config file.
+
+### Testing Custom Instrumentation Method
+
+In order to test your InstrumentationMethod, make sure to disable Signature Validation by setting the following environment variable and value.
+
+`MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
+
+The Instrumentation Engine leverages WinTrust libraries to validate code signatures. See CSignatureValidator for in-depth details.
