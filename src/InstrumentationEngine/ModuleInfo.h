@@ -57,6 +57,7 @@ namespace MicrosoftInstrumentationEngine
 
         unordered_map<mdToken, std::shared_ptr<CCachedILMethodBody>> m_methodTokenToCachedILMap;
         unordered_set<mdMethodDef> m_instrumentedMethods;
+        unordered_map<mdMethodDef, SharedArray<COR_IL_MAP>> m_ilMaps;
 
         CComPtr<ITypeCreator> m_pTypeFactory;
 
@@ -129,6 +130,8 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT GetInlineSiteMap(_Out_ CInlineSiteMap** ppInilineSiteMap);
 
+        void SetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ SharedArray<COR_IL_MAP> map);
+        HRESULT GetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded);
         void SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented);
         bool GetIsMethodInstrumented(_In_ mdMethodDef methodDef);
 

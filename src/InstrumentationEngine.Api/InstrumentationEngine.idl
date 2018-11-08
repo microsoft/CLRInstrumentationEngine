@@ -59,7 +59,7 @@ library MicrosoftInstrumentationEngine
     // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number, 
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 2;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 3;
 
     [
         object,
@@ -1433,6 +1433,12 @@ library MicrosoftInstrumentationEngine
         HRESULT JitComplete([in] FunctionID functionID, [in] BOOL isRejit, [in] HRESULT jitResult);
     };
 
+
+    // Information about methods that have just been JIT compiled. Note, clients should not
+    // cache instances of IMethodJitInfo. IMethodJitInfo callbacks are only valid during
+    // the execution of the IInsturmentationMethodJitEvents2::JitComplete callback. Any
+    // attempts to call functions on this object after that callback completes will result
+    // in undefined behavior.
     [
         object,
         uuid(A2A780D6-F337-406C-BA57-F10FBD6C46F9),
@@ -1462,6 +1468,40 @@ library MicrosoftInstrumentationEngine
 
         // Gets the module info for the compiled method.
         HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
+    };
+
+    // Information about methods that have just been JIT compiled. Note, clients should not
+    // cache instances of IMethodJitInfo2. IMethodJitInfo2 callbacks are only valid during
+    // the execution of the IInsturmentationMethodJitEvents2::JitComplete callback. Any
+    // attempts to call functions on this object after that callback completes will result
+    // in undefined behavior.
+    [
+        object,
+        uuid(8311A7CF-30EC-42C9-85A4-F59713A4F37D),
+        pointer_default(unique)
+    ]
+    interface IMethodJitInfo2 : IMethodJitInfo
+    {
+        // Retrieves a mapping from the original, uninstrumented, IL locations in the jitted method to their final
+        // compiled memory locations.
+        // If cMaps is 0 or pMap is NULL, then this function will simply set *pcNeeded to the number of
+        // COR_DEBUG_IL_TO_NATIVE_MAP instances that are available.
+        // Note, for desktop CLR, this function is only valid if the current reJIT ID is
+        // 0. In such cases, if the ReJIT id is greater than 0, then this function will return E_NOT_IMPL. For
+        // CoreCLR 2 and above, this function should return valid maps on rejit.
+        HRESULT GetILNativeMapping([in] ULONG32 cMaps, [out] COR_DEBUG_IL_TO_NATIVE_MAP* pMap, [out] ULONG32* pcNeeded);
+
+        // Retrieves a mapping of original IL to final instrumented IL for this jitted method.
+        // If cMaps is 0 or pMap is NULL, then this function will simply set *pcNeeded to the number of
+        // COR_IL_MAP instances that are available.
+        HRESULT GetILInstrumentationMap([in] ULONG32 cMaps, [out] COR_IL_MAP* pMap, [out] ULONG32* pcNeeded);
+
+        // Gets the method token for the jitted method.
+        HRESULT GetMethodToken([out] mdMethodDef* pToken);
+
+        // Gets the virtual memory address of the start of the native code of this method. May not be available
+        // in all versions of the CLR. If the value is not available, E_NOTIMPL will be returned.
+        HRESULT GetNativeCodeAddress([out] UINT_PTR* pCodeAddress);
     };
 
     [

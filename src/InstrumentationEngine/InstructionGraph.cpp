@@ -399,15 +399,18 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
             DWORD currOffset;
             IfFailRet(pCurrent->GetOffset(&currOffset));
 
-            DWORD currPrevNewInstructionOffset = 0;
             if (pPrevNewInstruction != NULL)
             {
                 // If there exists a new instruction between the last old instruction
                 // and the current old instruction, use the offset of that instruction.
                 // The CLR goes forward on the new offsets, which means without this, the
                 // old instructions would map to the last instruction instead of the current instruction.
-                // See the documentation of COR_IL_MAP for an example.
-
+                // See the documentation of COR_IL_MAP for an example. This is because we typically
+                // want the inserted instructions to be associated with the _next_ instruction in the
+                // graph, not the previous one. Otherwise, if the debugger stops in an instrumented
+                // portion of the code, it will associate it will associate the break with the
+                // previous line instead of the next line.
+                DWORD currPrevNewInstructionOffset = 0;
                 IfFailRet(pPrevNewInstruction->GetOffset(&currPrevNewInstructionOffset));
 
                 pCorILMap[iCorILMap].fAccurate = true;

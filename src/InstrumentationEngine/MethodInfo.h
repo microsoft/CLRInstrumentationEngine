@@ -92,9 +92,9 @@ namespace MicrosoftInstrumentationEngine
         DWORD m_dwILStreamLen;
 
         // map of old offsets to new offsets. Originally set when insturmentation methods have finished.
-        // Updated if raw callbacks modify il
-        CAutoVectorPtr<COR_IL_MAP> m_pCorILMap;
-        DWORD m_dwCorILMapmLen;
+        // Updated if raw callbacks modify il. Note, this is a SharedArray because it is also cached by this
+        // method's ModuleInfo
+        SharedArray<COR_IL_MAP> m_pCorILMap;
 
         // The rendered method body including headers and exception handlers after instrumenation methods have finished, but before
         // raw profilers execute. This includes the updated core header, the il body, the exception ranges etc...

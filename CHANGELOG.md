@@ -10,12 +10,15 @@ Please format the changes as follows:
 # 1.0.20
 + New:
   + Added support for ICorProfilerInfo8 and ICorProfilerInfo9
+  + Added IMethodJitInfo2
++ BugFixes:
+  + Work-around for issue in the CLR runtime which causes il/instrumentation maps and il/native maps to be cached incorrectly.
 
 # 1.0.19
 + New:
   + Added IModuleInfo3 interface
   + Changed semantics of GetIsDynamic to match the CLR understanding of dynamic code. I.e. a module is dynamic if and only if its base address is 0.
-
+  
 # 1.0.18
 + Update
   + Fixed bug that causes an AV when jit compiling dynamic methods.

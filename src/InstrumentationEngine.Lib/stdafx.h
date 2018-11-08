@@ -73,6 +73,7 @@ using namespace ATL;
 
 #include "CriticalSectionHolder.h"
 #include "Logging.h"
+#include "SharedArray.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;

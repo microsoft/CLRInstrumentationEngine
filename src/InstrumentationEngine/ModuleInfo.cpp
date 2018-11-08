@@ -1054,6 +1054,35 @@ void MicrosoftInstrumentationEngine::CModuleInfo::SetMethodIsTransformed(_In_ md
     }
 }
 
+void MicrosoftInstrumentationEngine::CModuleInfo::SetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ SharedArray<COR_IL_MAP> pMap)
+{
+    m_ilMaps[methodDef] = pMap;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
+{
+    IfNullRet(pcNeeded);
+
+    *pcNeeded = 0;
+
+    auto it = m_ilMaps.find(methodDef);
+    if (it != m_ilMaps.end())
+    {
+        SharedArray<COR_IL_MAP> map = (*it).second;
+
+        *pcNeeded = map.Count();
+        if (cMap == 0 || pMap == NULL)
+        {
+            return S_OK;
+        }
+        size_t mapCount = map.Count();
+        size_t cCount = ((size_t)cMap <= mapCount) ? (size_t)cMap : mapCount;
+        memcpy(pMap, map.Get(), cCount * sizeof(COR_IL_MAP));
+    }
+
+    return S_OK;
+}
+
 bool MicrosoftInstrumentationEngine::CModuleInfo::GetIsMethodInstrumented(_In_ mdMethodDef methodDef)
 {
     return (m_instrumentedMethods.find(methodDef) != m_instrumentedMethods.end());

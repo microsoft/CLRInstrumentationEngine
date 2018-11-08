@@ -2,6 +2,7 @@
 // 
 #include "stdafx.h"
 #include "InstrumentationEngine.h"
+#include "ModuleInfo.h"
 #include "MethodJitInfo.h"
 #include "ProfilerManager.h"
 
@@ -54,6 +55,53 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
+    HRESULT CMethodJitInfo::GetILNativeMapping(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded)
+    {
+        HRESULT hr;
+        IfNullRet(pcNeeded);
+
+        CComPtr<IUnknown> pProfilerInfo;
+        IfFailRet(m_pProfilerManager->GetCorProfilerInfo(&pProfilerInfo));
+
+        // On Core clr, this should take care of tiered JIT
+        UINT_PTR nativeAddress;
+        if (SUCCEEDED(GetNativeCodeAddress(&nativeAddress)))
+        {
+            CComPtr<ICorProfilerInfo9> pProfilerInfo9;
+            IfFailRet(pProfilerInfo->QueryInterface(&pProfilerInfo9));
+            return pProfilerInfo9->GetILToNativeMapping3(nativeAddress, cMap, pcNeeded, pMap);
+        }
+
+        CComPtr<ICorProfilerInfo4> pProfilerInfo4;
+        if (SUCCEEDED(pProfilerInfo->QueryInterface(&pProfilerInfo4)))
+        {
+            // Note, this will return E_NOTIMPL before framework 4.8, so we don't
+            // assert on failure.
+            return pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap);
+        }
+
+        return E_NOTIMPL;
+    }
+
+    HRESULT CMethodJitInfo::GetILInstrumentationMap(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
+    {
+        HRESULT hr;
+        IfNullRet(pcNeeded);
+
+        IfFailRet(EnsureInitialized());
+
+        return m_pModuleInfo->GetILInstrumentationMap(m_methodToken, cMap, pMap, pcNeeded);
+    }
+
+    HRESULT CMethodJitInfo::GetMethodToken(_Out_ mdMethodDef* pMethodDef)
+    {
+        HRESULT hr;
+        IfNullRet(pMethodDef);
+        IfFailRet(EnsureInitialized());
+        *pMethodDef = m_methodToken;
+        return S_OK;
+    }
+
     HRESULT CMethodJitInfo::EnsureInitialized()
     {
         if (m_initializeResult != S_OK)
@@ -79,11 +127,12 @@ namespace MicrosoftInstrumentationEngine
                 ModuleID moduleId;
                 IfFailRet(pProfilerInfo->GetFunctionInfo(m_functionId, &classId, &moduleId, &m_methodToken));
 
-                IfFailRet(pAppDomainCollection->GetModuleInfoById(moduleId, &m_pModuleInfo));
+                CComPtr<IModuleInfo> pModuleInfo;
+                IfFailRet(pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo));
 
-                CModuleInfo* pModuleInfo = static_cast<CModuleInfo*>(m_pModuleInfo.p);
-
-                m_isTransformed = pModuleInfo->GetIsMethodInstrumented(m_methodToken);
+                m_pModuleInfo = static_cast<CModuleInfo*>(pModuleInfo.p);
+                
+                m_isTransformed = m_pModuleInfo->GetIsMethodInstrumented(m_methodToken);
 
                 return S_OK;
             };
@@ -93,5 +142,45 @@ namespace MicrosoftInstrumentationEngine
         }
 
         return m_initializeResult;
+    }
+
+    HRESULT CMethodJitInfo::GetNativeCodeAddress(_Out_ UINT_PTR *pCodeAddress)
+    {
+        IfNullRet(pCodeAddress);
+
+        if (m_isAddressQueried)
+        {
+            if (m_codeAddress != 0)
+            {
+                *pCodeAddress = m_codeAddress;
+                return S_OK;
+            }
+            else
+            {
+                return E_NOTIMPL;
+            }
+        }
+
+        m_isAddressQueried = true;
+        HRESULT hr;
+        CComPtr<ICorProfilerInfo> pProfilerInfo;
+        IfFailRet(m_pProfilerManager->GetCorProfilerInfo((IUnknown**)(&pProfilerInfo)));
+
+        CComPtr<ICorProfilerInfo9> pProfilerInfo9;
+        if (pProfilerInfo->QueryInterface(&pProfilerInfo9) != S_OK)
+        {
+            return E_NOTIMPL;
+        }
+
+        ULONG32 cAddresses;
+        IfFailRet(pProfilerInfo9->GetNativeCodeStartAddresses(m_functionId, m_rejitId, 0, &cAddresses, nullptr));
+
+        unique_ptr<UINT_PTR[]> addresses = make_unique<UINT_PTR[]>(cAddresses);
+        IfFailRet(pProfilerInfo9->GetNativeCodeStartAddresses(m_functionId, m_rejitId, cAddresses, &cAddresses, addresses.get()));
+
+        // we are only interested in the last jitted one.
+        m_codeAddress = addresses[cAddresses - 1];
+        *pCodeAddress = m_codeAddress;
+        return S_OK;
     }
 }
