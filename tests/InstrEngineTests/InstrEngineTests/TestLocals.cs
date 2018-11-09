@@ -24,14 +24,14 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_Locals()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("LocalTests_Release_x64", "Instru_Locals.xml", "AddLocals");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_LocalsExisting()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("LocalTests_Debug_x64", "Instru_LocalsExisting.xml", "AddLocalsExisting");

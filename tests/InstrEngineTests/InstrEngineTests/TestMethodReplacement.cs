@@ -25,7 +25,7 @@ namespace InstrEngineTests
 
         [Owner("wiktork")]
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ReplaceMethodTest()
         {
             //0,0,3,3,6,6,a,a,e,e

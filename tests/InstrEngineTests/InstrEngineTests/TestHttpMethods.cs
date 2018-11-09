@@ -24,7 +24,7 @@ namespace InstrEngineTests
 
         // Disabling test because HttpMethodTests_Debug.xml test script does not exist
         //[TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void GetResponseAsync()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("HttpMethodTests_Debug.exe", "HttpMethodTests_Debug.xml");

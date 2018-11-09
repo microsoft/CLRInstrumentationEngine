@@ -19,7 +19,7 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerProfilerHostX64BinPath)]
     [DeploymentItem(PathUtils.NaglerProfilerHostX86BinPath)]
-    public class AddOperands
+    public class TestDynamicCode
     {
         [ClassInitialize]
         public static void Initialize(TestContext context)
@@ -27,12 +27,18 @@ namespace InstrEngineTests
             TestParameters.Initialize(context);
         }
 
-        // Disabling test because AddOperandTest.xml test script does not exist
-        //[TestMethod]
+        [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
-        public void AddOperandTest()
+        public void CompiledDynamicCodeTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddOperandTest.xml", "AddOperandTest");
+            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64.exe", "DynamicCompiledCode.xml", "Compiled");
+        }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
+        public void EmittedDynamicCodeTest()
+        {
+            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64.exe", "DynamicEmittedCode.xml", "Emitted");
         }
     }
 }
