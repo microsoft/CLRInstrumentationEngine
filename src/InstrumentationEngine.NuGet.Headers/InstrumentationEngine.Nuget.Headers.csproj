@@ -1,45 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <Configurations>Debug;Release</Configurations>
-    <Platforms>x86,x64</Platforms>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ResolveNuGetPackages>true</ResolveNuGetPackages>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>InstrumentationEngine.Headers.nuspec</NuspecFile>
+    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);authors=$(PackageAuthors)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);configuration=$(Configuration)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);outdir=$(BinRoot)\$(Configuration)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);apidir=$(InstrumentationEngineApiInc)</NuspecProperties>
+    <NuspecBasePath>$(BinRoot)</NuspecBasePath>
+    <NuspecOutputDirectory>$(OutDir)\$(Platform)</NuspecOutputDirectory>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</RootNamespace>
     <AssemblyName>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <!-- Suppress the "CS2008: No source files specified" warning -->
-    <NoWarn>2008</NoWarn>
+
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
-  </PropertyGroup>
-  <ItemGroup>
-    <NugetSpec Include="InstrumentationEngine.Headers.nuspec">
-      <SubType>Designer</SubType>
-    </NugetSpec>
-  </ItemGroup>
 
+    <NoWarn>2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
+  </PropertyGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BuildNugetPackages" AfterTargets="AfterBuild">
-    <ItemGroup>
-      <OldNupkg Include="$(PackageOutputDir)\*.nupkg" />
-    </ItemGroup>
-    <!-- Delete old packages -->
-    <Delete Files="@(OldNupkg)" />
-    <MSBuild Projects="$(MSBuildProjectFile)" Properties="NugetSpecification=%(NugetSpec.Identity)" Targets="PackNuget">
-    </MSBuild>
-  </Target>
-  <Target Name="PackNuget">
-    <PropertyGroup>
-      <PackageCommand>..\..\nuget.exe pack "$(ProjectDir)$(NugetSpecification)" -Properties "version=$(PackageVersion);authors=$(PackageAuthors);configuration=$(Configuration);platform=$(Platform);outdir=$(BinRoot)\$(Configuration);apidir=$(InstrumentationEngineApiInc)" -BasePath "$(BinRoot)" -OutputDirectory $(OutDir) -verbosity detailed</PackageCommand>
-    </PropertyGroup>
-    <Exec Command="$(PackageCommand)" ConsoleToMSBuild="true">
-      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
-    </Exec>
-  </Target>
 </Project>

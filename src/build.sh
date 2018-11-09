@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 script_dir=`dirname $0`
 

@@ -4,6 +4,7 @@
 param(
     [switch] $IncludeTests,
     [switch] $SkipBuild,
+    [switch] $SkipPackaging,
     [switch] $Release,
     [switch] $Verbose
 )
@@ -41,7 +42,19 @@ function Invoke-ExpressionHelper
 
 function Get-AuthorizedNuget
 {
-    return "$repoPath\nuget.exe"
+    $nugetPath = "$repoPath\nuget.exe"
+    if (!(Test-Path $nugetPath))
+    {
+        # Download nuget.exe
+        Write-Verbose "Downloading NuGet.exe to $nugetPath"
+        $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+        Invoke-WebRequest $sourceNugetExe -OutFile $nugetPath | Out-Null
+    }
+
+    # Update to latest version
+    Invoke-Expression -Command "$nugetPath update -self" | Out-Null
+
+    return $nugetPath
 }
 
 ###
@@ -49,7 +62,7 @@ function Get-AuthorizedNuget
 ###
 if ($Verbose)
 {
-    $clParams = "Verbosity=n"
+    $clParams = "Verbosity=d"
 }
 else
 {
@@ -123,9 +136,6 @@ $msbuild = "`"$msbuild`""
 # Nuget Restore solutions
 $nuget = Get-AuthorizedNuget
 
-$restoreArgs = "restore $repoPath\instrumentationEngine.sln -configFile $repoPath\NuGet.config"
-Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
-
 if (!$SkipBuild)
 {
     # Clean up bin & obj folder if exists
@@ -139,6 +149,11 @@ if (!$SkipBuild)
         Remove-Item -Force -Recurse "$repoPath\obj\"
     }
 
+    $restoreArgs = @(
+        "restore $repoPath\InstrumentationEngine.sln -configFile $repoPath\NuGet.config"
+    )
+    Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+
     # Build InstrumentationEngine.sln
     $buildArgs = @(
         "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams)"
@@ -146,6 +161,14 @@ if (!$SkipBuild)
         "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
+}
+
+if (!$SkipPackaging)
+{
+    $restoreArgs = @(
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln -configFile $repoPath\NuGet.config"
+    )
+    Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(

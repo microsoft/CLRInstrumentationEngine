@@ -120,7 +120,7 @@
 
 				<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(EnlistmentRoot)\</SolutionDir>
 
-				<PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\..</PackagesDir>
+				<PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\</PackagesDir>
 				<PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
 
 		<BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>

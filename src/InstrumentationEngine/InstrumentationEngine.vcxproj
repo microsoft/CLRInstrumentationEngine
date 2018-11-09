@@ -2,7 +2,7 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props" Condition="Exists('..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" />
+  <Import Project="$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -159,13 +159,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
+    <Import Project="$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
   </Target>
 </Project>
