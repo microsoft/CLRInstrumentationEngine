@@ -12,8 +12,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
-    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.props'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.targets'))" />
   </Target>
-  <Import Project="$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
+  <Import Project="$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core\0.2.0\build\MicroBuild.Core.targets')" />
 </Project>

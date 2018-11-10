@@ -48,15 +48,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept\2.0.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RemoteUnitTestExecutor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\2.5.1\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RemoteUnitTestExecutor.Host_x86, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\2.5.1\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -66,7 +66,11 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\..\src\NativeDependencies\NativeDependencies.csproj">
+      <Project>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />

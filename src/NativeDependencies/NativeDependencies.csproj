@@ -1,5 +1,9 @@
-﻿<Project>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project>
   <PropertyGroup>
+    <ProjectGuid>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</ProjectGuid>
     <SubComponent>$(TargetFramework)</SubComponent>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
@@ -9,9 +13,20 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.CoreCLRPAL" Version="$(CoreClrPalVersion)">
+    <PackageReference Condition="!$([MSBuild]::IsOsPlatform('Windows'))" Include="Microsoft.VisualStudio.Debugger.CoreCLRPAL" Version="$(CoreClrPalVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="RemoteUnitTestExecutor" Version="$(RemoteUnitExecutorVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(ApplicationInsightsAgentInterceptVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="MicroBuild.Core" Version="$(MicrobuildCoreVersion)">
       <ExcludeAssets>All</ExcludeAssets>
     </PackageReference>
   </ItemGroup>

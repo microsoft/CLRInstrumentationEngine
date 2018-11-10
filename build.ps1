@@ -40,21 +40,18 @@ function Invoke-ExpressionHelper
     }
 }
 
-function Get-AuthorizedNuget
+function Verify-DotnetExists
 {
-    $nugetPath = "$repoPath\nuget.exe"
-    if (!(Test-Path $nugetPath))
+    $dotnetCommand = Get-Command 'dotnet' -ErrorAction SilentlyContinue
+    if (!$dotnetCommand)
     {
-        # Download nuget.exe
-        Write-Verbose "Downloading NuGet.exe to $nugetPath"
-        $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-        Invoke-WebRequest $sourceNugetExe -OutFile $nugetPath | Out-Null
+        Write-Error "No .NET Core CLI exists. Please go to https://aka.ms/dotnet-download and install the latest SDK."
     }
-
-    # Update to latest version
-    Invoke-Expression -Command "$nugetPath update -self" | Out-Null
-
-    return $nugetPath
+    else
+    {
+        Write-Verbose "Verified .NET Core CLI exists."
+        & 'dotnet' --info
+    }
 }
 
 ###
@@ -132,9 +129,7 @@ $msbuild = "`"$msbuild`""
 ###
 # Local Build
 ###
-
-# Nuget Restore solutions
-$nuget = Get-AuthorizedNuget
+Verify-DotnetExists
 
 if (!$SkipBuild)
 {
@@ -150,9 +145,9 @@ if (!$SkipBuild)
     }
 
     $restoreArgs = @(
-        "restore $repoPath\InstrumentationEngine.sln -configFile $repoPath\NuGet.config"
+        "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
     )
-    Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(
@@ -166,9 +161,9 @@ if (!$SkipBuild)
 if (!$SkipPackaging)
 {
     $restoreArgs = @(
-        "restore $repoPath\src\InstrumentationEngine.Packages.sln -configFile $repoPath\NuGet.config"
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
     )
-    Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(

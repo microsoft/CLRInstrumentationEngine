@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+  <metadata minClientVersion="2.6">
+    <id>Microsoft.ApplicationInsights.Agent.Intercept</id>
+    <version>2.0.1</version>
+    <title>Microsoft ApplicationInsights Instrumentation Intercept Extension</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkID=510709</licenseUrl>
+    <projectUrl>http://go.microsoft.com/fwlink/?LinkID=510710</projectUrl>
+    <iconUrl>http://appanacdn.blob.core.windows.net/cdn/icons/aic.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>This NuGet enables Interception of method calls</description>
+    <releaseNotes />
+    <copyright>Copyright c Microsoft. All Rights Reserved.</copyright>
+    <tags>Instrumentation Extensions Decorate Callbacks Analytics ApplicationInsights Telemetry AppInsights</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="Microsoft.Diagnostics.Tracing.EventSource.Redist" version="1.1.28" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
