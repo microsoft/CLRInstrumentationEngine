@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+    <InstrumentMethod>
+        <ModuleName>DynamicCodeTests_Debug_x64.exe</ModuleName>
+        <MethodName>CallHelloFromCompiledSource2</MethodName>
+        <Instructions>
+            <Instruction>
+                <Opcode>nop</Opcode>
+                <Offset>0</Offset>
+            </Instruction>
+        </Instructions>
+    </InstrumentMethod>
+    <!--
+         Note: For dynamic code that is created via CodeDom, the compiled code will have a
+         valid base address, which means that ICorProfiler interfaces can instrument them.
+         The effect of this is that the following code will remove the forwarded call
+         described above, and CallHelloFromCompiledSource2 will never get Jit compiled.
+         So, the Jit results will have instrumenatation for ForwardCallCompiled(), but not
+         CallHelloFromCompiledSource2
+     -->
+    <InstrumentMethod>
+        <ModuleName>DynamicCodeAssembly.dll</ModuleName>
+        <MethodName>ForwardCallCompiled</MethodName>
+        <Instructions>
+            <Instruction>
+                <InstrumentationType>RemoveAll</InstrumentationType>
+            </Instruction>
+        </Instructions>
+    </InstrumentMethod>
+</InstrumentationTestScript>

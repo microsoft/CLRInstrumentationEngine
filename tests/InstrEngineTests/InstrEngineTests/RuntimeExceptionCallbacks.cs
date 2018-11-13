@@ -24,7 +24,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void RuntimeExceptionCallbacksTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "RuntimeExceptionCallbacks_Debug_x64.exe", testScript: "RuntimeExceptionCallbacks.xml",

@@ -24,14 +24,14 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void SimpleInjectTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InjectToMscorlibTest_Release_x64", "InjectToMscorlibTest.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void SimpleInjectTest32()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InjectToMscorlibTest_Release_x86", "InjectToMscorlibTest32.xml");

@@ -24,49 +24,49 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_RemoveAllTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_RemoveAllTest.xml", "Instru_CreateErrorTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_EmptyMethodRemoveAllTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_EmptyMethodRemoveAllTest.xml", "Instru_EmptyMethodTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_ReplaceTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_ReplaceTest.xml", "Instru_ReplaceTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_ReplaceTest2()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_ReplaceTest2.xml", "Instru_CreateErrorTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_RemoveTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_RemoveTest.xml", "Instru_RemoveTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_RemoveTest2()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_RemoveTest2.xml", "Instru_CreateErrorTest");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Instru_InsterAfterTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("InstruOperationsTests_Release_x64", "Instru_InsertAfterTest.xml", "Instru_InsertAfterTest");

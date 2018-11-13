@@ -24,42 +24,42 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ExceptionTinyMethodTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "ExceptionTinyMethodTest.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ExceptionTinyMethodTest2()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "ExceptionTinyMethodTest2.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ExceptionFatClauseTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "ExceptionFatClauseTest.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void RoundTrip_ExceptionMultiTryCatchTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "RoundTrip_MultiTryCatchTest.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ExceptionMultiTryCatchTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "ExceptionMultiTryCatchTest.xml");
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void ExceptionFinallyTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("ExceptionTests_Release_x64", "ExceptionFinallyTest.xml");

@@ -51,9 +51,12 @@
     <EmbeddedResource Include="EmbeddedResources\RuntimeExceptionCallbacks.cs" />
     <EmbeddedResource Include="EmbeddedResources\InjectToMscorlibTest.cs" />
     <EmbeddedResource Include="EmbeddedResources\HttpMethodTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\DynamicCodeTests.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="RuntimeExceptionCallbacks.cs" />
+    <Compile Include="TestConstants.cs" />
     <Compile Include="TestHttpMethods.cs" />
+    <Compile Include="TestDynamicCode.cs" />
     <Compile Include="TestParameters.cs" />
     <Compile Include="TestInjectToMscorlib.cs" />
     <Compile Include="TestLocals.cs" />
@@ -218,6 +221,14 @@
       <Link>Baselines\TinyMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\DynamicCompiledCode.xml">
+      <Link>Baselines\DynamicCompiledCode.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+      <Content Include="..\Baselines\DynamicEmittedCode.xml">
+          <Link>Baselines\DynamicEmittedCode.xml</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">
       <Link>TestScripts\AddMultiNop_IfTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -360,6 +371,14 @@
     </Content>
     <Content Include="..\TestScripts\TinyMethodTest.xml">
       <Link>TestScripts\TinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\DynamicCompiledCode.xml">
+      <Link>TestScripts\DynamicCompiledCode.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\DynamicEmittedCode.xml">
+      <Link>TestScripts\DynamicEmittedCode.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
