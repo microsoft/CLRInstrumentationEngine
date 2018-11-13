@@ -15,7 +15,7 @@ namespace MicrosoftInstrumentationEngine
     class CMethodInfo;
 
     class __declspec(uuid("CDD3824F-B876-4450-9459-885BA1C21540"))
-    CModuleInfo : public IModuleInfo2, public CDataContainer
+    CModuleInfo : public IModuleInfo3, public CDataContainer
     {
     private:
         CRITICAL_SECTION m_cs;
@@ -28,6 +28,7 @@ namespace MicrosoftInstrumentationEngine
         bool m_bIsIlOnly;
         bool m_bIsMscorlib;
         bool m_bIsDynamic;
+        bool m_bIsLoadedFromDisk;
         bool m_bIsNgen;
         bool m_bIsWinRT;
         bool m_bIsFlatLayout;
@@ -73,6 +74,7 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
             return ImplQueryInterface(
+                static_cast<IModuleInfo3*>(this),
                 static_cast<IModuleInfo2*>(this),
                 static_cast<IModuleInfo*>(this),
                 static_cast<IDataContainer*>(static_cast<CDataContainer*>(this)),
@@ -189,6 +191,11 @@ namespace MicrosoftInstrumentationEngine
     public:
         virtual HRESULT __stdcall GetIsFlatLayout(_Out_ BOOL* pbValue) override;
         virtual HRESULT __stdcall ResolveRva(_In_ DWORD rva, _Out_ LPCBYTE* ppbResolvedAddress) override;
+
+        // IModuleInfo3
+    public:
+        virtual HRESULT __stdcall GetIsLoadedFromDisk(_Out_ BOOL* pbValue) override;
+
 
     private:
         HRESULT GetModuleTypeFlags();

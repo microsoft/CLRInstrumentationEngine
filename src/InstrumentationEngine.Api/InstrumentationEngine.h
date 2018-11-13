@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0620 
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0620 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -178,6 +178,13 @@ typedef interface IModuleInfo IModuleInfo;
 typedef interface IModuleInfo2 IModuleInfo2;
 
 #endif 	/* __IModuleInfo2_FWD_DEFINED__ */
+
+
+#ifndef __IModuleInfo3_FWD_DEFINED__
+#define __IModuleInfo3_FWD_DEFINED__
+typedef interface IModuleInfo3 IModuleInfo3;
+
+#endif 	/* __IModuleInfo3_FWD_DEFINED__ */
 
 
 #ifndef __IEnumModuleInfo_FWD_DEFINED__
@@ -435,7 +442,8 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 1 )
+
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 2 )
 
 
 enum LoggingFlags
@@ -4711,6 +4719,283 @@ EXTERN_C const IID IID_IModuleInfo2;
 
 
 #endif 	/* __IModuleInfo2_INTERFACE_DEFINED__ */
+
+
+#ifndef __IModuleInfo3_INTERFACE_DEFINED__
+#define __IModuleInfo3_INTERFACE_DEFINED__
+
+/* interface IModuleInfo3 */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IModuleInfo3;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("B4C10B86-E3D3-4514-91B9-B2BAA84E7D8B")
+    IModuleInfo3 : public IModuleInfo2
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetIsLoadedFromDisk( 
+            /* [out] */ BOOL *pbValue) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IModuleInfo3Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IModuleInfo3 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IModuleInfo3 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IModuleInfo3 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
+            IModuleInfo3 * This,
+            /* [out] */ BSTR *pbstrModuleName);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
+            IModuleInfo3 * This,
+            /* [out] */ BSTR *pbstrFullPath);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
+            IModuleInfo3 * This,
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
+            IModuleInfo3 * This,
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataImport);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyImport);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataEmit);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyEmit);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
+            IModuleInfo3 * This,
+            /* [out] */ ModuleID *pModuleId);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
+            IModuleInfo3 * This,
+            /* [out] */ GUID *pguidMvid);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
+            IModuleInfo3 * This,
+            /* [out] */ LPCBYTE *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
+            IModuleInfo3 * This,
+            /* [in] */ DWORD cbValue,
+            /* [length_is][size_is][out] */ BYTE *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
+            IModuleInfo3 * This,
+            /* [out] */ DWORD *pdwEntrypointToken);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
+            IModuleInfo3 * This,
+            /* [in] */ DWORD cbValue,
+            /* [length_is][size_is][out] */ BYTE *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
+            IModuleInfo3 * This,
+            /* [in] */ mdToken methodToken);
+        
+        HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
+            IModuleInfo3 * This,
+            /* [out] */ ITypeCreator **ppTypeFactory);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
+            IModuleInfo3 * This,
+            /* [in] */ FunctionID functionID,
+            /* [out] */ IMethodInfo **ppMethodInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
+            IModuleInfo3 * This,
+            /* [in] */ mdToken token,
+            /* [out] */ IMethodInfo **ppMethodInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
+            IModuleInfo3 * This,
+            /* [in] */ IUnknown *pSourceModuleMetadataImport,
+            /* [in] */ LPCBYTE *pSourceImage);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsFlatLayout )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        HRESULT ( STDMETHODCALLTYPE *ResolveRva )( 
+            IModuleInfo3 * This,
+            /* [in] */ DWORD rva,
+            /* [out] */ LPCBYTE *ppbResolvedAddress);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsLoadedFromDisk )( 
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
+        
+        END_INTERFACE
+    } IModuleInfo3Vtbl;
+
+    interface IModuleInfo3
+    {
+        CONST_VTBL struct IModuleInfo3Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IModuleInfo3_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IModuleInfo3_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IModuleInfo3_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IModuleInfo3_GetModuleName(This,pbstrModuleName)	\
+    ( (This)->lpVtbl -> GetModuleName(This,pbstrModuleName) ) 
+
+#define IModuleInfo3_GetFullPath(This,pbstrFullPath)	\
+    ( (This)->lpVtbl -> GetFullPath(This,pbstrFullPath) ) 
+
+#define IModuleInfo3_GetAssemblyInfo(This,ppAssemblyInfo)	\
+    ( (This)->lpVtbl -> GetAssemblyInfo(This,ppAssemblyInfo) ) 
+
+#define IModuleInfo3_GetAppDomainInfo(This,ppAppDomainInfo)	\
+    ( (This)->lpVtbl -> GetAppDomainInfo(This,ppAppDomainInfo) ) 
+
+#define IModuleInfo3_GetMetaDataImport(This,ppMetaDataImport)	\
+    ( (This)->lpVtbl -> GetMetaDataImport(This,ppMetaDataImport) ) 
+
+#define IModuleInfo3_GetMetaDataAssemblyImport(This,ppMetaDataAssemblyImport)	\
+    ( (This)->lpVtbl -> GetMetaDataAssemblyImport(This,ppMetaDataAssemblyImport) ) 
+
+#define IModuleInfo3_GetMetaDataEmit(This,ppMetaDataEmit)	\
+    ( (This)->lpVtbl -> GetMetaDataEmit(This,ppMetaDataEmit) ) 
+
+#define IModuleInfo3_GetMetaDataAssemblyEmit(This,ppMetaDataAssemblyEmit)	\
+    ( (This)->lpVtbl -> GetMetaDataAssemblyEmit(This,ppMetaDataAssemblyEmit) ) 
+
+#define IModuleInfo3_GetModuleID(This,pModuleId)	\
+    ( (This)->lpVtbl -> GetModuleID(This,pModuleId) ) 
+
+#define IModuleInfo3_GetMVID(This,pguidMvid)	\
+    ( (This)->lpVtbl -> GetMVID(This,pguidMvid) ) 
+
+#define IModuleInfo3_GetIsILOnly(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsILOnly(This,pbValue) ) 
+
+#define IModuleInfo3_GetIsMscorlib(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsMscorlib(This,pbValue) ) 
+
+#define IModuleInfo3_GetIsDynamic(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsDynamic(This,pbValue) ) 
+
+#define IModuleInfo3_GetIsNgen(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsNgen(This,pbValue) ) 
+
+#define IModuleInfo3_GetIsWinRT(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsWinRT(This,pbValue) ) 
+
+#define IModuleInfo3_GetIs64bit(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIs64bit(This,pbValue) ) 
+
+#define IModuleInfo3_GetImageBase(This,pbValue)	\
+    ( (This)->lpVtbl -> GetImageBase(This,pbValue) ) 
+
+#define IModuleInfo3_GetCorHeader(This,cbValue,pbValue)	\
+    ( (This)->lpVtbl -> GetCorHeader(This,cbValue,pbValue) ) 
+
+#define IModuleInfo3_GetEntrypointToken(This,pdwEntrypointToken)	\
+    ( (This)->lpVtbl -> GetEntrypointToken(This,pdwEntrypointToken) ) 
+
+#define IModuleInfo3_GetModuleVersion(This,cbValue,pbValue)	\
+    ( (This)->lpVtbl -> GetModuleVersion(This,cbValue,pbValue) ) 
+
+#define IModuleInfo3_RequestRejit(This,methodToken)	\
+    ( (This)->lpVtbl -> RequestRejit(This,methodToken) ) 
+
+#define IModuleInfo3_CreateTypeFactory(This,ppTypeFactory)	\
+    ( (This)->lpVtbl -> CreateTypeFactory(This,ppTypeFactory) ) 
+
+#define IModuleInfo3_GetMethodInfoById(This,functionID,ppMethodInfo)	\
+    ( (This)->lpVtbl -> GetMethodInfoById(This,functionID,ppMethodInfo) ) 
+
+#define IModuleInfo3_GetMethodInfoByToken(This,token,ppMethodInfo)	\
+    ( (This)->lpVtbl -> GetMethodInfoByToken(This,token,ppMethodInfo) ) 
+
+#define IModuleInfo3_ImportModule(This,pSourceModuleMetadataImport,pSourceImage)	\
+    ( (This)->lpVtbl -> ImportModule(This,pSourceModuleMetadataImport,pSourceImage) ) 
+
+
+#define IModuleInfo3_GetIsFlatLayout(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsFlatLayout(This,pbValue) ) 
+
+#define IModuleInfo3_ResolveRva(This,rva,ppbResolvedAddress)	\
+    ( (This)->lpVtbl -> ResolveRva(This,rva,ppbResolvedAddress) ) 
+
+
+#define IModuleInfo3_GetIsLoadedFromDisk(This,pbValue)	\
+    ( (This)->lpVtbl -> GetIsLoadedFromDisk(This,pbValue) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IModuleInfo3_INTERFACE_DEFINED__ */
 
 
 #ifndef __IEnumModuleInfo_INTERFACE_DEFINED__
