@@ -5,6 +5,8 @@
 
 namespace MicrosoftInstrumentationEngine
 {
+    class CProfilerManager;
+
     class __declspec(uuid("{AC76DC45-B4EA-451D-9851-66DA2338D6F2}"))
         CMethodJitInfo : public IMethodJitInfo, public CModuleRefCount
     {
