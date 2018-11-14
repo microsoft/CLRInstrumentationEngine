@@ -40,6 +40,7 @@ set(src_files
     ./InstructionGraph.cpp
     ./LocalVariableCollection.cpp
     ./MethodInfo.cpp
+    ./MethodJitInfo.cpp
     ./MethodLocal.cpp
     ./MethodParameter.cpp
     ./ModifierType.cpp
