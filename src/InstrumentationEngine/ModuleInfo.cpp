@@ -709,7 +709,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::ResolveRva(_In_ DWORD rva, 
     IfNullRet(ppbResolvedAddress);
     *ppbResolvedAddress = nullptr;
 
-    if (m_pModuleBaseLoadAddress == nullptr)
+    if (m_pModuleBaseLoadAddress == 0)
     {
         return E_NOTIMPL;
     }
