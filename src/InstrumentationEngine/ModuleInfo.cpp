@@ -18,6 +18,7 @@ MicrosoftInstrumentationEngine::CModuleInfo::CModuleInfo() :
     m_bIsIlOnly(true),
     m_bIsMscorlib(false),
     m_bIsDynamic(false),
+    m_bIsLoadedFromDisk(false),
     m_bIsNgen(false),
     m_bIsWinRT(false),
     m_bIsFlatLayout(false),
@@ -74,22 +75,22 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::Initialize(
 
     IfFailRet(GetModuleTypeFlags());
 
-	if (!m_bIsDynamic)
-	{
+    if (!m_bIsDynamic)
+    {
         // Note that this must be called _after_ GetModuleTypeFlags so that we know whether
         // module is loaded flat or mapped.
-		IfFailRet(ReadModuleHeaders());
+        IfFailRet(ReadModuleHeaders());
 
-		// check if there is a chance of any native code in the assembly
-		if (!m_pCorHeader || IsFlagSet(m_pCorHeader->Flags, COMIMAGE_FLAGS_ILONLY))
-		{
-			m_bIsIlOnly = false;
-		}
+        // check if there is a chance of any native code in the assembly
+        if (!m_pCorHeader || IsFlagSet(m_pCorHeader->Flags, COMIMAGE_FLAGS_ILONLY))
+        {
+            m_bIsIlOnly = false;
+        }
 
-		IfFailRet(DetermineIfIsMscorlib());
+        IfFailRet(DetermineIfIsMscorlib());
 
-		IfFailRet(ReadFixedFileVersion());
-	}
+        IfFailRet(ReadFixedFileVersion());
+    }
 
     return S_OK;
 }
@@ -390,6 +391,20 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetIsDynamic(_Out_ BOOL* pb
     return hr;
 }
 
+HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetIsLoadedFromDisk(_Out_ BOOL* pbValue)
+{
+    HRESULT hr = S_OK;
+
+    CLogging::LogMessage(_T("Begin CModuleInfo::GetIsLoadedFromDisk"));
+
+    IfNullRetPointer(pbValue);
+
+    *pbValue = m_bIsLoadedFromDisk;
+
+    CLogging::LogMessage(_T("End CModuleInfo::GetIsLoadedFromDisk"));
+    return hr;
+}
+
 HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetIsNgen(_Out_ BOOL* pbValue)
 {
     HRESULT hr = S_OK;
@@ -577,19 +592,14 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetModuleTypeFlags()
     CComPtr<CProfilerManager> pProfilerManager;
     IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
 
+    // A module is considered dynamic if and only if the base load address is 0
+    m_bIsDynamic = m_pModuleBaseLoadAddress == 0;
+
     if(pProfilerManager->GetAttachedClrVersion() < ClrVersion_4 )
     {
-        if( m_bstrModuleName.Length() == 0 )
-        {
-            //CLRv2 returns an emtpy string for all dynamic modules (both ref.Emit and Assembly.Load(byte[])
-            //In any case, we're not interested in this module.
-            m_bIsDynamic = true;
-        }
-        else
-        {
-            m_bIsDynamic = false;
-
 #ifndef PLATFORM_UNIX
+        if (m_bstrModuleName.Length() != 0)
+        {
             //HACK: Figure out whether this is Ngen module by looking for <modulename>.ni.dll in the raw module name.
             tstring moduleName = m_bstrModuleName;
             WCHAR* pExtension = PathFindExtension(moduleName.c_str());
@@ -599,8 +609,9 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetModuleTypeFlags()
 
             HMODULE hNgen = GetModuleHandle(modifiedModuleName.c_str());
             m_bIsNgen = (hNgen != NULL);
-#endif
         }
+#endif
+        m_bIsLoadedFromDisk = !m_bIsDynamic && (m_bstrModulePath.Length() != 0) && (m_bstrModuleName.Length() != 0);
     }
     else
     {
@@ -614,7 +625,8 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetModuleTypeFlags()
         DWORD dwModuleFlags = 0;
         IfFailRet(pCorInfo3->GetModuleInfo2(m_moduleID, nullptr, 0, nullptr, nullptr, nullptr, &dwModuleFlags));
 
-        m_bIsDynamic = IsFlagClear(dwModuleFlags, COR_PRF_MODULE_DISK);
+        m_bIsLoadedFromDisk = IsFlagSet(dwModuleFlags, COR_PRF_MODULE_DISK);
+
         m_bIsNgen = IsFlagSet(dwModuleFlags, COR_PRF_MODULE_NGEN);
         m_bIsWinRT = IsFlagSet(dwModuleFlags, COR_PRF_MODULE_WINDOWS_RUNTIME);
         m_bIsFlatLayout = IsFlagSet(dwModuleFlags, COR_PRF_MODULE_FLAT_LAYOUT);
@@ -697,6 +709,11 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::ResolveRva(_In_ DWORD rva, 
     IfNullRet(ppbResolvedAddress);
     *ppbResolvedAddress = nullptr;
 
+    if (m_pModuleBaseLoadAddress == 0)
+    {
+        return E_NOTIMPL;
+    }
+
     IfNullRet(m_pbSectionStart);
 
     if (m_bIsFlatLayout)
@@ -766,7 +783,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::ReadFixedFileVersion()
     // TODO: (linux)
     CLogging::LogMessage(_T("Begin CModuleInfo::ReadFixedFileVersion"));
 
-    if (!m_bIsDynamic)
+    if (m_bIsLoadedFromDisk)
     {
         DWORD unused;
         DWORD dwAllocSize = GetFileVersionInfoSize(m_bstrModulePath, &unused);
@@ -792,7 +809,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::ReadFixedFileVersion()
     }
     else
     {
-        CLogging::LogMessage(_T("CModuleInfo::ReadFixedFileVersion - Skipping fixed file version due to dynamic module"));
+        CLogging::LogMessage(_T("CModuleInfo::ReadFixedFileVersion - Skipping fixed file version due to in-memory module"));
     }
 
     CLogging::LogMessage(_T("End CModuleInfo::ReadFixedFileVersion"));
