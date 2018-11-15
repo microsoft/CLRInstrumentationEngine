@@ -3,6 +3,7 @@
       -->
 <Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\NuGet.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -13,13 +14,8 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.nuspec</NuspecFile>
-    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);authors=$(PackageAuthors)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);configuration=$(Configuration)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);scriptdir=$(MSBuildProjectDirectory)</NuspecProperties>
-    <NuspecBasePath>$(BinRoot)</NuspecBasePath>
-    <NuspecOutputDirectory>$(OutDir)\$(Platform)</NuspecOutputDirectory>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{0B12FD8F-83DE-4A80-9BC1-ABE67E0E808A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -30,7 +26,7 @@
     <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
+    <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
     <None Include="install.ps1">
@@ -44,8 +40,6 @@
       <!--NuGetBinInput-->
       <PropertyGroup>
         <NugetSuffix>$(Platform)_$(LinuxDistro)</NugetSuffix>
-        <NuspecProperties>$(NuspecProperties);bindir=$(NugetBinInput)</NuspecProperties>
-        <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>
       </PropertyGroup>
     </When>
     <Otherwise>
@@ -90,11 +84,13 @@
       <PropertyGroup>
         <NugetBinInput>$(BinRoot)\$(Configuration)\$(Platform)\InstrumentationEngine</NugetBinInput>
         <NugetSuffix>$(Platform)</NugetSuffix>
-        <NuspecProperties>$(NuspecProperties);bindir=$(NugetBinInput)</NuspecProperties>
-        <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>
       </PropertyGroup>
     </Otherwise>
   </Choose>
+  <PropertyGroup>
+    <NuspecProperties>$(NuspecProperties);bindir=$(NugetBinInput)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>
+  </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
 </Project>

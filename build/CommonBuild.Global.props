@@ -6,7 +6,7 @@
 		<!-- It defines common build paths and infrastructure.                                                                -->
 		<!-- Other products / repositories using the same build pattern will have an own copy of copy this file               -->
 
-		<!-- Project file location for the Import statement:                                                                                         -->
+		<!-- Project file location for the Import statement:                                                                  -->
 		<!--  * You MUST include this file towards the bottom of each respective project file, *                              -->
 		<!--  * BELOW all local definitions, RIGHT ABOVE the targets import.                   *                              -->
 		<!--  * For example, right above this line:                                            *                              -->
@@ -97,7 +97,7 @@
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
-		<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj</BaseIntermediateOutputPath>
+				<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj</BaseIntermediateOutputPath>
 				<BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
 				<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -123,7 +123,7 @@
 				<PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\</PackagesDir>
 				<PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
 
-		<BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
+				<BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
 				<BuildFilesDir>$([System.IO.Path]::GetFullPath( $(BuildFilesDir) ))</BuildFilesDir>
 
 		</PropertyGroup>

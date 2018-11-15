@@ -3,6 +3,7 @@
       -->
 <Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\NuGet.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -13,14 +14,8 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.Headers.nuspec</NuspecFile>
-    <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);authors=$(PackageAuthors)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);configuration=$(Configuration)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);outdir=$(BinRoot)\$(Configuration)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);apidir=$(InstrumentationEngineApiInc)</NuspecProperties>
-    <NuspecBasePath>$(BinRoot)</NuspecBasePath>
-    <NuspecOutputDirectory>$(OutDir)\$(Platform)</NuspecOutputDirectory>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,7 +28,7 @@
     <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
+    <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />

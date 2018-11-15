@@ -153,9 +153,6 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-# nuget.exe
-nuget.exe
-
 # Build results
 OperationTracking/Msbuild.OperationTracking.Mixed Platforms.*
 

@@ -147,7 +147,7 @@ if (!$SkipBuild)
     $restoreArgs = @(
         "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
     )
-    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(
@@ -163,7 +163,7 @@ if (!$SkipPackaging)
     $restoreArgs = @(
         "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
     )
-    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(

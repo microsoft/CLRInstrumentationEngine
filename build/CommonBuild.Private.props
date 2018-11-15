@@ -45,7 +45,8 @@
     <CoreClrPalVersion>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\src\unix\dependencies\CoreCLRPAL.Version.txt'))</CoreClrPalVersion>
     <RemoteUnitExecutorVersion>2.5.1</RemoteUnitExecutorVersion>
     <ApplicationInsightsAgentInterceptVersion>2.4.0</ApplicationInsightsAgentInterceptVersion>
-    <MicrobuildCoreVersion>0.2.0</MicrobuildCoreVersion>
+    <LegacyApplicationInsightsAgentInterceptVersion>2.0.1</LegacyApplicationInsightsAgentInterceptVersion>
+    <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Configuration">
