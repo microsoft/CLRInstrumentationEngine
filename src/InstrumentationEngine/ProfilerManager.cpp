@@ -1745,39 +1745,49 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
 
             if (SUCCEEDED(hr))
             {
-                //Get Name Here and output
-                CComBSTR name;
-                if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
+                CComPtr<IModuleInfo> pModuleInfo;
+                IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+
+                BOOL isDynamic = false;
+                IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
+
+                // We cannot instrument modules that have no image base
+                if (!isDynamic)
                 {
-                    CLogging::LogMessage(_T("JITCompilation FullMethodName %s"), name.m_str);
-                }
-                else
-                {
-                    CLogging::LogMessage(_T("Method name failed"));
-                }
+                    //Get Name Here and output
+                    CComBSTR name;
+                    if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
+                    {
+                        CLogging::LogMessage(_T("JITCompilation FullMethodName %s"), name.m_str);
+                    }
+                    else
+                    {
+                        CLogging::LogMessage(_T("Method name failed"));
+                    }
 
-                // Query if the instrumentation methods want to instrument and then have them actually instrument.
-                vector<CComPtr<IInstrumentationMethod>> toInstrument;
-                IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
+                    // Query if the instrumentation methods want to instrument and then have them actually instrument.
+                    vector<CComPtr<IInstrumentationMethod>> toInstrument;
+                    IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
 
-                // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-                // method body
-                IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+                    // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+                    // method body
+                    IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
 
-                // Instrumentation methods to most of their instrumentation during InstrumentMethod
-                IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+                    // Instrumentation methods to most of their instrumentation during InstrumentMethod
+                    IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
 
-                // Send the event to the raw callbacks to give them a chance to instrument.
-                IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+                    // Send the event to the raw callbacks to give them a chance to instrument.
+                    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
 
-                // If the method was instrumetned
-                if (pMethodInfo->IsInstrumented())
-                {
-                    // Give the final instrumentation to the clr.
-                    IfFailRet(pMethodInfo->ApplyFinalInstrumentation(false));
+                    // If the method was instrumetned
+                    if (pMethodInfo->IsInstrumented())
+                    {
+                        // Give the final instrumentation to the clr.
+                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation(false));
 
-                    // Don't fail out with this call. It is too late to undo anything with a failure.
-                    CallOnInstrumentationComplete(pMethodInfo, false);
+                        // Don't fail out with this call. It is too late to undo anything with a failure.
+                        CallOnInstrumentationComplete(pMethodInfo, false);
+                    }
                 }
             }
         }
@@ -2974,36 +2984,47 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
         };
         CRemoveMethodInfoAfterRejit methodInfoRemover(pMethodInfo->GetModuleInfo(), methodToken);
 
-        // Query if the instrumentation methods want to instrument and then have them actually instrument.
-        vector<CComPtr<IInstrumentationMethod>> toInstrument;
-        IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
+        CComPtr<IModuleInfo> pModuleInfo;
+        IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-        // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-        // method body
-        IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+        BOOL isDynamic = false;
+        IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
 
-        // Instrumentation methods to most of their instrumentation during InstrumentMethod
-        IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
-
-        CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
-        pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
-
-        if (!pWrappedCorProfilerFunctionControl)
+        // It is not possible to instrument methods that don't have an image base.
+        if (!isDynamic)
         {
-            return E_OUTOFMEMORY;
-        }
 
-        // Send the event to the raw callbacks to give them a chance to instrument.
-        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
+            // Query if the instrumentation methods want to instrument and then have them actually instrument.
+            vector<CComPtr<IInstrumentationMethod>> toInstrument;
+            IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
 
-        // If the method was instrumetned
-        if (pMethodInfo->IsInstrumented())
-        {
-            // Give the final instrumentation to the clr.
-            IfFailRet(pMethodInfo->ApplyFinalInstrumentation(true));
+            // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+            // method body
+            IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
 
-            // Don't fail out with this call. It is too late to undo anything with a failure.
-            CallOnInstrumentationComplete(pMethodInfo, true);
+            // Instrumentation methods to most of their instrumentation during InstrumentMethod
+            IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+
+            CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
+            pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
+
+            if (!pWrappedCorProfilerFunctionControl)
+            {
+                return E_OUTOFMEMORY;
+            }
+
+            // Send the event to the raw callbacks to give them a chance to instrument.
+            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
+
+            // If the method was instrumetned
+            if (pMethodInfo->IsInstrumented())
+            {
+                // Give the final instrumentation to the clr.
+                IfFailRet(pMethodInfo->ApplyFinalInstrumentation(true));
+
+                // Don't fail out with this call. It is too late to undo anything with a failure.
+                CallOnInstrumentationComplete(pMethodInfo, true);
+            }
         }
 
         // Don't call cleanup on method info for rejit as we don't have the function id and the methodinfo only needs to survive for the
@@ -3246,12 +3267,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
     LPCBYTE pModuleBaseLoadAddress = nullptr;
     AssemblyID assemblyId;
     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, &pModuleBaseLoadAddress, cchModulePath, &cchModulePath, wszModulePath, &assemblyId));
-
-    // If no base address (happens on ref emit assemblies), bail out as no module info can be created.
-    if (pModuleBaseLoadAddress == nullptr)
-    {
-        return E_FAIL;
-    }
 
     CComPtr<IMetaDataAssemblyImport> pMetadataAssemblyImport;
     hr = m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead, IID_IMetaDataAssemblyImport, (IUnknown**)&pMetadataAssemblyImport);

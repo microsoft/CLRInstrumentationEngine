@@ -28,7 +28,7 @@ namespace InstrEngineTests
         /// </summary>
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_RoundTrip_IfTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "BasicManagedTests_Release_x64.exe", testScript: "RoundTrip_IfTest.xml",
@@ -38,7 +38,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_RoundTrip_SwitchTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "BasicManagedTests_Release_x64.exe", testScript: "RoundTrip_SwitchTest.xml",
@@ -48,7 +48,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_RoundTrip_ForTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "BasicManagedTests_Release_x64.exe", testScript: "RoundTrip_ForTest.xml",
@@ -58,7 +58,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_AddNop_SwitchTest2()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "BasicManagedTests_Release_x64.exe", testScript: "AddNop_SwitchTest2.xml",
@@ -68,7 +68,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_ExceptionFinallyTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "ExceptionTests_Release_x64.exe", testScript: "ExceptionFinallyTest.xml",
@@ -78,7 +78,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_ExceptionMultiTryCatchTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "ExceptionTests_Release_x64.exe", testScript: "ExceptionMultiTryCatchTest.xml",
@@ -88,7 +88,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_Instru_RemoveAllTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "InstruOperationsTests_Release_x64.exe", testScript: "Instru_RemoveAllTest.xml",
@@ -98,7 +98,7 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(TestConstants.TestTimeout)]
         public void Rejit_Instru_ReplaceTest()
         {
             ProfilerHelpers.LaunchAppUnderProfiler(testApp: "InstruOperationsTests_Release_x64.exe", testScript: "Instru_ReplaceTest.xml",

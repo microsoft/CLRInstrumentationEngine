@@ -21,7 +21,7 @@ namespace InstrEngineTests
         private const string X86BinarySuffix = "x86";
         private const string X64BinarySuffix = "x64";
 
-        private static string[] TestAppFilePrefixes = new string[] { "InjectToMscorlibTest", "BasicManagedTests", "BasicManagedTests2", "ExceptionTests", "InstruOperationsTests", "MethodReplacementTests", "LocalTests", "RuntimeExceptionCallbacks", "HttpMethodTests" };
+        private static string[] TestAppFilePrefixes = new string[] { "InjectToMscorlibTest", "BasicManagedTests", "BasicManagedTests2", "ExceptionTests", "InstruOperationsTests", "MethodReplacementTests", "LocalTests", "RuntimeExceptionCallbacks", "HttpMethodTests", "DynamicCodeTests" };
 
         internal static void ComplileCSharpTestCode(string path)
         {

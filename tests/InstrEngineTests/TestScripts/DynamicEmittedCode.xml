@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+    <InstrumentMethod>
+        <ModuleName>DynamicCodeTests_Debug_x64.exe</ModuleName>
+        <MethodName>CallHelloFromEmittedAssembly2</MethodName>
+        <Instructions>
+            <Instruction>
+                <Opcode>nop</Opcode>
+                <Offset>0</Offset>
+            </Instruction>
+        </Instructions>
+    </InstrumentMethod>
+    <!--
+         Note: For dynamic code that is created via Reflection.Emit, the compiled code will not have a
+         valid base address, which means that ICorProfiler interfaces cannot instrument them.
+         The effect of this is that the following code will not remove the forwarded call
+         described above, so CallHelloFromEmittedAssembly2 will get Jit compiled.
+         So, the Jit results will have instrumenatation for CallHelloFromEmittedAssembly2, but not
+         ForwardCallEmitted
+     -->
+    <InstrumentMethod>
+        <ModuleName>RefEmit_InMemoryManifestModule</ModuleName>
+        <MethodName>ForwardCallEmitted</MethodName>
+        <Instructions>
+            <Instruction>
+                <InstrumentationType>RemoveAll</InstrumentationType>
+            </Instruction>
+        </Instructions>
+    </InstrumentMethod>
+</InstrumentationTestScript>

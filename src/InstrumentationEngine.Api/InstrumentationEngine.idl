@@ -37,6 +37,7 @@ library MicrosoftInstrumentationEngine
     interface IEnumAssemblyInfo;
     interface IModuleInfo;
     interface IModuleInfo2;
+    interface IModuleInfo3;
     interface IEnumModuleInfo;
     interface IAppDomainInfo;
     interface IEnumAppDomainInfo;
@@ -58,7 +59,7 @@ library MicrosoftInstrumentationEngine
     // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number, 
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 1;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 2;
 
     [
         object,
@@ -877,11 +878,18 @@ library MicrosoftInstrumentationEngine
 
         HRESULT GetIsILOnly([out] BOOL* pbValue);
         HRESULT GetIsMscorlib([out] BOOL* pbValue);
+
+        // Gets a value indicating whether or not this module is a dynamic modules.
+        // Note, dynamic modules have a base load address of 0, and any attempts
+        // to resolve an address to an RVA in this module will result in an
+        // error.
         HRESULT GetIsDynamic([out] BOOL* pbValue);
         HRESULT GetIsNgen([out] BOOL* pbValue);
         HRESULT GetIsWinRT([out] BOOL* pbValue);
         HRESULT GetIs64bit([out] BOOL* pbValue);
 
+        // Returns the image base for the loaded module. Note, if this module represents a dynamic module,
+        // then the image base will be 0. 
         HRESULT GetImageBase([out] LPCBYTE* pbValue);
 
         // Return the IMAGE_COR20_HEADER structure
@@ -922,7 +930,24 @@ library MicrosoftInstrumentationEngine
     interface IModuleInfo2 : IModuleInfo
     {
         HRESULT GetIsFlatLayout([out] BOOL* pbValue);
+
+        // Attempts to resolve the rva relative to this module. Note,
+        // this method is not implemented for dynamic modules, which
+        // do not have a module base address. In such cases, ResolveRva will return
+        // E_NOT_IMPL. Clients should call GetImageBase(), or GetIsDynamic() first
+        // to ensure that the module base address is not 0.
         HRESULT ResolveRva([in] DWORD rva, [out] LPCBYTE* ppbResolvedAddress);
+    };
+
+    [
+        object,
+        uuid(B4C10B86-E3D3-4514-91B9-B2BAA84E7D8B),
+        pointer_default(unique)
+    ]
+    interface IModuleInfo3 : IModuleInfo2
+    {
+        // Gets a value indicating whether or not this module was loaded from disk.
+        HRESULT GetIsLoadedFromDisk([out] BOOL* pbValue);
     };
 
     [

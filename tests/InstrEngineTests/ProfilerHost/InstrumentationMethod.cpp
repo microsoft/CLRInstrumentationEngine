@@ -128,6 +128,10 @@ HRESULT CInstrumentationMethod::LoadTestScript()
             ProcessInjectAssembly(pCurrChildNode, spNewInjectAssembly);
             m_spInjectAssembly = spNewInjectAssembly;
         }
+        else if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        {
+            continue;
+        }
         else
         {
             ATLASSERT(!L"Invalid configuration. Element should be InstrumentationMethod");
