@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 script_dir=`dirname $0`
 
@@ -304,7 +304,7 @@ restore_build_dependencies()
     fi
 
     # Restore NuGet packages
-    dotnet restore "$EnlistmentRoot/src/NativeDependencies/NativeDependencies.csproj" \
+    dotnet restore "$EnlistmentRoot/src/Dependencies/NativeDependencies.csproj" \
         --configfile "$__NuGetConfigPath" \
         --packages "$__PackagesDir"
 
