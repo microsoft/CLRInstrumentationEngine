@@ -47,6 +47,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dependencies\LegacyDependencies.csproj">
+      <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.AI.Agent.Intercept">
       <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept\$(LegacyApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>

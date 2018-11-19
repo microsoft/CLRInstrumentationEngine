@@ -81,9 +81,9 @@
 				<!--  definitions, as well as the CommonBuild.Private.props file which you need to edit to overwrite definitions  -->
 				<!--  made in the current file.                                                                                   -->
 
-		<BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
+				<BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
 
-		<BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
+				<BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
 				<BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>
 
 				<RelativeOutputPathBase>$(MSBuildProjectDirectory.Substring($(EnlistmentRoot.Length)))</RelativeOutputPathBase>

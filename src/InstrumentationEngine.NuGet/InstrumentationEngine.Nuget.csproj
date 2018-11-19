@@ -14,7 +14,6 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.nuspec</NuspecFile>
-    <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);scriptdir=$(MSBuildProjectDirectory)</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{0B12FD8F-83DE-4A80-9BC1-ABE67E0E808A}</ProjectGuid>

@@ -14,7 +14,6 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.Headers.nuspec</NuspecFile>
-    <NuspecProperties>$(NuspecProperties);outdir=$(BinRoot)\$(Configuration)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);apidir=$(InstrumentationEngineApiInc)</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}</ProjectGuid>

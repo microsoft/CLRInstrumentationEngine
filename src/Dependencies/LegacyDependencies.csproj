@@ -12,7 +12,7 @@
       where multiple dotnet core projects override each other's project.assets.json file,
       which defines the package depdencies of that project.
      -->
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\..\obj\LegacyDependencies</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\obj\LegacyDependencies</BaseIntermediateOutputPath>
   </PropertyGroup>
   <!-- This must be a relative or absolute path, not computed, so that dotnet restore on Linux finds this correctly. -->
   <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />

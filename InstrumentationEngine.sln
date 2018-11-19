@@ -60,9 +60,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RawProfilerHook", "tests\Ra
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.Api", "src\InstrumentationEngine.Api\InstrumentationEngine.Api.vcxproj", "{D68DA75E-9194-44CB-9196-FF7FDC7EA3D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeDependencies", "src\NativeDependencies\NativeDependencies.csproj", "{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeDependencies", "src\Dependencies\NativeDependencies.csproj", "{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyDependencies", "src\NativeDependencies\LegacyDependencies.csproj", "{C9F8EA17-5B45-4327-8640-7F2C82217DC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyDependencies", "src\Dependencies\LegacyDependencies.csproj", "{C9F8EA17-5B45-4327-8640-7F2C82217DC2}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
