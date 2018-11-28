@@ -171,3 +171,6 @@ dev.local.props
 *.VC.opendb
 *.VC.db
 dlldata.c
+
+# Script generated files
+build.sem
