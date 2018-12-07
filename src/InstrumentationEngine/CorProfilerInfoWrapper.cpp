@@ -55,6 +55,18 @@ MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::CCorProfilerInfoWrapper
     {
         return;
     }
+
+    hr = m_pRealCorProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo8), (LPVOID*)&m_pRealCorProfilerInfo8);
+    if (FAILED(hr))
+    {
+        return;
+    }
+
+    hr = m_pRealCorProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo9), (LPVOID*)&m_pRealCorProfilerInfo9);
+    if (FAILED(hr))
+    {
+        return;
+    }
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::QueryInterface(
@@ -114,7 +126,18 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::QueryInterface(
         *ppvObject = (ICorProfilerInfo7*)this;
         return S_OK;
     }
-
+    else if (riid == __uuidof(ICorProfilerInfo8) && m_pRealCorProfilerInfo8 != NULL)
+    {
+        AddRef();
+        *ppvObject = (ICorProfilerInfo7*)this;
+        return S_OK;
+    }
+    else if (riid == __uuidof(ICorProfilerInfo9) && m_pRealCorProfilerInfo9 != NULL)
+    {
+        AddRef();
+        *ppvObject = (ICorProfilerInfo7*)this;
+        return S_OK;
+    }
     return E_NOINTERFACE;
 }
 
@@ -1019,4 +1042,68 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::ReadInMemorySym
         countSymbolBytes,
         pCountSymbolBytesRead
     );
+}
+
+
+// ICorProfilerInfo8
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::IsFunctionDynamic(
+    _In_ FunctionID functionId,
+    _Out_ BOOL *isDynamic)
+{
+    IfNullRet(m_pRealCorProfilerInfo8);
+    return m_pRealCorProfilerInfo8->IsFunctionDynamic(functionId, isDynamic);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFromIP3(
+    _In_ LPCBYTE ip,
+    _Out_ FunctionID *functionId,
+    _Out_ ReJITID *pReJitId)
+{
+    IfNullRet(m_pRealCorProfilerInfo8);
+    return m_pRealCorProfilerInfo8->GetFunctionFromIP3(ip, functionId, pReJitId);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetDynamicFunctionInfo(
+    _In_ FunctionID functionId,
+    _Out_ ModuleID *moduleId,
+    _Out_ PCCOR_SIGNATURE *ppvSig,
+    _Out_ ULONG *pbSig,
+    _In_ ULONG cchName,
+    _Out_ ULONG *pcchName,
+    _Out_writes_(cchName) WCHAR wszName[])
+{
+    IfNullRet(m_pRealCorProfilerInfo8);
+    return m_pRealCorProfilerInfo8->GetDynamicFunctionInfo(functionId, moduleId, ppvSig, pbSig, cchName, pcchName, wszName);
+}
+
+// ICorProfilerInfo9
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetNativeCodeStartAddresses(
+    _In_ FunctionID functionID,
+    _In_ ReJITID reJitId,
+    _In_ ULONG32 cCodeStartAddresses,
+    _Out_ ULONG32 *pcCodeStartAddresses,
+    _Out_writes_(cCodeStartAddresses) UINT_PTR codeStartAddresses[])
+{
+    IfNullRet(m_pRealCorProfilerInfo9);
+    return m_pRealCorProfilerInfo9->GetNativeCodeStartAddresses(functionID, reJitId, cCodeStartAddresses, pcCodeStartAddresses, codeStartAddresses);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILToNativeMapping3(
+    _In_ UINT_PTR pNativeCodeStartAddress,
+    _In_ ULONG32 cMap,
+    _Out_ ULONG32 *pcMap,
+    _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[])
+{
+    IfNullRet(m_pRealCorProfilerInfo9);
+    return m_pRealCorProfilerInfo9->GetILToNativeMapping3(pNativeCodeStartAddress, cMap, pcMap, map);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo4(
+    _In_ UINT_PTR pNativeCodeStartAddress,
+    _In_ ULONG32 cCodeInfos,
+    _Out_ ULONG32 *pcCodeInfos,
+    _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[])
+{
+    IfNullRet(m_pRealCorProfilerInfo9);
+    return m_pRealCorProfilerInfo9->GetCodeInfo4(pNativeCodeStartAddress, cCodeInfos, pcCodeInfos, codeInfos);
 }
