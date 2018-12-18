@@ -63,7 +63,7 @@
         <Destination>$(PackageVersion)\Instrumentation64</Destination>
       </ZipItem>
       <ZipItem Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*base*"
-               Exclude="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*.pdb">
+               Exclude="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*.pdb">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
       <ZipItem Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\Microsoft.InstrumentationEngine.Extensions.config">
