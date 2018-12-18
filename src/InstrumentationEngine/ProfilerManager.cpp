@@ -3761,7 +3761,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstr
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(FunctionID functionId)
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(_In_ FunctionID functionId)
 {
     HRESULT hr;
     ClassID classId;
@@ -3771,7 +3771,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationS
     return ClearILTransformationStatus(moduleId, token);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(ModuleID moduleId, mdMethodDef functionToken)
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(_In_ ModuleID moduleId, _In_ mdMethodDef functionToken)
 {
     HRESULT hr;
     CComPtr<IModuleInfo> pModuleInfo;
