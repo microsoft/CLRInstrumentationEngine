@@ -5,7 +5,7 @@
 #include "InstrumentationEngine.h"
 #include "InstrumentationMethod.h"
 #ifndef PLATFORM_UNIX
-#include "SingatureValidator.h"
+#include "SignatureValidator.h"
 #endif
 
 
@@ -93,7 +93,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(_In_ 
     hr = m_pInstrumentationMethod->Initialize(pProfilerManager);
     if (FAILED(hr))
     {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - failed to initialize instrumentation method PID: %u hr: %x name: ") WCHAR_SPEC, GetCurrentProcessId(), hr, (const WCHAR*)m_bstrName);
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - failed to initialize instrumentation method PID: %u hr: %x name: %s"), GetCurrentProcessId(), hr, m_bstrName.m_str);
         return hr;
     }
 

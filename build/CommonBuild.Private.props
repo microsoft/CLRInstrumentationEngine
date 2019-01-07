@@ -11,6 +11,7 @@
 
     <PropertyGroup>
         <CommonBuildPrivatePropsIncluded>True</CommonBuildPrivatePropsIncluded>
+        <ResolveNuGetPackages>false</ResolveNuGetPackages>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -40,7 +41,12 @@
     <InstrumentationEngineApiInc>$(EnlistmentRoot)\src\InstrumentationEngine.Api</InstrumentationEngineApiInc>
   </PropertyGroup>
   <PropertyGroup>
+    <!-- version stored in text file for linux builds -->
     <CoreClrPalVersion>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\src\unix\dependencies\CoreCLRPAL.Version.txt'))</CoreClrPalVersion>
+    <RemoteUnitExecutorVersion>2.5.1</RemoteUnitExecutorVersion>
+    <ApplicationInsightsAgentInterceptVersion>2.4.0</ApplicationInsightsAgentInterceptVersion>
+    <LegacyApplicationInsightsAgentInterceptVersion>2.0.1</LegacyApplicationInsightsAgentInterceptVersion>
+    <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="Configuration">

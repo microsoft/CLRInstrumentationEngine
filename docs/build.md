@@ -25,6 +25,7 @@ Alternatively, you may run the script `[CLRInstrumentationEngine repo]\build.ps1
 |-|-|
 IncludeTests|Runs unit tests after build.
 SkipBuild|Skips building the solutions. Use this with `-IncludeTests` flag to only run tests.
+SkipPackaging|Skips building the package solution. This prevents generating zip files, nugets, and any other artifacts.
 Release|Cause build to run with `Release` configuration. By default, build uses `Debug` configuration.
 Verbose|Sets msbuild verbosity to `normal`. By default, verbosity is set to `ErrorsOnly`.
 

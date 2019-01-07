@@ -49,12 +49,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RemoteUnitTestExecutor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RemoteUnitTestExecutor.Host_x86, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor.Host_x86">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -68,9 +68,6 @@
     <Compile Include="TestEngine\TestEngine.cs" />
     <Compile Include="TestsRawProfilerHookAttach.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

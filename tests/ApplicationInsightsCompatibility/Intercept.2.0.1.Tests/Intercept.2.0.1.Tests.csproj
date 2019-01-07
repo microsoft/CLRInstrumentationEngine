@@ -47,16 +47,23 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    <ProjectReference Include="..\Dependencies\LegacyDependencies.csproj">
+      <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AI.Agent.Intercept">
+      <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept\$(LegacyApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RemoteUnitTestExecutor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RemoteUnitTestExecutor.Host_x86, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor.Host_x86">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -64,9 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />

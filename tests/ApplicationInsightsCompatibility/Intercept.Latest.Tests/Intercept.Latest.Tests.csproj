@@ -49,16 +49,23 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    <ProjectReference Include="..\Dependencies\NativeDependencies.csproj">
+      <Project>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AI.Agent.Intercept">
+      <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept\$(ApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RemoteUnitTestExecutor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RemoteUnitTestExecutor.Host_x86, Version=2.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <HintPath>..\..\..\..\packages\RemoteUnitTestExecutor.2.5.1\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
+    <Reference Include="RemoteUnitTestExecutor.Host_x86">
+      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -70,11 +77,6 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="InterceptDecorateTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />

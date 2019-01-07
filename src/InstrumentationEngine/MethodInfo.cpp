@@ -308,7 +308,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeMethodSignature(_
     }
     else
     {
-        CLogging::LogError(_T("Failed to parse methodsignature for ") WCHAR_SPEC _T(" with error code %x"), m_bstrMethodFullName.m_str, hr);
+        CLogging::LogError(_T("Failed to parse methodsignature for %s with error code %x"), m_bstrMethodFullName.m_str, hr);
     }
 
     return hr;
@@ -1708,8 +1708,8 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
 	CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
     CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
-    CLogging::LogDumpMessage(_T("    <Name>") WCHAR_SPEC _T("</Name>\r\n"), bstrMethodName.m_str);
-    CLogging::LogDumpMessage(_T("    <FullName>") WCHAR_SPEC _T("</FullName>\r\n"), bstrMethodFullName.m_str);
+    CLogging::LogDumpMessage(_T("    <Name>%s</Name>\r\n"), bstrMethodName.m_str);
+    CLogging::LogDumpMessage(_T("    <FullName>%s</FullName>\r\n"), bstrMethodFullName.m_str);
     CLogging::LogDumpMessage(_T("    <ClassID Volatile=\"True\">0x%08x</ClassID>\r\n"), classId);
     CLogging::LogDumpMessage(_T("    <FunctionID>0x%08x</FunctionID>\r\n"), isStatic);
     CLogging::LogDumpMessage(_T("    <MethodToken>0x%08x</MethodToken>\r\n"), methodToken);
@@ -1725,7 +1725,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
     CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>\r\n"), declaringTypeToken);
 
     tstring strRetValType = GetCorElementTypeString(pReturnType);
-    CLogging::LogDumpMessage(_T("    <RetValueCorElementType>") WCHAR_SPEC _T("</RetValueCorElementType>\r\n"), strRetValType.c_str());
+    CLogging::LogDumpMessage(_T("    <RetValueCorElementType>%s</RetValueCorElementType>\r\n"), strRetValType.c_str());
     CLogging::LogDumpMessage(_T("    <RetTypeToken>0x%08x</RetTypeToken>\r\n"), retTypeToken);
 
     CLogging::LogDumpMessage(_T("    <CorSignature>"));

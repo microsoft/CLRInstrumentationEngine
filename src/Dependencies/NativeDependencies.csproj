@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project>
+  <PropertyGroup>
+    <ProjectGuid>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</ProjectGuid>
+    <SubComponent>$(TargetFramework)</SubComponent>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <!--
+      By uniquley defining the intermediate output path, we avoid a race condiction
+      where multiple dotnet core projects override each other's project.assets.json file,
+      which defines the package depdencies of that project.
+     -->
+    <BaseIntermediateOutputPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\obj\NativeDependencies</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <!-- This must be a relative or absolute path, not computed, so that dotnet restore on Linux finds this correctly. -->
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="!$([MSBuild]::IsOsPlatform('Windows'))">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.VisualStudio.Debugger.CoreCLRPAL" Version="$(CoreClrPalVersion)">
+          <ExcludeAssets>All</ExcludeAssets>
+        </PackageReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="RemoteUnitTestExecutor" Version="$(RemoteUnitExecutorVersion)">
+          <ExcludeAssets>All</ExcludeAssets>
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(ApplicationInsightsAgentInterceptVersion)">
+          <ExcludeAssets>All</ExcludeAssets>
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
+          <ExcludeAssets>All</ExcludeAssets>
+          <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+</Project>

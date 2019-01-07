@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+        <NuspecProperties>$(NuspecProperties);authors=$(PackageAuthors)</NuspecProperties>
+        <NuspecProperties>$(NuspecProperties);configuration=$(Configuration)</NuspecProperties>
+        <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>
+
+        <NuspecBasePath>$(BinRoot)</NuspecBasePath>
+        <NuspecOutputDirectory>$(OutDir)\$(Platform)</NuspecOutputDirectory>
+    </PropertyGroup>
+</Project>

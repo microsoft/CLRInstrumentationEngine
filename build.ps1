@@ -4,6 +4,7 @@
 param(
     [switch] $IncludeTests,
     [switch] $SkipBuild,
+    [switch] $SkipPackaging,
     [switch] $Release,
     [switch] $Verbose
 )
@@ -39,9 +40,18 @@ function Invoke-ExpressionHelper
     }
 }
 
-function Get-AuthorizedNuget
+function Verify-DotnetExists
 {
-    return "$repoPath\nuget.exe"
+    $dotnetCommand = Get-Command 'dotnet' -ErrorAction SilentlyContinue
+    if (!$dotnetCommand)
+    {
+        Write-Error "No .NET Core CLI exists. Please go to https://aka.ms/dotnet-download and install the latest SDK."
+    }
+    else
+    {
+        Write-Verbose "Verified .NET Core CLI exists."
+        & 'dotnet' --info
+    }
 }
 
 ###
@@ -49,7 +59,7 @@ function Get-AuthorizedNuget
 ###
 if ($Verbose)
 {
-    $clParams = "Verbosity=n"
+    $clParams = "Verbosity=d"
 }
 else
 {
@@ -119,12 +129,7 @@ $msbuild = "`"$msbuild`""
 ###
 # Local Build
 ###
-
-# Nuget Restore solutions
-$nuget = Get-AuthorizedNuget
-
-$restoreArgs = "restore $repoPath\instrumentationEngine.sln -configFile $repoPath\NuGet.config"
-Invoke-ExpressionHelper -Executable $nuget -Arguments $restoreArgs -Activity 'Nuget Restore Solutions'
+Verify-DotnetExists
 
 if (!$SkipBuild)
 {
@@ -139,6 +144,11 @@ if (!$SkipBuild)
         Remove-Item -Force -Recurse "$repoPath\obj\"
     }
 
+    $restoreArgs = @(
+        "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
+    )
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+
     # Build InstrumentationEngine.sln
     $buildArgs = @(
         "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams)"
@@ -146,6 +156,14 @@ if (!$SkipBuild)
         "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
+}
+
+if (!$SkipPackaging)
+{
+    $restoreArgs = @(
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
+    )
+    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(
