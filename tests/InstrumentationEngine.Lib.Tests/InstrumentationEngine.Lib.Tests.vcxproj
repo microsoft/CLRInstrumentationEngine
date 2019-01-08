@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(InstrumentationEngineApiInc);$(NETFXKitsDir)\Include\um;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -57,7 +57,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir);$(NETFXKitsDir)\Include\um;..\..\inc;..\..\inc\clr\inc;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);..\..\inc;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>InstrumentationEngine.Lib.lib;msxml6.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);PathCch.lib</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>

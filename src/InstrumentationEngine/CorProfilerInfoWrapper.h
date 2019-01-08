@@ -12,7 +12,7 @@ namespace MicrosoftInstrumentationEngine
     class CProfilerManager;
 
     class CCorProfilerInfoWrapper :
-        public ICorProfilerInfo7
+        public ICorProfilerInfo9
     {
     private:
         LONG m_refcount;
@@ -24,6 +24,8 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<ICorProfilerInfo5> m_pRealCorProfilerInfo5;
         CComPtr<ICorProfilerInfo6> m_pRealCorProfilerInfo6;
         CComPtr<ICorProfilerInfo7> m_pRealCorProfilerInfo7;
+        CComPtr<ICorProfilerInfo8> m_pRealCorProfilerInfo8;
+        CComPtr<ICorProfilerInfo9> m_pRealCorProfilerInfo9;
 
         // Non-addref'd Back pointer the profiler manager.
         CProfilerManager* m_pProfilerManager;
@@ -570,5 +572,46 @@ namespace MicrosoftInstrumentationEngine
             _In_ DWORD countSymbolBytes,
             _Out_ DWORD *pCountSymbolBytesRead
             );
+
+    // ICorProfilerInfo8
+    public:
+        STDMETHOD(IsFunctionDynamic)(
+            _In_ FunctionID functionId,
+            _Out_ BOOL *isDynamic);
+
+        STDMETHOD(GetFunctionFromIP3)(
+            _In_ LPCBYTE ip,
+            _Out_ FunctionID *functionId,
+            _Out_ ReJITID *pReJitId);
+
+        STDMETHOD(GetDynamicFunctionInfo)(
+            _In_ FunctionID functionId,
+            _Out_ ModuleID *moduleId,
+            _Out_ PCCOR_SIGNATURE *ppvSig,
+            _Out_ ULONG *pbSig,
+            _In_ ULONG cchName,
+            _Out_ ULONG *pcchName,
+            _Out_writes_(cchName) WCHAR wszName[]);
+
+    // ICorProfilerInfo9
+    public:
+        STDMETHOD(GetNativeCodeStartAddresses)(
+            _In_ FunctionID functionID,
+            _In_ ReJITID reJitId,
+            _In_ ULONG32 cCodeStartAddresses,
+            _Out_ ULONG32 *pcCodeStartAddresses,
+            _Out_writes_(cCodeStartAddresses) UINT_PTR codeStartAddresses[]);
+
+        STDMETHOD(GetILToNativeMapping3)(
+            _In_ UINT_PTR pNativeCodeStartAddress,
+            _In_ ULONG32 cMap,
+            _Out_ ULONG32 *pcMap,
+            _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[]);
+
+        STDMETHOD(GetCodeInfo4)(
+            _In_ UINT_PTR pNativeCodeStartAddress,
+            _In_ ULONG32 cCodeInfos,
+            _Out_ ULONG32 *pcCodeInfos,
+            _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]);
     };
 }

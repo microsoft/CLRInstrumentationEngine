@@ -15,7 +15,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UseFullPaths>true</UseFullPaths>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>

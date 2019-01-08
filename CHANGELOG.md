@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.20
++ New:
+  + Added support for ICorProfilerInfo8 and ICorProfilerInfo9
+
 # 1.0.19
 + New:
   + Added IModuleInfo3 interface

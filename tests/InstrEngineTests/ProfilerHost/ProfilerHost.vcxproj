@@ -51,10 +51,10 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(EnlistmentRoot)\build\ClrInstrumentationEngine.cpp.props" />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(NETFXKitsDir)\Include\um;$(OutDir);$(InstrumentationEngineApiInc);..\..\..\inc\clr\inc;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OutDir);$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ImportGroup Label="PropertySheets">
