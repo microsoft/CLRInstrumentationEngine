@@ -129,13 +129,13 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::QueryInterface(
     else if (riid == __uuidof(ICorProfilerInfo8) && m_pRealCorProfilerInfo8 != NULL)
     {
         AddRef();
-        *ppvObject = (ICorProfilerInfo7*)this;
+        *ppvObject = (ICorProfilerInfo8*)this;
         return S_OK;
     }
     else if (riid == __uuidof(ICorProfilerInfo9) && m_pRealCorProfilerInfo9 != NULL)
     {
         AddRef();
-        *ppvObject = (ICorProfilerInfo7*)this;
+        *ppvObject = (ICorProfilerInfo9*)this;
         return S_OK;
     }
     return E_NOINTERFACE;

@@ -92,8 +92,7 @@ macro (build_init build_language build_type)
     include_directories(${CORECLR_PAL_ROOT}/inc)
     include_directories(${CORECLR_PAL_ROOT}/inc/rt)
     include_directories(${GENERATED_INCLUDE_DIR})
-
-    Include_directories(${REPOSITORY_ROOT}/inc/clr/extra)
+    include_directories(${REPOSITORY_ROOT}/inc/clr/extra)
 
     add_definitions(-DCOM_NO_WINDOWS_H)
     add_definitions(-DUNICODE)
