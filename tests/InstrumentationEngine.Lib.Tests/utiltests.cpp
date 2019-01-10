@@ -36,14 +36,14 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(SharedArrayTest)
         {
-            SharedArray<int> arr(10);
+            CSharedArray<int> arr(10);
             Assert::AreEqual((size_t)10, arr.Count());
             Assert::IsFalse(arr.IsEmpty());
 
             { // create a new scope so that the reset array will go out of scope.
-                SharedArray<int> arr2(arr);
-                SharedArray<int> arr3 = arr2;
-                SharedArray<int> arr4 = std::move(arr); // this should clean up arr
+                CSharedArray<int> arr2(arr);
+                CSharedArray<int> arr3 = arr2;
+                CSharedArray<int> arr4 = std::move(arr); // this should clean up arr
 
                 Assert::AreEqual((size_t)10, arr2.Count());
                 Assert::AreEqual((size_t)10, arr3.Count());

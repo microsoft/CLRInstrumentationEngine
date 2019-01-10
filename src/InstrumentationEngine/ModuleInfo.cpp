@@ -7,6 +7,7 @@
 // These have to go after ModuleInfo.h because of cyclical dependencies...
 #include "ProfilerManager.h"
 #include "TypeCreator.h"
+#include "MethodJitInfo.h"
 
 #ifdef _WINDOWS_
 #include "AssemblyInjector.h"
@@ -1054,21 +1055,42 @@ void MicrosoftInstrumentationEngine::CModuleInfo::SetMethodIsTransformed(_In_ md
     }
 }
 
-void MicrosoftInstrumentationEngine::CModuleInfo::SetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ SharedArray<COR_IL_MAP> pMap)
+void MicrosoftInstrumentationEngine::CModuleInfo::SetILInstrumentationMap(_In_ CMethodInfo* pMethodInfo, _In_ CSharedArray<COR_IL_MAP> pMap)
 {
-    m_ilMaps[methodDef] = pMap;
+    FunctionID functionId = 0;
+    mdMethodDef methodDef = mdTokenNil;
+    if (pMethodInfo->IsRejit())
+    {
+        pMethodInfo->GetFunctionId(&functionId);
+    }
+
+    pMethodInfo->GetMethodToken(&methodDef);
+    m_ilMaps[CMethodKey(methodDef, functionId)] = pMap;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In_ mdMethodDef methodDef, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
+HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In_ CMethodJitInfo* pMethodJitInfo, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
 {
     IfNullRet(pcNeeded);
+    HRESULT hr;
 
     *pcNeeded = 0;
 
-    auto it = m_ilMaps.find(methodDef);
+    FunctionID functionId = 0;
+    mdMethodDef methodDef = mdTokenNil;
+    BOOL isRejit = false;
+
+    IfFailRet(pMethodJitInfo->GetMethodToken(&methodDef));
+    IfFailRet(pMethodJitInfo->GetIsRejit(&isRejit));
+
+    if (!isRejit)
+    {
+        IfFailRet(pMethodJitInfo->GetFunctionID(&functionId));
+    }
+
+    auto it = m_ilMaps.find(CMethodKey(methodDef, functionId));
     if (it != m_ilMaps.end())
     {
-        SharedArray<COR_IL_MAP> map = (*it).second;
+        CSharedArray<COR_IL_MAP> map = (*it).second;
 
         *pcNeeded = map.Count();
         if (cMap == 0 || pMap == NULL)

@@ -1436,7 +1436,7 @@ library MicrosoftInstrumentationEngine
 
     // Information about methods that have just been JIT compiled. Note, clients should not
     // cache instances of IMethodJitInfo. IMethodJitInfo callbacks are only valid during
-    // the execution of the IInsturmentationMethodJitEvents2::JitComplete callback. Any
+    // the execution of the IInstrumentationMethodJitEvents2::JitComplete callback. Any
     // attempts to call functions on this object after that callback completes will result
     // in undefined behavior.
     [
@@ -1472,7 +1472,7 @@ library MicrosoftInstrumentationEngine
 
     // Information about methods that have just been JIT compiled. Note, clients should not
     // cache instances of IMethodJitInfo2. IMethodJitInfo2 callbacks are only valid during
-    // the execution of the IInsturmentationMethodJitEvents2::JitComplete callback. Any
+    // the execution of the IInstrumentationMethodJitEvents2::JitComplete callback. Any
     // attempts to call functions on this object after that callback completes will result
     // in undefined behavior.
     [

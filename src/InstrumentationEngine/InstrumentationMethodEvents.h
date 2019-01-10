@@ -13,11 +13,11 @@ namespace MicrosoftInstrumentationEngine
             CComPtr<IInstrumentationMethodJitEvents> pJitEvents;
             HRESULT hr;
 
-            if (SUCCEEDED(pInstrumentationMethod->QueryInterface(&pJitEvents2)))
+            if (SUCCEEDED(pInstrumentationMethod->QueryInterface(__uuidof(IInstrumentationMethodJitEvents2), (void**)&pJitEvents2)))
             {
                IfFailRet(pJitEvents2->JitComplete(pMethodJitInfo));
             }
-            else if (SUCCEEDED(pInstrumentationMethod->QueryInterface(&pJitEvents)))
+            else if (SUCCEEDED(pInstrumentationMethod->QueryInterface(__uuidof(IInstrumentationMethodJitEvents), (void**)&pJitEvents)))
             {
                 HRESULT jitResult;
                 FunctionID functionId;

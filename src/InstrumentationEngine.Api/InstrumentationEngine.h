@@ -450,7 +450,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 2 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 3 )
 
 
 enum LoggingFlags

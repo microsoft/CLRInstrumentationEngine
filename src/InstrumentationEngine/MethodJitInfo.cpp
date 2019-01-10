@@ -68,16 +68,18 @@ namespace MicrosoftInstrumentationEngine
         if (SUCCEEDED(GetNativeCodeAddress(&nativeAddress)))
         {
             CComPtr<ICorProfilerInfo9> pProfilerInfo9;
-            IfFailRet(pProfilerInfo->QueryInterface(&pProfilerInfo9));
-            return pProfilerInfo9->GetILToNativeMapping3(nativeAddress, cMap, pcNeeded, pMap);
+            IfFailRet(pProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo9), (void**)&pProfilerInfo9));
+            IfFailRet(pProfilerInfo9->GetILToNativeMapping3(nativeAddress, cMap, pcNeeded, pMap));
+            return S_OK;
         }
 
         CComPtr<ICorProfilerInfo4> pProfilerInfo4;
-        if (SUCCEEDED(pProfilerInfo->QueryInterface(&pProfilerInfo4)))
+        if (SUCCEEDED(pProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo4), (void**)&pProfilerInfo4)))
         {
             // Note, this will return E_NOTIMPL before framework 4.8, so we don't
             // assert on failure.
-            return pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap);
+            IfFailRet(pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap));
+            return S_OK;
         }
 
         return E_NOTIMPL;
@@ -90,7 +92,7 @@ namespace MicrosoftInstrumentationEngine
 
         IfFailRet(EnsureInitialized());
 
-        return m_pModuleInfo->GetILInstrumentationMap(m_methodToken, cMap, pMap, pcNeeded);
+        return m_pModuleInfo->GetILInstrumentationMap(this, cMap, pMap, pcNeeded);
     }
 
     HRESULT CMethodJitInfo::GetMethodToken(_Out_ mdMethodDef* pMethodDef)
@@ -167,7 +169,7 @@ namespace MicrosoftInstrumentationEngine
         IfFailRet(m_pProfilerManager->GetCorProfilerInfo((IUnknown**)(&pProfilerInfo)));
 
         CComPtr<ICorProfilerInfo9> pProfilerInfo9;
-        if (pProfilerInfo->QueryInterface(&pProfilerInfo9) != S_OK)
+        if (pProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo9), (void**)&pProfilerInfo9) != S_OK)
         {
             return E_NOTIMPL;
         }

@@ -49,7 +49,8 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_bCorAttributesInitialized(false),
     m_bGenericParametersInitialized(false),
     m_bIsCreateBaselineEnabled(true),
-    m_bIsHeaderInitialized(false)
+    m_bIsHeaderInitialized(false),
+    m_bIsRejit(false)
 {
     DEFINE_REFCOUNT_NAME(CMethodInfo);
 
@@ -99,8 +100,15 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::Initialize(_In_ bool bAddTo
 
     if (isRejit)
     {
+        if (m_functionId != 0)
+        {
+            CLogging::LogError(_T("CMethodInfo::Initialize - expected function id of 0 for rejitted method."));
+        }
+
         IfFailRet(m_pModuleInfo->IncrementMethodRejitCount(m_tkFunction));
     }
+
+    m_bIsRejit = isRejit;
 
     // Standalone method infos are not appropriate for instrumentation so warn via a log message
     // if one is used this way.
@@ -1334,7 +1342,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(bool isRejit)
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
 {
     HRESULT hr = S_OK;
 
@@ -1352,7 +1360,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
     IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
-    if (!isRejit)
+    if (!IsRejit())
     {
         CLogging::LogMessage(_T("CMethodInfo::ApplyFinalInstrumentation - Non-rejit case"));
 
@@ -1369,7 +1377,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         PVOID pFunction = pMalloc->Alloc(cbMethodBody);
         memcpy(pFunction, pMethodBody, cbMethodBody);
 
-        LogMethodInfo(false);
+        LogMethodInfo();
 
         IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
 
@@ -1391,7 +1399,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
             return E_FAIL;
         }
 
-        LogMethodInfo(true);
+        LogMethodInfo();
 
         DWORD cbMethodBody = 0;
         BYTE* pMethodBody = nullptr;
@@ -1414,7 +1422,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         {
             DWORD corILMapmLen = (DWORD)m_pCorILMap.Count();
             corILMapmLen++;
-            SharedArray<COR_IL_MAP> pTempCorILMap(corILMapmLen);
+            CSharedArray<COR_IL_MAP> pTempCorILMap(corILMapmLen);
 
             memcpy(pTempCorILMap.Get(), m_pCorILMap.Get(), m_pCorILMap.Count() * sizeof(COR_IL_MAP));
 
@@ -1588,7 +1596,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogCorIlMap(_In_ COR_IL_MAP* p
 }
 
 // static
-void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
+void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
 {
     if (!CLogging::AllowLogEntry(LoggingFlags_InstrumentationResults))
     {
@@ -1605,7 +1613,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
 
     ClassID classId = 0;
     FunctionID functionId = 0;
-    if (!isRejit)
+    if (IsRejit())
     {
         this->GetClassId(&classId);
         this->GetFunctionId(&functionId);
@@ -1919,7 +1927,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Start CMethodInfo::SetILInstrumentedCodeMap"));
+    CLogging::LogMessage(_T("Start CMethodInfo::MergeILInstrumentedCodeMap"));
 
     if (!m_pCorILMap.IsEmpty())
     {
@@ -1966,7 +1974,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
                 }
             }
 
-            m_pCorILMap.Reset(SharedArray<COR_IL_MAP>(updatedEntries.size()));
+            m_pCorILMap = CSharedArray<COR_IL_MAP>(updatedEntries.size());
 
             for (DWORD x = 0; x < m_pCorILMap.Count(); x++)
             {
@@ -1976,14 +1984,14 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
     }
     else
     {
-        m_pCorILMap.Reset(SharedArray<COR_IL_MAP>(cILMapEntries));
+        m_pCorILMap = CSharedArray<COR_IL_MAP>(cILMapEntries);
 
         memcpy(m_pCorILMap.Get(), rgILMapEntries, cILMapEntries * sizeof(COR_IL_MAP));
     }
 
     // Save the map with the module info so that it can be retrieved later by the JIT callbacks.
-    m_pModuleInfo->SetILInstrumentationMap(m_tkFunction, m_pCorILMap);
-    CLogging::LogMessage(_T("End CMethodInfo::SetILInstrumentedCodeMap"));
+    m_pModuleInfo->SetILInstrumentationMap(this, m_pCorILMap);
+    CLogging::LogMessage(_T("End CMethodInfo::MergeILInstrumentedCodeMap"));
 
     return S_OK;
 }

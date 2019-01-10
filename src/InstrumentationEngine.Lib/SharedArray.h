@@ -12,23 +12,23 @@ namespace MicrosoftInstrumentationEngine
     // reference counts array data, ensuring that the standard array
     // deleter is called when all instances go out of scope.
     template <class T>
-    class SharedArray
+    class CSharedArray
     {
     private:
 
         // Internal shared data. 
-        class SharedData
+        class CSharedData
         {
         public:
             size_t m_count;
             T* m_internalData;
 
-            SharedData(size_t count) : m_count(count)
+            CSharedData(size_t count) : m_count(count)
             {
                 m_internalData = new T[count];
             }
 
-            ~SharedData()
+            ~CSharedData()
             {
                 if (m_internalData != nullptr)
                 {
@@ -39,62 +39,52 @@ namespace MicrosoftInstrumentationEngine
         };
 
         // used to do reference counting.
-        std::shared_ptr<SharedData> m_data;
-
-        void CheckIndex(size_t index) const
-        {
-            if (index >= Count())
-            {
-                throw std::out_of_range("SharedArray index out of range");
-            }
-        }
+        std::shared_ptr<CSharedData> m_data;
 
     public:
 
-        SharedArray() : m_data(nullptr) { }
+        CSharedArray() : m_data(nullptr) { }
 
-        SharedArray(size_t count)
+        CSharedArray(size_t count)
         {
-            m_data = make_shared<SharedData>(count);
+            m_data = make_shared<CSharedData>(count);
         }
 
-        SharedArray(const SharedArray<T>& other)
+        CSharedArray(const CSharedArray<T>& other)
         {
             m_data = other.m_data;
         }
 
-        SharedArray(SharedArray<T>&& other)
+        CSharedArray(CSharedArray<T>&& other)
         {
             m_data = std::move(other.m_data);
             other.m_data = nullptr;
         }
 
-        SharedArray<T>& operator=(const SharedArray& other)
+        CSharedArray<T>& operator=(const CSharedArray& other)
         {
             m_data = other.m_data;
             return *this;
         }
 
-        SharedArray<T>& operator=(SharedArray&& other)
+        CSharedArray<T>& operator=(CSharedArray&& other)
         {
-            if (this != other)
+            if (this != &other)
             {
                 m_data = std::move(other.m_data);
                 other.m_data = nullptr;
             }
 
-            return &this;
+            return *this;
         }
 
         T operator[](size_t index) const
         {
-            CheckIndex(index);
             return m_data->m_internalData[index];
         }
 
         T& operator[](size_t index)
         {
-            CheckIndex(index);
             return m_data->m_internalData[index];
         }
 
@@ -111,11 +101,6 @@ namespace MicrosoftInstrumentationEngine
         bool IsEmpty() const
         {
             return Count() == 0;
-        }
-
-        void Reset(const SharedArray<T>& other)
-        {
-            m_data = other.m_data;
         }
 
         // Returns a pointer to the underlying data. Notes, clients
