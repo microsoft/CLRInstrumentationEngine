@@ -1613,7 +1613,8 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
 
     ClassID classId = 0;
     FunctionID functionId = 0;
-    if (IsRejit())
+
+    if (!IsRejit())
     {
         this->GetClassId(&classId);
         this->GetFunctionId(&functionId);
