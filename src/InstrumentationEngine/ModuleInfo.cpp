@@ -1059,7 +1059,7 @@ void MicrosoftInstrumentationEngine::CModuleInfo::SetILInstrumentationMap(_In_ C
 {
     FunctionID functionId = 0;
     mdMethodDef methodDef = mdTokenNil;
-    if (pMethodInfo->IsRejit())
+    if (!pMethodInfo->IsRejit())
     {
         pMethodInfo->GetFunctionId(&functionId);
     }
