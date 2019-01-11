@@ -1783,7 +1783,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
                     if (pMethodInfo->IsInstrumented())
                     {
                         // Give the final instrumentation to the clr.
-                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation(false));
+                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
 
                         // Don't fail out with this call. It is too late to undo anything with a failure.
                         CallOnInstrumentationComplete(pMethodInfo, false);
@@ -3020,7 +3020,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
             if (pMethodInfo->IsInstrumented())
             {
                 // Give the final instrumentation to the clr.
-                IfFailRet(pMethodInfo->ApplyFinalInstrumentation(true));
+                IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
 
                 // Don't fail out with this call. It is too late to undo anything with a failure.
                 CallOnInstrumentationComplete(pMethodInfo, true);
@@ -3057,6 +3057,26 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinish
 
     CComPtr<CMethodJitInfo> pMethodJitInfo;
     pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, true, rejitId, this));
+    ULONG32 cIlMap = 0;
+
+    // for some versions of the clr, the ICorFunctionInfo for the method does not correctly update the
+    // il maps. Attempt to set them after rejit completes using the profiler info.
+    // delmyers TODO: there is a fix planned for this with core clr 3. At that point, we may
+    // consider optimizing so that we don't force extra reading/writing of the cache.
+
+    if (SUCCEEDED(pMethodJitInfo->GetILInstrumentationMap(0, nullptr, &cIlMap)))
+    {
+        unique_ptr<COR_IL_MAP[]> ilMap = make_unique<COR_IL_MAP[]>(cIlMap);
+        if (SUCCEEDED(pMethodJitInfo->GetILInstrumentationMap(cIlMap, ilMap.get(), &cIlMap)))
+        {
+            m_pRealProfilerInfo->SetILInstrumentedCodeMap(functionId, FALSE, cIlMap, ilMap.get());
+
+            // force a read from the pMethodJitInfo. This will cause the runtime to cache
+            // the values correctly.
+            ULONG32 cTemp = 0;
+            pMethodJitInfo->GetILNativeMapping(0, NULL, &cTemp);
+        }
+    }
     IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END

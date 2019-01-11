@@ -383,6 +383,13 @@ typedef interface IMethodJitInfo IMethodJitInfo;
 #endif 	/* __IMethodJitInfo_FWD_DEFINED__ */
 
 
+#ifndef __IMethodJitInfo2_FWD_DEFINED__
+#define __IMethodJitInfo2_FWD_DEFINED__
+typedef interface IMethodJitInfo2 IMethodJitInfo2;
+
+#endif 	/* __IMethodJitInfo2_FWD_DEFINED__ */
+
+
 #ifndef __IInstrumentationMethodJitEvents2_FWD_DEFINED__
 #define __IInstrumentationMethodJitEvents2_FWD_DEFINED__
 typedef interface IInstrumentationMethodJitEvents2 IInstrumentationMethodJitEvents2;
@@ -443,7 +450,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 2 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 3 )
 
 
 enum LoggingFlags
@@ -8485,6 +8492,167 @@ EXTERN_C const IID IID_IMethodJitInfo;
 
 
 #endif 	/* __IMethodJitInfo_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMethodJitInfo2_INTERFACE_DEFINED__
+#define __IMethodJitInfo2_INTERFACE_DEFINED__
+
+/* interface IMethodJitInfo2 */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IMethodJitInfo2;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("8311A7CF-30EC-42C9-85A4-F59713A4F37D")
+    IMethodJitInfo2 : public IMethodJitInfo
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetILNativeMapping( 
+            /* [in] */ ULONG32 cMaps,
+            /* [out] */ COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetILInstrumentationMap( 
+            /* [in] */ ULONG32 cMaps,
+            /* [out] */ COR_IL_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetMethodToken( 
+            /* [out] */ mdMethodDef *pToken) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetNativeCodeAddress( 
+            /* [out] */ UINT_PTR *pCodeAddress) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IMethodJitInfo2Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMethodJitInfo2 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMethodJitInfo2 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMethodJitInfo2 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ FunctionID *pFunctionId);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ BOOL *pIsRejit);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ ReJITID *pRejitId);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ HRESULT *pHResult);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ BOOL *pIsTranformed);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetILNativeMapping )( 
+            IMethodJitInfo2 * This,
+            /* [in] */ ULONG32 cMaps,
+            /* [out] */ COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetILInstrumentationMap )( 
+            IMethodJitInfo2 * This,
+            /* [in] */ ULONG32 cMaps,
+            /* [out] */ COR_IL_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ mdMethodDef *pToken);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetNativeCodeAddress )( 
+            IMethodJitInfo2 * This,
+            /* [out] */ UINT_PTR *pCodeAddress);
+        
+        END_INTERFACE
+    } IMethodJitInfo2Vtbl;
+
+    interface IMethodJitInfo2
+    {
+        CONST_VTBL struct IMethodJitInfo2Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMethodJitInfo2_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IMethodJitInfo2_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IMethodJitInfo2_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IMethodJitInfo2_GetFunctionID(This,pFunctionId)	\
+    ( (This)->lpVtbl -> GetFunctionID(This,pFunctionId) ) 
+
+#define IMethodJitInfo2_GetIsRejit(This,pIsRejit)	\
+    ( (This)->lpVtbl -> GetIsRejit(This,pIsRejit) ) 
+
+#define IMethodJitInfo2_GetRejitId(This,pRejitId)	\
+    ( (This)->lpVtbl -> GetRejitId(This,pRejitId) ) 
+
+#define IMethodJitInfo2_GetJitHR(This,pHResult)	\
+    ( (This)->lpVtbl -> GetJitHR(This,pHResult) ) 
+
+#define IMethodJitInfo2_GetILTransformationStatus(This,pIsTranformed)	\
+    ( (This)->lpVtbl -> GetILTransformationStatus(This,pIsTranformed) ) 
+
+#define IMethodJitInfo2_GetModuleInfo(This,ppModuleInfo)	\
+    ( (This)->lpVtbl -> GetModuleInfo(This,ppModuleInfo) ) 
+
+
+#define IMethodJitInfo2_GetILNativeMapping(This,cMaps,pMap,pcNeeded)	\
+    ( (This)->lpVtbl -> GetILNativeMapping(This,cMaps,pMap,pcNeeded) ) 
+
+#define IMethodJitInfo2_GetILInstrumentationMap(This,cMaps,pMap,pcNeeded)	\
+    ( (This)->lpVtbl -> GetILInstrumentationMap(This,cMaps,pMap,pcNeeded) ) 
+
+#define IMethodJitInfo2_GetMethodToken(This,pToken)	\
+    ( (This)->lpVtbl -> GetMethodToken(This,pToken) ) 
+
+#define IMethodJitInfo2_GetNativeCodeAddress(This,pCodeAddress)	\
+    ( (This)->lpVtbl -> GetNativeCodeAddress(This,pCodeAddress) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMethodJitInfo2_INTERFACE_DEFINED__ */
 
 
 #ifndef __IInstrumentationMethodJitEvents2_INTERFACE_DEFINED__

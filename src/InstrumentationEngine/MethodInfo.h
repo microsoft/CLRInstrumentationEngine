@@ -91,10 +91,10 @@ namespace MicrosoftInstrumentationEngine
         CAutoVectorPtr<BYTE> m_pILStream;
         DWORD m_dwILStreamLen;
 
-        // map of old offsets to new offsets. Originally set when insturmentation methods have finished.
-        // Updated if raw callbacks modify il
-        CAutoVectorPtr<COR_IL_MAP> m_pCorILMap;
-        DWORD m_dwCorILMapmLen;
+        // map of old offsets to new offsets. Originally set when instrumentation methods have finished.
+        // Updated if raw callbacks modify il. Note, this is a CSharedArray because it is also cached by this
+        // method's ModuleInfo
+        CSharedArray<COR_IL_MAP> m_pCorILMap;
 
         // The rendered method body including headers and exception handlers after instrumenation methods have finished, but before
         // raw profilers execute. This includes the updated core header, the il body, the exception ranges etc...
@@ -126,6 +126,8 @@ namespace MicrosoftInstrumentationEngine
         // Set to false after the before instrumentation pass to ensure instrumentation methods
         // do not set the baseline at incorrect times.
         bool m_bIsCreateBaselineEnabled;
+
+        bool m_bIsRejit;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CMethodInfo);
@@ -182,7 +184,7 @@ namespace MicrosoftInstrumentationEngine
          }
 
          // Applys all IL transformations and sets the IL cached transformation status of this method to true.
-         HRESULT ApplyFinalInstrumentation(bool isRejit);
+         HRESULT ApplyFinalInstrumentation();
 
          HRESULT MergeILInstrumentedCodeMap(_In_ ULONG cILMapEntries, _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[]);
 
@@ -197,7 +199,7 @@ namespace MicrosoftInstrumentationEngine
 
         static bool s_bIsDumpingMethod;
 
-        void LogMethodInfo(bool isRejit);
+        void LogMethodInfo();
         void LogInstructionGraph(_In_ CInstructionGraph* pInstructionGraph);
         void LogExceptionSection(_In_ CExceptionSection* pExceptionSection);
         void LogCorIlMap(_In_ COR_IL_MAP* pCorIlMap, _In_ DWORD dwCorILMapmLen);
@@ -208,6 +210,10 @@ namespace MicrosoftInstrumentationEngine
 
         bool IsCreateBaselineEnabled();
         void DisableCreateBaseline();
+        bool IsRejit()
+        {
+            return m_bIsRejit;
+        }
 
         // IMethodInfo methods
     public:

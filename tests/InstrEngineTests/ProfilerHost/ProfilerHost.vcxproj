@@ -51,7 +51,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <Import Project="$(EnlistmentRoot)\build\ClrInstrumentationEngine.cpp.props" />
+  <Import Project="$(EnlistmentRoot)\build\ClrInstrumentationEngine.Cpp.props" />
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(OutDir);$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
