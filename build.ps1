@@ -5,6 +5,7 @@ param(
     [switch] $IncludeTests,
     [switch] $SkipBuild,
     [switch] $SkipPackaging,
+    [switch] $SkipCleanAndRestore,
     [switch] $Release,
     [switch] $Verbose
 )
@@ -133,21 +134,24 @@ Verify-DotnetExists
 
 if (!$SkipBuild)
 {
-    # Clean up bin & obj folder if exists
-    if (Test-Path "$repoPath\bin\$configuration")
+    if (!$SkipCleanAndRestore)
     {
-        Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
-    }
+        # Clean up bin & obj folder if exists
+        if (Test-Path "$repoPath\bin\$configuration")
+        {
+            Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
+        }
 
-    if (Test-Path "$repoPath\obj\")
-    {
-        Remove-Item -Force -Recurse "$repoPath\obj\"
-    }
+        if (Test-Path "$repoPath\obj\")
+        {
+            Remove-Item -Force -Recurse "$repoPath\obj\"
+        }
 
-    $restoreArgs = @(
-        "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
-    )
-    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+        $restoreArgs = @(
+            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
+        )
+        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+    }
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(

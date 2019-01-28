@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="SignSatelliteAssemblies"
+    Condition="'@(LocalizedUserFiles)' != ''"
+    AfterTargets="Localize"
+    BeforeTargets="CopySatelliteDllsToStandardNETPaths">
+    <SignAssemblies
+      AssemblyFiles="@(LocalizedUserFiles)"
+      KeyFilePath="$(AssemblyOriginatorKeyFile)"
+      StrongNameToolFilePath="$(SDK40ToolsPath)sn.exe" />
+  </Target>
+
+  <!-- Set AfterTargets to CopyFilesToOutputDirectory so that is run by MSBuild
+       at least after the CopyFilesToOutputDirectory target. The DependsOnTargets
+       is set to ensure that this task runs after the specified targets. -->
+  <Target Name="VerifyFilesToSignExist"
+    Condition="'@(FilesToSign)' != ''"
+    DependsOnTargets="@(VerifyFilesToSignExistDependsOn)"
+    AfterTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <_MissingFilesToSign Include="@(FilesToSign)" Condition="!Exists('%(FullPath)')" />
+    </ItemGroup>
+    <Error Text="The following FilesToSign do not exist: @(_MissingFilesToSign->'%(FullPath)', ', ')"
+      Condition=" '@(_MissingFilesToSign)'!='' " />
+  </Target>
+
+  <Target Name="CollectPublishedFilesToSign">
+    <ItemGroup>
+      <!-- Clear any FilesToSign that were added by default. -->
+      <FilesToSign Remove="@(FilesToSign)" />
+      <!-- Only sign the files that were published as part of the Publish target -->
+      <FilesToSign Include="@(PublishedFilesToSign)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Use a shim target instead of executing SignFiles directly to allow for delayed evaluation of the condition. -->
+  <!-- Delayed evaluation of condition is needed because MicroBuild_SigningEnabled is not necessarily set at this point. -->
+  <Target Name="SignFilesShim" DependsOnTargets="SignFiles" Condition=" '$(MicroBuild_SigningEnabled)'=='true' " />
+
+  <!-- This target is used to sign files that were copied during a Publish target invocation
+       but were not signed because they were not copied from the binaries directory
+       (e.g. the primary output of a managed project file has the file published from the
+       the intermediate output directory; this file is handled by the PublishedFilesToSign item
+       in the Signing.props file). -->
+  <Target Name="SignPublishedFiles" DependsOnTargets="CollectPublishedFilesToSign;VerifyFilesToSignExist;SignFilesShim" />
+
+  <Target Name="SequenceNuGetSigning"
+    Condition="'$(GeneratePackageOnBuild)' != 'false' and '$(PackageId)'!='' and '@(FilesToSign)'!=''"
+    DependsOnTargets="GenerateNuspec"
+    BeforeTargets="SignFiles" />
+
+    <!-- Sign PowerShell scripts and modules copied to the output directory of the project -->
+  <Target Name="PreparePowerShellScriptsForSigning" BeforeTargets="SignFiles">
+    <ItemGroup>
+      <FilesToSign Include="$(OutputPath)\**\*.ps*1">
+        <Authenticode>MicrosoftSHA1</Authenticode>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+
+</Project>

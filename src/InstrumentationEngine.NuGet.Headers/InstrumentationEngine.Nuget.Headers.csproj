@@ -2,13 +2,19 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
 <Project>
+  <PropertyGroup>
+    <TargetExt>.nupkg</TargetExt>
+    <PackageId>Microsoft.InstrumentationEngine.Headers</PackageId>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\NuGet.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NoBuild>true</NoBuild>
@@ -20,10 +26,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</RootNamespace>
     <AssemblyName>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</AssemblyName>
-
-    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
-
     <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>

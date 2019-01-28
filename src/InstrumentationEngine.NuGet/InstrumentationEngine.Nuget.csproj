@@ -2,13 +2,21 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
 <Project>
+  <PropertyGroup>
+    <TargetExt>.nupkg</TargetExt>
+    <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(Platform)_$(LinuxDistro)</NugetSuffix>
+    <NugetSuffix Condition="'$(NugetSuffix)'==''">$(Platform)</NugetSuffix>
+    <PackageId>Microsoft.InstrumentationEngine_$(NugetSuffix)</PackageId>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\NuGet.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NoBuild>true</NoBuild>
@@ -20,8 +28,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
     <AssemblyName>Microsoft.Diagnostics.InstrumentationEngine.NuGet</AssemblyName>
-    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -33,59 +39,47 @@
     </None>
   </ItemGroup>
   <!-- Extensions host -->
-  <Choose>
-    <When Condition="'$(PlatformOS)'=='Linux'">
-      <!-- Building Nuget for Linux is only supported on VSTS The following properties must be set by the build -->
-      <!--NuGetBinInput-->
-      <PropertyGroup>
-        <NugetSuffix>$(Platform)_$(LinuxDistro)</NugetSuffix>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
-          <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll">
-          <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb">
-          <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-      </ItemGroup>
-      <PropertyGroup>
-        <NugetBinInput>$(BinRoot)\$(Configuration)\$(Platform)\InstrumentationEngine</NugetBinInput>
-        <NugetSuffix>$(Platform)</NugetSuffix>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll">
+      <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb">
+      <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(PlatformOS)'!='Linux'">
+    <NugetBinInput>$(BinRoot)\$(Configuration)\$(Platform)\InstrumentationEngine</NugetBinInput>
+  </PropertyGroup>
   <PropertyGroup>
     <NuspecProperties>$(NuspecProperties);bindir=$(NugetBinInput)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>

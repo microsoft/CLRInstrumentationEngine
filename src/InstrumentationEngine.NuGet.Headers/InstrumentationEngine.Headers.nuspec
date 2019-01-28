@@ -3,7 +3,7 @@
       -->
 <package>
   <metadata>
-    <id>Microsoft.InstrumentationEngine.Headers</id>
+    <id>$packageid$</id>
     <version>$version$</version>
     <title>Microsoft Instrumentation Engine Headers</title>
     <authors>$authors$</authors>
