@@ -29,7 +29,6 @@
     <ProjectGuid>{0B12FD8F-83DE-4A80-9BC1-ABE67E0E808A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
-    <AssemblyName>Microsoft.Diagnostics.InstrumentationEngine.NuGet</AssemblyName>
     <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -88,4 +87,7 @@
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <ItemGroup>
+    <PackageReference Include="MicroBuild.Core" Version="0.2.0" />
+  </ItemGroup>
 </Project>

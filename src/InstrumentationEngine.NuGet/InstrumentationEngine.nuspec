@@ -10,6 +10,7 @@
     <owners>$authors$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
   <files>
 
