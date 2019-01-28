@@ -108,7 +108,8 @@
 
 				<AppxPackageDir>$(OutputPath)</AppxPackageDir>
 
-				<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)\$(SubComponent)</IntermediateOutputPath>
+				<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
+				<IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</IntermediateOutputPath>
 				<IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 
 				<!-- C++ output and intermediate directories -->
