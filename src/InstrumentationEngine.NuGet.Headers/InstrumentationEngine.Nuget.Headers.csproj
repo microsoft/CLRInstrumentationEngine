@@ -3,6 +3,7 @@
       -->
 <Project>
   <PropertyGroup>
+    <SubComponent></SubComponent>
     <TargetExt>.nupkg</TargetExt>
     <PackageId>Microsoft.InstrumentationEngine.Headers</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>

@@ -3,6 +3,7 @@
       -->
 <Project>
   <PropertyGroup>
+    <SubComponent></SubComponent>
     <TargetExt>.nupkg</TargetExt>
     <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(Platform)_$(LinuxDistro)</NugetSuffix>
     <NugetSuffix Condition="'$(NugetSuffix)'==''">$(Platform)</NugetSuffix>
