@@ -9,7 +9,7 @@
     <authors>$authors$</authors>
     <owners>$authors$</owners>
     <projectUrl>https://dotnet.microsoft.com</projectUrl>
-    <licenseUrl></licenseUrl>
+    <licenseUrl>https://visualstudio.microsoft.com/license-terms/mlt012919/</licenseUrl>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>NuGet package for the Microsoft Instrumentation Engine Headers.</description>
@@ -18,9 +18,9 @@
   <files>
 
     <!--
-	This NuGet package designed incorrectly. Need to fix it according to this link:
+    This NuGet package designed incorrectly. Need to fix it according to this link:
 
-	See http://docs.nuget.org/consume/support-for-native-projects
+    See http://docs.nuget.org/consume/support-for-native-projects
     -->
 
     <file src="$apidir$\InstrumentationEngine.h" target="lib\native\x86\include" />

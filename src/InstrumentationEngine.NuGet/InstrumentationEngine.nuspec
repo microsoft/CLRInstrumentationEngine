@@ -9,7 +9,7 @@
     <authors>$authors$</authors>
     <owners>$authors$</owners>
     <projectUrl>https://dotnet.microsoft.com</projectUrl>
-    <licenseUrl></licenseUrl>
+    <licenseUrl>https://visualstudio.microsoft.com/license-terms/mlt012919/</licenseUrl>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
