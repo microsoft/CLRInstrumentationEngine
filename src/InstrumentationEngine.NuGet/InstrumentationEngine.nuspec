@@ -8,7 +8,10 @@
     <title>Microsoft Instrumentation Engine</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://dotnet.microsoft.com</projectUrl>
+    <licenseUrl></licenseUrl>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
