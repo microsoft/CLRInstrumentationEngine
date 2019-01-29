@@ -3,7 +3,7 @@
       -->
 <package>
   <metadata>
-    <id>Microsoft.InstrumentationEngine_$suffix$</id>
+    <id>$packageid$</id>
     <version>$version$</version>
     <title>Microsoft Instrumentation Engine</title>
     <authors>$authors$</authors>
@@ -15,9 +15,9 @@
   <files>
 
     <!--
-	This NuGet package designed incorrectly. Need to fix it according to this link:
+    This NuGet package designed incorrectly. Need to fix it according to this link:
 
-	See http://docs.nuget.org/consume/support-for-native-projects
+    See http://docs.nuget.org/consume/support-for-native-projects
     -->
 
 
