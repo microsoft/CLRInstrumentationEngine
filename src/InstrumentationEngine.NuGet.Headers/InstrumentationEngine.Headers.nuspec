@@ -9,20 +9,14 @@
     <authors>$authors$</authors>
     <owners>$authors$</owners>
     <projectUrl>https://dotnet.microsoft.com</projectUrl>
-    <licenseUrl>https://visualstudio.microsoft.com/license-terms/mlt012919/</licenseUrl>
+    <license type="file">$licenseFile$</license>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>NuGet package for the Microsoft Instrumentation Engine Headers.</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
   <files>
-
-    <!--
-    This NuGet package designed incorrectly. Need to fix it according to this link:
-
-    See http://docs.nuget.org/consume/support-for-native-projects
-    -->
-
+    <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
     <file src="$apidir$\InstrumentationEngine.h" target="lib\native\x86\include" />
     <file src="$apidir$\InstrumentationEngine.h" target="lib\native\x64\include" />
     <file src="$apidir$\InstrumentationEngine_i.cpp" target="lib\native\x64\include" />
@@ -30,5 +24,8 @@
     <!-- Support installation on managed projects -->
     <file src="" target="lib\net40\_._" />
     <file src="" target="lib\portable-net4+win8\_._" />
+
+    <!-- Licensing -->
+    <file src="$enlistmentroot$\$licenseFile$" target="" />
   </files>
 </package>
