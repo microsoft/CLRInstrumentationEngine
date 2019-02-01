@@ -38,6 +38,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+  </ItemGroup>
   <!-- Extensions host -->
   <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
     <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll">
@@ -86,7 +89,5 @@
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
-  <ItemGroup>
-    <PackageReference Include="MicroBuild.Core" Version="0.2.0" />
-  </ItemGroup>
+  <Target Name="VerifyPackCompleteEngine" AfterTargets="Pack" />
 </Project>

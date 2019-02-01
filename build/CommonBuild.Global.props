@@ -2,142 +2,128 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-		<!-- This file (CommonBuild.Global.props) must be included into all projects in all solutions of this product.        -->
-		<!-- It defines common build paths and infrastructure.                                                                -->
-		<!-- Other products / repositories using the same build pattern will have an own copy of copy this file               -->
+    <!-- This file (CommonBuild.Global.props) must be included into all projects in all solutions of this product.        -->
+    <!-- It defines common build paths and infrastructure.                                                                -->
+    <!-- Other products / repositories using the same build pattern will have an own copy of copy this file               -->
+    <!--  * You MUST include this file towards the top    of each respective project file, *                              -->
 
-		<!-- Project file location for the Import statement:                                                                  -->
-		<!--  * You MUST include this file towards the bottom of each respective project file, *                              -->
-		<!--  * BELOW all local definitions, RIGHT ABOVE the targets import.                   *                              -->
-		<!--  * For example, right above this line:                                            *                              -->
-		<!--  *     <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />            *                              -->
+    <!-- Do not modify this file!                                                                                         -->
+    <!-- Instead, if you need to overwrite settings from this file, or to define product specific properties for all      -->
+    <!-- projects in this repository, edit the CommonBuild.Private.props file which is referenced at the bottom           -->
+    <!-- of this file.                                                                                                    -->
 
-		<!-- Do not modify this file!                                                                                         -->
-		<!-- Instead, if you need to overwrite settings from this file, or to define product specific properties for all      -->
-		<!-- projects in this repository, edit the CommonBuild.Private.props file which is referenced at the bottom           -->
-		<!-- of this file.                                                                                                    -->
+    <!-- There are two easy ways to import this file. The shortest way is to write something  like:                       -->
+    <!--     <Import Project="..\..\Build\CommonBuild.Global.props" />                                                    -->
+    <!-- However, you will need to match the number of "..\" segments to the respective location of each project file in  -->
+    <!-- your sourcce tree. A more robust approach is to include the following code. It can stay the same regardless of   -->
+    <!-- your project file location:                                                                                      -->
+    <!--
+        <PropertyGroup Label="Include_Common_Build_Properties">
+                <CommonBuildPropsLocation>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\Build</CommonBuildPropsLocation>
+        </PropertyGroup>
+        <ImportGroup Label="Include_Common_Build_Properties">
+                <Import Project="$(CommonBuildPropsLocation)\CommonBuild.Global.props" />
+        </ImportGroup>
+    -->
+    <PropertyGroup>
+        <CommonBuildPropsIncluded>True</CommonBuildPropsIncluded>
+    </PropertyGroup>
 
-		<!-- There are two easy ways to import this file. The shortest way is to write something  like:                       -->
-		<!--     <Import Project="..\..\Build\CommonBuild.Global.props" />                                                    -->
-		<!-- However, you will need to match the number of "..\" segments to the respective location of each project file in  -->
-		<!-- your sourcce tree. A more robust approach is to include the following code. It can stay the same regardless of   -->
-		<!-- your project file location:                                                                                      -->
-		<!--
-				<PropertyGroup Label="Include_Common_Build_Properties">
-						<CommonBuildPropsLocation>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\Build</CommonBuildPropsLocation>
-				</PropertyGroup>
-				<ImportGroup Label="Include_Common_Build_Properties">
-						<Import Project="$(CommonBuildPropsLocation)\CommonBuild.Global.props" />
-				</ImportGroup>
-		 -->
-		<PropertyGroup>
-			<CommonBuildPropsIncluded>True</CommonBuildPropsIncluded>
-		</PropertyGroup>
+    <Import Condition="$([System.IO.File]::Exists('$(EnlistmentRoot)\dev.local.props'))" Project="$(EnlistmentRoot)\dev.local.props"/>
+    <PropertyGroup>
+        <!--  The project structure looks like this:                                                                      -->
+        <!--  d:\DDGit\                                                                                                   -->
+        <!--          ServiceFoo\                                                                                         -->
+        <!--                  .git\                                                                                       -->
+        <!--                  NuGet.config                                                                                -->
+        <!--                  EnlistmentRoot.marker                                                                       -->
+        <!--                  Bin\                                                                                        -->
+        <!--                  Obj\                                                                                        -->
+        <!--                  Packages\                                                                                   -->
+        <!--                  Build\                                                                                      -->
+        <!--                          CommonBuild.Global.props                                                            -->
+        <!--                          CommonBuild.Private.props                                                           -->
+        <!--                  Src\                                                                                        -->
+        <!--                          SomeProjectFolderA\                                                                 -->
+        <!--                                  SomeProjectA.csproj                                                         -->
+        <!--                                  ...                                                                         -->
+        <!--                          SomeProjectFolderB\                                                                 -->
+        <!--                                  ...                                                                         -->
+        <!--                          ServiceFoo.sln                                                                      -->
+        <!--          ServiceBar\                                                                                         -->
+        <!--                  Bin\                                                                                        -->
+        <!--                  Obj\                                                                                        -->
+        <!--                  Packages\                                                                                   -->
+        <!--                  Src\                                                                                        -->
+        <!--                  ...                                                                                         -->
+        <!--                                                                                                              -->
+        <!--  The Bin folder contains ALL build output.                                                                   -->
+        <!--  The Obj folder contains all intermediate build files.                                                       -->
+        <!--  The Packages folder contains ALL packages downloaded by NuGet.                                              -->
+        <!--  The above folders contain NOTHING that is checked in (they are not checked in themselves).                  -->
+        <!--  The rest of the folders and files represent EVERYTHING that is checked in.                                  -->
+        <!--  No build output or temp files should end up in the Src folder! (barring a few *small* VS temporaries)       -->
+        <!--                                                                                                              -->
+        <!--  The EnlistmentRoot.marker file marks the EnlistmentRoot.                                                    -->
+        <!--  The NuGet.config file ensures that NuGet uses the Packages folder.                                          -->
+        <!--                                                                                                              -->
+        <!--  Build contains the current file (CommonBuild.Global.props) which contains global build property             -->
+        <!--  definitions, as well as the CommonBuild.Private.props file which you need to edit to overwrite definitions  -->
+        <!--  made in the current file.                                                                                   -->
 
-		<PropertyGroup>
-		<EnlistmentRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))</EnlistmentRoot>
-	</PropertyGroup>
-	<Import Condition="$([System.IO.File]::Exists('$(EnlistmentRoot)\dev.local.props'))" Project="$(EnlistmentRoot)\dev.local.props"/>
-	<PropertyGroup>
-				<!--  The common project structure looks like this:                                                               -->
-				<!--  d:\DDGit\                                                                                                   -->
-				<!--          ServiceFoo\                                                                                         -->
-				<!--                  Bin\                                                                                        -->
-				<!--                  Obj\                                                                               -->
-				<!--                  Packages\                                                                             -->
-				<!--                  Src\                                                                                        -->
-				<!--                          .git\                                                                               -->
-				<!--                          .nuget\                                                                             -->
-				<!--                          Build\                                                                              -->
-				<!--                                  CommonBuild.Global.props                                                    -->
-				<!--                                  CommonBuild.Private.props                                                   -->
-				<!--                          SomeProjectFolderA\                                                                 -->
-				<!--                                  SomeProjectA.csproj                                                         -->
-				<!--                                  ...                                                                         -->
-				<!--                          SomeProjectFolderB\                                                                 -->
-				<!--                                  ...                                                                         -->
-				<!--                          NuGet.config                                                                        -->
-				<!--                          ServiceFoo.sln                                                                      -->
-				<!--                          EnlistmentRoot.marker                                                               -->
-				<!--          ServiceBar\                                                                                         -->
-				<!--                  Bin\                                                                                        -->
-				<!--                  Intermediate\                                                                               -->
-				<!--                  NuGet.Packages\                                                                             -->
-				<!--                  Src\                                                                                        -->
-				<!--                  ...                                                                                         -->
-				<!--                                                                                                              -->
-				<!--  The Bin folder contains ALL build output.                                                                   -->
-				<!--  The Intermediate folder contains all intermediate build files (like the obj folder).                        -->
-				<!--  The NuGet.Packages folder contains ALL packages downloaded by NuGet.                                        -->
-				<!--  The above folders contain NOTHING that is checked in (they are not checked in themselves).                  -->
-				<!--  The Src folder contains EVERHYTHNG that is checked in and ALL that is checked in.                           -->
-				<!--  No build output or temp files should end up in the Src folder! (barring a few *small* VS temporaries)       -->
-				<!--                                                                                                              -->
-				<!--  Src also typically contains the root solution(s) and folders for individual projects.                       -->
-				<!--  Src MUST contain the EnlistmentRoot.marker file which marks the EnlistmentRoot.                             -->
-				<!--  Src also contains the NuGet.config file which ensures that NuGet uses the NuGet.Packages folder.            -->
-				<!--                                                                                                              -->
-				<!--  Src\Build contains the current file (CommonBuild.Global.props) which contains global build property         -->
-				<!--  definitions, as well as the CommonBuild.Private.props file which you need to edit to overwrite definitions  -->
-				<!--  made in the current file.                                                                                   -->
+        <!-- Directory Macros -->
+        <EnlistmentRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))</EnlistmentRoot>
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(EnlistmentRoot)\</SolutionDir>
 
-				<BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
+        <PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\</PackagesDir>
+        <PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
 
-				<BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
-				<BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>
+        <BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
+        <BuildFilesDir>$([System.IO.Path]::GetFullPath( $(BuildFilesDir) ))</BuildFilesDir>
 
-				<RelativeOutputPathBase>$(MSBuildProjectDirectory.Substring($(EnlistmentRoot.Length)))</RelativeOutputPathBase>
+        <!-- Build Macros -->
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 
-				<ConfigurationFolderName Condition=" '$(Configuration)' == 'Debug' ">Debug</ConfigurationFolderName>
-				<ConfigurationFolderName Condition=" '$(Configuration)' == 'Release' ">Release</ConfigurationFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'x64' ">x64</ArchitectureFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'Win32' ">x86</ArchitectureFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'x86' ">x86</ArchitectureFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
-				<ArchitectureFolderName Condition=" '$(Platform)' == 'x64' ">x64</ArchitectureFolderName>
-				<ArchitectureFolderName Condition=" '$(Platform)' == 'Win32' ">x86</ArchitectureFolderName>
-				<ArchitectureFolderName Condition=" '$(Platform)' == 'x86' ">x86</ArchitectureFolderName>
-				<ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
-				<ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
+        <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
+        <RelativeOutputPathBase>$(MSBuildProjectDirectory.Substring($(EnlistmentRoot.Length)))</RelativeOutputPathBase>
 
-				<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj</BaseIntermediateOutputPath>
-				<BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
+        <!-- Obj -->
+        <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+        <BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
-				<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
+        <IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(IntermediateOutputPath)\$(SubComponent)</IntermediateOutputPath>
+        <IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 
-				<OutputPath>$(BinRoot)\$(ConfigurationFolderName)\$(ArchitectureFolderName)</OutputPath>
-				<OutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</OutputPath>
-				<OutputPath>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutputPath>
+        <!-- Bin -->
+        <!-- See https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops for predefined Azure DevOps build variables-->
+        <BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
+        <BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
+        <BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>
 
-				<AppxPackageDir>$(OutputPath)</AppxPackageDir>
+        <OutputPath>$(BinRoot)\$(Configuration)\$(ArchitectureFolderName)</OutputPath>
+        <OutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</OutputPath>
+        <OutputPath>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutputPath>
 
-				<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
-				<IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</IntermediateOutputPath>
-				<IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
+        <AppxPackageDir>$(OutputPath)</AppxPackageDir>
 
-				<!-- C++ output and intermediate directories -->
-				<OutDir>$(BinRoot)\$(ConfigurationFolderName)\$(ArchitectureFolderName)</OutDir>
-				<OutDir Condition=" $(SubComponent) != '' ">$(OutDir)\$(SubComponent)</OutDir>
-				<OutDir>$([System.IO.Path]::GetFullPath( $(OutDir) ))\</OutDir>
-				<IntDir>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntDir>
-				<IntDir Condition=" $(SubComponent) != '' ">$(IntDir)\$(SubComponent)</IntDir>
-				<IntDir>$([System.IO.Path]::GetFullPath( $(IntDir) ))\</IntDir>
+        <!-- C++ output and intermediate directories -->
+        <IntDir>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntDir>
+        <OutDir>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutDir>
 
-				<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(EnlistmentRoot)\</SolutionDir>
+        <!-- Enable NuGet package restore during build -->
+        <RestorePackages>true</RestorePackages>
+        <RequireRestoreConsent>false</RequireRestoreConsent>
 
-				<PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\</PackagesDir>
-				<PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
+        <!-- Set the root namespace for all assemblies in this project hierarchy -->
+        <RootNamespace>Microsoft.ApplicationInsights</RootNamespace>
+    </PropertyGroup>
 
-				<BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
-				<BuildFilesDir>$([System.IO.Path]::GetFullPath( $(BuildFilesDir) ))</BuildFilesDir>
-
-		</PropertyGroup>
-
-		<PropertyGroup>
-				<!-- Enable NuGet package restore during build -->
-				<RestorePackages>true</RestorePackages>
-				<RequireRestoreConsent>false</RequireRestoreConsent>
-
-				<!-- Set the root namespace for all assemblies in this project hierarchy -->
-				<RootNamespace>Microsoft.ApplicationInsights</RootNamespace>
-		</PropertyGroup>
-
-	<Import Project=".\CommonBuild.Private.props" Condition="$(CommonBuildPrivatePropsIncluded) == '' Or $(CommonBuildPrivatePropsIncluded) == '*Undefined*' Or $(CommonBuildPrivatePropsIncluded) == 'False'"/>
+    <Import Project=".\CommonBuild.Private.props" Condition="$(CommonBuildPrivatePropsIncluded) == '' Or $(CommonBuildPrivatePropsIncluded) == '*Undefined*' Or $(CommonBuildPrivatePropsIncluded) == 'False'"/>
 </Project>

@@ -147,8 +147,12 @@ if (!$SkipBuild)
             Remove-Item -Force -Recurse "$repoPath\obj\"
         }
 
+        # NuGet restore disregards platform/configuration
+        # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
         $restoreArgs = @(
-            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
+            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"x86`""
+            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"x64`""
+            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
         )
         Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
     }
@@ -164,8 +168,13 @@ if (!$SkipBuild)
 
 if (!$SkipPackaging)
 {
+
+    # NuGet restore disregards platform/configuration
+    # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
     $restoreArgs = @(
-        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"x86`""
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"x64`""
+        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
     )
     Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 

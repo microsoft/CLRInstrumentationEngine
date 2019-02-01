@@ -31,9 +31,10 @@
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
-  <ItemGroup>
-    <PackageReference Include="MicroBuild.Core" Version="0.2.0" />
-  </ItemGroup>
+  <Target Name="VerifyPackCompleteHeaders" AfterTargets="Pack" />
 </Project>

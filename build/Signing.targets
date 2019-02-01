@@ -50,7 +50,7 @@
   <Target Name="SequenceNuGetSigning"
     Condition="'$(GeneratePackageOnBuild)' != 'false' and '$(PackageId)'!='' and '@(FilesToSign)'!=''"
     DependsOnTargets="GenerateNuspec"
-    BeforeTargets="SignFiles" />
+    BeforeTargets="SignFiles;SignNuGetPackage" />
 
     <!-- Sign PowerShell scripts and modules copied to the output directory of the project -->
   <Target Name="PreparePowerShellScriptsForSigning" BeforeTargets="SignFiles">
