@@ -97,8 +97,7 @@
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
-				<MSBuildProjectExtensionsPath>$(EnlistmentRoot)\obj\$(MSBuildProjectName)</MSBuildProjectExtensionsPath>
-				<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj</BaseIntermediateOutputPath>
+				<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
 				<BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
 				<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
