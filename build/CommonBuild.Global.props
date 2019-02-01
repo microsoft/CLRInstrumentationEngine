@@ -97,17 +97,20 @@
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
 				<ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
+				<MSBuildProjectExtensionsPath>$(EnlistmentRoot)\obj\$(MSBuildProjectName)</MSBuildProjectExtensionsPath>
 				<BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj</BaseIntermediateOutputPath>
 				<BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
 				<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 
-				<OutputPath>$(BinRoot)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(SubComponent)</OutputPath>
+				<OutputPath>$(BinRoot)\$(ConfigurationFolderName)\$(ArchitectureFolderName)</OutputPath>
+				<OutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</OutputPath>
 				<OutputPath>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutputPath>
 
 				<AppxPackageDir>$(OutputPath)</AppxPackageDir>
 
-				<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)\$(SubComponent)</IntermediateOutputPath>
+				<IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(ConfigurationFolderName)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
+				<IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(IntermediateOutputPath)\$(SubComponent)</IntermediateOutputPath>
 				<IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 
 				<!-- C++ output and intermediate directories -->

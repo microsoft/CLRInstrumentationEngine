@@ -3,28 +3,28 @@
       -->
 <package>
   <metadata>
-    <id>Microsoft.InstrumentationEngine_$suffix$</id>
+    <id>$packageid$</id>
     <version>$version$</version>
     <title>Microsoft Instrumentation Engine</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://dotnet.microsoft.com</projectUrl>
+    <license type="file">$licenseFile$</license>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
   <files>
-
-    <!--
-	This NuGet package designed incorrectly. Need to fix it according to this link:
-
-	See http://docs.nuget.org/consume/support-for-native-projects
-    -->
-
-
+    <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
     <file src="$bindir$\**\*" target="content\Microsoft.InstrumentationEngine" />
     <file src="$scriptdir$\install.ps1" target="Tools" />
 
     <!-- Support installation on managed projects -->
     <file src="" target="lib\net40\_._" />
     <file src="" target="lib\portable-net4+win8\_._" />
+
+    <!-- Licensing -->
+    <file src="$enlistmentroot$\$licenseFile$" target="" />
   </files>
 </package>
