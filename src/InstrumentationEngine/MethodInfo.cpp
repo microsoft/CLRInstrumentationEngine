@@ -38,7 +38,6 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_pSig(nullptr),
     m_cbSigBlob(0),
     m_dwILStreamLen(0),
-    m_dwCorILMapmLen(0),
     m_localVariables(nullptr),
     m_origLocalVariables(nullptr),
     m_cbIntermediateRenderedMethod(0),
@@ -50,7 +49,8 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_bCorAttributesInitialized(false),
     m_bGenericParametersInitialized(false),
     m_bIsCreateBaselineEnabled(true),
-    m_bIsHeaderInitialized(false)
+    m_bIsHeaderInitialized(false),
+    m_bIsRejit(false)
 {
     DEFINE_REFCOUNT_NAME(CMethodInfo);
 
@@ -100,8 +100,15 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::Initialize(_In_ bool bAddTo
 
     if (isRejit)
     {
+        if (m_functionId != 0)
+        {
+            CLogging::LogError(_T("CMethodInfo::Initialize - expected function id of 0 for rejitted method."));
+        }
+
         IfFailRet(m_pModuleInfo->IncrementMethodRejitCount(m_tkFunction));
     }
+
+    m_bIsRejit = isRejit;
 
     // Standalone method infos are not appropriate for instrumentation so warn via a log message
     // if one is used this way.
@@ -1335,7 +1342,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(bool isRejit)
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
 {
     HRESULT hr = S_OK;
 
@@ -1346,16 +1353,16 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         CLogging::LogError(_T("CMethodInfo::ApplyFinalInstrumentation should only be called if a method body has been set for this function"));
         return E_FAIL;
     }
-    
-    if (!isRejit)
+
+    CComPtr<CProfilerManager> pProfilerManager;
+    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
+
+    CComPtr<ICorProfilerInfo> pCorProfilerInfo;
+    IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
+
+    if (!IsRejit())
     {
         CLogging::LogMessage(_T("CMethodInfo::ApplyFinalInstrumentation - Non-rejit case"));
-
-        CComPtr<CProfilerManager> pProfilerManager;
-        IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
-        CComPtr<ICorProfilerInfo> pCorProfilerInfo;
-        IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
         ModuleID moduleId;
         IfFailRet(m_pModuleInfo->GetModuleID(&moduleId));
@@ -1370,16 +1377,16 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         PVOID pFunction = pMalloc->Alloc(cbMethodBody);
         memcpy(pFunction, pMethodBody, cbMethodBody);
 
-        LogMethodInfo(false);
+        LogMethodInfo();
 
         IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
 
         m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
 
         // This will fail if no entries in CorILMap, plus there's no point in setting this in such a case anyway.
-        if (m_dwCorILMapmLen > 0)
+        if (m_pCorILMap.Count() > 0)
         {
-            IfFailRet(pCorProfilerInfo->SetILInstrumentedCodeMap(m_functionId, TRUE, m_dwCorILMapmLen, m_pCorILMap));
+            IfFailRet(pCorProfilerInfo->SetILInstrumentedCodeMap(m_functionId, TRUE, (ULONG)m_pCorILMap.Count(), m_pCorILMap.Get()));
         }
     }
     else
@@ -1392,7 +1399,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
             return E_FAIL;
         }
 
-        LogMethodInfo(true);
+        LogMethodInfo();
 
         DWORD cbMethodBody = 0;
         BYTE* pMethodBody = nullptr;
@@ -1413,16 +1420,11 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
         GetRejitCount(&rejitCount);
         if (rejitCount != 0)
         {
-            CAutoVectorPtr<COR_IL_MAP> pTempCorILMap;
-            DWORD corILMapmLen = m_dwCorILMapmLen;
+            DWORD corILMapmLen = (DWORD)m_pCorILMap.Count();
             corILMapmLen++;
-            pTempCorILMap.Allocate(corILMapmLen);
-            if (m_pCorILMap == NULL)
-            {
-                return E_OUTOFMEMORY;
-            }
+            CSharedArray<COR_IL_MAP> pTempCorILMap(corILMapmLen);
 
-            memcpy(pTempCorILMap, m_pCorILMap, m_dwCorILMapmLen * sizeof(COR_IL_MAP));
+            memcpy(pTempCorILMap.Get(), m_pCorILMap.Get(), m_pCorILMap.Count() * sizeof(COR_IL_MAP));
 
             pTempCorILMap[corILMapmLen - 1].fAccurate = true;
             pTempCorILMap[corILMapmLen - 1].oldOffset = 0xfeefee;
@@ -1430,13 +1432,13 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation(b
 
             // NOTE: CLR's earlier than 4.5.2 won't have this implemented and will return E_NOTIMPL.
             // 4.5.2 is a prereq for rejit.
-            m_pFunctionControl->SetILInstrumentedCodeMap(corILMapmLen, pTempCorILMap);
+            m_pFunctionControl->SetILInstrumentedCodeMap(corILMapmLen, pTempCorILMap.Get());
         }
         else
         {
             // NOTE: CLR's earlier than 4.5.2 won't have this implemented and will return E_NOTIMPL.
             // 4.5.2 is a prereq for rejit.
-            m_pFunctionControl->SetILInstrumentedCodeMap(m_dwCorILMapmLen, m_pCorILMap);
+            m_pFunctionControl->SetILInstrumentedCodeMap((ULONG)m_pCorILMap.Count(), m_pCorILMap.Get());
         }
     }
 
@@ -1594,7 +1596,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogCorIlMap(_In_ COR_IL_MAP* p
 }
 
 // static
-void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
+void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
 {
     if (!CLogging::AllowLogEntry(LoggingFlags_InstrumentationResults))
     {
@@ -1611,7 +1613,8 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo(bool isRejit)
 
     ClassID classId = 0;
     FunctionID functionId = 0;
-    if (!isRejit)
+
+    if (!IsRejit())
     {
         this->GetClassId(&classId);
         this->GetFunctionId(&functionId);
@@ -1925,75 +1928,71 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Start CMethodInfo::SetILInstrumentedCodeMap"));
+    CLogging::LogMessage(_T("Start CMethodInfo::MergeILInstrumentedCodeMap"));
 
-    if (m_pCorILMap != NULL)
+    if (!m_pCorILMap.IsEmpty())
     {
-        // The raw callbacks will assume the updated il stream that came out of the instrumentation methods and/or
-        // other raw callbacks. The maps must be merged.
-        //
-        // Merge algorithm is as follows:
-        // 1) For each entry in the new map, look up the original offset in the old map's new offsets
-        // 2) If a match is found, replace the old offset in the new map with the original offset from the old map.
-        // 3) If no match is found, then this offset did not exist in the original map and its entry should be removed.
-
-        // First index the old entries by new offset.
-        std::unordered_map<ULONG32, COR_IL_MAP*> oldMapNewOffsetToEntryMap;
-        for (DWORD i = 0; i < m_dwCorILMapmLen; i++)
+        // No need to merge if we are just setting to the exact same pointer.
+        if (rgILMapEntries != m_pCorILMap.Get())
         {
-            COR_IL_MAP* pCurr =  &(m_pCorILMap[i]);
-            oldMapNewOffsetToEntryMap[pCurr->newOffset] = pCurr;
-        }
+            // The raw callbacks will assume the updated il stream that came out of the instrumentation methods and/or
+            // other raw callbacks. The maps must be merged.
+            //
+            // Merge algorithm is as follows:
+            // 1) For each entry in the new map, look up the original offset in the old map's new offsets
+            // 2) If a match is found, replace the old offset in the new map with the original offset from the old map.
+            // 3) If no match is found, then this offset did not exist in the original map and its entry should be removed.
 
-        // Next, iterate over the new map doing the conversion.
-        std::vector<COR_IL_MAP*> updatedEntries;
-        for (DWORD k = 0; k < cILMapEntries; k++)
-        {
-             COR_IL_MAP* pCurr = &(rgILMapEntries[k]);
+            // First index the old entries by new offset.
+            std::unordered_map<ULONG32, COR_IL_MAP*> oldMapNewOffsetToEntryMap;
+            size_t currEntries = m_pCorILMap.Count();
+            for (DWORD i = 0; i < currEntries; i++)
+            {
+                COR_IL_MAP* pCurr = &(m_pCorILMap[i]);
+                oldMapNewOffsetToEntryMap[pCurr->newOffset] = pCurr;
+            }
 
-             std::unordered_map<ULONG32, COR_IL_MAP*>::iterator iter = oldMapNewOffsetToEntryMap.find(pCurr->oldOffset);
+            // Next, iterate over the new map doing the conversion.
+            std::vector<COR_IL_MAP*> updatedEntries;
+            for (DWORD k = 0; k < cILMapEntries; k++)
+            {
+                COR_IL_MAP* pCurr = &(rgILMapEntries[k]);
 
-             if (iter != oldMapNewOffsetToEntryMap.end())
-             {
-                 COR_IL_MAP* pOldEntry = iter->second;
+                std::unordered_map<ULONG32, COR_IL_MAP*>::iterator iter = oldMapNewOffsetToEntryMap.find(pCurr->oldOffset);
 
-                 // Entry was found in the original map.
-                 pCurr->oldOffset = pOldEntry->oldOffset;
+                if (iter != oldMapNewOffsetToEntryMap.end())
+                {
+                    COR_IL_MAP* pOldEntry = iter->second;
 
-                 updatedEntries.push_back(pCurr);
-             }
-             else
-             {
-                 // No entry was found. Skip this entry. It must have been a new instruction in the old map.
-             }
-        }
+                    // Entry was found in the original map.
+                    pCurr->oldOffset = pOldEntry->oldOffset;
 
-        m_pCorILMap.Free();
-        m_dwCorILMapmLen = (DWORD)updatedEntries.size();
-        m_pCorILMap.Allocate(m_dwCorILMapmLen);
-        if (m_pCorILMap == NULL)
-        {
-            return E_OUTOFMEMORY;
-        }
+                    updatedEntries.push_back(pCurr);
+                }
+                else
+                {
+                    // No entry was found. Skip this entry. It must have been a new instruction in the old map.
+                }
+            }
 
-        for (DWORD x = 0; x < m_dwCorILMapmLen; x++)
-        {
-            m_pCorILMap[x] = *(updatedEntries[x]);
+            m_pCorILMap = CSharedArray<COR_IL_MAP>(updatedEntries.size());
+
+            for (DWORD x = 0; x < m_pCorILMap.Count(); x++)
+            {
+                m_pCorILMap[x] = *(updatedEntries[x]);
+            }
         }
     }
     else
     {
-        m_dwCorILMapmLen = cILMapEntries;
-        m_pCorILMap.Allocate(m_dwCorILMapmLen);
-        if (m_pCorILMap == NULL)
-        {
-            return E_OUTOFMEMORY;
-        }
+        m_pCorILMap = CSharedArray<COR_IL_MAP>(cILMapEntries);
 
-        memcpy(m_pCorILMap, rgILMapEntries, m_dwCorILMapmLen * sizeof(COR_IL_MAP));
+        memcpy(m_pCorILMap.Get(), rgILMapEntries, cILMapEntries * sizeof(COR_IL_MAP));
     }
 
-    CLogging::LogMessage(_T("End CMethodInfo::SetILInstrumentedCodeMap"));
+    // Save the map with the module info so that it can be retrieved later by the JIT callbacks.
+    m_pModuleInfo->SetILInstrumentationMap(this, m_pCorILMap);
+    CLogging::LogMessage(_T("End CMethodInfo::MergeILInstrumentedCodeMap"));
 
     return S_OK;
 }
@@ -2049,9 +2048,9 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     *ppInstructionGraph = pInstructionGraph.Detach();
     *ppExceptionSection = pExceptionSection.Detach();
 
-    *ppCorILMap = new COR_IL_MAP[m_dwCorILMapmLen];
-    memcpy(*ppCorILMap, m_pCorILMap, m_dwCorILMapmLen * sizeof(COR_IL_MAP));
-    *dwCorILMapmLen = m_dwCorILMapmLen;
+    *ppCorILMap = new COR_IL_MAP[m_pCorILMap.Count()];
+    memcpy(*ppCorILMap, m_pCorILMap.Get(), m_pCorILMap.Count() * sizeof(COR_IL_MAP));
+    *dwCorILMapmLen = (DWORD)m_pCorILMap.Count();
 
     return hr;
 }

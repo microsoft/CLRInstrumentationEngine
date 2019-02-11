@@ -13,10 +13,34 @@ using namespace ATL;
 namespace MicrosoftInstrumentationEngine
 {
     class CMethodInfo;
+    class CMethodJitInfo;
 
     class __declspec(uuid("CDD3824F-B876-4450-9459-885BA1C21540"))
     CModuleInfo : public IModuleInfo3, public CDataContainer
     {
+    private:
+        class CMethodKey
+        {
+        public:
+
+            mdMethodDef m_token;
+            FunctionID m_functionID;
+
+            CMethodKey(mdMethodDef token, FunctionID functionId) : m_token(token), m_functionID(functionId) {}
+
+            bool operator==(const CMethodKey& other) const
+            {
+                return m_token == other.m_token && m_functionID == other.m_functionID;
+            }
+
+            struct Hash
+            {
+                size_t operator()(const CMethodKey& key) const
+                {
+                    return key.m_token ^ key.m_functionID;
+                }
+            };
+        };
     private:
         CRITICAL_SECTION m_cs;
 
@@ -57,6 +81,7 @@ namespace MicrosoftInstrumentationEngine
 
         unordered_map<mdToken, std::shared_ptr<CCachedILMethodBody>> m_methodTokenToCachedILMap;
         unordered_set<mdMethodDef> m_instrumentedMethods;
+        unordered_map<CMethodKey, CSharedArray<COR_IL_MAP>, CMethodKey::Hash> m_ilMaps;
 
         CComPtr<ITypeCreator> m_pTypeFactory;
 
@@ -129,6 +154,10 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT GetInlineSiteMap(_Out_ CInlineSiteMap** ppInilineSiteMap);
 
+        // Sets the instrumentation map for normal, non rejit scenarios.
+        void SetILInstrumentationMap(_In_ CMethodInfo* pMethodInfo, _In_ CSharedArray<COR_IL_MAP> map);
+
+        HRESULT GetILInstrumentationMap(_In_ CMethodJitInfo* pMethodJitInfo, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded);
         void SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented);
         bool GetIsMethodInstrumented(_In_ mdMethodDef methodDef);
 

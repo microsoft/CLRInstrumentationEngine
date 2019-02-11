@@ -8,7 +8,7 @@ namespace MicrosoftInstrumentationEngine
     class CProfilerManager;
 
     class __declspec(uuid("{AC76DC45-B4EA-451D-9851-66DA2338D6F2}"))
-        CMethodJitInfo : public IMethodJitInfo, public CModuleRefCount
+        CMethodJitInfo : public IMethodJitInfo2, public CModuleRefCount
     {
     friend class CProfilerManager;
 
@@ -20,9 +20,11 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<CProfilerManager> m_pProfilerManager;
         
         BOOL m_isTransformed = false;
-        CComPtr<IModuleInfo> m_pModuleInfo;
+        CComPtr<CModuleInfo> m_pModuleInfo;
         mdMethodDef m_methodToken = mdTokenNil;
         HRESULT m_initializeResult = S_OK;
+        UINT_PTR m_codeAddress = 0;
+        bool m_isAddressQueried = false;
         
 
     public:
@@ -32,6 +34,7 @@ namespace MicrosoftInstrumentationEngine
         {
             return ImplQueryInterface(
                 static_cast<IMethodJitInfo*>(this),
+                static_cast<IMethodJitInfo2*>(this),
                 static_cast<IUnknown*>(this),
                 riid,
                 ppvObject
@@ -40,7 +43,7 @@ namespace MicrosoftInstrumentationEngine
 
     public:
         CMethodJitInfo(FunctionID functionId, HRESULT hresult, BOOL isRejit, ReJITID rejitId, CProfilerManager* pProfilerManager) : 
-            m_functionId(functionId), 
+            m_functionId(functionId),
             m_hresult(hresult), 
             m_isRejit(isRejit), 
             m_rejitId(rejitId),
@@ -56,6 +59,11 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(GetRejitId)(_Out_ ReJITID* pRejitId) override;
         STDMETHOD(GetModuleInfo)(_Out_ IModuleInfo** ppModuleInfo) override;
 
+        // IMethodJitInfo2
+        STDMETHOD(GetILNativeMapping)(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
+        STDMETHOD(GetILInstrumentationMap)(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
+        STDMETHOD(GetMethodToken)(_Out_ mdMethodDef* pMethodDef) override;
+        STDMETHOD(GetNativeCodeAddress)(_Out_ UINT_PTR *pCodeAddress) override;
     private:
         HRESULT EnsureInitialized();
     };

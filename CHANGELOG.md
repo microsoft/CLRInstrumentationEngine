@@ -7,6 +7,14 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.20
++ New:
+  + Added support for ICorProfilerInfo8 and ICorProfilerInfo9
+  + Added IMethodJitInfo2
++ BugFixes:
+  + Work-around for issue in the CLR runtime which causes il/instrumentation maps and il/native maps to be cached incorrectly.
+  + Added NuGet signing to headers package
+
 # 1.0.19
 + New:
   + Added IModuleInfo3 interface
@@ -26,7 +34,7 @@ Please format the changes as follows:
 
 # 1.0.16
 
-+ Updates: 
++ Updates:
     + Always create new methodinfos (and log existing)
 
 # 1.0.15

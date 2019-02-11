@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ItemDefinitionGroup>
+    <ClCompile>
+        <!-- Required for corprof.h. Order is important.
+         The Windows SDK does not include all of the definitions supported by coreclr. The corprof.h
+         Included in this directory has a version that can support CoreClr and desktop Clr. -->
+       <AdditionalIncludeDirectories>$(EnlistmentRoot)\inc\clr\prof;$(EnlistmentRoot)\inc\clr\extra;$(NETFXKitsDir)\Include\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

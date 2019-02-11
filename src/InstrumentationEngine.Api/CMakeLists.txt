@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 PROJECT(InstrumentationEngine.Api C CXX)
 
-include_directories(. ../../inc/clr/inc)
+include_directories(.)
 setup_midl_lib()
 
 build_init(CPP InstrumentationEngine.Api)

@@ -70,7 +70,7 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"/>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'"/>
 
-   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(EnlistmentRoot)\build\ClrInstrumentationEngine.cpp.props" />
 
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>

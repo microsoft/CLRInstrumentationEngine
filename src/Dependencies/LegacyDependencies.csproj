@@ -4,6 +4,8 @@
 <Project>
   <PropertyGroup>
     <ProjectGuid>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</ProjectGuid>
+    <ShouldSign>false</ShouldSign>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SubComponent>$(TargetFramework)</SubComponent>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>

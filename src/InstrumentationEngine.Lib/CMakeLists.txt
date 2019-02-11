@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(InstrumentationEngine.Lib)
 find_package(LibXml2 REQUIRED)
 
-include_directories(. ../../inc/clr/inc ${LIBXML2_INCLUDE_DIR})
+include_directories(. ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP InstrumentationEngine.Lib)
 

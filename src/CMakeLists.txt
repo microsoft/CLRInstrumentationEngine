@@ -83,7 +83,7 @@ macro (build_init build_language build_type)
     # find a better way to do this. Also note we only support 64bit Linux build so hard coding
     # that part.
     include_directories(${REPOSITORY_ROOT}/bin/${CMAKE_BUILD_TYPE}/x64)
-
+    
     include_directories(${REPOSITORY_ROOT}/src/unix/inc)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/atl)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/empty)
@@ -92,6 +92,7 @@ macro (build_init build_language build_type)
     include_directories(${CORECLR_PAL_ROOT}/inc)
     include_directories(${CORECLR_PAL_ROOT}/inc/rt)
     include_directories(${GENERATED_INCLUDE_DIR})
+    include_directories(${REPOSITORY_ROOT}/inc/clr/extra)
 
     add_definitions(-DCOM_NO_WINDOWS_H)
     add_definitions(-DUNICODE)
