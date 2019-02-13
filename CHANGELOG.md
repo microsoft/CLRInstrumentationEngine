@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.21
++ BugFixes:
+  + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
+
 # 1.0.20
 + New:
   + Added support for ICorProfilerInfo8 and ICorProfilerInfo9
