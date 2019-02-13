@@ -17,7 +17,7 @@ Please format the changes as follows:
   + Added IMethodJitInfo2
 + BugFixes:
   + Work-around for issue in the CLR runtime which causes il/instrumentation maps and il/native maps to be cached incorrectly.
-  + Added NuGet signing to headers package
+  + Added NuGet signing to headers and engine package
 
 # 1.0.19
 + New:
