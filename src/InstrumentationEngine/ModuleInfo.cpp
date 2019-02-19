@@ -1092,7 +1092,8 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In
     {
         CSharedArray<COR_IL_MAP> map = (*it).second;
 
-        *pcNeeded = map.Count();
+        // This is a safe cast since the underlying CLR APIs only use a ULONG32 anyway.
+        *pcNeeded = (ULONG32)map.Count();
         if (cMap == 0 || pMap == NULL)
         {
             return S_OK;

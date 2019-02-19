@@ -90,7 +90,7 @@ namespace Settings
         _In_ const IProfilerManagerLoggingSptr &logger
         )
     {
-        const size_t cchExpandedValueWithNull = ExpandEnvironmentStrings(wszPath, nullptr, 0);
+        const DWORD cchExpandedValueWithNull = ExpandEnvironmentStrings(wszPath, nullptr, 0);
         if (0 == cchExpandedValueWithNull)
         {
             TraceMsgTo(logger, _T("CEnvironment::GetConfigurationPaths - ExpandEnvironmentStrings(szVariableValue, nullptr, 0) failed: 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
