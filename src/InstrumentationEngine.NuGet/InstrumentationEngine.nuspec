@@ -25,6 +25,6 @@
     <file src="" target="lib\portable-net4+win8\_._" />
 
     <!-- Licensing -->
-    <file src="$enlistmentroot$\$licenseFile$" target="" />
+    <file src="$enlistmentroot$\$licenseFile$*" target="" />
   </files>
 </package>
