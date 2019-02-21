@@ -342,4 +342,5 @@ add_subdirectory(InstrumentationEngine.Api)
 add_subdirectory(ExtensionsHostCrossPlat)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine)
+add_subdirectory(LinuxProfiler)
 
