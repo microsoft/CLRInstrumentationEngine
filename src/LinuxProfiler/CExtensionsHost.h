@@ -4,7 +4,7 @@
 // CExtensionsHost.h : Declaration of the CExtensionHost
 
 #pragma once
-
+#include "stdafx.h"
 // {CA487940-57D2-10BF-11B2-A3AD5A13CBC0}
 const GUID CLSID_ExtensionHost =
 { 0xCA487940, 0x57D2, 0x10BF,{ 0x11, 0xB2, 0xA3, 0xAD, 0x5A, 0x13, 0xCB, 0xC0 } };
@@ -17,7 +17,7 @@ namespace ExtensionsHostCrossPlat
     // has been created to provide basic instrumentation engine host support for
     // production breakpoints.
     class ATL_NO_VTABLE CExtensionHost :
-        public IProfilerManagerHost,
+        public IInstrumentationMethod,
         public CModuleRefCount
     {
     public:
@@ -38,7 +38,7 @@ namespace ExtensionsHostCrossPlat
             HRESULT hr = E_NOINTERFACE;
 
             hr = ImplQueryInterface(
-                static_cast<IProfilerManagerHost*>(this),
+                static_cast<IInstrumentationMethod*>(this),
                 riid,
                 ppvObject
             );
@@ -48,10 +48,31 @@ namespace ExtensionsHostCrossPlat
 
         // IProfilerManagerHost methods
     public:
-        STDMETHOD(Initialize)(_In_ IProfilerManager* pProfilerManager);
+        virtual HRESULT STDMETHODCALLTYPE Initialize(IProfilerManager* pProfilerManager);
 
-    private:
-        static void SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger);
+        virtual HRESULT STDMETHODCALLTYPE OnAppDomainCreated(IAppDomainInfo *pAppDomainInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnAppDomainShutdown(IAppDomainInfo *pAppDomainInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnAssemblyLoaded(IAssemblyInfo* pAssemblyInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded(IAssemblyInfo* pAssemblyInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded(IModuleInfo* pModuleInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnModuleUnloaded(IModuleInfo* pModuleInfo) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnShutdown() { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit, BOOL* pbInstrument) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE BeforeInstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE InstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE OnInstrumentationComplete(IMethodInfo* pMethodInfo, BOOL isRejit) { return S_OK; }
+
+        virtual HRESULT STDMETHODCALLTYPE AllowInlineSite(IMethodInfo* pMethodInfoInlinee, IMethodInfo* pMethodInfoCaller, BOOL* pbAllowInline) { return S_OK; }
     };
 
 }
