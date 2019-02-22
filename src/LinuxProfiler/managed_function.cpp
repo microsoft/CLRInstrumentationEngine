@@ -35,7 +35,7 @@ namespace vanguard {
                 instruction* last_inst = nullptr;
                 instruction** instructions;
                 size_t count = disassembler.get_instructions(/* [out] */ instructions);
-                for (auto it = instructions; it < instructions + count; last_inst = *it, it++)
+                for (instruction** it = instructions; it < instructions + count; last_inst = *it, it++)
                 {
                     //1.The tail prefix instruction must immediately precede a Call, Calli, or Callvirt instruction
                     //2.The instruction following the call instruction must be a ret.
@@ -66,7 +66,7 @@ namespace vanguard {
                         // 2. Mark the targets of branches as start of a block
                         if ((*it)->is_direct_branch() || (*it)->is_indirect_branch())
                         {
-                            for (auto target_it = (*it)->get_targets(); target_it < (*it)->get_targets() + (*it)->get_target_count(); ++target_it)
+                            for (instruction** target_it = (*it)->get_targets(); target_it < (*it)->get_targets() + (*it)->get_target_count(); ++target_it)
                             {
                                 (*target_it)->set_starts_block(true);
                             }
@@ -112,7 +112,7 @@ namespace vanguard {
                 block_type* current_block = nullptr;
                 vector<instruction*> current_instructions;
                 size_t block_size = 0;
-                for (auto it = instructions; it < instructions + inst_count; ++it)
+                for (instruction** it = instructions; it < instructions + inst_count; ++it)
                 {
                     instruction* instr = *it;
 
