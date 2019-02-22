@@ -157,7 +157,7 @@ bool il_disassembler::instrument_function(size_t block_index)
 
 void il_disassembler::cleanup_function()
 {
-    for (instruction* it = _instructions.begin(); it != _instructions.end(); ++it)
+    for (vector<instruction*>::iterator it = _instructions.begin(); it != _instructions.end(); ++it)
     {
         delete *it;
     }
