@@ -28,6 +28,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     CComBSTR bstrModulePath;
     IfFailRet(pModuleInfo->GetFullPath(&bstrModulePath));
 
-    std::wstring path(bstrModulePath, SysStringLen(bstrModulePath));
-    wstring pdbFile = path.substr(0, path.find_last_of(L'.')) + L".pdb";
+    /*std::wstring path(bstrModulePath, SysStringLen(bstrModulePath));
+    wstring pdbFile = path.substr(0, path.find_last_of(L'.')) + L".pdb";*/
 }

@@ -112,7 +112,7 @@ void il_disassembler::disassemble_function()
             IInstruction* pBranchTarget;
             il_branch->GetBranchTarget(&pBranchTarget);
 
-            if (target = lookup(pBranchTarget, inst_dict, target))
+            if (target == lookup(pBranchTarget, inst_dict, target))
             {
                 _instructions[i]->set_target_count(1);
                 _instructions[i]->get_targets()[0] = target;
