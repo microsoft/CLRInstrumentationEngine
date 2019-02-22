@@ -15,6 +15,9 @@ set(src_files
     ./CExtensionsHost.cpp
     ./refcount.cpp
     ./ImplQueryInterface.cpp
+    ./VanguardInstrumentation.cpp
+    ./managed_instruction.cpp
+    ./managed_function.cpp
 )
 
 add_lib(${PROJECT_NAME}

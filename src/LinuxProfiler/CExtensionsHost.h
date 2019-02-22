@@ -58,7 +58,7 @@ namespace ExtensionsHostCrossPlat
 
         virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded(IAssemblyInfo* pAssemblyInfo) { return S_OK; }
 
-        virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded(IModuleInfo* pModuleInfo) { return S_OK; }
+        virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded(IModuleInfo* pModuleInfo);
 
         virtual HRESULT STDMETHODCALLTYPE OnModuleUnloaded(IModuleInfo* pModuleInfo) { return S_OK; }
 
