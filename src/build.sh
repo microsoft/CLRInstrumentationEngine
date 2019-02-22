@@ -391,7 +391,7 @@ __MSBCleanBuildArgs=
 __CleanBuild=false
 __VerboseBuild=false
 __ClangMajorVersion=3
-__ClangMinorVersion=5
+__ClangMinorVersion=7
 __NuGetConfigPath="$EnlistmentRoot/src/unix/dependencies/nuget.config"
 # Package name is used in file system and "dotnet restore" will restore packages using lowercase characters in the filesystem.
 __CoreCLRPALPackageId="microsoft.visualstudio.debugger.coreclrpal"
