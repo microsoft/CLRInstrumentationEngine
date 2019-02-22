@@ -129,7 +129,7 @@ void il_disassembler::disassemble_function()
     }*/
 }
 
-size_t il_disassembler::get_instructions(vanguard::instrumentation::managed::instruction **&instructions)
+size_t il_disassembler::get_instructions(instruction **&instructions)
 {
     instructions = _instructions.data();
     return _instructions.size();
@@ -157,7 +157,7 @@ bool il_disassembler::instrument_function(size_t block_index)
 
 void il_disassembler::cleanup_function()
 {
-    for (auto it = _instructions.begin(); it != _instructions.end(); ++it)
+    for (instruction* it = _instructions.begin(); it != _instructions.end(); ++it)
     {
         delete *it;
     }
