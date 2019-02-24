@@ -165,5 +165,5 @@ void il_disassembler::cleanup_function()
     _instructions.clear();
     _il_instructions.clear();
     _current_method_info = nullptr;
-    _current_exception_section = nullptr;
+    //_current_exception_section = nullptr;
 }

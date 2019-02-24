@@ -85,7 +85,7 @@ private:
     IMethodInfo *_current_method_info;
     std::vector<vanguard::instrumentation::managed::instruction*> _instructions;
     std::vector<IInstruction*> _il_instructions;
-    IExceptionSection *_current_exception_section;
+    //IExceptionSection *_current_exception_section;
     module_info *_module_info;
     //vanguard::instrumentation::managed::function* _current_function;
     size_t _global_block_count;
