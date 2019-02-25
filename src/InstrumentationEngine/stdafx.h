@@ -77,4 +77,4 @@ using namespace std;
 
 #include "resource.h"
 
-#include "../ExtensionsCommon/Precompiled.h"
+#include "../ExtensionsCommon/banned.h"

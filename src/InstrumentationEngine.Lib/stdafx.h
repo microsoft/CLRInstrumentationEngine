@@ -78,4 +78,4 @@ using namespace ATL;
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;
 
-#include "../ExtensionsCommon/Precompiled.h"
+#include "../ExtensionsCommon/banned.h"
