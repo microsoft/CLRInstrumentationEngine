@@ -63,7 +63,9 @@ namespace MicrosoftInstrumentationEngine
         if (cbSize)
         {
             IfFailRet(EnsureCapacity(m_used + cbSize));
-            memcpy(m_memory + m_used, memory, cbSize);
+            // willxie memcpy_s
+            memcpy_s(m_memory + m_used, cbSize, memory, cbSize);
+            //memcpy(m_memory + m_used, memory, cbSize);
             m_used += cbSize;
         }
         return hr;
@@ -113,7 +115,9 @@ namespace MicrosoftInstrumentationEngine
         }
         if (m_memory != nullptr)
         {
-            memcpy(pCorSignature, m_memory, m_used);
+            // willxie memcpy_s
+            memcpy_s(pCorSignature, cbBuffer, m_memory, m_used);
+            //memcpy(pCorSignature, m_memory, m_used);
         }
 
         if (pcbSignature != nullptr)
@@ -156,7 +160,9 @@ namespace MicrosoftInstrumentationEngine
 
             if (m_memory != nullptr)
             {
-                memcpy(newMemory, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
+                // willxie memcpy_s
+                memcpy_s(newMemory, newCapacity, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
+                //memcpy(newMemory, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
                 delete[] m_memory;
             }
             m_memory = newMemory;

@@ -276,7 +276,9 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_ BYTE* pILBuffe
         int nextOffset = m_offset + 1 + operandSize;
 
         int relativeBranchOffset = targetOffset - nextOffset;
-        memcpy (pILBuffer + curpos, &relativeBranchOffset, operandSize);
+        // willxie memcpy_s
+        memcpy_s(pILBuffer + curpos, operandSize, &relativeBranchOffset, operandSize);
+        //memcpy (pILBuffer + curpos, &relativeBranchOffset, operandSize);
     }
     else if (bIsSwitch)
     {

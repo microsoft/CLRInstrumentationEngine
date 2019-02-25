@@ -216,7 +216,9 @@ unsigned __stdcall SectEH_Emit(unsigned size, unsigned ehCount,
     if (moreSections)
         EHSect->Kind |= CorILMethod_Sect_MoreSects;
     EHSect->DataSize = EHSect->Size(ehCount);
-    memcpy(EHSect->Clauses, clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT));
+    // willxie memcpy_s
+    memcpy_s(EHSect->Clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT), clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT));
+    //memcpy(EHSect->Clauses, clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT));
     outBuff = (BYTE*) &EHSect->Clauses[ehCount];
     ASSERT (&origBuff[size] == outBuff);
     // Set the offsets for the exception type tokens.
