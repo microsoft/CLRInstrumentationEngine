@@ -1100,9 +1100,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In
         }
         size_t mapCount = map.Count();
         size_t cCount = ((size_t)cMap <= mapCount) ? (size_t)cMap : mapCount;
-        // willxie memcpy_s
         IfFailRetErrno(memcpy_s(pMap, mapCount * sizeof(COR_IL_MAP), map.Get(), cCount * sizeof(COR_IL_MAP)));
-        //memcpy(pMap, map.Get(), cCount * sizeof(COR_IL_MAP));
     }
 
     return S_OK;

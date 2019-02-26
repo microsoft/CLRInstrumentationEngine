@@ -462,17 +462,13 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::CreateILFunctionBody()
     // copy the function body
     if  (cbNewMethodSizeWithoutHeader > 0)
     {
-        // willxie memcpy_s
         IfFailRetErrno(memcpy_s((BYTE*)pNewMethod + FAT_HEADER_SIZE, cbNewMethodSizeWithoutHeader, m_pILStream, cbNewMethodSizeWithoutHeader));
-        //memcpy((BYTE*)pNewMethod + FAT_HEADER_SIZE, m_pILStream, cbNewMethodSizeWithoutHeader);
     }
 
     // add SEH sections
     if  (pSectEh)
     {
-        // willxie memcpy_s
         IfFailRetErrno(memcpy_s((BYTE*)pNewMethod + FAT_HEADER_SIZE + cbNewMethodSizeWithoutHeader + nNewDelta, cbSehExtra, pSectEh, cbSehExtra));
-        //memcpy((BYTE*)pNewMethod + FAT_HEADER_SIZE + cbNewMethodSizeWithoutHeader + nNewDelta, pSectEh, cbSehExtra);
     }
 
 
@@ -1337,9 +1333,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
 
     m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
     m_pFinalRenderedMethod.Allocate(cbMethodSize);
-    // willxie memcpy_s
     IfFailRetErrno(memcpy_s(m_pFinalRenderedMethod, cbMethodSize, pMethodHeader, cbMethodSize));
-    //memcpy(m_pFinalRenderedMethod, pMethodHeader, cbMethodSize);
 
     m_cbFinalRenderedMethod = cbMethodSize;
 
@@ -1381,9 +1375,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pMethodBody));
 
         PVOID pFunction = pMalloc->Alloc(cbMethodBody);
-        // willxie memcpy_s
         IfFailRetErrno(memcpy_s(pFunction, cbMethodBody, pMethodBody, cbMethodBody));
-        //memcpy(pFunction, pMethodBody, cbMethodBody);
 
         LogMethodInfo();
 
@@ -1432,9 +1424,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
             corILMapmLen++;
             CSharedArray<COR_IL_MAP> pTempCorILMap(corILMapmLen);
             size_t capacity = m_pCorILMap.Count() * sizeof(COR_IL_MAP);
-            // willxie memcpy_s
             IfFailRetErrno(memcpy_s(pTempCorILMap.Get(), capacity, m_pCorILMap.Get(), capacity));
-            //memcpy(pTempCorILMap.Get(), m_pCorILMap.Get(), m_pCorILMap.Count() * sizeof(COR_IL_MAP));
 
             pTempCorILMap[corILMapmLen - 1].fAccurate = true;
             pTempCorILMap[corILMapmLen - 1].oldOffset = 0xfeefee;
@@ -1997,9 +1987,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
     {
         m_pCorILMap = CSharedArray<COR_IL_MAP>(cILMapEntries);
         size_t capacity = cILMapEntries * sizeof(COR_IL_MAP);
-        // willxie memcpy_s
         IfFailRetErrno(memcpy_s(m_pCorILMap.Get(), capacity, rgILMapEntries, capacity));
-        //memcpy(m_pCorILMap.Get(), rgILMapEntries, cILMapEntries * sizeof(COR_IL_MAP));
     }
 
     // Save the map with the module info so that it can be retrieved later by the JIT callbacks.
@@ -2062,9 +2050,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
 
     *ppCorILMap = new COR_IL_MAP[m_pCorILMap.Count()];
     size_t capacity = m_pCorILMap.Count() * sizeof(COR_IL_MAP);
-    // willxie memcpy_s
     IfFailRetErrno(memcpy_s(*ppCorILMap, capacity, m_pCorILMap.Get(), capacity));
-    //memcpy(*ppCorILMap, m_pCorILMap.Get(), m_pCorILMap.Count() * sizeof(COR_IL_MAP));
     *dwCorILMapmLen = (DWORD)m_pCorILMap.Count();
 
     return hr;
