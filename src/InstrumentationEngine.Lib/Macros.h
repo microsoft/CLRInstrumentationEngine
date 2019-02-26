@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -24,6 +24,19 @@ namespace MicrosoftInstrumentationEngine
 #define IfFailRet(EXPR) \
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
+
+// Wrap errno_t result of EXPR in HRESULT and then IfFailRet.
+#ifndef IfFailRetErrno
+#define IfFailRetErrno(EXPR) \
+    do { errno_t ifFailRetErrno_result = EXPR; IfFailRet(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
+#endif
+
+// Treats errno 0 as severity=SUCCESS others to severity=ERROR, sets facility to null, and code to 16 least-significant bits of errno.
+#ifndef MAKE_HRESULT_FROM_ERRNO
+#define MAKE_HRESULT_FROM_ERRNO(errnoValue) \
+    (MAKE_HRESULT(errnoValue == 0 ? SEVERITY_SUCCESS : SEVERITY_ERROR, FACILITY_NULL, HRESULT_CODE(errnoValue)))
+#endif
+
 
 #ifndef IfNullRetPointer
 #define IfNullRetPointer(EXPR) \

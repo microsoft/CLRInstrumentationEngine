@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "SignatureBuilder.h"
@@ -64,7 +64,7 @@ namespace MicrosoftInstrumentationEngine
         {
             IfFailRet(EnsureCapacity(m_used + cbSize));
             // willxie memcpy_s
-            memcpy_s(m_memory + m_used, cbSize, memory, cbSize);
+            IfFailRetErrno(memcpy_s(m_memory + m_used, cbSize, memory, cbSize));
             //memcpy(m_memory + m_used, memory, cbSize);
             m_used += cbSize;
         }
@@ -116,7 +116,7 @@ namespace MicrosoftInstrumentationEngine
         if (m_memory != nullptr)
         {
             // willxie memcpy_s
-            memcpy_s(pCorSignature, cbBuffer, m_memory, m_used);
+            IfFailRetErrno(memcpy_s(pCorSignature, cbBuffer, m_memory, m_used));
             //memcpy(pCorSignature, m_memory, m_used);
         }
 
@@ -161,7 +161,7 @@ namespace MicrosoftInstrumentationEngine
             if (m_memory != nullptr)
             {
                 // willxie memcpy_s
-                memcpy_s(newMemory, newCapacity, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
+                IfFailRetErrno(memcpy_s(newMemory, newCapacity, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity));
                 //memcpy(newMemory, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
                 delete[] m_memory;
             }
