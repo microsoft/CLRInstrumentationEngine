@@ -151,6 +151,7 @@ unsigned __stdcall SectEH_Emit(unsigned size, unsigned ehCount,
                   BOOL moreSections, __inout_ecount_opt(size) BYTE* outBuff,
                   __out_ecount(ehCount) ULONG* ehTypeOffsets)
 {
+    HRESULT hr = S_OK;
     if (size == 0 || outBuff == nullptr)
         return 0;
 

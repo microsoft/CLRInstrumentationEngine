@@ -101,6 +101,7 @@ namespace MicrosoftInstrumentationEngine
 
     HRESULT CSignatureBuilder::GetCorSignature(_In_ DWORD cbBuffer, _Inout_opt_ BYTE* pCorSignature, _Out_opt_ DWORD* pcbSignature)
     {
+        HRESULT hr = S_OK;
         if (pCorSignature == nullptr)
         {
             if (pcbSignature != nullptr)
