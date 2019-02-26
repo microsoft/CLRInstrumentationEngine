@@ -78,4 +78,11 @@ using namespace ATL;
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;
 
+#include <time.h>
+#include <iomanip>
+#include <wchar.h>
+#ifdef PLATFORM_UNIX
+#include <ctime>
+#endif
+
 #include "../ExtensionsCommon/banned.h"

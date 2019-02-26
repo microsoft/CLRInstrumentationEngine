@@ -3,12 +3,6 @@
 
 #include "stdafx.h"
 #include "Logging.h"
-#include <time.h>
-#include <iomanip>
-#include <wchar.h>
-#ifdef PLATFORM_UNIX
-#include <ctime>
-#endif
 #include "Macros.h"
 #include "InstrumentationEngine.h"
 
