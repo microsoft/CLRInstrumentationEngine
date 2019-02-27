@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -76,3 +76,5 @@ using namespace std;
 #include "Logging.h"
 
 #include "resource.h"
+
+#include "../ExtensionsCommon/banned.h"

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 
@@ -1100,7 +1100,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In
         }
         size_t mapCount = map.Count();
         size_t cCount = ((size_t)cMap <= mapCount) ? (size_t)cMap : mapCount;
-        memcpy(pMap, map.Get(), cCount * sizeof(COR_IL_MAP));
+        IfFailRetErrno(memcpy_s(pMap, mapCount * sizeof(COR_IL_MAP), map.Get(), cCount * sizeof(COR_IL_MAP)));
     }
 
     return S_OK;
