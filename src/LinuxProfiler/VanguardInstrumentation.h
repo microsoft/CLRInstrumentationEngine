@@ -1,9 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
-#include "managed_instruction.h"
-//#include "managed_function.h"
-#include <map>
+//#include "stdafx.h"
+
+using namespace ATL;
 
 struct method_info
 {
@@ -19,11 +18,11 @@ public:
     size_t get_start_index() { return _start_block_index; }
 
     void add_block_index(size_t block_index) { _block_indexes.push_back(block_index); }
-    std::vector<std::size_t> get_block_indexes() { return _block_indexes; }
+    vector<size_t> get_block_indexes() { return _block_indexes; }
 
 private:
     mdToken _token;
-    std::vector<std::size_t> _block_indexes; /* indices where probes are to be added */
+    vector<size_t> _block_indexes; /* indices where probes are to be added */
     size_t _start_block_index;
 };
 
@@ -33,29 +32,15 @@ public:
     module_info(IModuleInfo* modInfo) : _current_module_info(modInfo) {}
     ~module_info() { _instrumented_functions_list.clear(); }
 
-    void add_instrumented_functions(method_info& method_info) { _instrumented_functions_list.insert(std::make_pair(method_info.get_method_token(), method_info)); }
+    void add_instrumented_functions(method_info& method_info) { _instrumented_functions_list.insert(make_pair(method_info.get_method_token(), method_info)); }
 
     IModuleInfo *get_module() { return _current_module_info; }
 
-    bool contains_instrumented_method(mdToken token)
-    {
-        return _instrumented_functions_list.find(token) != _instrumented_functions_list.end();
-    }
-
-    bool get_method_info(mdToken token, method_info& info)
-    {
-        map<mdToken, method_info>::iterator it = _instrumented_functions_list.find(token);
-        if (it != _instrumented_functions_list.end())
-        {
-            info = it->second;
-            return true;
-        }
-
-        return false;
-    }
+    bool contains_instrumented_method(mdToken token);
+    bool get_method_info(mdToken token, method_info& info);
 
 private:
-    std::map<mdToken, method_info> _instrumented_functions_list;
+    unordered_map<mdToken, method_info> _instrumented_functions_list;
     IModuleInfo *_current_module_info;
 };
 

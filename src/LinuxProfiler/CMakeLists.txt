@@ -5,7 +5,9 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(LinuxProfiler)
 
-include_directories(. ../InstrumentationEngine.Lib ../InstrumentationEngine)
+find_package(LibXml2 REQUIRED)
+
+include_directories(. ../InstrumentationEngine.Lib ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP LinuxProfiler)
 
@@ -18,7 +20,7 @@ set(src_files
     ./VanguardInstrumentation.cpp
     ./managed_instruction.cpp
     ./managed_function.cpp
-    ./ILDisassembler.cpp
+    #./ILDisassembler.cpp
 )
 
 add_lib(${PROJECT_NAME}
