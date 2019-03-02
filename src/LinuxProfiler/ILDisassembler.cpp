@@ -12,7 +12,7 @@ il_disassembler::il_disassembler(IModuleInfo *pModuleInfo)
 void il_disassembler::disassemble_function()
 {
     int index = 0;
-    map<IInstruction*, instruction*> inst_dict;
+    unordered_map<IInstruction*, instruction*> inst_dict;
 
     IInstructionGraph* instructionsGraph;
     HRESULT hr = _current_method_info->GetInstructions(&instructionsGraph);

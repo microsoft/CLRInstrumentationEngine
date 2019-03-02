@@ -4,7 +4,7 @@
 #include "managed_instruction.h"
 #include "managed_function.h"
 #include "VanguardInstrumentation.h"
-#include <map>
+#include <unordered_map>
 
 using namespace vanguard::instrumentation::managed;
 
@@ -23,7 +23,7 @@ public:
 
 private:
     template<typename source_type, typename target_type>
-    target_type lookup(source_type source, std::map<source_type, target_type> &map, target_type default_value)
+    target_type lookup(source_type source, std::unordered_map<source_type, target_type> &map, target_type default_value)
     {
         if (source && map.find(source) != map.end())
         {
