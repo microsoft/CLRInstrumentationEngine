@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "ILDisassembler.h"
 
-using namespace vanguard::instrumentation::managed;
-
-
 il_disassembler::il_disassembler(IModuleInfo *pModuleInfo)
 {
     _module_info = new module_info(pModuleInfo);
@@ -12,7 +9,7 @@ il_disassembler::il_disassembler(IModuleInfo *pModuleInfo)
 void il_disassembler::disassemble_function()
 {
     int index = 0;
-    //unordered_map<IInstruction*, instruction*> inst_dict;
+    unordered_map<IInstruction*, instruction*> inst_dict;
 
     IInstructionGraph* instructionsGraph;
     HRESULT hr = _current_method_info->GetInstructions(&instructionsGraph);
@@ -35,7 +32,7 @@ void il_disassembler::disassemble_function()
         instruction *inst = new instruction((size_t)pOffset, (size_t)pSize, get_termination_type(il_inst), index++, pOpCode);
         _il_instructions.push_back(il_inst);
         _instructions.push_back(inst);
-        //inst_dict.insert(std::pair<IInstruction*, instruction*>(il_inst, inst));
+        inst_dict.insert(std::pair<IInstruction*, instruction*>(il_inst, inst));
 
         while (instructionData == S_OK)
         {
@@ -57,7 +54,7 @@ void il_disassembler::disassemble_function()
             _instructions.push_back(inst);
 
             il_inst = nextInstruction;
-            //inst_dict.insert(std::pair<IInstruction*, instruction*>(il_inst, inst));
+            inst_dict.insert(std::pair<IInstruction*, instruction*>(il_inst, inst));
         }
     }
 
@@ -83,7 +80,7 @@ void il_disassembler::disassemble_function()
                 IInstruction *pBranchTarget;
 
                 il_switch->GetBranchTarget(j, &pBranchTarget);
-                //_instructions[i]->get_targets()[j] = lookup(pBranchTarget, inst_dict, (instruction*)nullptr);
+                _instructions[i]->get_targets()[j] = lookup(pBranchTarget, inst_dict, (instruction*)nullptr);
             }
         }
         else if (isBranch)
@@ -94,11 +91,11 @@ void il_disassembler::disassemble_function()
             IInstruction* pBranchTarget;
             il_branch->GetBranchTarget(&pBranchTarget);
 
-            /*if (target == lookup(pBranchTarget, inst_dict, target))
+            if (target == lookup(pBranchTarget, inst_dict, target))
             {
                 _instructions[i]->set_target_count(1);
                 _instructions[i]->get_targets()[0] = target;
-            }*/
+            }
         }
     }
 }

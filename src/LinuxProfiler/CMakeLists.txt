@@ -20,7 +20,7 @@ set(src_files
     ./VanguardInstrumentation.cpp
     ./managed_instruction.cpp
     ./managed_function.cpp
-    #./ILDisassembler.cpp
+    ./ILDisassembler.cpp
 )
 
 add_lib(${PROJECT_NAME}

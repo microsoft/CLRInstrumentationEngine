@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
 #include "managed_instruction.h"
 #include "managed_function.h"
 #include "VanguardInstrumentation.h"
@@ -23,11 +22,11 @@ public:
 
 private:
     template<typename source_type, typename target_type>
-    target_type lookup(source_type source, std::unordered_map<source_type, target_type> &map, target_type default_value)
+    target_type lookup(source_type source, std::unordered_map<source_type, target_type> &input_map, target_type default_value)
     {
-        if (source && map.find(source) != map.end())
+        if (source && input_map.find(source) != input_map.end())
         {
-            return map.find(source)->second;
+            return input_map.find(source)->second;
         }
 
         return default_value;
