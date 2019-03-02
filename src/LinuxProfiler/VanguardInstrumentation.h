@@ -37,8 +37,8 @@ public:
 
     IModuleInfo *get_module() { return _current_module_info; }
 
-    bool contains_instrumented_method(mdToken token);
-    bool get_method_info(mdToken token, method_info& method_info);
+    bool contains_instrumented_method(mdToken token) { return false; }
+    bool get_method_info(mdToken token, method_info& method_info) { return false; }
 
 private:
     std::map<mdToken, method_info> _instrumented_functions_list;
