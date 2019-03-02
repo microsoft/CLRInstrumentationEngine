@@ -4,7 +4,7 @@
 // CExtensionsHost.cpp : Implementation of CExtensionHost
 
 #include "stdafx.h"
-
+#include <unistd.h>
 #include "CExtensionsHost.h"
 
 // static
@@ -44,7 +44,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
 )
 {
     HRESULT hr = S_OK;
-
+    usleep(10 * 1000 * 1000);
     CComPtr<IProfilerManagerLogging> pLogger;
     IfFailRet(pProfilerManager->GetLoggingInstance(&pLogger));
     SetLoggingFlags(pLogger);

@@ -4,9 +4,9 @@
 #include "managed_instruction.h"
 #include "managed_function.h"
 #include "VanguardInstrumentation.h"
-#include <unordered_map>
 
 using namespace vanguard::instrumentation::managed;
+using namespace ATL;
 
 struct il_disassembler
 {
