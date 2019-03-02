@@ -37,8 +37,21 @@ public:
 
     IModuleInfo *get_module() { return _current_module_info; }
 
-    bool contains_instrumented_method(mdToken token);
-    bool get_method_info(mdToken token, method_info& method_info) { return false; }
+    bool contains_instrumented_method(mdToken token)
+    {
+        return _instrumented_functions_list.find(token) != _instrumented_functions_list.end();
+    }
+    bool get_method_info(mdToken token, method_info& method_info)
+    {
+        map<mdToken, method_info>::iterator it = _instrumented_functions_list.find(token);
+        if (it != _instrumented_functions_list.end())
+        {
+            info = it->second;
+            return true;
+        }
+
+        return false;
+    }
 
 private:
     std::map<mdToken, method_info> _instrumented_functions_list;
