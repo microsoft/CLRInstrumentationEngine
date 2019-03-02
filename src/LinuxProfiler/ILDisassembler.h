@@ -16,10 +16,9 @@ public:
     virtual void disassemble_function();
     virtual void initialize_function(IMethodInfo *methodInfo) { _current_method_info = methodInfo; }
     virtual size_t get_instructions(/* [out] */ instruction **&instructions);
-    virtual void cleanup_function();
+    virtual void cleanup_function() {}
     virtual bool instrument_function(size_t block_index);
 
-    //virtual bool jit_instrument_function(std::vector<std::size_t>& block_index, IMethodInfo* current_method_info, IExceptionSection &exceptions, mdMemberRef runtime_function_token, bool is_assembly_load = false, bool is_coreclr = false);
     virtual module_info *get_module_info() { return _module_info; }
 
 private:
@@ -33,8 +32,6 @@ private:
 
         return default_value;
     }
-
-    //void fixup_probes(std::map<IInstruction*, IInstruction*> &fixup_map);
 
     DISCEE::TRMTA get_termination_type(IInstruction *il_inst)
     {
@@ -85,8 +82,6 @@ private:
     IMethodInfo *_current_method_info;
     std::vector<vanguard::instrumentation::managed::instruction*> _instructions;
     std::vector<IInstruction*> _il_instructions;
-    //IExceptionSection *_current_exception_section;
     module_info *_module_info;
-    //vanguard::instrumentation::managed::function* _current_function;
     size_t _global_block_count;
 };
