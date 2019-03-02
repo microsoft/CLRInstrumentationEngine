@@ -7,7 +7,7 @@ project(LinuxProfiler)
 
 find_package(LibXml2 REQUIRED)
 
-include_directories(. ../InstrumentationEngine.Lib ${LIBXML2_INCLUDE_DIR})
+include_directories(. ../InstrumentationEngine.Lib ../InstrumentationEngine ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP LinuxProfiler)
 
