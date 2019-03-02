@@ -41,7 +41,8 @@ public:
     {
         return _instrumented_functions_list.find(token) != _instrumented_functions_list.end();
     }
-    bool get_method_info(mdToken token, method_info& method_info)
+
+    bool get_method_info(mdToken token, method_info& info)
     {
         map<mdToken, method_info>::iterator it = _instrumented_functions_list.find(token);
         if (it != _instrumented_functions_list.end())
