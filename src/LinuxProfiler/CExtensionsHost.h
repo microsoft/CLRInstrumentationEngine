@@ -73,6 +73,11 @@ namespace ExtensionsHostCrossPlat
         virtual HRESULT STDMETHODCALLTYPE OnInstrumentationComplete(IMethodInfo* pMethodInfo, BOOL isRejit) { return S_OK; }
 
         virtual HRESULT STDMETHODCALLTYPE AllowInlineSite(IMethodInfo* pMethodInfoInlinee, IMethodInfo* pMethodInfoCaller, BOOL* pbAllowInline) { return S_OK; }
+
+    private:
+
+        HMODULE m_hmod = NULL;
+
     };
 
 }
