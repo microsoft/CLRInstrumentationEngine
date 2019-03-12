@@ -32,9 +32,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     memset(wszModuleFullPath, 0, MAX_PATH);
     wcscpy_s(wszModuleFullPath, MAX_PATH, bstrModulePath);
     
-    std::wstring path(wszModuleFullPath);
-    wstring pdbFile = path.substr(0, path.find_last_of(L'.')) + L".pdb";
-
     //m_hmod = ::LoadLibrary("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
 
     typedef int(*ReadPdb)(wstring path);
