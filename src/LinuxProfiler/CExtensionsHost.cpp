@@ -40,7 +40,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         return HRESULT_FROM_WIN32(error);
     }
 
-    typedef int(*ReadPdb)(const char* path);
+    typedef int(ReadPdb)(const char* path);
 
     ReadPdb pfnReadPdb = (ReadPdb)GetProcAddress(m_hmod, "ReadPdb");
     if (!pfnReadPdb)
