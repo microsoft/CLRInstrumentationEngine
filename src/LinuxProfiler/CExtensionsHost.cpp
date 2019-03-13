@@ -73,7 +73,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         return HRESULT_FROM_WIN32(error);
     }
 
-    int methodCount = pfnReadPdb(filePathChar.c_str());
+    int methodCount = 0;
+    methodCount = pfnReadPdb(filePathChar.c_str());
 
     const mdMethodDef baseToken = 0x06 << 24;
     mdMethodDef methodDef = 1;
@@ -92,7 +93,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         methodDef++;
         methodCount--;
         methodInfo->GetFullName(&bstrMethodName);
-        printf("Method Name: %S \n ", bstrMethodName);
+        printf("Method Name: %ls \n ", bstrMethodName);
         disassembler.initialize_function(methodInfo);
         disassembler.disassemble_function();
 
