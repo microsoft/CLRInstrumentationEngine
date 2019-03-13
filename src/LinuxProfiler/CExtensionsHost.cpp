@@ -71,7 +71,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         return HRESULT_FROM_WIN32(error);
     }
 
-    int methodCount = pfnReadPdb(pdbPath.c_str());
+    string filePathChar(pdbPath.begin(), pdbPath.end());
+    int methodCount = pfnReadPdb(filePathChar.c_str());
 
     return hr;
 }
