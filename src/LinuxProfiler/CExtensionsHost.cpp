@@ -29,9 +29,9 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     IfFailRet(pModuleInfo->GetFullPath(&bstrModulePath));
 
     tstringstream pathBuilder;
-    pathBuilder <<_T(L"/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
+    pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
 
-    m_hmod = ::LoadLibrary(pathBuilder.c_str().c_str());
+    m_hmod = ::LoadLibrary(pathBuilder.str().c_str());
 
     //typedef int(*ReadPdb)(wstring path);
 
