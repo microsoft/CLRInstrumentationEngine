@@ -32,7 +32,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     dllPath << (LPWSTR)bstrModulePath;
 
     tstring pdbPath = dllPath.str();
-    pdbPath = pdbPath.substr(0, pdbPath.find_last_of(L'.')) + L".pdb";
+    pdbPath = pdbPath.substr(0, pdbPath.find_last_of(_T('.'))) + _T(".pdb");
 
     tstringstream pathBuilder;
     pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
