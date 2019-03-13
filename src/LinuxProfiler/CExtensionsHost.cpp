@@ -93,7 +93,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         methodDef++;
         methodCount--;
         methodInfo->GetFullName(&bstrMethodName);
-        printf("Method Name: %ls \n ", bstrMethodName);
+        //printf("Method Name: %ls \n ", bstrMethodName);
         disassembler.initialize_function(methodInfo);
         disassembler.disassemble_function();
 
