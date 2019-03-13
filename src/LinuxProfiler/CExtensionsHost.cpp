@@ -34,8 +34,9 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     tstring pdbPath = dllPath.str();
     pdbPath = pdbPath.substr(0, pdbPath.find_last_of(_T('.'))) + _T(".pdb");
 
-    /*FILE * pFile;
-    pFile = fopen(pdbPath.c_str(), "r");
+    string filePathChar(pdbPath.begin(), pdbPath.end());
+    FILE * pFile;
+    pFile = fopen(filePathChar.c_str(), "r");
 
     if (pFile == NULL)
     {
@@ -44,7 +45,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     else
     {
         fclose(pFile);
-    }*/
+    }
 
     tstringstream pathBuilder;
     pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
@@ -71,7 +72,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         return HRESULT_FROM_WIN32(error);
     }
 
-    string filePathChar(pdbPath.begin(), pdbPath.end());
     int methodCount = pfnReadPdb(filePathChar.c_str());
 
     return hr;
