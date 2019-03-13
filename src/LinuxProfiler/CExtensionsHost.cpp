@@ -35,7 +35,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     pdbPath = pdbPath.substr(0, pdbPath.find_last_of(_T('.'))) + _T(".pdb");
 
     string filePathChar(pdbPath.begin(), pdbPath.end());
-    FILE * pFile;
+
+    /*FILE * pFile;
     pFile = fopen(filePathChar.c_str(), "r");
 
     if (pFile == NULL)
@@ -45,7 +46,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     else
     {
         fclose(pFile);
-    }
+    }*/
 
     tstringstream pathBuilder;
     pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
