@@ -40,9 +40,9 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         return HRESULT_FROM_WIN32(error);
     }
 
-    typedef int(__stdcall* ReadPdb)(const char* path);
+    typedef int(__stdcall* ReadPDB)(const char* path);
 
-    ReadPdb pfnReadPdb = (ReadPdb)GetProcAddress(m_hmod, "ReadPdb");
+    ReadPDB pfnReadPdb = (ReadPDB)GetProcAddress(m_hmod, "ReadPdb");
     if (!pfnReadPdb)
     {
         auto error = ::GetLastError();
