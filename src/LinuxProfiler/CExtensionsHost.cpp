@@ -28,15 +28,12 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     CComBSTR bstrModulePath;
     IfFailRet(pModuleInfo->GetFullPath(&bstrModulePath));
 
-    wstring pdbReader = L"/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so";
+    tstringstream pathBuilder;
+    pathBuilder <<_T(L"/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
 
-    WCHAR wszModuleFullPath[MAX_PATH];
-    memset(wszModuleFullPath, 0, MAX_PATH);
-    wcscpy_s(wszModuleFullPath, MAX_PATH, pdbReader.c_str());
-    
-    m_hmod = ::LoadLibrary(wszModuleFullPath);
+    m_hmod = ::LoadLibrary(pathBuilder.c_str().c_str());
 
-    typedef int(*ReadPdb)(wstring path);
+    //typedef int(*ReadPdb)(wstring path);
 
     return hr;
 }

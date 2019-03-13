@@ -56,3 +56,4 @@ using namespace std;
 #include "ImplQueryInterface.h"
 #include "InstrumentationEngine.h"
 #include "Logging.h"
+#include "tstring.h"
