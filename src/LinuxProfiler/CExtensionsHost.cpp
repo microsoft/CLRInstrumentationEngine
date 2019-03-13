@@ -33,7 +33,25 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
 
     m_hmod = ::LoadLibrary(pathBuilder.str().c_str());
 
-    //typedef int(*ReadPdb)(wstring path);
+    if (m_hmod == NULL)
+    {
+        auto error = ::GetLastError();
+        // Failed to load the module.
+        return HRESULT_FROM_WIN32(error);
+    }
+
+    typedef int(*ReadPdb)(wstring path);
+
+    ReadPdb pfnReadPdb = (ReadPdb)GetProcAddress(m_hmod, "ReadPdb");
+    if (!pfnDllGetClassObject)
+    {
+        auto error = ::GetLastError();
+        FreeLibrary(m_hmod);
+        return HRESULT_FROM_WIN32(error);
+    }
+
+    //int methodCount = pfnReadPdb();
+
 
     return hr;
 }
