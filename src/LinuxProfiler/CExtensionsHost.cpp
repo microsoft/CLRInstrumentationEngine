@@ -43,7 +43,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     typedef int(*ReadPdb)(wstring path);
 
     ReadPdb pfnReadPdb = (ReadPdb)GetProcAddress(m_hmod, "ReadPdb");
-    if (!pfnDllGetClassObject)
+    if (!pfnReadPdb)
     {
         auto error = ::GetLastError();
         FreeLibrary(m_hmod);
