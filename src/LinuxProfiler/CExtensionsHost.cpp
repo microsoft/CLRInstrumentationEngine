@@ -75,5 +75,43 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
 
     int methodCount = pfnReadPdb(filePathChar.c_str());
 
+    const mdMethodDef baseToken = 0x06 << 24;
+    mdMethodDef methodDef = 1;
+    HRESULT methodInfoResult = S_OK;
+    vector<IMethodInfo*> methodInfoCollection;
+
+    il_disassembler disassembler(pModuleInfo);
+
+    while (methodCount)
+    {
+        IMethodInfo* methodInfo = NULL;
+        CComBSTR bstrMethodName;
+
+        methodInfoResult = pModuleInfo->GetMethodInfoByToken(baseToken | methodDef, &methodInfo);
+        methodInfoCollection.push_back(methodInfo);
+        methodDef++;
+        methodCount--;
+        methodInfo->GetFullName(&bstrMethodName);
+        printf("Method Name: %S \n ", bstrMethodName);
+        disassembler.initialize_function(methodInfo);
+        disassembler.disassemble_function();
+
+        struct function_releaser
+        {
+            function_releaser(il_disassembler& d) :
+                _disassembler(d)
+            {
+            }
+
+            ~function_releaser() { _disassembler.cleanup_function(); }
+
+        private:
+            il_disassembler& _disassembler;
+        } releaser(disassembler);
+
+        vanguard::instrumentation::managed::function* func = new vanguard::instrumentation::managed::function();
+        func->calculate_blocks(disassembler);
+    }
+
     return hr;
 }

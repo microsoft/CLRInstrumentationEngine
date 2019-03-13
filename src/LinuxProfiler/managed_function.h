@@ -18,7 +18,7 @@ namespace vanguard {
                 static const DWORD INVALID_ID = 0xFFFFFFFF;
                 typedef block<instruction*, size_t> block_type;
 
-                function();
+                function() {}
 
                 //! Move constructor for function.
                 function(function&& other)

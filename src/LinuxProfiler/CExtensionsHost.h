@@ -5,6 +5,10 @@
 
 #pragma once
 #include "stdafx.h"
+#include "ILDisassembler.h"
+#include "managed_function.h"
+
+
 // {CA487940-57D2-10BF-11B2-A3AD5A13CBC0}
 const GUID CLSID_ExtensionHost =
 { 0xCA487940, 0x57D2, 0x10BF,{ 0x11, 0xB2, 0xA3, 0xAD, 0x5A, 0x13, 0xCB, 0xC0 } };
