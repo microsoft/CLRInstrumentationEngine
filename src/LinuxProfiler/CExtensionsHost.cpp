@@ -42,7 +42,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
 
     typedef int(__stdcall* ReadPDB)(const char* path);
 
-    ReadPDB pfnReadPdb = (ReadPDB)GetProcAddress(m_hmod, "ReadPdb");
+    ReadPDB pfnReadPdb = (ReadPDB)GetProcAddress(m_hmod, "ReadPDB");
     if (!pfnReadPdb)
     {
         auto error = ::GetLastError();
