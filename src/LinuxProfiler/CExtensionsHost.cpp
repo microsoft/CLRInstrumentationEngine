@@ -28,10 +28,19 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     CComBSTR bstrModulePath;
     IfFailRet(pModuleInfo->GetFullPath(&bstrModulePath));
 
+    tstringstream dllPath;
+    dllPath << (LPWSTR)bstrModulePath;
+
+    tstring pdbPath = dllPath.str();
+    pdbPath = pdbPath.substr(0, path.find_last_of(L'.')) + L".pdb";
+
     tstringstream pathBuilder;
     pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
 
-    m_hmod = ::LoadLibrary(pathBuilder.str().c_str());
+    if (m_hmod == NULL)
+    {
+        m_hmod = ::LoadLibrary(pathBuilder.str().c_str());
+    }
 
     if (m_hmod == NULL)
     {
