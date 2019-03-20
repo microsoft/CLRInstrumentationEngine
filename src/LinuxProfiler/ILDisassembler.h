@@ -16,7 +16,11 @@ namespace vanguard {
                 il_disassembler(IModuleInfo *pModuleInfo);
 
                 virtual void disassemble_function();
-                virtual void initialize_function(IMethodInfo *methodInfo) { _current_method_info = methodInfo; }
+                virtual void initialize_function(IMethodInfo *methodInfo, function* current_function)
+                {
+                    _current_method_info = methodInfo;
+                    _current_function = current_exception;
+                }
                 virtual size_t get_instructions(/* [out] */ instruction **&instructions);
                 virtual void cleanup_function();
                 virtual bool instrument_function(size_t block_index);

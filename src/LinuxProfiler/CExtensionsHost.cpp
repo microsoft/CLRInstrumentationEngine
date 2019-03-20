@@ -93,7 +93,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         methodInfo->GetFullName(&bstrMethodName);
 
         //printf("Method Name: %ls \n ", bstrMethodName);
-        disassembler.initialize_function(methodInfo);
+        vanguard::instrumentation::managed::function* func = new vanguard::instrumentation::managed::function();
+        disassembler.initialize_function(methodInfo, func);
         disassembler.disassemble_function();
 
         struct function_releaser
@@ -109,7 +110,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
             il_disassembler& _disassembler;
         } releaser(disassembler);
 
-        vanguard::instrumentation::managed::function* func = new vanguard::instrumentation::managed::function();
         func->calculate_blocks(disassembler);
     }
 
