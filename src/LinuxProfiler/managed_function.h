@@ -4,12 +4,13 @@
 #include "block.h"
 #include "managed_instruction.h"
 #include <functional>
-#include "ILDisassembler.h"
 
 namespace vanguard {
     namespace instrumentation {
         namespace managed
         {
+            struct il_disassembler;
+
             //! Represents a managed function.
             struct function
             {
