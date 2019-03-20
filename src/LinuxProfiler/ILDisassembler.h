@@ -19,7 +19,7 @@ namespace vanguard {
                 virtual void initialize_function(IMethodInfo *methodInfo, function* current_function)
                 {
                     _current_method_info = methodInfo;
-                    _current_function = current_exception;
+                    _current_function = current_function;
                 }
                 virtual size_t get_instructions(/* [out] */ instruction **&instructions);
                 virtual void cleanup_function();
