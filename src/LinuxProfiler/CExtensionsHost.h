@@ -3,6 +3,7 @@
 #include "ILDisassembler.h"
 #include "managed_function.h"
 
+using namespace vanguard::instrumentation::managed;
 
 // {CA487940-57D2-10BF-11B2-A3AD5A13CBC0}
 const GUID CLSID_ExtensionHost =

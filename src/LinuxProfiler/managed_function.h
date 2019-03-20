@@ -6,8 +6,6 @@
 #include <functional>
 #include "ILDisassembler.h"
 
-struct il_disassembler;
-
 namespace vanguard {
     namespace instrumentation {
         namespace managed
