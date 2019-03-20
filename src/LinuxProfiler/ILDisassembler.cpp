@@ -8,6 +8,7 @@ namespace vanguard {
             il_disassembler::il_disassembler(IModuleInfo *pModuleInfo)
             {
                 _module_info = new module_info(pModuleInfo);
+                _current_function = nullptr;
             }
 
             void il_disassembler::disassemble_function()
@@ -121,6 +122,7 @@ namespace vanguard {
                 _instructions.clear();
                 _il_instructions.clear();
                 _current_method_info = nullptr;
+                _current_function = nullptr;
             }
 
             bool il_disassembler::instrument_function(size_t block_index)

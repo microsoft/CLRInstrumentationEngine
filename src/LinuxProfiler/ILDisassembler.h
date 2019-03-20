@@ -86,6 +86,7 @@ namespace vanguard {
                 std::vector<IInstruction*> _il_instructions;
                 module_info *_module_info;
                 size_t _global_block_count;
+                vanguard::instrumentation::managed::function* _current_function;
             };
         }
     }
