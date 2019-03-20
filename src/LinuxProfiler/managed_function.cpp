@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "managed_function.h"
+#include "ILDisassembler.h"
 
 using namespace std;
 
