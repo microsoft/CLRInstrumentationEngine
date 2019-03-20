@@ -15,7 +15,7 @@ public:
     virtual void disassemble_function();
     virtual void initialize_function(IMethodInfo *methodInfo) { _current_method_info = methodInfo; }
     virtual size_t get_instructions(/* [out] */ instruction **&instructions);
-    virtual void cleanup_function() {}
+    virtual void cleanup_function();
     virtual bool instrument_function(size_t block_index);
 
     virtual module_info *get_module_info() { return _module_info; }

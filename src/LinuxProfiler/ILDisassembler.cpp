@@ -50,7 +50,7 @@ void il_disassembler::disassemble_function()
             nextInstruction->GetInstructionLength(&pSize);
             nextInstruction->GetOpCode(&pOpCode);
 
-            inst = new instruction((size_t)pOffset, (size_t)pSize, get_termination_type(il_inst), index++, pOpCode);
+            inst = new instruction((size_t)pOffset, (size_t)pSize, get_termination_type(nextInstruction), index++, pOpCode);
             _instructions.push_back(inst);
 
             il_inst = nextInstruction;
@@ -90,8 +90,9 @@ void il_disassembler::disassemble_function()
             instruction *target = nullptr;
             IInstruction* pBranchTarget;
             il_branch->GetBranchTarget(&pBranchTarget);
+            target = lookup(pBranchTarget, inst_dict, target);
 
-            if (target == lookup(pBranchTarget, inst_dict, target))
+            if (target)
             {
                 _instructions[i]->set_target_count(1);
                 _instructions[i]->get_targets()[0] = target;
@@ -104,6 +105,18 @@ size_t il_disassembler::get_instructions(vanguard::instrumentation::managed::ins
 {
     instructions = _instructions.data();
     return _instructions.size();
+}
+
+void il_disassembler::cleanup_function()
+{
+    for (vector<vanguard::instrumentation::managed::instruction*>::iterator it = _instructions.begin(); it != _instructions.end(); ++it)
+    {
+        delete *it;
+    }
+    
+    _instructions.clear();
+    _il_instructions.clear();
+    _current_method_info = nullptr;
 }
 
 bool il_disassembler::instrument_function(size_t block_index)

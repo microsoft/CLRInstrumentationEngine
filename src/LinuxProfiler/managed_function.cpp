@@ -29,8 +29,8 @@ namespace vanguard {
             {
                 // If we've already disassembled or cannot disassemble, do nothing
                 // In case of Assembly.Load/AssemblyLoadContext.LoadFromStream, we want to instrument, even if there are no symbols
-                if (_blocks || (!has_symbolic_information() && !_is_assembly_load))
-                    return;
+                // if (_blocks || (!has_symbolic_information() && !_is_assembly_load))
+                    // return;
 
                 instruction* last_inst = nullptr;
                 instruction** instructions;

@@ -12,6 +12,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
 )
 {
+    printf("Loaded Custom Profiler");
+    usleep(5*1000);
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
     pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo);
     pCorProfilerInfo->SetEventMask(COR_PRF_MONITOR_EXCEPTIONS | COR_PRF_ENABLE_STACK_SNAPSHOT);
