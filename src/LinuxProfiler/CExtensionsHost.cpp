@@ -1,12 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
-// CExtensionsHost.cpp : Implementation of CExtensionHost
-
 #include "stdafx.h"
 #include <unistd.h>
 #include "CExtensionsHost.h"
 
+using namespace vanguard::instrumentation::managed;
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
@@ -95,6 +91,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         methodDef++;
         methodCount--;
         methodInfo->GetFullName(&bstrMethodName);
+
         //printf("Method Name: %ls \n ", bstrMethodName);
         disassembler.initialize_function(methodInfo);
         disassembler.disassemble_function();

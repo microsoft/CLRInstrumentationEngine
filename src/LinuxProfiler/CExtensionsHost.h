@@ -1,8 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
-// CExtensionsHost.h : Declaration of the CExtensionHost
-
 #pragma once
 #include "stdafx.h"
 #include "ILDisassembler.h"
