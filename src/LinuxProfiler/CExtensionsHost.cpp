@@ -89,6 +89,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     IfFailRet(hr);
 
     sptrCurrent = sptrReturn;
+
+    return hr;
 }
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pModuleInfo)
