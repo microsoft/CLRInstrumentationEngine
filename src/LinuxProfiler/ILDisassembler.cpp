@@ -129,10 +129,7 @@ namespace vanguard {
                 CComPtr<IInstructionFactory> sptrInstructionFactory;
                 HRESULT hr = _current_method_info->GetInstructionFactory(&sptrInstructionFactory);
 
-                if (hr != S_OK)
-                {
-                    return hr;
-                }
+                IfFailRet(hr);
 
                 CComPtr<IInstructionGraph> sptrInstructionGraph;
                 hr = _current_method_info->GetInstructions(&sptrInstructionGraph);
