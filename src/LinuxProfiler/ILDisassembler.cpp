@@ -135,6 +135,14 @@ namespace vanguard {
                     return hr;
                 }
 
+                CComPtr<IInstructionGraph> sptrInstructionGraph;
+                hr = _current_method_info->GetInstructions(&sptrInstructionGraph);
+
+                if (hr != S_OK)
+                {
+                    return hr;
+                }
+
                 for (vanguard::instrumentation::managed::function::block_type* block_it = _current_function->get_blocks(); block_it < _current_function->get_blocks() + _current_function->get_block_count(); ++block_it)
                 {
                     instruction* inst = block_it->get_instructions()[0];
@@ -148,7 +156,6 @@ namespace vanguard {
                     {
                         return hr;
                     }
-                    sptrCurrent = sptrReturn;
                 }
                 return hr;
             }
