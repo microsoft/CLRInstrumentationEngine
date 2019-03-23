@@ -64,7 +64,7 @@ namespace ExtensionsHostCrossPlat
 
         virtual HRESULT STDMETHODCALLTYPE OnShutdown() { return S_OK; }
 
-        virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit, BOOL* pbInstrument) { return S_OK; }
+        virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit, BOOL* pbInstrument);
 
         virtual HRESULT STDMETHODCALLTYPE BeforeInstrumentMethod(IMethodInfo* pMethodInfo, BOOL isRejit) { return S_OK; }
 
