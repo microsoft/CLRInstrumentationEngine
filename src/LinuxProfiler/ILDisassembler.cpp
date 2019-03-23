@@ -18,8 +18,7 @@ namespace vanguard {
 
                 IInstructionGraph* instructionsGraph;
                 HRESULT hr = _current_method_info->GetInstructions(&instructionsGraph);
-                std::vector<IInstruction*> _il_instructions;
-
+                
                 if (hr == S_OK)
                 {
                     IInstruction* il_inst = NULL;
