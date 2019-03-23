@@ -24,6 +24,8 @@
 
 #include <atlcomcli.h>
 #ifndef PLATFORM_UNIX
+#include <atlbase.h>
+#include <atlcom.h>
 #include <atlutil.h>
 #endif
 #include <atlcore.h>
@@ -31,10 +33,6 @@
 #include <atlcoll.h>
 //#endif
 #include <atlsync.h>
-#include <atlbase.h>
-#include <atlcom.h>
-#include <atlctl.h>
-#include <atlstr.h>
 
 using namespace ATL;
 
