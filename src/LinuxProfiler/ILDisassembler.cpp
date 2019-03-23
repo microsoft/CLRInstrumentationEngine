@@ -127,7 +127,7 @@ namespace vanguard {
             HRESULT il_disassembler::instrument_function(/* size_t block_index */)
             {
                 CComPtr<IInstructionFactory> sptrInstructionFactory;
-                HRESULT hr = IfFailRet(_current_method_info->GetInstructionFactory(&sptrInstructionFactory));
+                HRESULT hr = _current_method_info->GetInstructionFactory(&sptrInstructionFactory);
                 IfFailRet(hr);
 
                 CComPtr<IInstructionGraph> sptrInstructionGraph;

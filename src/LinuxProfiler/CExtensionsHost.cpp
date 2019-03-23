@@ -4,6 +4,8 @@
 
 using namespace vanguard::instrumentation::managed;
 
+vector<string> globalMethodCol;
+
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
 )
@@ -18,6 +20,31 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
 
 HRESULT ExtensionsHostCrossPlat::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
+    CComBSTR bstrMethodName;
+    pMethodInfo->GetFullName(&bstrMethodName);
+
+    tstringstream methodName;
+    methodName << (LPWSTR)bstrMethodName;
+
+    tstring methodNameWStr = methodName.str();
+    string methodNameStr(methodNameWStr.begin(), methodNameWStr.end());
+
+    bool instrument = false;
+
+    for (size_t a = 0; a < globalMethodCol.size(); a++)
+    {
+        if (methodNameStr.compare(globalMethodCol[i]) == 0)
+        {
+            instrument = true;
+            break;
+        }
+    }
+
+    if (!instrument)
+    {
+        return S_OK;
+    }
+
     BYTE pSignature[256] = {};
     DWORD cbSignature = 0;
     pMethodInfo->GetCorSignature(_countof(pSignature), pSignature, &cbSignature);
@@ -147,6 +174,17 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         } releaser(disassembler);
 
         func->calculate_blocks(disassembler);
+
+        if (func->get_block_count() > 0)
+        {
+            tstringstream methodName;
+            methodName << (LPWSTR)bstrMethodName;
+
+            tstring methodNameWStr = methodName.str();
+            string methodNameStr(methodNameWStr.begin(), methodNameWStr.end());
+            globalMethodCol.push_back(methodNameWStr);
+        }
+
         disassembler.instrument_function();
     }
 
