@@ -27,29 +27,40 @@ HRESULT ExtensionsHostCrossPlat::InstrumentMethod(_In_ IMethodInfo* pMethodInfo,
     USHORT argsCount = pSignature[1];
 
     CComPtr<IInstructionFactory> sptrInstructionFactory;
-    IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
+    HRESULT hr = (pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
+    IfFailRet(hr);
 
     CComPtr<IInstructionGraph> sptrInstructionGraph;
-    IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
+    hr = (pMethodInfo->GetInstructions(&sptrInstructionGraph));
+    IfFailRet(hr);
+
     sptrInstructionGraph->RemoveAll();
 
     CComPtr<IInstruction> sptrCurrent;
-    IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
+    hr = (sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
+    IfFailRet(hr);
 
     for (USHORT i = 0; i < argsCount; i++)
     {
         CComPtr<IInstruction> sptrLoadArg;
 
-        IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
+        hr = (sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg));
+        IfFailRet(hr);
+
+        hr = (sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
+        IfFailRet(hr);
 
         sptrCurrent = sptrLoadArg;
     }
 
     CComPtr<IInstruction> sptrReturn;
 
-    IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
-    IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
+    hr = (sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
+    IfFailRet(hr);
+
+    hr = (sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
+    IfFailRet(hr);
+
     sptrCurrent = sptrReturn;
 }
 
