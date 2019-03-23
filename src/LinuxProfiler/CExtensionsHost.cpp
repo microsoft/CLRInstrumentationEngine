@@ -4,7 +4,7 @@
 
 using namespace vanguard::instrumentation::managed;
 
-vector<string> globalMethodCol;
+static vector<string> globalMethodCol;
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
@@ -18,7 +18,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     return S_OK;
 }
 
-HRESULT ExtensionsHostCrossPlat::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
+HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
     CComBSTR bstrMethodName;
     pMethodInfo->GetFullName(&bstrMethodName);
@@ -31,7 +31,7 @@ HRESULT ExtensionsHostCrossPlat::InstrumentMethod(_In_ IMethodInfo* pMethodInfo,
 
     bool instrument = false;
 
-    for (size_t a = 0; a < globalMethodCol.size(); a++)
+    for (size_t i = 0; i < globalMethodCol.size(); i++)
     {
         if (methodNameStr.compare(globalMethodCol[i]) == 0)
         {
@@ -182,7 +182,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
 
             tstring methodNameWStr = methodName.str();
             string methodNameStr(methodNameWStr.begin(), methodNameWStr.end());
-            globalMethodCol.push_back(methodNameWStr);
+            globalMethodCol.push_back(methodNameStr);
         }
 
         disassembler.instrument_function();
