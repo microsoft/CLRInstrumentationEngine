@@ -193,7 +193,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
             globalMethodCol.push_back(methodNameStr);
         }
 
-        disassembler.instrument_function();
+        //disassembler.instrument_function();
     }
 
     return hr;
