@@ -23,7 +23,7 @@ namespace vanguard {
                 }
                 virtual size_t get_instructions(/* [out] */ instruction **&instructions);
                 virtual void cleanup_function();
-                virtual bool instrument_function(size_t block_index);
+                virtual HRESULT instrument_function(/* size_t block_index */);
 
                 virtual module_info *get_module_info() { return _module_info; }
 

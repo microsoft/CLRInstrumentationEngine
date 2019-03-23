@@ -111,6 +111,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         } releaser(disassembler);
 
         func->calculate_blocks(disassembler);
+        disassembler.instrument_function();
     }
 
     return hr;

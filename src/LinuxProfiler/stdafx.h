@@ -55,5 +55,11 @@ using namespace std;
 #include "refcount.h"
 #include "ImplQueryInterface.h"
 #include "InstrumentationEngine.h"
+
+#ifndef IfFailRet
+#define IfFailRet(EXPR) \
+do { if (FAILED(hr = (EXPR))) { ATLASSERT(!L"IfFailRet(" L#EXPR L") failed"); return hr; } } while (false)
+#endif
+
 #include "Logging.h"
 #include "tstring.h"
