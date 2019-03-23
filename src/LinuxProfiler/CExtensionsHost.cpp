@@ -16,6 +16,43 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     return S_OK;
 }
 
+HRESULT ExtensionsHostCrossPlat::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
+{
+    BYTE pSignature[256] = {};
+    DWORD cbSignature = 0;
+    pMethodInfo->GetCorSignature(_countof(pSignature), pSignature, &cbSignature);
+
+    if (cbSignature < 2)
+        return S_FALSE;
+    USHORT argsCount = pSignature[1];
+
+    CComPtr<IInstructionFactory> sptrInstructionFactory;
+    IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
+
+    CComPtr<IInstructionGraph> sptrInstructionGraph;
+    IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
+    sptrInstructionGraph->RemoveAll();
+
+    CComPtr<IInstruction> sptrCurrent;
+    IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
+
+    for (USHORT i = 0; i < argsCount; i++)
+    {
+        CComPtr<IInstruction> sptrLoadArg;
+
+        IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
+
+        sptrCurrent = sptrLoadArg;
+    }
+
+    CComPtr<IInstruction> sptrReturn;
+
+    IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
+    IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
+    sptrCurrent = sptrReturn;
+}
+
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pModuleInfo)
 {
     HRESULT hr = S_OK;
@@ -33,18 +70,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
     pdbPath = pdbPath.substr(0, pdbPath.find_last_of(_T('.'))) + _T(".pdb");
 
     string filePathChar(pdbPath.begin(), pdbPath.end());
-
-    /*FILE * pFile;
-    pFile = fopen(filePathChar.c_str(), "r");
-
-    if (pFile == NULL)
-    {
-        return S_OK;
-    }
-    else
-    {
-        fclose(pFile);
-    }*/
 
     tstringstream pathBuilder;
     pathBuilder <<_T("/home/maban/projects/XPlatPdbReader/bin/x64/Debug/libXPlatPdbReader.so");
