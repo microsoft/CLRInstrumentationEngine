@@ -127,16 +127,12 @@ namespace vanguard {
             HRESULT il_disassembler::instrument_function(/* size_t block_index */)
             {
                 CComPtr<IInstructionFactory> sptrInstructionFactory;
-                IfFailRet(_current_method_info->GetInstructionFactory(&sptrInstructionFactory));
+                HRESULT hr = IfFailRet(_current_method_info->GetInstructionFactory(&sptrInstructionFactory));
+                IfFailRet(hr);
 
-                HRESULT hr = S_OK;
                 CComPtr<IInstructionGraph> sptrInstructionGraph;
                 hr = _current_method_info->GetInstructions(&sptrInstructionGraph);
-
-                if (hr != S_OK)
-                {
-                    return hr;
-                }
+                IfFailRet(hr);
 
                 for (vanguard::instrumentation::managed::function::block_type* block_it = _current_function->get_blocks(); block_it < _current_function->get_blocks() + _current_function->get_block_count(); ++block_it)
                 {
@@ -147,10 +143,7 @@ namespace vanguard {
 
                     hr = sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn);
                     hr = sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn);
-                    if (hr != S_OK)
-                    {
-                        return hr;
-                    }
+                    IfFailRet(hr);
                 }
                 return hr;
             }
