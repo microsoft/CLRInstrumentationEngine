@@ -90,7 +90,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
     // File logging supports all log levels, so specify that the allowed flags is All.
     // File logging is enabled under two scenarios:
     // 1) If the FileLog env var is specified and it has a value that is something other than None, when parsed.
-    // 2) If the LogLevel env var AND FileLogPath env var are specified and the LogLevel value is somthing other than None, when parsed.
+    // 2) If the LogLevel env var AND FileLogPath env var are specified and the LogLevel value is something other than None, when parsed.
     LoggingFlags fileLoggingFlags = LoggingFlags_None;
     if (fHasFileLogLevel)
     {
@@ -112,7 +112,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
     // Set this environment variable for testing purposes only.
     // Setting it will allow untrusted instrumentation methods to be loaded
     //
-    // We consider this variable as secure as COR_ENABLE_PROFILER because we read it very early in process lifetime so mailicios code
+    // We consider this variable as secure as COR_ENABLE_PROFILER because we read it very early in process lifetime so malicious code
     // inside the process cannot modify it. Make sure you do not move this initialization logic and do not make it lazily initialized
     //
     if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation"), nullptr, 0) > 0)
@@ -145,7 +145,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
 
 #ifndef PLATFORM_UNIX
     // This object aggregates the free threaded marshaler which ensures all cross apartment calls to this object
-    // do not marshal off the calling thead. In all likelyhood, this shouldn't be a problem as I don't expect
+    // do not marshal off the calling thead. In all likelihood, this shouldn't be a problem as I don't expect
     // any STA or MTA objects to get a hold of this. However, for correctness sake, I am doing this.
     ATL::CComPtr<IUnknown> pUnkMarshal;
     IfFailRet(CoCreateFreeThreadedMarshaler((IUnknown*)(ATL::CComObjectRootEx<ATL::CComMultiThreadModel>*)(this), (IUnknown**)&m_pFTM));
@@ -313,12 +313,15 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetCorProfilerInfo(
 // return the profiler host instance
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
 {
+    HRESULT hr = S_OK;
     CCriticalSectionHolder holder(&m_cs);
 
     IfNullRetPointer(ppProfilerManagerHost);
     IfNullRet(m_profilerManagerHost);
 
-    HRESULT hr = m_profilerManagerHost.CopyTo(ppProfilerManagerHost);
+    //HRESULT hr = m_profilerManagerHost.CopyTo(ppProfilerManagerHost);
+    // Initialize via assignment, refcounts
+    **ppProfilerManagerHost = *m_profilerManagerHost;
     return hr;
 }
 
@@ -521,7 +524,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationM
             CInitializeInstrumentationMethodHolder initHolder(this);
 
             //this operation will remove flags associated with removed Instrumentation method
-            // We need to trace error, however remove operaiton will succeed anyway
+            // We need to trace error, however remove operation will succeed anyway
             HRESULT hr2 = SetEventMask(0);
             if (FAILED(hr2))
             {
@@ -668,7 +671,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     }
     s_profilerManagerInstance = this;
 
-    // TODO: this will called once for each instance of the clr in the process.
+    // TODO: this will be called once for each instance of the clr in the process.
     // For in-proc sxs, this means the host may create multiple instances of this object.
     // TODO: Need to figure out how to deal with this. Colin believes "choose first" may be good enough.
     // However, need feedback from Tofino on this issue.
@@ -917,182 +920,23 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetDefaultEventMask()
         ;
 }
 
-// Read the MicrosoftInstrumentationEngine_HostPath and MicrosoftInstrumentationEngine_Host environment variables.
-// These allow the host to specify a dll and object to instantiate that implements IProfilerManagerHost.
 // The IProfilerManagerHost can register for raw cor profiler callbacks and pass configuration information
 // about the instrumentation methods back to the profiler manager.
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LoadProfilerManagerHost()
 {
     HRESULT hr = S_OK;
 
-    // These should fail if the dll or guid can't be found. Otherwise,
-    // m_profilerHostDllPath and m_guidProfilerHost will be set
-    IfFailRet(GetProfilerManagerHostGuid());
-
-    if (FAILED(GetProfilerManagerHostPathEnvVar()))
-    {
-        // No host path is set. Read the host path from the registered CLSID in m_guidProfilerHost.
-        // This allows hosts to switch to the correct bitness using registry redirection.
-        // Note that this cannot use CoCreateInstance because COM is not initiliazed and
-        // doing so would be an un-reversible side effect to this thread.
-        IfFailRet(GetProfilerManagerHostPathFromCLSID());
-    }
-
-    // Load the host dll and call to class factory to get host instance.
-    m_profilerHostModule = LoadLibrary(m_profilerHostDllPath.c_str());
-    if (m_profilerHostModule == NULL)
-    {
-        // Failed to load the module.
-        CLogging::LogError(_T("failed to load profiler host dll"));
-        return E_FAIL;
-    }
-    else
-    {
-        typedef HRESULT(__stdcall* DLLGETCLASSOBJECT)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ void** ppvObject);
-
-        DLLGETCLASSOBJECT pfnDllGetClassObject = (DLLGETCLASSOBJECT)GetProcAddress(m_profilerHostModule, "DllGetClassObject");
-        if (!pfnDllGetClassObject)
-        {
-            FreeLibrary(m_profilerHostModule);
-            CLogging::LogError(_T("failed to find DllGetClassObject for profiler manager host"));
-            return E_FAIL;
-        }
-
-        CComPtr<IClassFactory> pFactory;
-        hr = pfnDllGetClassObject(m_guidProfilerHost, __uuidof(IClassFactory), (LPVOID*)&pFactory);
-        if (FAILED(hr))
-        {
-            CLogging::LogError(_T("failed to get class factory from for profiler manager host dll"));
-            return hr;
-        }
-
-
-        hr = pFactory->CreateInstance(NULL, __uuidof(IProfilerManagerHost), (LPVOID*)&m_profilerManagerHost);
-        if (FAILED(hr))
-        {
-            CLogging::LogError(_T("failed to get class factory from for profiler manager host dll"));
-            return hr;
-        }
-    }
-
-    return hr;
-}
-
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerManagerHostPathEnvVar()
-{
-    HRESULT hr = S_OK;
-
-//Follow the CLR naming https://github.com/dotnet/coreclr/issues/601
-#ifdef X86
-    auto hostPathVariableName = _T("MicrosoftInstrumentationEngine_HostPath_32");
+#ifndef PLATFORM_UNIX
+    m_profilerManagerHost.Attach(new CExtensionsHost);
 #else
-    auto hostPathVariableName = _T("MicrosoftInstrumentationEngine_HostPath_64");
-#endif // WIN32
-
-    DWORD dwRes = GetEnvironmentVariable(hostPathVariableName, NULL, 0);
-
-    if (dwRes == 0)
-    {
-        hostPathVariableName = _T("MicrosoftInstrumentationEngine_HostPath");
-        dwRes = GetEnvironmentVariable(hostPathVariableName, NULL, 0);
-    }
-
-    if (dwRes == 0)
-    {
-        // No host registered.
-        CLogging::LogMessage(_T("MicrosoftInstrumentationEngine_HostPath environment variable is not set. Deferring to registry."));
-        return E_FAIL;
-    }
-
-    DWORD hostPathLen = dwRes;
-    CAutoVectorPtr<WCHAR> wszHostPathEnvVar(new WCHAR[hostPathLen]);
-    if (wszHostPathEnvVar == nullptr)
+    m_profilerManagerHost.Attach(new ExtensionsHostCrossPlat::CExtensionsHost);
+#endif
+    if (m_profilerManagerHost == nullptr)
     {
         return E_OUTOFMEMORY;
     }
 
-    dwRes = GetEnvironmentVariable(hostPathVariableName, wszHostPathEnvVar, hostPathLen);
-    // GetEnvironmentVariable returns the length WITHOUT a null on success.
-    if (dwRes != hostPathLen - 1)
-    {
-        //VSASSERT(dwRes == hostPathLen - 1, L"");
-        return E_FAIL;
-    }
-    if (!PathFileExists(wszHostPathEnvVar))
-    {
-        CLogging::LogError(_T("Profiler Host dll doesn't exist"));
-        return E_FAIL;
-    }
-    if (PathIsRelative(wszHostPathEnvVar))
-    {
-        CLogging::LogError(_T("Profiler Host dll path cannot be relative."));
-        return E_FAIL;
-    }
-    // CONSIDER: any other required checks to make sure this is safe?
-    // How about requiring host dlls to be in same folder as profiler manager?
-
-    m_profilerHostDllPath = wszHostPathEnvVar.m_p;
-
     return S_OK;
-}
-
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerManagerHostGuid()
-{
-    HRESULT hr = S_OK;
-
-    const int guidStringLength = 39;
-    WCHAR wszHostGuid[guidStringLength];
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_Host"), wszHostGuid, guidStringLength) != guidStringLength - 1)
-    {
-        CLogging::LogError(_T("Couldn't get MicrosoftInstrumentationEngine_Host guid"));
-        return E_FAIL;
-    }
-
-    if (FAILED(IIDFromString(wszHostGuid, &m_guidProfilerHost)))
-    {
-        CLogging::LogError(_T("Contents of MicrosoftInstrumentationEngine_Host couldn't be converted to a guid"));
-        return E_FAIL;
-    }
-
-    return hr;
-}
-
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerManagerHostPathFromCLSID()
-{
-    HRESULT hr = S_OK;
-
-#ifndef PLATFORM_UNIX
-    // TODO: (Linux)
-
-    WCHAR wszGuid[40] = { 0 };
-    if (::StringFromGUID2(m_guidProfilerHost, wszGuid, 40) == 0 )
-    {
-        CLogging::LogError(_T("ProfilerHost GUID string larger than out buffer in MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerManagerHostPathFromCLSID."));
-        return E_FAIL;
-    }
-
-    WCHAR wszKeyName[MAX_PATH];
-    IfFailRet(StringCchPrintf(wszKeyName, MAX_PATH, _T("CLSID\\%s\\InprocServer32"), wszGuid));
-
-    CRegKey clsidKey;
-    if (clsidKey.Open(HKEY_CLASSES_ROOT, wszKeyName, KEY_READ) != ERROR_SUCCESS)
-    {
-        CLogging::LogError(_T("Contents of MicrosoftInstrumentationEngine_Host couldn't be resolved to an object. Verify registration or use MicrosoftInstrumentationEngine_HostPath to point to the dll."));
-        return E_FAIL;
-    }
-
-    WCHAR wszHostPath[MAX_PATH];
-    ULONG cActual = MAX_PATH;
-    if (clsidKey.QueryStringValue(NULL, wszHostPath, &cActual) != ERROR_SUCCESS)
-    {
-        CLogging::LogError(_T("Contents of MicrosoftInstrumentationEngine_Host couldn't be resolved to an object. Verify registration or use MicrosoftInstrumentationEngine_HostPath to point to the dll."));
-        return E_FAIL;
-    }
-
-    m_profilerHostDllPath = wszHostPath;
-#endif
-
-    return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()

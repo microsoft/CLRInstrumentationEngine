@@ -7,6 +7,11 @@
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
 #include "MethodInfo.h"
+#ifndef PLATFORM_UNIX
+#include "../ExtensionsHost/CExtensionsHost.h"
+#else
+#include "../ExtensionsHostCrossPlat/CExtensionsHost.h"
+#endif
 
 using namespace ATL;
 
@@ -61,17 +66,8 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<IMarshal> m_pFTM;
 #endif
 
-        // Path to the profiler host dll
-        tstring m_profilerHostDllPath;
-
-        // Guid of the profiler host object to be created within the host dll
-        GUID m_guidProfilerHost;
-
         // Pointer to the single profiler host instance
         CComPtr<IProfilerManagerHost> m_profilerManagerHost;
-
-        // hmodule for the profiler host dll
-        HMODULE m_profilerHostModule;
 
         // Pointer to the real ICorProfilerInfo from the clr
         CComPtr<ICorProfilerInfo> m_pRealProfilerInfo;
@@ -234,10 +230,6 @@ namespace MicrosoftInstrumentationEngine
         // Private Helpers
     private:
         HRESULT LoadProfilerManagerHost();
-
-        HRESULT GetProfilerManagerHostPathEnvVar();
-        HRESULT GetProfilerManagerHostGuid();
-        HRESULT GetProfilerManagerHostPathFromCLSID();
 
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "refcount.h"
@@ -15,7 +15,7 @@ namespace ExtensionsHostCrossPlat
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CLinuxClassFactory);
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLinuxClassFactory);
-        STDMETHOD(STDMETHODCALLTYPE) QueryInterface(REFIID riid, PVOID *ppvObject)
+        STDMETHOD(STDMETHODCALLTYPE) QueryInterface(REFIID riid, PVOID *ppvObject) override
         {
             HRESULT hr = E_NOINTERFACE;
 
@@ -33,12 +33,12 @@ namespace ExtensionsHostCrossPlat
             _In_ IUnknown *pUnkOuter,
             _In_   REFIID   riid,
             _Out_ void **ppvObject
-            )
+            ) override
         {
             HRESULT hr = S_OK;
 
-            CComPtr<CExtensionHost> pExtensionHost;
-            pExtensionHost.Attach(new CExtensionHost());
+            CComPtr<CExtensionsHost> pExtensionHost;
+            pExtensionHost.Attach(new CExtensionsHost());
 
             IfFailRet(pExtensionHost->QueryInterface(riid, ppvObject));
 
@@ -47,7 +47,7 @@ namespace ExtensionsHostCrossPlat
 
         STDMETHOD(LockServer)(
             _In_ BOOL fLock
-            )
+            ) override
         {
             return S_OK;
         }

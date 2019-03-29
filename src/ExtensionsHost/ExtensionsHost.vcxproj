@@ -10,7 +10,7 @@
     <ProjectName>InstrumentationEngine.ExtensionsHost</ProjectName>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(EnlistmentRoot)\build\Unmanaged.props" />
   <ItemDefinitionGroup>

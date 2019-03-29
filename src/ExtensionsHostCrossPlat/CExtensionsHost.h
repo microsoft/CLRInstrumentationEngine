@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
-// CExtensionsHost.h : Declaration of the CExtensionHost
+// CExtensionsHost.h : Declaration of the CExtensionsHost
 
 #pragma once
 
@@ -16,24 +16,24 @@ namespace ExtensionsHostCrossPlat
     // In order to avoid destabilizing appinsights through a rewrite, this class
     // has been created to provide basic instrumentation engine host support for
     // production breakpoints.
-    class ATL_NO_VTABLE CExtensionHost :
+    class CExtensionsHost :
         public IProfilerManagerHost,
         public CModuleRefCount
     {
     public:
-        CExtensionHost()
+        CExtensionsHost()
         {
 #ifdef PLATFORM_UNIX
             PAL_Initialize(0, NULL);
 #endif
         }
 
-        CExtensionHost(const CExtensionHost&) = delete;
+        CExtensionsHost(const CExtensionsHost&) = delete;
 
-        DEFINE_DELEGATED_REFCOUNT_ADDREF(CExtensionHost)
-        DEFINE_DELEGATED_REFCOUNT_RELEASE(CExtensionHost)
+        DEFINE_DELEGATED_REFCOUNT_ADDREF(CExtensionsHost)
+        DEFINE_DELEGATED_REFCOUNT_RELEASE(CExtensionsHost)
 
-        STDMETHOD(STDMETHODCALLTYPE) QueryInterface(REFIID riid, PVOID* ppvObject)
+        STDMETHOD(STDMETHODCALLTYPE) QueryInterface(REFIID riid, PVOID* ppvObject) override
         {
             HRESULT hr = E_NOINTERFACE;
 
@@ -48,7 +48,7 @@ namespace ExtensionsHostCrossPlat
 
         // IProfilerManagerHost methods
     public:
-        STDMETHOD(Initialize)(_In_ IProfilerManager* pProfilerManager);
+        STDMETHOD(Initialize)(_In_ IProfilerManager* pProfilerManager) override;
 
     private:
         static void SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger);

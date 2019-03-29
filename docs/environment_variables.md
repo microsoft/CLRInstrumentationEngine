@@ -1,5 +1,7 @@
 # The CLR Instrumentation Engine Environment Variables
 
+See [Configuration](configuration.md) for details on how to setup your Instrumentation Method.
+
 ## Required Variables
 
 These are the environment variables and values that are required to enable the CLR Instrumentation Engine:
@@ -24,9 +26,6 @@ Additional variables needed to make the CLR Instrumentation Engine work:
 
 | Variable | Value | Description |
 |-|-|-|
-MicrosoftInstrumentationEngine_Host|"{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}"|CLSID or ProgID of the IProfileManagerHost implementation which registers for raw COR profiler callbacks and handles configuration information about instrumentation methods that is passed back.
-MicrosoftInstrumentationEngine_HostPath_32|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll]"|The 32bit dll hosting the implementation.
-MicrosoftInstrumentationEngine_HostPath_64|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll]"|The 64bit dll hosting the implementation.
 MicrosoftInstrumentationEngine_LogLevel|"Errors"|Filters event logs. Currently only "Errors" is allowed to prevent verbose logging.
 
 ## Optional and Miscellaneous Variables

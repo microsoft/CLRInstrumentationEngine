@@ -1,20 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
-// CExtensionsHost.cpp : Implementation of CExtensionHost
+// CExtensionsHost.cpp : Implementation of CExtensionsHost
 
 #include "stdafx.h"
-
-#include "ExtensionsCommon/ModuleUtils.h"
-#include "ExtensionsCommon/PathUtils.h"
-#include "ExtensionsCommon/TextUtils.h"
-
-#include "ExtensionsCommon/AgentValidation.h"
-#include "ExtensionsCommon/Environment.h"
-
-#include "ExtensionsHostLib/RawProfilerHookLoader.h"
-#include "ExtensionsHostLib/RawProfilerHookSettingsReader.h"
-#include "ExtensionsHostLib/SafeFindFileHandle.h"
 
 #include "CExtensionsHost.h"
 
@@ -22,24 +11,7 @@ using Agent::Diagnostics::Param;
 
 std::wstring configFilePattern = L"*.config";
 
-// CExtensionHost
-
-STDMETHODIMP CExtensionHost::InterfaceSupportsErrorInfo(REFIID riid)
-{
-    static const IID* const arr[] =
-    {
-        &IID_IExtensionHost
-    };
-
-    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
-    {
-        if (InlineIsEqualGUID(*arr[i], riid))
-            return S_OK;
-    }
-
-    return S_FALSE;
-}
-
+// CExtensionsHost
 
 //Sergey Kanzhelev:
 // this method is a work around the design that InstrumentationEngine has - it separates log file flags and host tracing flags.
@@ -76,7 +48,7 @@ void SetLoggingFlags(_In_ IProfilerManagerLoggingSptr& spLogger)
     }
 }
 
-_Check_return_ HRESULT CExtensionHost::InternalInitialize(
+_Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     _In_ const IProfilerManagerSptr& spProfilerManager)
 {
     IProfilerManagerLoggingSptr spLogger = NULL;

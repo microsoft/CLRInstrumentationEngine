@@ -12,16 +12,10 @@ namespace InstrEngineTests
 
         public static void Initialize(TestContext context)
         {
-            object disableMethodSignatureValidationParameter =
-                context.Properties["DisableMethodSignatureValidation"];
-
-            bool disableMethodSignatureValidation = false;
-            if (null != disableMethodSignatureValidationParameter &&
-                Boolean.TryParse(disableMethodSignatureValidationParameter.ToString(),
-                    out disableMethodSignatureValidation))
-            {
-                DisableMethodSignatureValidation = disableMethodSignatureValidation;
-            }
+            // The NaglerProfilerHost disregards code signing verification.
+            // However, InstrumentationEngine now has a built-in ExtensionsHost
+            // which requires code sign verification. For tests, we disable verification.
+            DisableMethodSignatureValidation = true;
         }
 
         #endregion

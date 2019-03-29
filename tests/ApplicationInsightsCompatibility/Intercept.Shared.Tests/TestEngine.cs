@@ -49,8 +49,6 @@ namespace ApplicationInsightsCompatibility
             vars.Add("COR_ENABLE_PROFILING", "1");
             vars.Add("COR_PROFILER", "{324F817A-7420-4E6D-B3C1-143FBED6D855}");
             vars.Add("COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName));
-            vars.Add("MicrosoftInstrumentationEngine_Host", "{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}");
-            vars.Add("MicrosoftInstrumentationEngine_HostPath", GetFullPath(InstrumentationEngineHostModuleName));
 
             vars.Add("MicrosoftInstrumentationEngine_FileLog",  "Dumps|Errors");
             //vars.Add("MicrosoftInstrumentationEngine_FileLogPath", ""); //can be overridden if needed

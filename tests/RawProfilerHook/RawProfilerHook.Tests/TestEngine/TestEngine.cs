@@ -83,8 +83,6 @@ namespace RawProfilerHook.Tests
                 { "COR_ENABLE_PROFILING", "1"},
                 { "COR_PROFILER", InstrumentationEngineProfilerId},
                 { "COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName) },
-                { "MicrosoftInstrumentationEngine_Host", InstrumentationEngineApmcExtensionApmcId },
-                { "MicrosoftInstrumentationEngine_HostPath", GetFullPath(InstrumentationEngineHostModuleName) },
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors"},
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
 #if ALLOWNOTSIGNED

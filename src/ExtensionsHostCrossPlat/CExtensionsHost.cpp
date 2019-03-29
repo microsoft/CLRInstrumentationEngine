@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
-// CExtensionsHost.cpp : Implementation of CExtensionHost
+// CExtensionsHost.cpp : Implementation of CExtensionsHost
 
 #include "stdafx.h"
 
 #include "CExtensionsHost.h"
 
 // static
-void ExtensionsHostCrossPlat::CExtensionHost::SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger)
+void ExtensionsHostCrossPlat::CExtensionsHost::SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger)
 {
     WCHAR wszEnvVar[MAX_PATH];
     if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszEnvVar, MAX_PATH) > 0)
@@ -39,7 +39,7 @@ void ExtensionsHostCrossPlat::CExtensionHost::SetLoggingFlags(_In_ IProfilerMana
     }
 }
 
-HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
+HRESULT ExtensionsHostCrossPlat::CExtensionsHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
 )
 {
@@ -50,13 +50,13 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     SetLoggingFlags(pLogger);
 
 #ifdef X86
-    WCHAR wszHostPathVariableName[] = _T("MicrosoftInstrumentationEngine_HostPath_32");
+    WCHAR wszProfilerPathVariableName[] = _T("CORECLR_PROFILER_PATH_32");
 #else
-    WCHAR wszHostPathVariableName[] = _T("MicrosoftInstrumentationEngine_HostPath_64");
+    WCHAR wszProfilerPathVariableName[] = _T("CORECLR_PROFILER_PATH_64");
 #endif
 
     WCHAR wszProfilerPath[MAX_PATH];
-    if (!GetEnvironmentVariable(wszHostPathVariableName, wszProfilerPath, MAX_PATH))
+    if (!GetEnvironmentVariable(wszProfilerPathVariableName, wszProfilerPath, MAX_PATH))
     {
         return E_UNEXPECTED;
     }

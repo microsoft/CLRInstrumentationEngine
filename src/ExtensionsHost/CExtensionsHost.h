@@ -1,44 +1,55 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
-// CExtensionsHost.h : Declaration of the CExtensionHost
+// CExtensionsHost.h : Declaration of the CExtensionsHost
 
 #pragma once
 
-#include "ExtensionsHost_i.h"
+//#include "ExtensionsHost_i.h"
 
-#include "ExtensionsCommon/ProfilerManagerHostBase.h"
+#include "stdafx.h"
 
-class ATL_NO_VTABLE CExtensionHost :
-    public ATL::CComObjectRootEx<ATL::CComMultiThreadModelNoCS>,
-    public ATL::CComCoClass<CExtensionHost, &CLSID_ExtensionHost>,
-    public ISupportErrorInfo,
-    public CProfilerManagerHostBase
+#include "../ExtensionsCommon/ModuleHandle.h"
+#include "../ExtensionsCommon/ModuleUtils.h"
+#include "../ExtensionsCommon/PathUtils.h"
+#include "../ExtensionsCommon/TextUtils.h"
+
+#include "../ExtensionsCommon/AgentValidation.h"
+#include "../ExtensionsCommon/Environment.h"
+#include "../ExtensionsCommon/ProfilerManagerHostBase.h"
+
+#include "../ExtensionsHostLib/RawProfilerHookLoader.h"
+#include "../ExtensionsHostLib/RawProfilerHookSettingsReader.h"
+#include "../ExtensionsHostLib/SafeFindFileHandle.h"
+
+#include "../InstrumentationEngine/ImplQueryInterface.h"
+#include "../InstrumentationEngine/refcount.h"
+
+class CExtensionsHost :
+    public CProfilerManagerHostBase,
+    public MicrosoftInstrumentationEngine::CModuleRefCount
 {
     Agent::Io::CModuleHandle m_hRawHookModule;
 public:
-    CExtensionHost() noexcept
+    CExtensionsHost() noexcept
     {
     }
 
-    CExtensionHost(const CExtensionHost&) = delete;
+    CExtensionsHost(const CExtensionsHost&) = delete;
 
-DECLARE_NO_REGISTRY()
-
-DECLARE_NOT_AGGREGATABLE(CExtensionHost)
-
-BEGIN_COM_MAP(CExtensionHost)
-    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-    COM_INTERFACE_ENTRY(IProfilerManagerHost)
-END_COM_MAP()
-
-// ISupportsErrorInfo
-    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+    DEFINE_DELEGATED_REFCOUNT_ADDREF(CExtensionsHost);
+    DEFINE_DELEGATED_REFCOUNT_RELEASE(CExtensionsHost);
+    STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void** ppvObject) override
+    {
+        return MicrosoftInstrumentationEngine::ImplQueryInterface(
+            static_cast<IProfilerManagerHost*>(this),
+            riid,
+            ppvObject
+        );
+    }
 
     _Check_return_ HRESULT InternalInitialize(
         _In_ const IProfilerManagerSptr& sptrHost) override final;
-
-    DECLARE_PROTECT_FINAL_CONSTRUCT()
 
     HRESULT FinalConstruct()
     {
@@ -49,7 +60,5 @@ END_COM_MAP()
     {
     }
 
-    virtual ~CExtensionHost() {};
+    virtual ~CExtensionsHost() {};
 };
-
-OBJECT_ENTRY_AUTO(__uuidof(ExtensionHost), CExtensionHost)

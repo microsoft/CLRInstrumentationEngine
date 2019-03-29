@@ -31,14 +31,12 @@ See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instr
 When a managed process starts execution, it must first load the CLR. Once the CLR is initialized, it then checks environment variables to see if a Profiler should be loaded.
 
 #### Required Dlls
-The two dlls that are required for Instrumentation Engine to function include the Engine itself and an ExtensionsHost. We recommend leveraging the built-in ExtensionsHost.
+The Instrumentation Engine supports both x86 and x64 configurations.
 
 * MicrosoftInstrumentationEngine_x86.dll
 * MicrosoftInstrumentationEngine_x64.dll
-* Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll
-* Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll
 
-See [Environment Variables](environment_variables.md) for more details on configuration.
+See [Environment Variables](environment_variables.md) for more details on configuring your environment.
 
 Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
 
