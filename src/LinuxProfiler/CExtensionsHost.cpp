@@ -61,13 +61,13 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     hr = (pMethodInfo->GetInstructions(&sptrInstructionGraph));
     IfFailRet(hr);
 
-    sptrInstructionGraph->RemoveAll();
+    //sptrInstructionGraph->RemoveAll();
 
     CComPtr<IInstruction> sptrCurrent;
     hr = (sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
     IfFailRet(hr);
 
-    for (USHORT i = 0; i < argsCount; i++)
+    /*for (USHORT i = 0; i < argsCount; i++)
     {
         CComPtr<IInstruction> sptrLoadArg;
 
@@ -78,7 +78,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
         IfFailRet(hr);
 
         sptrCurrent = sptrLoadArg;
-    }
+    }*/
 
     CComPtr<IInstruction> sptrReturn;
 
@@ -95,7 +95,25 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
 {
-    *pbInstrument = TRUE;
+    CComBSTR bstrMethodName;
+    pMethodInfo->GetFullName(&bstrMethodName);
+
+    tstringstream methodName;
+    methodName << (LPWSTR)bstrMethodName;
+
+    tstring methodNameWStr = methodName.str();
+    string methodNameStr(methodNameWStr.begin(), methodNameWStr.end());
+
+
+    for (size_t i = 0; i < globalMethodCol.size(); i++)
+    {
+        if (methodNameStr.compare(globalMethodCol[i]) == 0)
+        {
+            *pbInstrument = TRUE;
+            break;
+        }
+    }
+
     return S_OK;
 }
 
