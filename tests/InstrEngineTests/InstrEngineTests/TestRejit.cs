@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,8 +13,8 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.InstrumentationEngineX86BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX64BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
-    [DeploymentItem(PathUtils.NaglerProfilerHostX64BinPath)]
-    [DeploymentItem(PathUtils.NaglerProfilerHostX86BinPath)]
+    [DeploymentItem(PathUtils.TestInstrumentationMethodX64BinPath)]
+    [DeploymentItem(PathUtils.TestInstrumentationMethodX86BinPath)]
     public class TestRejit
     {
         [ClassInitialize]

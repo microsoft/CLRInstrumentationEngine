@@ -21,47 +21,16 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
-    <Midl>
-      <HeaderFileName>ExtensionsHost_i.h</HeaderFileName>
-      <InterfaceIdentifierFileName>ExtensionsHost_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>ExtensionsHost_p.c</ProxyFileName>
-      <TypeLibraryName>$(IntDir)ExtensionsHost.tlb</TypeLibraryName>
-      <DllDataFileName />
-      <ValidateAllParameters>true</ValidateAllParameters>
-    </Midl>
-    <Link>
-      <ModuleDefinitionFile>.\ExtensionsHost.def</ModuleDefinitionFile>
-      <AdditionalOptions Condition="'$(Configuration)'=='Release'">/debugtype:cv,fixup %(AdditionalOptions)</AdditionalOptions>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CExtensionsHost.cpp" />
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged>false</CompileAsManaged>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ExtensionsHost.cpp" />
-    <ClCompile Include="ExtensionsHost_i.c">
-      <CompileAsManaged>false</CompileAsManaged>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CExtensionsHost.h" />
-    <ClInclude Include="dllmain.h" />
-    <ClInclude Include="ExtensionsHost_i.h" />
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ExtensionsHost.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="ExtensionsHost.idl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExtensionsCommon\ExtensionsCommon.vcxproj">

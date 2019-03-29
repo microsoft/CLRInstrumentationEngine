@@ -44,7 +44,7 @@ Make sure to include this environment variable if you are testing unsigned debug
 
 ### How do I write an Instrumentation Method?
 
-A simple example of an InstrumentationMethod can be found in [InstrumentationMethod.cpp](../tests/InstrEngineTests/ProfilerHost/InstrumentationMethod.cpp).
+A simple example of an InstrumentationMethod can be found in [InstrumentationMethod.cpp](../tests/InstrEngineTests/TestInstrumentationMethod/InstrumentationMethod.cpp).
 
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 

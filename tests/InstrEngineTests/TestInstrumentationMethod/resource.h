@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by ProfilerHost.rc
+// Used by TestInstrumentationMethod.rc
 //
 #define IDS_PROJNAME                    100
-#define IDR_PROFILERHOST                101
-#define IDR_CPROFILERHOST               106
+#define IDR_INSTRMETHOD                 101
+#define IDR_CINSTRMETHOD                106
 
 // Next default values for new objects
 //

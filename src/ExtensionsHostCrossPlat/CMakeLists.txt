@@ -11,7 +11,6 @@ build_init(CPP ExtensionsHostCrossPlat)
 
 set(src_files
     ./stdafx.cpp
-    ./dllmain.cpp
     ./CExtensionsHost.cpp
     ./refcount.cpp
     ./ImplQueryInterface.cpp

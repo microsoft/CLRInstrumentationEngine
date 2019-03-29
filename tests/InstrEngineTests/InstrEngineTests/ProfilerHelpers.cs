@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -22,10 +22,10 @@ namespace InstrEngineTests
 
         private const string HostConfigPathEnvName = "MicrosoftInstrumentationEngine_ConfigPath";
 
-        private const string TestOutputEnvName = "Nagler_TestOutputPath";
-        private const string TestScriptFileEnvName = "Nagler_TestScript";
-        private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath"; //"Nagler_TestOutput";
-        private const string IsRejitEnvName = "Nagler_IsRejit";
+        private const string TestOutputEnvName = "TestOutputPath";
+        private const string TestScriptFileEnvName = "TestScript";
+        private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath";
+        private const string IsRejitEnvName = "IsRejit";
 
         #endregion
 

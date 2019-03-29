@@ -5,25 +5,10 @@
 
 #pragma once
 
-//#include "ExtensionsHost_i.h"
-
 #include "stdafx.h"
 
-#include "../ExtensionsCommon/ModuleHandle.h"
-#include "../ExtensionsCommon/ModuleUtils.h"
-#include "../ExtensionsCommon/PathUtils.h"
-#include "../ExtensionsCommon/TextUtils.h"
-
-#include "../ExtensionsCommon/AgentValidation.h"
-#include "../ExtensionsCommon/Environment.h"
 #include "../ExtensionsCommon/ProfilerManagerHostBase.h"
-
-#include "../ExtensionsHostLib/RawProfilerHookLoader.h"
-#include "../ExtensionsHostLib/RawProfilerHookSettingsReader.h"
-#include "../ExtensionsHostLib/SafeFindFileHandle.h"
-
-#include "../InstrumentationEngine/ImplQueryInterface.h"
-#include "../InstrumentationEngine/refcount.h"
+#include "../ExtensionsCommon/ModuleHandle.h"
 
 class CExtensionsHost :
     public CProfilerManagerHostBase,

@@ -10,6 +10,8 @@ Please format the changes as follows:
 # 1.0.21
 + BugFixes:
   + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
++ Updates:
+  + Removed ExtensionsHost variables in favor of default host.
 
 # 1.0.20
 + New:

@@ -24,15 +24,15 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{939151FA-8324-4197-B5B4-EAE927BD2AEE}</ProjectGuid>
     <Keyword>AtlProj</Keyword>
-    <ProjectName>NaglerProfilerHost</ProjectName>
+    <ProjectName>TestInstrumentationMethod</ProjectName>
     <!-- set the expected ATL state -->
     <CDefines>$(CDefines);_ATL_FREE_THREADED;_ATL_NO_AUTOMATIC_NAMESPACE;_ATL_CSTRING_EXPLICIT_CONSTRUCTORS;ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW</CDefines>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='Win32'">
-    <TargetName>NaglerProfilerHost_x86</TargetName>
+    <TargetName>TestInstrumentationMethod_x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='x64'">
-    <TargetName>NaglerProfilerHost_x64</TargetName>
+    <TargetName>TestInstrumentationMethod_x64</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
@@ -42,10 +42,9 @@
     <CharacterSet>Unicode</CharacterSet>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-   <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -60,7 +59,6 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -81,7 +79,6 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);msxml6.lib;pathcch.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>

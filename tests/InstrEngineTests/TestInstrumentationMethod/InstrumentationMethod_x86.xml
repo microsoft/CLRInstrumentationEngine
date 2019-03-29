@@ -3,9 +3,9 @@
       -->
 <InstrumentationEngineConfiguration>
   <InstrumentationMethod>
-    <Name>Nagler Instrumentation Test Harness</Name>
+    <Name>Instrumentation Method Test Harness</Name>
     <Description>Enable testing instrumentation in the instrumentation engine</Description>
-    <Module>NaglerProfilerHost_x64.dll</Module>
+    <Module>TestInstrumentationMethod_x86.dll</Module>
     <ClassGuid>{D2959618-F9B6-4CB6-80CF-F3B0E3263888}</ClassGuid>
     <Priority>50</Priority>
   </InstrumentationMethod>

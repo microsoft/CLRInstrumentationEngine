@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "InstrumentationMethod.h"
@@ -7,10 +7,10 @@
 //#include "../ExtensionsHost/CExtensionsHost.h"
 #include "Util.h"
 
-const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
-const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScript";
+const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"TestOutputPath";
+const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"TestScript";
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
-const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
+const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"IsRejit";
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {
@@ -1002,7 +1002,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
                     }
                     else if (opcodeInfo.m_type == ILOperandType_Switch)
                     {
-                        ATLASSERT(!L"Switch not implemented yet in nagler");
+                        ATLASSERT(!L"Switch not implemented yet in profiler host");
                         return E_FAIL;
                     }
                     else
