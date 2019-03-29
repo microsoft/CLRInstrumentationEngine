@@ -319,7 +319,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerHost(_Out_ 
     IfNullRetPointer(ppProfilerManagerHost);
     IfNullRet(m_profilerManagerHost);
 
-    //HRESULT hr = m_profilerManagerHost.CopyTo(ppProfilerManagerHost);
     // Initialize via assignment, refcounts
     **ppProfilerManagerHost = *m_profilerManagerHost;
     return hr;

@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "InstrumentationMethod.h"
 #include <sstream>
-//#include "../ExtensionsHost/CExtensionsHost.h"
 #include "Util.h"
 
 const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"TestOutputPath";

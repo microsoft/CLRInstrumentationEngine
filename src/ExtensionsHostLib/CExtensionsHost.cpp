@@ -12,9 +12,9 @@
 #include "../ExtensionsCommon/AgentValidation.h"
 #include "../ExtensionsCommon/Environment.h"
 
-#include "../ExtensionsHostLib/RawProfilerHookLoader.h"
-#include "../ExtensionsHostLib/RawProfilerHookSettingsReader.h"
-#include "../ExtensionsHostLib/SafeFindFileHandle.h"
+#include "RawProfilerHookLoader.h"
+#include "RawProfilerHookSettingsReader.h"
+#include "SafeFindFileHandle.h"
 
 #include "../InstrumentationEngine/ImplQueryInterface.h"
 #include "../InstrumentationEngine/refcount.h"

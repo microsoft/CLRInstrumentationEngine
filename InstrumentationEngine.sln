@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27604.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28727.205
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrEngineTests", "InstrEngineTests", "{B4ADF020-7ACF-4A2B-B3FE-731006C1F30F}"
 EndProject
@@ -24,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtensionsCommon", "src\ExtensionsCommon\ExtensionsCommon.vcxproj", "{9D2F97F8-DE2E-4463-A425-823A755159BC}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.ExtensionsHost", "src\ExtensionsHost\ExtensionsHost.vcxproj", "{4AEEEC9F-9B58-4FAA-B139-2E123B105433}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtensionsHostLib", "src\ExtensionsHostLib\ExtensionsHostLib.vcxproj", "{80ECB05A-B90E-41E8-B9DD-5AFB14981891}"
 EndProject
@@ -134,16 +132,6 @@ Global
 		{9D2F97F8-DE2E-4463-A425-823A755159BC}.Release|x64.Build.0 = Release|x64
 		{9D2F97F8-DE2E-4463-A425-823A755159BC}.Release|x86.ActiveCfg = Release|Win32
 		{9D2F97F8-DE2E-4463-A425-823A755159BC}.Release|x86.Build.0 = Release|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Debug|x64.ActiveCfg = Debug|x64
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Debug|x64.Build.0 = Debug|x64
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Debug|x86.ActiveCfg = Debug|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Debug|x86.Build.0 = Debug|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Release|Any CPU.ActiveCfg = Release|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Release|x64.ActiveCfg = Release|x64
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Release|x64.Build.0 = Release|x64
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Release|x86.ActiveCfg = Release|Win32
-		{4AEEEC9F-9B58-4FAA-B139-2E123B105433}.Release|x86.Build.0 = Release|Win32
 		{80ECB05A-B90E-41E8-B9DD-5AFB14981891}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{80ECB05A-B90E-41E8-B9DD-5AFB14981891}.Debug|x64.ActiveCfg = Debug|x64
 		{80ECB05A-B90E-41E8-B9DD-5AFB14981891}.Debug|x64.Build.0 = Debug|x64

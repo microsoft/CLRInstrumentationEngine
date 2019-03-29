@@ -90,8 +90,6 @@ namespace InstrEngineTests
 
         [TestMethod]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostModuleName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]

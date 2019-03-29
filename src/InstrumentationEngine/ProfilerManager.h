@@ -8,7 +8,7 @@
 #include "ClrVersion.h"
 #include "MethodInfo.h"
 #ifndef PLATFORM_UNIX
-#include "../ExtensionsHost/CExtensionsHost.h"
+#include "../ExtensionsHostLib/CExtensionsHost.h"
 #else
 #include "../ExtensionsHostCrossPlat/CExtensionsHost.h"
 #endif
