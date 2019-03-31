@@ -92,7 +92,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
     sptrCurrent = sptrReturn;*/
 
-    vector<int64_t> vec(1);
     auto data = vec.data();
 
     CComPtr<IInstruction> operandInstr;
