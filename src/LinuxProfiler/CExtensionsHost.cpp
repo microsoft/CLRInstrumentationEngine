@@ -6,6 +6,7 @@
 using namespace vanguard::instrumentation::managed;
 
 static vector<string> globalMethodCol;
+static vector<int64_t> vec(1);
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
