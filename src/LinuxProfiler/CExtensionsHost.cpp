@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <unistd.h>
 #include "CExtensionsHost.h"
+#include <inttypes.h>
 
 using namespace vanguard::instrumentation::managed;
 
@@ -90,7 +91,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
     sptrCurrent = sptrReturn;*/
 
-    vector<__int64> vec(1);
+    vector<int64_t> vec(1);
     auto data = vec.data();
 
     CComPtr<IInstruction> operandInstr;
