@@ -80,7 +80,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
         sptrCurrent = sptrLoadArg;
     }*/
 
-    CComPtr<IInstruction> sptrReturn;
+    /*CComPtr<IInstruction> sptrReturn;
 
     hr = (sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
     IfFailRet(hr);
@@ -88,7 +88,28 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     hr = (sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
     IfFailRet(hr);
 
-    sptrCurrent = sptrReturn;
+    sptrCurrent = sptrReturn;*/
+
+    vector<__int64> vec(1);
+    auto data = vec.data();
+
+    CComPtr<IInstruction> operandInstr;
+    hr = (sptrInstructionFactory->CreateIntOperandInstruction(Cee_Ldc_I8, 0ULL, &operandInstr));
+    IfFailRet(hr);
+    hr = (sptrInstructionGraph->InsertBeforeAndRetargetOffsets(sptrCurrent, operandInstr));
+    IfFailRet(hr);
+
+    CComPtr<IInstruction> pushInstr;
+    hr = (sptrInstructionFactory->CreateInstruction(Cee_Ldc_I4_1, &pushInstr));
+    IfFailRet(hr);
+    hr = (sptrInstructionGraph->InsertBefore(sptrCurrent, pushInstr));
+    IfFailRet(hr);
+
+    CComPtr<IInstruction> commitInstr;
+    hr = (sptrInstructionFactory->CreateInstruction(Cee_Stind_I1, &commitInstr));
+    IfFailRet(hr);
+    hr = (sptrInstructionGraph->InsertBefore(sptrCurrent, commitInstr));
+    IfFailRet(hr);
 
     return hr;
 }
