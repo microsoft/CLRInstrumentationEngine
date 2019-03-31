@@ -114,6 +114,11 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     return hr;
 }
 
+HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnShutdown()
+{
+    return S_OK;
+}
+
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
 {
     CComBSTR bstrMethodName;
