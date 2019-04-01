@@ -7,7 +7,7 @@ project(InstrumentationEngine)
 
 find_package(LibXml2 REQUIRED)
 
-include_directories(. ../InstrumentationEngine.Lib ../ExtensionsHostCrossPlat ${LIBXML2_INCLUDE_DIR})
+include_directories(. ../InstrumentationEngine.Lib ../ExtensionsHostLib ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP InstrumentationEngine)
 

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
@@ -925,11 +925,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LoadProfilerManagerHos
 {
     HRESULT hr = S_OK;
 
-#ifndef PLATFORM_UNIX
     m_profilerManagerHost.Attach(new CExtensionsHost);
-#else
-    m_profilerManagerHost.Attach(new ExtensionsHostCrossPlat::CExtensionsHost);
-#endif
     if (m_profilerManagerHost == nullptr)
     {
         return E_OUTOFMEMORY;
@@ -3232,7 +3228,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ 
     if (SUCCEEDED(hr))
     {
         // A method info already existed. It must have leaked in the collections, as both callers expect new ones to be created.
-        // Log an error and overwrite the collection. 
+        // Log an error and overwrite the collection.
         CComBSTR bstrMethodFullName;
         IfFailRet(pMethodInfo->GetFullName(&bstrMethodFullName));
 
@@ -3270,7 +3266,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ 
     return S_OK;
 }
 
-// This creates a new methodinfo that is not shared with the instrumentation code paths. 
+// This creates a new methodinfo that is not shared with the instrumentation code paths.
 // This ensures isolation of lifetimes for the cases where reobtaining the methodinfo is not necessary
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {

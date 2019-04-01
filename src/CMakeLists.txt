@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 # Require at least version 2.8.12 of CMake
 cmake_minimum_required(VERSION 2.8.12)
@@ -83,7 +83,7 @@ macro (build_init build_language build_type)
     # find a better way to do this. Also note we only support 64bit Linux build so hard coding
     # that part.
     include_directories(${REPOSITORY_ROOT}/bin/${CMAKE_BUILD_TYPE}/x64)
-    
+
     include_directories(${REPOSITORY_ROOT}/src/unix/inc)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/atl)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/empty)
@@ -155,10 +155,10 @@ macro (build_init build_language build_type)
     add_compile_options(-fPIC)
 endmacro (build_init)
 
-    
+
 # Adds a library and optionally adds dependency on generated file pal_redefines.h for
-    
-    
+
+
 # projects that depend on the PAL.
 macro(add_lib lib_name type use_redefines hide_symbols)
     add_library(${lib_name}
@@ -280,7 +280,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
 
     set(UNIX_EXPORTS_FILE ${REPOSITORY_ROOT}/src/unix/scripts/unixexports.src)
 
-    # Custom target to generate the pal_redefines header which is used on Linux to link 
+    # Custom target to generate the pal_redefines header which is used on Linux to link
     # against the pal libs with redefined symbols
     set(HEADER_REDEFINES_AWK_SCRIPT ${REPOSITORY_ROOT}/src/unix/scripts/generateredefinesheader.awk)
 
@@ -295,7 +295,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
 
     # Create the objcopy redefines file
     set(REDEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/vsbaseservices.redefines)
-    set(REDEFINES_AWK_SCRIPT ${REPOSITORY_ROOT}/src/unix/scripts/generatesymbolredefines.awk) 
+    set(REDEFINES_AWK_SCRIPT ${REPOSITORY_ROOT}/src/unix/scripts/generatesymbolredefines.awk)
 
     add_custom_command(
         OUTPUT ${REDEFINES_FILE}
@@ -339,7 +339,7 @@ add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libco
 add_subdirectory(unix/src)
 add_subdirectory(unix/src/atl)
 add_subdirectory(InstrumentationEngine.Api)
-add_subdirectory(ExtensionsHostCrossPlat)
+add_subdirectory(ExtensionsHostLib)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine)
 

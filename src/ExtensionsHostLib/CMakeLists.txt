@@ -7,13 +7,13 @@ project(MicrosoftExtensionsHost)
 
 include_directories(. ../InstrumentationEngine.Lib ../InstrumentationEngine)
 
-build_init(CPP ExtensionsHostCrossPlat)
+build_init(CPP ExtensionsHost)
 
 set(src_files
     ./stdafx.cpp
     ./CExtensionsHost.cpp
-    ./refcount.cpp
-    ./ImplQueryInterface.cpp
+    ../InstrumentationEngine/refcount.cpp
+    ../InstrumentationEngine/ImplQueryInterface.cpp
 )
 
 add_lib(${PROJECT_NAME}

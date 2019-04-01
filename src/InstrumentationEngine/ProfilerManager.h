@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -7,11 +7,7 @@
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
 #include "MethodInfo.h"
-#ifndef PLATFORM_UNIX
 #include "../ExtensionsHostLib/CExtensionsHost.h"
-#else
-#include "../ExtensionsHostCrossPlat/CExtensionsHost.h"
-#endif
 
 using namespace ATL;
 
