@@ -75,9 +75,6 @@ public:
     // IProfilerManagerHost methods
     public:
         STDMETHOD(Initialize)(_In_ IProfilerManager* pProfilerManager) override;
-
-    private:
-        static void SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger);
 #endif
 
 };

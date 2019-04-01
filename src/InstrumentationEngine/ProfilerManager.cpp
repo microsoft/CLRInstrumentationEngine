@@ -75,6 +75,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
         if (loggingType != LoggingFlags_None)
         {
             CLogging::InitializeEventLogging();
+            CLogging::SetLoggingFlags(loggingType);
         }
     }
 

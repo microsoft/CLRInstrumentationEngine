@@ -31,65 +31,6 @@ std::wstring configFilePattern = L"*.config";
 
 // CExtensionsHost
 
-//Sergey Kanzhelev:
-// this method is a work around the design that InstrumentationEngine has - it separates log file flags and host tracing flags.
-// so for default file tracing expirience that you enable via Environment variables you will not get traces from any of extensions
-#ifndef PLATFORM_UNIX
-void SetLoggingFlags(_In_ IProfilerManagerLoggingSptr& spLogger)
-#else
-void CExtensionsHost::SetLoggingFlags(_In_ IProfilerManagerLogging* pLogger)
-#endif
-{
-    WCHAR wszEnvVar[MAX_PATH];
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_LogLevel"), wszEnvVar, MAX_PATH) > 0 ||
-        GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszEnvVar, MAX_PATH) > 0)
-    {
-        LoggingFlags loggingType = LoggingFlags_None;
-#ifndef PLATFORM_UNIX
-        if (wcsstr(wszEnvVar, L"Errors") != NULL)
-#else
-        if (PAL_wcsstr(wszEnvVar, _T("Errors")) != NULL)
-#endif
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_Errors);
-        }
-#ifndef PLATFORM_UNIX
-        if (wcsstr(wszEnvVar, L"Messages") != NULL)
-#else
-        if (PAL_wcsstr(wszEnvVar, _T("Messages")) != NULL)
-#endif
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_Trace);
-        }
-#ifndef PLATFORM_UNIX
-        if (wcsstr(wszEnvVar, L"Dumps") != NULL)
-#else
-        if (PAL_wcsstr(wszEnvVar, _T("Dumps")) != NULL)
-#endif
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_InstrumentationResults);
-        }
-#ifndef PLATFORM_UNIX
-        if (wcsstr(wszEnvVar, L"All") != NULL)
-#else
-        if (PAL_wcsstr(wszEnvVar, _T("All")) != NULL)
-#endif
-        {
-            loggingType = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-        }
-
-        if (loggingType != LoggingFlags_None)
-        {
-            //Set to true to enable file level logging
-#ifndef PLATFORM_UNIX
-            spLogger->SetLoggingFlags(loggingType);
-#else
-            pLogger->SetLoggingFlags(loggingType);
-#endif
-        }
-    }
-}
-
 #ifndef PLATFORM_UNIX
 
 _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
@@ -98,7 +39,6 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     IProfilerManagerLoggingSptr spLogger = NULL;
     IfFailRet(spProfilerManager->GetLoggingInstance(&spLogger));
     this->SetLogger(spLogger);
-    SetLoggingFlags(spLogger);
 
     std::vector<ATL::CComBSTR> configFiles;
 
@@ -203,7 +143,6 @@ HRESULT CExtensionsHost::Initialize(
 
     CComPtr<IProfilerManagerLogging> pLogger;
     IfFailRet(pProfilerManager->GetLoggingInstance(&pLogger));
-    SetLoggingFlags(pLogger);
 
 #ifdef X86
     WCHAR wszProfilerPathVariableName[] = _T("CORECLR_PROFILER_PATH_32");
