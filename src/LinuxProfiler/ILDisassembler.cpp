@@ -5,7 +5,7 @@ namespace vanguard {
     namespace instrumentation {
         namespace managed
         {
-            il_disassembler::il_disassembler(IModuleInfo *pModuleInfo)
+            il_disassembler::il_disassembler(IModuleInfo *pModuleInfo) : _global_block_count(0)
             {
                 _module_info = new module_info(pModuleInfo);
                 _current_function = nullptr;
