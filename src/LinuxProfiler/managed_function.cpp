@@ -56,12 +56,6 @@ namespace vanguard {
                         if (!last_inst || !last_inst->is_fall_through())
                         {
                             (*it)->set_starts_block(true);
-                            // For Assembly.Load / AssemblyLoadContext.LoadFromStream, we need to instrument the function start
-                            // i.e., the first block 
-                            if (_is_assembly_load)
-                            {
-                                break;
-                            }
                         }
 
                         // 2. Mark the targets of branches as start of a block

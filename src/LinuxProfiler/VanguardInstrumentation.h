@@ -39,9 +39,16 @@ public:
     bool contains_instrumented_method(mdToken token);
     bool get_method_info(mdToken token, method_info& info);
 
+    size_t get_block_count() { return _block_count; }
+    void set_block_count(size_t block_count);
+
+    void const* get_coverage_buffer() { return (std::addressof(_coverage_buffer[0])); }
+
 private:
     unordered_map<mdToken, method_info> _instrumented_functions_list;
     IModuleInfo *_current_module_info;
+    size_t _block_count;
+    vector<__int64> _coverage_buffer; /* address to buffer where probes mark their value */
 };
 
 

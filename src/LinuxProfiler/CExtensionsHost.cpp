@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <unistd.h>
 #include "CExtensionsHost.h"
-#include <inttypes.h>
 
 using namespace vanguard::instrumentation::managed;
 
@@ -11,7 +10,6 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
 )
 {
-    printf("Loaded Custom Profiler");
     usleep(5*1000);
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
     pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo);
@@ -21,7 +19,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
-    CComBSTR bstrMethodName;
+    /*CComBSTR bstrMethodName;
     pMethodInfo->GetFullName(&bstrMethodName);
 
     tstringstream methodName;
@@ -52,7 +50,37 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
     if (cbSignature < 2)
         return S_FALSE;
-    USHORT argsCount = pSignature[1];
+    USHORT argsCount = pSignature[1];*/
+
+    CComPtr<IModuleInfo> pModuleInfo;
+    pMethodInfo->GetModuleInfo(&pModuleInfo);
+
+    ModuleID modId;
+    pModuleInfo->GetModuleID(&modId);
+
+    module_info *instrumented_module = NULL;
+
+    unordered_map<ModuleID, module_info*>::iterator it = _instrumented_modules.find(modId);
+    if (it != _instrumented_modules.end())
+    {
+        mdToken token;
+        pMethodInfo->GetMethodToken(&token);
+        instrumented_module = it->second;
+    }
+
+    mdMethodDef token;
+    pMethodInfo->GetMethodToken(&token);
+
+    method_info info;
+    bool result = instrumented_module->get_method_info(token, info);
+
+    if (result)
+    {
+        il_disassembler disassembler(pModuleInfo);
+        auto block_indices = info.get_block_indexes();
+        auto start_index = info.get_start_index();
+        void const *coverage_buffer = instrumented_module->get_coverage_buffer();
+    }
 
     CComPtr<IInstructionFactory> sptrInstructionFactory;
     HRESULT hr = (pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
@@ -62,34 +90,9 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     hr = (pMethodInfo->GetInstructions(&sptrInstructionGraph));
     IfFailRet(hr);
 
-    //sptrInstructionGraph->RemoveAll();
-
     CComPtr<IInstruction> sptrCurrent;
     hr = (sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
     IfFailRet(hr);
-
-    /*for (USHORT i = 0; i < argsCount; i++)
-    {
-        CComPtr<IInstruction> sptrLoadArg;
-
-        hr = (sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg));
-        IfFailRet(hr);
-
-        hr = (sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
-        IfFailRet(hr);
-
-        sptrCurrent = sptrLoadArg;
-    }*/
-
-    /*CComPtr<IInstruction> sptrReturn;
-
-    hr = (sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
-    IfFailRet(hr);
-
-    hr = (sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
-    IfFailRet(hr);
-
-    sptrCurrent = sptrReturn;*/
 
     vector<__int64> vec(1);
     auto data = reinterpret_cast<__int64>(std::addressof(vec[0]));
@@ -122,7 +125,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnShutdown()
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
 {
-    CComBSTR bstrMethodName;
+    /*CComBSTR bstrMethodName;
     pMethodInfo->GetFullName(&bstrMethodName);
 
     tstringstream methodName;
@@ -139,6 +142,21 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMe
             *pbInstrument = TRUE;
             break;
         }
+    }*/
+
+    CComPtr<IModuleInfo> pModuleInfo;
+    pMethodInfo->GetModuleInfo(&pModuleInfo);
+
+    ModuleID modId;
+    pModuleInfo->GetModuleID(&modId);
+
+    unordered_map<ModuleID, module_info*>::iterator it = _instrumented_modules.find(modId);
+    if (it != _instrumented_modules.end())
+    {
+        mdToken token;
+        pMethodInfo->GetMethodToken(&token);
+        module_info *info = it->second;
+        *pbInstrument = info->contains_instrumented_method(token);
     }
 
     return S_OK;
@@ -210,6 +228,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
 
         //printf("Method Name: %ls \n ", bstrMethodName);
         vanguard::instrumentation::managed::function* func = new vanguard::instrumentation::managed::function();
+        func->set_token(token);
+
         disassembler.initialize_function(methodInfo, func);
         disassembler.disassemble_function();
 
@@ -236,10 +256,17 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
             tstring methodNameWStr = methodName.str();
             string methodNameStr(methodNameWStr.begin(), methodNameWStr.end());
             globalMethodCol.push_back(methodNameStr);
+            disassembler.instrument_function();
         }
-
-        //disassembler.instrument_function();
     }
+
+    ModuleID modId;
+    pModuleInfo->GetModuleID(&modId);
+
+    module_info* info = disassembler.get_module_info();
+    info->set_block_count(disassembler.get_global_block_count());
+
+    _instrumented_modules.insert(make_pair(modId, info));
 
     return hr;
 }

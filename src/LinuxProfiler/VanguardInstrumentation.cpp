@@ -17,3 +17,13 @@ bool module_info::get_method_info(mdToken token, method_info& info)
 
     return false;
 }
+
+void module_info::set_block_count(size_t block_count)
+{
+    _block_count = block_count;
+    for (size_t i = 0; i < block_count; ++i)
+    {
+        _coverage_buffer.push_back(0);
+    }
+
+}

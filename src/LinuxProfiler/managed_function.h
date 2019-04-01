@@ -71,6 +71,9 @@ namespace vanguard {
                 //! Gets the function's metadata token.
                 uint32_t get_token() const { return _token; }
 
+                //! Sets the function's metadata token.
+                void set_token(uint32_t token) { _token = token; }
+
                 //! Gets the function's type's metadata token.
                 uint32_t get_type_token() const { return _type_token; }
 

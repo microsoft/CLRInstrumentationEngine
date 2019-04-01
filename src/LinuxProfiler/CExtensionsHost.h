@@ -77,6 +77,7 @@ namespace ExtensionsHostCrossPlat
     private:
 
         HMODULE m_hmod = NULL;
+        unordered_map<ModuleID, module_info*>_instrumented_modules;
 
     };
 
