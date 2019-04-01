@@ -19,7 +19,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
-    CComBSTR bstrMethodName;
+    /*CComBSTR bstrMethodName;
     pMethodInfo->GetFullName(&bstrMethodName);
 
     tstringstream methodName;
@@ -50,7 +50,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
     if (cbSignature < 2)
         return S_FALSE;
-    USHORT argsCount = pSignature[1];
+    USHORT argsCount = pSignature[1];*/
 
     CComPtr<IModuleInfo> pModuleInfo;
     pMethodInfo->GetModuleInfo(&pModuleInfo);
@@ -125,7 +125,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnShutdown()
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
 {
-    CComBSTR bstrMethodName;
+    /*CComBSTR bstrMethodName;
     pMethodInfo->GetFullName(&bstrMethodName);
 
     tstringstream methodName;
@@ -142,7 +142,7 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::ShouldInstrumentMethod(_In_ IMe
             *pbInstrument = TRUE;
             break;
         }
-    }
+    }*/
 
     CComPtr<IModuleInfo> pModuleInfo;
     pMethodInfo->GetModuleInfo(&pModuleInfo);
