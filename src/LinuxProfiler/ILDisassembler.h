@@ -27,6 +27,8 @@ namespace vanguard {
 
                 virtual module_info *get_module_info() { return _module_info; }
 
+                size_t get_global_block_count() { return _global_block_count; }
+
             private:
                 template<typename source_type, typename target_type>
                 target_type lookup(source_type source, std::unordered_map<source_type, target_type> &input_map, target_type default_value)

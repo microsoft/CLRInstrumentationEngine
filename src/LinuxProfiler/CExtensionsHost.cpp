@@ -220,7 +220,8 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::OnModuleLoaded(IModuleInfo* pMo
         IMethodInfo* methodInfo = NULL;
         CComBSTR bstrMethodName;
 
-        methodInfoResult = pModuleInfo->GetMethodInfoByToken(baseToken | methodDef, &methodInfo);
+        mdMethodDef token = baseToken | methodDef;
+        methodInfoResult = pModuleInfo->GetMethodInfoByToken(token, &methodInfo);
         methodInfoCollection.push_back(methodInfo);
         methodDef++;
         methodCount--;
