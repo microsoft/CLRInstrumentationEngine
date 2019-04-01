@@ -6,7 +6,6 @@
 using namespace vanguard::instrumentation::managed;
 
 static vector<string> globalMethodCol;
-static vector<int64_t> vec(1);
 
 HRESULT ExtensionsHostCrossPlat::CExtensionHost::Initialize(
     _In_ IProfilerManager* pProfilerManager
@@ -92,10 +91,11 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
 
     sptrCurrent = sptrReturn;*/
 
-    auto data = vec.data();
+    vector<__int64> vec(1);
+    auto data = reinterpret_cast<__int64>(std::addressof(vec[0]));
 
     CComPtr<IInstruction> operandInstr;
-    hr = (sptrInstructionFactory->CreateIntOperandInstruction(Cee_Ldc_I8, 0ULL, &operandInstr));
+    hr = (sptrInstructionFactory->CreateLongOperandInstruction(Cee_Ldc_I8, data, &operandInstr));
     IfFailRet(hr);
     hr = (sptrInstructionGraph->InsertBeforeAndRetargetOffsets(sptrCurrent, operandInstr));
     IfFailRet(hr);
