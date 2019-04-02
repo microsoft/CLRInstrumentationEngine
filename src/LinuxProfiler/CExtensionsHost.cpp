@@ -74,13 +74,14 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     method_info info;
     bool result = instrumented_module->get_method_info(token, info);
 
-    if (result)
+    if (!result)
     {
-        il_disassembler disassembler(pModuleInfo);
-        auto block_indices = info.get_block_indexes();
-        auto start_index = info.get_start_index();
-        void const *coverage_buffer = instrumented_module->get_coverage_buffer();
+        return S_OK;
     }
+
+    auto block_indices = info.get_block_indexes();
+    auto start_index = info.get_start_index();
+    void const *coverage_buffer = instrumented_module->get_coverage_buffer();
 
     CComPtr<IInstructionFactory> sptrInstructionFactory;
     HRESULT hr = (pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
