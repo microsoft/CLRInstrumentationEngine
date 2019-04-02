@@ -94,11 +94,11 @@ HRESULT ExtensionsHostCrossPlat::CExtensionHost::InstrumentMethod(_In_ IMethodIn
     hr = (sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
     IfFailRet(hr);
 
-    vector<__int64> vec(1);
-    auto data = reinterpret_cast<__int64>(std::addressof(vec[0]));
+    auto index = reinterpret_cast<__int64>(coverage_buffer);
+    index = index + info.get_start_index();
 
     CComPtr<IInstruction> operandInstr;
-    hr = (sptrInstructionFactory->CreateLongOperandInstruction(Cee_Ldc_I8, data, &operandInstr));
+    hr = (sptrInstructionFactory->CreateLongOperandInstruction(Cee_Ldc_I8, index, &operandInstr));
     IfFailRet(hr);
     hr = (sptrInstructionGraph->InsertBeforeAndRetargetOffsets(sptrCurrent, operandInstr));
     IfFailRet(hr);
