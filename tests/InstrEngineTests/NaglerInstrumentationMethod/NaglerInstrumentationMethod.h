@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "InstrumentMethodEntry.h"
+#include "NaglerInstrumentMethodEntry.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :

@@ -2,14 +2,14 @@
 //
 
 #include "stdafx.h"
-#include "InstrumentationMethod.h"
+#include "NaglerInstrumentationMethod.h"
 #include <sstream>
 #include "Util.h"
 
-const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"TestOutputPath";
-const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"TestScript";
+const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
+const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScript";
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
-const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"IsRejit";
+const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {

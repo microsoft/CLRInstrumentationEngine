@@ -13,8 +13,8 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.InstrumentationEngineX86BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX64BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
-    [DeploymentItem(PathUtils.TestInstrumentationMethodX64BinPath)]
-    [DeploymentItem(PathUtils.TestInstrumentationMethodX86BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestLocals
     {
         [ClassInitialize]

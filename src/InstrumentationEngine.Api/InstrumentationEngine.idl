@@ -153,11 +153,7 @@ library MicrosoftInstrumentationEngine
     // The profiler manager host is created by the profiler manager during the call to initialize after the clr
     // The profiler manager host should call SetupProfilingEnvironment to enable registered instrumentation methods and
     // call AddRawProfilerHook to get access to the raw ICorProfiler events.
-    // The below comment is not true anymore; InstrumentationEngine now uses a default ExtensionsHost implementation.
-    // DEPRECATED BEGIN
-    //   The instance is selected using the MicrosoftInstrumentationEngine_HostPath and MicrosoftInstrumentationEngine_Host
-    //   environment variables which point to a full path to a dll and a guid to cocreate via DllGetClassObject.
-    // DEPRECATED END
+    // InstrumentationEngine solely uses a default ExtensionsHost implementation
     [
         object,
         uuid(BA9193B4-287F-4BF4-8E1B-00FCE33862EB),

@@ -24,15 +24,15 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{939151FA-8324-4197-B5B4-EAE927BD2AEE}</ProjectGuid>
     <Keyword>AtlProj</Keyword>
-    <ProjectName>TestInstrumentationMethod</ProjectName>
+    <ProjectName>NaglerInstrumentationMethod</ProjectName>
     <!-- set the expected ATL state -->
     <CDefines>$(CDefines);_ATL_FREE_THREADED;_ATL_NO_AUTOMATIC_NAMESPACE;_ATL_CSTRING_EXPLICIT_CONSTRUCTORS;ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW</CDefines>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='Win32'">
-    <TargetName>TestInstrumentationMethod_x86</TargetName>
+    <TargetName>NaglerInstrumentationMethod_x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='x64'">
-    <TargetName>TestInstrumentationMethod_x64</TargetName>
+    <TargetName>NaglerInstrumentationMethod_x64</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>

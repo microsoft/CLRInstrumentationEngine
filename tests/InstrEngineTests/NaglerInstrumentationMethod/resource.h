@@ -3,7 +3,7 @@
 
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by TestInstrumentationMethod.rc
+// Used by NaglerInstrumentationMethod.rc
 //
 #define IDS_PROJNAME                    100
 #define IDR_INSTRMETHOD                 101

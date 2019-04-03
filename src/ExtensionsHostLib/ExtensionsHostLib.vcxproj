@@ -35,6 +35,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="./Platform/CExtensionsHostWindows.h" />
     <ClInclude Include="CExtensionsHost.h" />
     <ClInclude Include="RawProfilerHookLoader.h" />
     <ClInclude Include="RawProfilerHookSettingsReader.h" />

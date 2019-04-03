@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrEngineTests", "InstrEn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrEngineTests", "tests\InstrEngineTests\InstrEngineTests\InstrEngineTests.csproj", "{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestInstrumentationMethod", "tests\InstrEngineTests\TestInstrumentationMethod\TestInstrumentationMethod.vcxproj", "{939151FA-8324-4197-B5B4-EAE927BD2AEE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaglerInstrumentationMethod", "tests\InstrEngineTests\NaglerInstrumentationMethod\NaglerInstrumentationMethod.vcxproj", "{939151FA-8324-4197-B5B4-EAE927BD2AEE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{659CA07D-C239-48EF-B5F1-E8C7D96916CB} = {659CA07D-C239-48EF-B5F1-E8C7D96916CB}
 	EndProjectSection

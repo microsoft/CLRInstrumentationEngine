@@ -225,8 +225,6 @@ namespace MicrosoftInstrumentationEngine
 
         // Private Helpers
     private:
-        HRESULT LoadProfilerManagerHost();
-
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself

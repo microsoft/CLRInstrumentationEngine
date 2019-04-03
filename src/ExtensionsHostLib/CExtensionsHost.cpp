@@ -32,7 +32,6 @@ std::wstring configFilePattern = L"*.config";
 // CExtensionsHost
 
 #ifndef PLATFORM_UNIX
-
 _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     _In_ const IProfilerManagerSptr& spProfilerManager)
 {

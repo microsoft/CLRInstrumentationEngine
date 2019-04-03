@@ -16,16 +16,15 @@ namespace InstrEngineTests
     internal class ProfilerHelpers
     {
         #region private fields
-        private const string TestResultFolder = "TestResults";
-
         private static readonly Guid ProfilerGuid = new Guid("{324F817A-7420-4E6D-B3C1-143FBED6D855}");
 
-        private const string HostConfigPathEnvName = "MicrosoftInstrumentationEngine_ConfigPath";
+        private const string HostConfig32PathEnvName = "MicrosoftInstrumentationEngine_ConfigPath32_";
+        private const string HostConfig64PathEnvName = "MicrosoftInstrumentationEngine_ConfigPath64_";
 
-        private const string TestOutputEnvName = "TestOutputPath";
-        private const string TestScriptFileEnvName = "TestScript";
+        private const string TestOutputEnvName = "Nagler_TestOutputPath";
+        private const string TestScriptFileEnvName = "Nagler_TestScript";
         private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath";
-        private const string IsRejitEnvName = "IsRejit";
+        private const string IsRejitEnvName = "Nagler_IsRejit";
 
         #endregion
 
@@ -58,7 +57,6 @@ namespace InstrEngineTests
 
             bool is32bitTest = Is32bitTest(testScript);
             string bitnessSuffix = is32bitTest ? "x86" : "x64";
-            string HostConfigPathEnvNameWithBitness = HostConfigPathEnvName + (is32bitTest ? "32_" : "64_");
 
             // TODO: call this only for 64bit OS
             SetBitness(is32bitTest);
@@ -84,7 +82,9 @@ namespace InstrEngineTests
             }
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
-            psi.EnvironmentVariables.Add(HostConfigPathEnvNameWithBitness, Path.Combine(PathUtils.GetAssetsPath(), string.Format("InstrumentationMethod_{0}.xml", bitnessSuffix)));
+            psi.EnvironmentVariables.Add(
+                is32bitTest? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                Path.Combine(PathUtils.GetAssetsPath(), string.Format("InstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -140,11 +140,11 @@ namespace InstrEngineTests
                 using (StreamReader outputStream = new StreamReader(outputPath))
                 {
                     baselineStr = baselineStream.ReadToEnd();
-                    while (outputStream.Peek() >= 0)
+                    string tmpStr;
+                    while ((tmpStr = outputStream.ReadLine()) != null)
                     {
-                        string tmpStr = outputStream.ReadLine();
-                        if (!(string.IsNullOrEmpty(tmpStr) ||
-                              tmpStr.StartsWith("[TestIgnore]")))
+                        if (!string.IsNullOrEmpty(tmpStr) &&
+                            !tmpStr.StartsWith("[TestIgnore]"))
                         {
                             outputStrBuilder.Append(tmpStr);
                         }

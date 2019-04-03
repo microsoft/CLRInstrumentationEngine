@@ -314,14 +314,12 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetCorProfilerInfo(
 // return the profiler host instance
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
 {
-    HRESULT hr = S_OK;
     CCriticalSectionHolder holder(&m_cs);
 
     IfNullRetPointer(ppProfilerManagerHost);
     IfNullRet(m_profilerManagerHost);
 
-    // Initialize via assignment, refcounts
-    **ppProfilerManagerHost = *m_profilerManagerHost;
+    HRESULT hr = m_profilerManagerHost.CopyTo(ppProfilerManagerHost);
     return hr;
 }
 
@@ -686,7 +684,8 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     //set event mask to be default one. Later host and Instrumentation methods may call it again
     IfFailRet(this->SetEventMask(m_dwEventMask));
 
-    IfFailRet(LoadProfilerManagerHost());
+    m_profilerManagerHost.Attach(new CExtensionsHost);
+    IfFailRet(m_profilerManagerHost == nullptr ? E_OUTOFMEMORY : S_OK);
 
     m_pWrappedProfilerInfo = (ICorProfilerInfo*)(new CCorProfilerInfoWrapper(this, m_pRealProfilerInfo));
 
@@ -918,21 +917,6 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetDefaultEventMask()
         COR_PRF_MONITOR_JIT_COMPILATION |
         COR_PRF_ENABLE_REJIT
         ;
-}
-
-// The IProfilerManagerHost can register for raw cor profiler callbacks and pass configuration information
-// about the instrumentation methods back to the profiler manager.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LoadProfilerManagerHost()
-{
-    HRESULT hr = S_OK;
-
-    m_profilerManagerHost.Attach(new CExtensionsHost);
-    if (m_profilerManagerHost == nullptr)
-    {
-        return E_OUTOFMEMORY;
-    }
-
-    return S_OK;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()

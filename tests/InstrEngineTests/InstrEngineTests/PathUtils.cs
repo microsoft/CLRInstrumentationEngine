@@ -24,8 +24,8 @@ namespace InstrEngineTests
         public const string InstrumentationEngineX86BinPath = @"..\x86";
         public const string InstrumentationConfigX64BinPath = @"..\x64\InstrumentationMethod_x64.xml";
         public const string InstrumentationConfigX86BinPath = @"..\x86\InstrumentationMethod_x86.xml";
-        public const string TestInstrumentationMethodX64BinPath = @"..\x64\TestInstrumentationMethod_x64.dll";
-        public const string TestInstrumentationMethodX86BinPath = @"..\x86\TestInstrumentationMethod_x86.dll";
+        public const string NaglerInstrumentationMethodX64BinPath = @"..\x64\NaglerInstrumentationMethod_x64.dll";
+        public const string NaglerInstrumentationMethodX86BinPath = @"..\x86\NaglerInstrumentationMethod_x86.dll";
 
         public static string GetAssetsPath()
         {
