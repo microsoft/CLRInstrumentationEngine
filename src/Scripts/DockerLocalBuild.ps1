@@ -25,7 +25,7 @@ param
     [ValidateNotNullOrEmpty()]
     [ValidateSet('Debug', 'Release')]
     [String] $Type="Debug",
-    
+
     [Parameter()]
     [Switch] $CreateSemaphore
 )
@@ -55,6 +55,11 @@ $pathInfo = resolve-path $EnlistmentRoot
 $driveLetter = $pathInfo.Drive.ToString().ToLowerInvariant()
 $relativePath = $pathInfo.Path.Substring(3).Replace('\', '/')
 $EnlistmentMountPath = "//$driveLetter/$relativePath"
+
+# The build definition contains the keyvault secret. We will pull this in manually for local builds
+$secretPat = (Get-AzureKeyVaultSecret -VaultName tsdtusr -Name DevDiv-VisualStudio-Com-PackageRead).SecretValueText
+$nugetTemplate = Get-Content -Path "$pathInfo\src\unix\dependencies\nuget.template.config"
+Set-Content -Path "$pathInfo\src\unix\dependencies\nuget.config" $nugetTemplate.Replace("{PersonalAuthenticationToken}", $secretPat) -Force
 
 if (-not $CreateSemaphore)
 {
