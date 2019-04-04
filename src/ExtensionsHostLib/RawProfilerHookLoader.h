@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "ExtensionsCommon/ModuleHandle.h"
-#include "ExtensionsCommon/ProfilerHostServices.h"
+#include "../ExtensionsCommon/ModuleHandle.h"
+#include "../ExtensionsCommon/ProfilerHostServices.h"
 
 namespace Agent
 {

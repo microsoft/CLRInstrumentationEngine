@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
-#include "InstrumentMethodEntry.h"
+#include "NaglerInstrumentMethodEntry.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :
@@ -68,7 +68,7 @@ public:
         COM_INTERFACE_ENTRY(IInstrumentationMethodExceptionEvents)
     END_COM_MAP()
 
-    DECLARE_REGISTRY_RESOURCEID(IDR_CPROFILERHOST)
+    DECLARE_REGISTRY_RESOURCEID(IDR_CINSTRMETHOD)
 
     // Ensure only a single instance of CInstrumentationMethod is created
     DECLARE_CLASSFACTORY_SINGLETON(CInstrumentationMethod)

@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,8 +12,8 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.InstrumentationEngineX86BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX64BinPath)]
     [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
-    [DeploymentItem(PathUtils.NaglerProfilerHostX64BinPath)]
-    [DeploymentItem(PathUtils.NaglerProfilerHostX86BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestHttpMethods
     {
         [ClassInitialize]

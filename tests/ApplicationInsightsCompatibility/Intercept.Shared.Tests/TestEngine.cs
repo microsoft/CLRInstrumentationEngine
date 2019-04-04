@@ -11,13 +11,11 @@ namespace ApplicationInsightsCompatibility
     {
 #if X64
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
-        public const string InstrumentationEngineHostModuleName = "Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
         private const bool IsX86 = false;
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
-        public const string InstrumentationEngineHostModuleName = "Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
         private const bool IsX86 = true;
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
@@ -49,8 +47,6 @@ namespace ApplicationInsightsCompatibility
             vars.Add("COR_ENABLE_PROFILING", "1");
             vars.Add("COR_PROFILER", "{324F817A-7420-4E6D-B3C1-143FBED6D855}");
             vars.Add("COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName));
-            vars.Add("MicrosoftInstrumentationEngine_Host", "{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}");
-            vars.Add("MicrosoftInstrumentationEngine_HostPath", GetFullPath(InstrumentationEngineHostModuleName));
 
             vars.Add("MicrosoftInstrumentationEngine_FileLog",  "Dumps|Errors");
             //vars.Add("MicrosoftInstrumentationEngine_FileLogPath", ""); //can be overridden if needed

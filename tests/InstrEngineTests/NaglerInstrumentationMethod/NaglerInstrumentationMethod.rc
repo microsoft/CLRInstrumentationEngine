@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #ifdef APSTUDIO_INVOKED
     #error this file is not editable by Microsoft Visual C++
@@ -15,8 +15,8 @@
 #define VER_FILETYPE        VFT_APP
 #define VER_FILESUBTYPE     VFT2_UNKNOWN
 
-#define VER_FILEDESCRIPTION_STR     "ProfilerHost"
-#define VER_INTERNALNAME_STR        "ProfilerHost.dll"
+#define VER_FILEDESCRIPTION_STR     "NaglerInstrumentationMethod"
+#define VER_INTERNALNAME_STR        "NaglerInstrumentationMethod.dll"
 #define VER_ORIGINALFILENAME_STR    VER_INTERNALNAME_STR
 
 #include <common.ver>

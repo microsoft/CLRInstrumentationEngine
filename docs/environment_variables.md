@@ -1,5 +1,7 @@
 # The CLR Instrumentation Engine Environment Variables
 
+See [Configuration](configuration.md) for details on how to setup your Instrumentation Method.
+
 ## Required Variables
 
 These are the environment variables and values that are required to enable the CLR Instrumentation Engine:
@@ -24,9 +26,6 @@ Additional variables needed to make the CLR Instrumentation Engine work:
 
 | Variable | Value | Description |
 |-|-|-|
-MicrosoftInstrumentationEngine_Host|"{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}"|CLSID or ProgID of the IProfileManagerHost implementation which registers for raw COR profiler callbacks and handles configuration information about instrumentation methods that is passed back.
-MicrosoftInstrumentationEngine_HostPath_32|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll]"|The 32bit dll hosting the implementation.
-MicrosoftInstrumentationEngine_HostPath_64|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll]"|The 64bit dll hosting the implementation.
 MicrosoftInstrumentationEngine_LogLevel|"Errors"|Filters event logs. Currently only "Errors" is allowed to prevent verbose logging.
 
 ## Optional and Miscellaneous Variables
@@ -39,3 +38,14 @@ MicrosoftInstrumentationEngine_DebugWait|1|Suspends the process until the debugg
 MicrosoftInstrumentationEngine_FileLogPath|"[FULL PATH TO LOGGING FILE]"|File to host the event logs. This requires LogLevel to be set.
 MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signature validation
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
+
+## Deprecated as of Version 1.0.21
+The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting logging flags and loading Instrumentation Methods.
+
+These variables are deprecated in favor of the default ExtensionsHost implementation to promote collaboration around one protocol for onboarding Instrumentation Methods.
+
+| Variable | Value | Description |
+|-|-|-|
+MicrosoftInstrumentationEngine_Host|"{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}"|CLSID or ProgID of the IProfileManagerHost implementation which registers for raw COR profiler callbacks and handles configuration information about instrumentation methods that is passed back.
+MicrosoftInstrumentationEngine_HostPath_32|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll]"|The 32bit dll hosting the implementation.
+MicrosoftInstrumentationEngine_HostPath_64|"[FULL PATH TO Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll]"|The 64bit dll hosting the implementation.

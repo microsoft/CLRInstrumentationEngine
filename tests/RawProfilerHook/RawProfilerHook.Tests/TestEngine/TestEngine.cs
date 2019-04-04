@@ -19,13 +19,11 @@ namespace RawProfilerHook.Tests
     {
 #if X64
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
-        public const string InstrumentationEngineHostModuleName = "Microsoft.InstrumentationEngine.ExtensionsHost_x64.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
         private const bool IsX86 = false;
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
-        public const string InstrumentationEngineHostModuleName = "Microsoft.InstrumentationEngine.ExtensionsHost_x86.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
         private const bool IsX86 = true;
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
@@ -83,8 +81,6 @@ namespace RawProfilerHook.Tests
                 { "COR_ENABLE_PROFILING", "1"},
                 { "COR_PROFILER", InstrumentationEngineProfilerId},
                 { "COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName) },
-                { "MicrosoftInstrumentationEngine_Host", InstrumentationEngineApmcExtensionApmcId },
-                { "MicrosoftInstrumentationEngine_HostPath", GetFullPath(InstrumentationEngineHostModuleName) },
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors"},
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
 #if ALLOWNOTSIGNED

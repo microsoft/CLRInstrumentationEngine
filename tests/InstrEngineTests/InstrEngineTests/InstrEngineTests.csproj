@@ -57,18 +57,18 @@
     <Compile Include="TestConstants.cs" />
     <Compile Include="TestHttpMethods.cs" />
     <Compile Include="TestDynamicCode.cs" />
+    <Compile Include="TestInstruOperations.cs" />
+    <Compile Include="TestOperand.cs" />
     <Compile Include="TestParameters.cs" />
     <Compile Include="TestInjectToMscorlib.cs" />
     <Compile Include="TestLocals.cs" />
     <Compile Include="TestMethodReplacement.cs" />
-    <Compile Include="TestOperand.cs" />
     <Compile Include="TestRejit.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="ProfilerHelpers.cs" />
     <Compile Include="TargetAppCompiler.cs" />
     <Compile Include="TestAddInstruction.cs" />
     <Compile Include="TestException.cs" />
-    <Compile Include="TestInstruOperations.cs" />
     <Compile Include="TestRoundTrip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -225,10 +225,10 @@
       <Link>Baselines\DynamicCompiledCode.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-      <Content Include="..\Baselines\DynamicEmittedCode.xml">
-          <Link>Baselines\DynamicEmittedCode.xml</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+    <Content Include="..\Baselines\DynamicEmittedCode.xml">
+      <Link>Baselines\DynamicEmittedCode.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">
       <Link>TestScripts\AddMultiNop_IfTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

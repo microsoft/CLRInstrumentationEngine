@@ -1,88 +1,43 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
-// CExtensionsHost.cpp : Implementation of CExtensionHost
+// CExtensionsHost.cpp : Implementation of CExtensionsHost
 
 #include "stdafx.h"
 
-#include "ExtensionsCommon/ModuleUtils.h"
-#include "ExtensionsCommon/PathUtils.h"
-#include "ExtensionsCommon/TextUtils.h"
+#ifndef PLATFORM_UNIX
 
-#include "ExtensionsCommon/AgentValidation.h"
-#include "ExtensionsCommon/Environment.h"
+#include "../ExtensionsCommon/ModuleUtils.h"
+#include "../ExtensionsCommon/PathUtils.h"
+#include "../ExtensionsCommon/TextUtils.h"
 
-#include "ExtensionsHostLib/RawProfilerHookLoader.h"
-#include "ExtensionsHostLib/RawProfilerHookSettingsReader.h"
-#include "ExtensionsHostLib/SafeFindFileHandle.h"
+#include "../ExtensionsCommon/AgentValidation.h"
+#include "../ExtensionsCommon/Environment.h"
 
-#include "CExtensionsHost.h"
+#include "RawProfilerHookLoader.h"
+#include "RawProfilerHookSettingsReader.h"
+#include "SafeFindFileHandle.h"
+
+#include "../InstrumentationEngine/ImplQueryInterface.h"
+#include "../InstrumentationEngine/refcount.h"
 
 using Agent::Diagnostics::Param;
 
+#endif
+
+#include "CExtensionsHost.h"
+
 std::wstring configFilePattern = L"*.config";
 
-// CExtensionHost
+// CExtensionsHost
 
-STDMETHODIMP CExtensionHost::InterfaceSupportsErrorInfo(REFIID riid)
-{
-    static const IID* const arr[] =
-    {
-        &IID_IExtensionHost
-    };
-
-    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
-    {
-        if (InlineIsEqualGUID(*arr[i], riid))
-            return S_OK;
-    }
-
-    return S_FALSE;
-}
-
-
-//Sergey Kanzhelev:
-// this method is a work around the design that InstrumentationEngine has - it separates log file flags and host tracing flags.
-// so for default file tracing expirience that you enable via Environment variables you will not get traces from any of extensions
-void SetLoggingFlags(_In_ IProfilerManagerLoggingSptr& spLogger)
-{
-    wchar_t wszEnvVar[MAX_PATH];
-    if (GetEnvironmentVariable(L"MicrosoftInstrumentationEngine_LogLevel", wszEnvVar, MAX_PATH) > 0 ||
-        GetEnvironmentVariable(L"MicrosoftInstrumentationEngine_FileLog", wszEnvVar, MAX_PATH) > 0)
-    {
-        LoggingFlags loggingType = LoggingFlags_None;
-        if (wcsstr(wszEnvVar, L"Errors") != NULL)
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_Errors);
-        }
-        if (wcsstr(wszEnvVar, L"Messages") != NULL)
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_Trace);
-        }
-        if (wcsstr(wszEnvVar, L"Dumps") != NULL)
-        {
-            loggingType = (LoggingFlags)(loggingType | LoggingFlags_InstrumentationResults);
-        }
-        if (wcsstr(wszEnvVar, L"All") != NULL)
-        {
-            loggingType = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-        }
-
-        if (loggingType != LoggingFlags_None)
-        {
-            //Set to true to enable file level logging
-            spLogger->SetLoggingFlags(loggingType);
-        }
-    }
-}
-
-_Check_return_ HRESULT CExtensionHost::InternalInitialize(
+#ifndef PLATFORM_UNIX
+_Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     _In_ const IProfilerManagerSptr& spProfilerManager)
 {
     IProfilerManagerLoggingSptr spLogger = NULL;
     IfFailRet(spProfilerManager->GetLoggingInstance(&spLogger));
     this->SetLogger(spLogger);
-    SetLoggingFlags(spLogger);
 
     std::vector<ATL::CComBSTR> configFiles;
 
@@ -176,3 +131,49 @@ _Check_return_ HRESULT CExtensionHost::InternalInitialize(
 
     return S_OK;
 }
+
+#else
+
+HRESULT CExtensionsHost::Initialize(
+    _In_ IProfilerManager* pProfilerManager
+)
+{
+    HRESULT hr = S_OK;
+
+    CComPtr<IProfilerManagerLogging> pLogger;
+    IfFailRet(pProfilerManager->GetLoggingInstance(&pLogger));
+
+#ifdef X86
+    WCHAR wszProfilerPathVariableName[] = _T("CORECLR_PROFILER_PATH_32");
+#else
+    WCHAR wszProfilerPathVariableName[] = _T("CORECLR_PROFILER_PATH_64");
+#endif
+
+    WCHAR wszProfilerPath[MAX_PATH];
+    if (!GetEnvironmentVariable(wszProfilerPathVariableName, wszProfilerPath, MAX_PATH))
+    {
+        return E_UNEXPECTED;
+    }
+
+    WCHAR* pFileName = PathFindFileName(wszProfilerPath);
+    if (pFileName == wszProfilerPath)
+    {
+        return E_UNEXPECTED;
+    }
+    *pFileName = _T('\0');
+
+#ifdef X86
+    WCHAR wszConfigName[] = _T("ProductionBreakpoints_x86.config");
+#else
+    WCHAR wszConfigName[] = _T("ProductionBreakpoints_x64.config");
+#endif
+
+    StringCchCatW(wszProfilerPath, MAX_PATH, wszConfigName);
+
+    CComBSTR bstrConfigPath = wszProfilerPath;
+    IfFailRet(pProfilerManager->SetupProfilingEnvironment(&bstrConfigPath, 1));
+
+    return S_OK;
+}
+
+#endif

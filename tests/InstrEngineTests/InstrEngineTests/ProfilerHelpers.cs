@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace InstrEngineTests
@@ -14,18 +16,14 @@ namespace InstrEngineTests
     internal class ProfilerHelpers
     {
         #region private fields
-        private const string TestResultFolder = "TestResults";
-
         private static readonly Guid ProfilerGuid = new Guid("{324F817A-7420-4E6D-B3C1-143FBED6D855}");
-        private static readonly Guid ProfilerManagerHostGuid = new Guid("{6AB2072F-6241-49A6-86FF-05E98A9E8748}");
 
-        private const string HostGuidEnvName = "MicrosoftInstrumentationEngine_Host";
-        private const string HostPathEnvName = "MicrosoftInstrumentationEngine_HostPath";
-        private const string HostConfigPathEnvName = "MicrosoftInstrumentationEngine_ConfigPath";
+        private const string HostConfig32PathEnvName = "MicrosoftInstrumentationEngine_ConfigPath32_";
+        private const string HostConfig64PathEnvName = "MicrosoftInstrumentationEngine_ConfigPath64_";
 
         private const string TestOutputEnvName = "Nagler_TestOutputPath";
         private const string TestScriptFileEnvName = "Nagler_TestScript";
-        private const string TestOutputFileEnvName = "Nagler_TestOutput";
+        private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath";
         private const string IsRejitEnvName = "Nagler_IsRejit";
 
         #endregion
@@ -68,6 +66,10 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
             psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B"));
             psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_FileLog", "Dumps");
+
+            // Uncomment this line to debug tests
+            //psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
 
             if (ThrowMessageBoxAtStartup)
             {
@@ -79,10 +81,10 @@ namespace InstrEngineTests
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", @"1");
             }
 
-            psi.EnvironmentVariables.Add(HostGuidEnvName, ProfilerManagerHostGuid.ToString("B"));
-            psi.EnvironmentVariables.Add(HostPathEnvName, Path.Combine(PathUtils.GetAssetsPath(), string.Format("NaglerProfilerHost_{0}.dll", bitnessSuffix)));
-            psi.EnvironmentVariables.Add(HostConfigPathEnvName, Path.Combine(PathUtils.GetAssetsPath(), string.Format("InstrumentationMethod_{0}.xml", bitnessSuffix)));
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
+            psi.EnvironmentVariables.Add(
+                is32bitTest? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                Path.Combine(PathUtils.GetAssetsPath(), string.Format("InstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -130,6 +132,7 @@ namespace InstrEngineTests
             string baselinePath = Path.Combine(PathUtils.GetBaselinesPath(), baseline);
 
             string baselineStr;
+            StringBuilder outputStrBuilder = new StringBuilder();
             string outputStr;
 
             using (StreamReader baselineStream = new StreamReader(baselinePath))
@@ -137,7 +140,16 @@ namespace InstrEngineTests
                 using (StreamReader outputStream = new StreamReader(outputPath))
                 {
                     baselineStr = baselineStream.ReadToEnd();
-                    outputStr = outputStream.ReadToEnd();
+                    string tmpStr;
+                    while ((tmpStr = outputStream.ReadLine()) != null)
+                    {
+                        if (!string.IsNullOrEmpty(tmpStr) &&
+                            !tmpStr.StartsWith("[TestIgnore]"))
+                        {
+                            outputStrBuilder.Append(tmpStr);
+                        }
+                    }
+                    outputStr = outputStrBuilder.ToString();
                 }
             }
 

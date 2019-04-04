@@ -43,14 +43,6 @@
   </ItemGroup>
   <!-- Extensions host -->
   <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll">
-      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb">
-      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.ExtensionsHost_$(Platform).pdb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

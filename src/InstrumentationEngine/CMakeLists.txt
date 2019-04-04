@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 # Require at least version 2.8.12 of CMake
 cmake_minimum_required(VERSION 2.8.12)
@@ -7,7 +7,7 @@ project(InstrumentationEngine)
 
 find_package(LibXml2 REQUIRED)
 
-include_directories(. ../InstrumentationEngine.Lib ${LIBXML2_INCLUDE_DIR})
+include_directories(. ../InstrumentationEngine.Lib ../ExtensionsHostLib ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP InstrumentationEngine)
 
@@ -89,6 +89,7 @@ target_link_libraries(${PROJECT_NAME}
     palrt
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
+    MicrosoftExtensionsHost
     corguids
     :libuuid.so
     :libunwind-x86_64.so

@@ -1709,7 +1709,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
     this->GetMaxStack(&maxStack);
 
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
-	CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
+    CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
     CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
     CLogging::LogDumpMessage(_T("    <Name>%s</Name>\r\n"), bstrMethodName.m_str);
     CLogging::LogDumpMessage(_T("    <FullName>%s</FullName>\r\n"), bstrMethodFullName.m_str);
