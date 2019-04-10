@@ -9,7 +9,7 @@
   </PropertyGroup>
   <Target Name="AddTargetPathToFilesToSign" BeforeTargets="PrepareForBuild">
     <ItemGroup>
-      <FilesToSign Include="$(TargetPath)">
+      <FilesToSign Include="$(TargetPath)" Condition=" '$(TargetExt)' != '.wixlib' ">
         <Authenticode>$(SetupPackageCertificate)</Authenticode>
       </FilesToSign>
     </ItemGroup>

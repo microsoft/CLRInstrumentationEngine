@@ -3,20 +3,21 @@
       -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <OutputType>Module</OutputType>
+    <OutputType>Library</OutputType>
+    <TargetExt>.wixlib</TargetExt>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>6feace2d-9e48-4272-acfd-11ed4baf7696</ProjectGuid>
+    <ProjectGuid>{2f7e3158-2868-4f83-b44b-908d92121574}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>InstrumentationEngine.Module_x64.$(PackageVersion)</OutputName>
+    <OutputName>InstrumentationEngine.Fragment_$(Platform).$(PackageVersion)</OutputName>
+    <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="InstrumentationEngine.Module_x64.wxs" />
+    <Compile Include="InstrumentationEngine.Fragment.wxs" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.targets" />

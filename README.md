@@ -15,8 +15,8 @@ Currently the CLR Instrumentation Engine is installed by:
   - [32-bit windows](https://go.microsoft.com/fwlink/?LinkID=615592)
 * Shipped as a [Preinstalled Site Extension](https://github.com/projectkudu/kudu/wiki/Azure-Site-Extensions) for [Azure App Services](docs/scenarios/azureappservice.md)
   - Enabled by [Application Insights](docs/scenarios/applicationinsights.md)
-  - [Status Monitor](http://go.microsoft.com/fwlink/?linkid=506648)
   - Enabled by [Visual Studio Snapshot Debugger](docs/scenarios/snapshotdebugger.md)
+  - [Status Monitor](http://go.microsoft.com/fwlink/?linkid=506648)
 
 ## Getting Started
 
@@ -37,11 +37,6 @@ See [Configuration](docs/configuration.md) for setting up your own Instrumentati
 Please read [Contributing](CONTRIBUTING.md) for details on the Contributor License Agreement (CLA) and the process for submitting pull requests to us.
 
 ## Developing
-
-1. Clone this repository to your local machine.
-2. Run [init.cmd](./init.cmd) or [init.ps1](./init.ps1)
-
-This initialization script installes local Git hooks to automatically run update scripts when commits are made. For example, when the semantic version in [version.props](build/version.props) file is updated, the [version.txt](src/InstrumentationEngine.Installer/version.txt), guids.json files, and the Wix files are updated automatically.
 
 This repo builds using Visual Studio 2017 and requires the following components:
 |Component Id|Component Friendly Name|

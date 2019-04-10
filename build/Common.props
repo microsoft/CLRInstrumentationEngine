@@ -8,5 +8,5 @@
   <Import Project=".\CommonBuild.Global.props" />
   <Import Project=".\Signing.props" Condition=" '$(SignType)' != '' AND '$(SignType)' != 'None' " />
   <Import Project=".\Version.props" />
-  <Import Project=".\Wix.props" Condition=" $(OutputType) == 'Package' OR $(OutputType) == 'Bundle' OR $(OutputType) == 'Module' " />
+  <Import Project=".\Wix.props" Condition=" '$(TargetExt)' == '.msi' OR '$(TargetExt)' == '.wixlib' OR '$(TargetExt)' == '.msm' " />
 </Project>

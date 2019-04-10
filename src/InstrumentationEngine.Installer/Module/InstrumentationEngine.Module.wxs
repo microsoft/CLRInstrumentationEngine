@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Module Id='ClrInstrumentationEngine_$(sys.BUILDARCH).$(var.Version)'
+            Language='1033'
+            Codepage='1252'
+            Version='$(var.Version)'>
+        <Package Id='$(var.ModuleGuid)'
+                 Keywords='Installer'
+                 Description='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH)) Installer'
+                 Comments='Copyright (c) All Rights Reserved.'
+                 Manufacturer='Microsoft Corporation'
+                 InstallerVersion='200'
+                 InstallPrivileges='elevated'
+                 InstallScope='perMachine'
+                 Platform='$(sys.BUILDARCH)'
+                 Languages='1033,0'
+                 SummaryCodepage='1252' />
+
+        <DirectoryRef Id="INSTALLDIR" />
+<?if $(sys.BUILDARCH) = x64?>
+        <ComponentRef Id="DiagnosticsExtensionsBase64.$(var.Version)" />
+        <ComponentRef Id="ExtensionsBase64.$(var.Version)" />
+        <ComponentRef Id="Config64.$(var.Version)" />
+        <ComponentRef Id="InstrumentationEngine64.$(var.Version)" />
+<?endif?>
+        <ComponentRef Id="DiagnosticsExtensionsBase32.$(var.Version)" />
+        <ComponentRef Id="ExtensionsBase32.$(var.Version)" />
+        <ComponentRef Id="Config32.$(var.Version)" />
+        <ComponentRef Id="InstrumentationEngine32.$(var.Version)" />
+    </Module>
+</Wix>

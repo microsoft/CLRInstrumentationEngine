@@ -3,20 +3,30 @@
       -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <OutputType>Module</OutputType>
+    <OutputType>Package</OutputType>
+    <TargetExt>.msi</TargetExt>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>02c6784e-f1b7-4b3d-90ec-863ef9c954a6</ProjectGuid>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>b3ef81c4-2afc-4134-969c-785f46b6e1eb</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>InstrumentationEngine.Module_x86.$(PackageVersion)</OutputName>
+    <OutputName>InstrumentationEngine.Installer_$(Platform).$(PackageVersion)</OutputName>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="InstrumentationEngine.Module_x86.wxs" />
+    <Compile Include="InstrumentationEngine.Installer.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WixLibrary\InstrumentationEngine.Fragment.wixproj">
+      <Name>InstrumentationEngine.Fragment</Name>
+      <Project>{2f7e3158-2868-4f83-b44b-908d92121574}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.targets" />

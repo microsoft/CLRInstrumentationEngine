@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH))'
+             Manufacturer='Microsoft Corporation'
+             Id='*'
+             UpgradeCode='$(var.UpgradeGuid)'
+             Language='1033'
+             Codepage='1252'
+             Version='$(var.Version)'>
+        <Package Id='*'
+                 Keywords='Installer'
+                 Description='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH)) Installer'
+                 Comments='Copyright (c) All Rights Reserved.'
+                 Manufacturer='Microsoft Corporation'
+                 InstallerVersion='200'
+                 InstallPrivileges='elevated'
+                 InstallScope='perMachine'
+                 Platform='$(sys.BUILDARCH)'
+                 Languages='1033'
+                 Compressed='yes'
+                 SummaryCodepage='1252' />
+        <Media Id='1'
+               Cabinet='InstrumentationEngine_$(sys.BUILDARCH).$(var.Version).cab'
+               EmbedCab='yes' />
+        <DirectoryRef Id="INSTALLDIR" />
+<?if $(sys.BUILDARCH) = x64?>
+        <FeatureRef Id='ClrInstrumentationEngineFeature64' />
+<?endif?>
+        <FeatureRef Id='ClrInstrumentationEngineFeature32' />
+    </Product>
+
+    <?include $(sys.CURRENTDIR)\..\Common\Installer\features.wxi ?>
+</Wix>

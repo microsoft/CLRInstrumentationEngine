@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="INSTALLDIR" />
+        </Directory>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLDIR">
+            <Directory Id="ProgramFiles64Folder" Name="PFiles64" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
+                <Directory Id="InstrumentationEngine64" Name="InstrumentationEngine">
+                    <Directory Id="Version64" Name="$(var.Version)">
+                        <Directory Id="Instrumentation64" Name="Instrumentation64">
+                            <Directory Id="base64" Name="base" />
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="INSTALLDIR">
+            <Directory Id="ProgramFilesFolder" Name="PFiles32" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
+                <Directory Id="InstrumentationEngine32" Name="InstrumentationEngine">
+                    <Directory Id="Version32" Name="$(var.Version)">
+                        <Directory Id="Instrumentation32" Name="Instrumentation32">
+                            <Directory Id="base32" Name="base" />
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+</Include>

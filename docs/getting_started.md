@@ -37,13 +37,15 @@ The Instrumentation Engine supports both x86 and x64 configurations.
 
 See [Environment Variables](environment_variables.md) for more details on configuring your environment.
 
+See [App Service](scenarios/azureappservice.md) for details on leveraging the Clr InstrumentationEngine preinstalled site extension.
+
 Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
 
 `MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
 
 ### How do I write an Instrumentation Method?
 
-A simple example of an InstrumentationMethod can be found in [InstrumentationMethod.cpp](../tests/InstrEngineTests/NaglerInstrumentationMethod/InstrumentationMethod.cpp).
+A simple example of an InstrumentationMethod can be found in [NaglerInstrumentationMethod.cpp](../tests/InstrEngineTests/NaglerInstrumentationMethod/NaglerInstrumentationMethod.cpp).
 
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 

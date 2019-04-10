@@ -25,8 +25,19 @@
     </Otherwise>
   </Choose>
 
-  <!-- This prevents APIScan and BinScope from running and erroring on wixproj files-->
   <PropertyGroup>
+    <!-- This prevents APIScan and BinScope from running and erroring on wixproj files-->
     <IsPackage>true</IsPackage>
+    <!-- The following guids should be regenerated for version changes -->
+    <ModuleGuid>{C3B65C8B-E83F-4FBD-8347-8DBCFB378DE8}</ModuleGuid>
+    <UpgradeGuid>{5CE9CEF7-4A5F-4401-B0E7-F686CC695D40}</UpgradeGuid>
+    <GuidGenSeed>{460ACA78-F3F0-4CD7-8606-DA163F11C4AE}</GuidGenSeed>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- These values are parsed by candle.exe as preprocessor variables and can be accessed via $(var.VariableName) -->
+    <DefineConstants>$(DefineConstants);Version=$(SemanticPackageVersion)</DefineConstants>
+    <DefineConstants>$(DefineConstants);ModuleGuid=$(ModuleGuid)</DefineConstants>
+    <DefineConstants>$(DefineConstants);UpgradeGuid=$(UpgradeGuid)</DefineConstants>
+    <DefineConstants>$(DefineConstants);GuidGenSeed=$(GuidGenSeed)</DefineConstants>
   </PropertyGroup>
 </Project>
