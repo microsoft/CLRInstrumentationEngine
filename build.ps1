@@ -7,6 +7,11 @@ param(
     [switch] $SkipPackaging,
     [switch] $SkipCleanAndRestore,
     [switch] $Release,
+
+    # Internal Only
+    [ValidateSet("Real", "Test", "None", IgnoreCase=$false)]
+    [string] $SignType = "None",
+
     [switch] $Verbose
 )
 
@@ -95,6 +100,12 @@ if (-not ($repoPath))
     $repoPath = Read-Host "Please enter the full path to the local repository"
 }
 
+# Internal Only
+if ($SignType -and $SignType -ine 'None')
+{
+    & "nuget" install MicroBuild.Plugins.Signing -source https://devdiv.pkgs.visualstudio.com/_packaging/MicroBuildToolset/nuget/v3/index.json -outputDirectory $RepoPath\packages
+}
+
 ###
 # Picks up msbuild from vs2017 installation
 ###
@@ -159,9 +170,9 @@ if (!$SkipBuild)
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
@@ -180,11 +191,11 @@ if (!$SkipPackaging)
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
-    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentaitonEngine.Packages.sln'
+    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
 # Build Tests

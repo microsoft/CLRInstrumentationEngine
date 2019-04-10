@@ -6,21 +6,17 @@ Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/bui
 
 ## Overview
 
-The CLR Instrumentation Engine is a cooperation profiler that allows running multiple profiling extensions in the same process. It was built to satisfy Application Insights, IntelliTrace, and Production Breakpoints scenarios.
+The CLR Instrumentation Engine is a cooperation profiler that allows running multiple profiling extensions in the same process. It was initially built to satisfy Application Insights, IntelliTrace, and Production Breakpoints scenarios.
 
 Currently the CLR Instrumentation Engine is installed by:
 
 * Latest versions of Microsoft Monitoring Agent:
   - [64-bit windows](https://go.microsoft.com/fwlink/?LinkID=517476)
   - [32-bit windows](https://go.microsoft.com/fwlink/?LinkID=615592)
-* [Application Insights](docs/scenarios/applicationinsights.md)
-  - [Status Monitor](http://go.microsoft.com/fwlink/?linkid=506648&clcid=0x409)
-  - Shipped in the [Application Insights Private Site Extension](https://www.nuget.org/packages/Microsoft.ApplicationInsights.AzureWebSites/) for [Azure App Services](docs/scenarios/azureappservice.md)
-* [Snapshot Debugger](docs/scenarios/snapshotdebugger.md)
-  - Shipped as a [Preinstalled Site Extension](https://github.com/projectkudu/kudu/wiki/Azure-Site-Extensions) for [Azure App Services](docs/scenarios/azureappservice.md)
-* You can also use the following NuGet packages:
-  - [Microsoft.ApplicationInsights.Agent_x64](http://www.nuget.org/packages/Microsoft.ApplicationInsights.Agent_x64)
-  - [Microsoft.ApplicationInsights.Agent_x86](http://www.nuget.org/packages/Microsoft.ApplicationInsights.Agent_x86)
+* Shipped as a [Preinstalled Site Extension](https://github.com/projectkudu/kudu/wiki/Azure-Site-Extensions) for [Azure App Services](docs/scenarios/azureappservice.md)
+  - Enabled by [Application Insights](docs/scenarios/applicationinsights.md)
+  - [Status Monitor](http://go.microsoft.com/fwlink/?linkid=506648)
+  - Enabled by [Visual Studio Snapshot Debugger](docs/scenarios/snapshotdebugger.md)
 
 ## Getting Started
 
@@ -28,17 +24,34 @@ The CLR Instrumentation Engine is a profiler implementation and is enabled and c
 
 See the [Design Notes](DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
-## Building
+See [Build](docs/build.md) for details on how to run local builds.
 
-Please refer to [Build](docs/build.md) for details on how to run local builds.
+See [Test](docs/test.md) for details on how to run tests.
 
-## Running Tests
+See [Environment Variables](docs/environment_variables.md) for enabling the Engine.
 
-Please refer to [Test](docs/test.md) for details on how to run tests.
+See [Configuration](docs/configuration.md) for setting up your own Instrumentation Method.
 
 ## Contributing
 
 Please read [Contributing](CONTRIBUTING.md) for details on the Contributor License Agreement (CLA) and the process for submitting pull requests to us.
+
+## Developing
+
+1. Clone this repository to your local machine.
+2. Run [init.cmd](./init.cmd) or [init.ps1](./init.ps1)
+
+This initialization script installes local Git hooks to automatically run update scripts when commits are made. For example, when the semantic version in [version.props](build/version.props) file is updated, the [version.txt](src/InstrumentationEngine.Installer/version.txt), guids.json files, and the Wix files are updated automatically.
+
+This repo builds using Visual Studio 2017 and requires the following components:
+|Component Id|Component Friendly Name|
+|:--|:--
+Microsoft.Component.MSBuild|MSBuild
+Microsoft.VisualStudio.Workload.NativeDesktop|Desktop development with C++ (Workload)
+Microsoft.VisualStudio.Component.VC.ATL.Spectre|Visual C++ ATL (x86/x64) with Spectre Mitigations
+Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre|VC++ 2017 version 15.9 v14.16 libs for spectre (x86 and x64)
+
+Optionally, in order to develop Wixproj files in Visual Studio, you will need to install the [Wix Toolset Visual 2017 Extension](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension), also known as the "Votive" extension.
 
 ## Versioning
 

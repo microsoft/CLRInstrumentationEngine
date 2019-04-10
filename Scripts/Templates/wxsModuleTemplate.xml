@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Module Id='ClrInstrumentationEngine_[ARCHITECTURE].[VERSION]'
+            Language='1033'
+            Codepage='1252'
+            Version='[VERSION]'>
+        <Package Id='[PACKAGEID]'
+                 Keywords='Installer'
+                 Description='Microsoft ClrInstrumentationEngine [VERSION] ([ARCHITECTURE]) Installer'
+                 Comments='Copyright (c) All Rights Reserved.'
+                 Manufacturer='Microsoft Corporation'
+                 InstallerVersion='200'
+                 InstallPrivileges='elevated'
+                 InstallScope='perMachine'
+                 Platform='[ARCHITECTURE]'
+                 Languages='1033,0'
+                 SummaryCodepage='1252' />
+        <DirectoryStub />
+    </Module>
+</Wix>

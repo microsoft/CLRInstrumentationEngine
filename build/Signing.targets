@@ -3,16 +3,6 @@
       -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="SignSatelliteAssemblies"
-    Condition="'@(LocalizedUserFiles)' != ''"
-    AfterTargets="Localize"
-    BeforeTargets="CopySatelliteDllsToStandardNETPaths">
-    <SignAssemblies
-      AssemblyFiles="@(LocalizedUserFiles)"
-      KeyFilePath="$(AssemblyOriginatorKeyFile)"
-      StrongNameToolFilePath="$(SDK40ToolsPath)sn.exe" />
-  </Target>
-
   <!-- Set AfterTargets to CopyFilesToOutputDirectory so that is run by MSBuild
        at least after the CopyFilesToOutputDirectory target. The DependsOnTargets
        is set to ensure that this task runs after the specified targets. -->
@@ -23,6 +13,7 @@
     <ItemGroup>
       <_MissingFilesToSign Include="@(FilesToSign)" Condition="!Exists('%(FullPath)')" />
     </ItemGroup>
+    <Message Text="Verifying the following FilesToSign exist: @(FilesToSign->'%(FullPath)', ', ')" />
     <Error Text="The following FilesToSign do not exist: @(_MissingFilesToSign->'%(FullPath)', ', ')"
       Condition=" '@(_MissingFilesToSign)'!='' " />
   </Target>
@@ -49,14 +40,14 @@
 
   <Target Name="SequenceNuGetSigning"
     Condition="'$(GeneratePackageOnBuild)' != 'false' and '$(PackageId)'!='' and '@(FilesToSign)'!=''"
-    DependsOnTargets="GenerateNuspec"
-    BeforeTargets="SignFiles;SignNuGetPackage" />
+    AfterTargets="GenerateNuspec"
+    BeforeTargets="SignFiles" />
 
     <!-- Sign PowerShell scripts and modules copied to the output directory of the project -->
-  <Target Name="PreparePowerShellScriptsForSigning" BeforeTargets="SignFiles">
+  <Target Name="PreparePowerShellScriptsForSigning" BeforeTargets="SignFiles;SignNuGetPackage;GenerateNuspec">
     <ItemGroup>
       <FilesToSign Include="$(OutputPath)\**\*.ps*1">
-        <Authenticode>MicrosoftSHA1</Authenticode>
+        <Authenticode>Microsoft400</Authenticode>
       </FilesToSign>
     </ItemGroup>
   </Target>

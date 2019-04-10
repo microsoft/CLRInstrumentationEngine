@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(EnlistmentRoot)\packages\wix\$(WiXVersion)\build\Wix.props" Condition="Exists('$(EnlistmentRoot)\packages\wix\$(WiXVersion)\build\Wix.props')" />
+  <Choose>
+    <!-- NOTE: The WixToolSet compiles with candle.exe which generates a wixobj file from the wixproj. -->
+    <!-- NOTE: The wixobj file then gets linked by light.exe and outputs the resultant msi/msm file.   -->
+    <!-- NOTE: Since the Candle task takes as input the wixproj file and not this props file, any      -->
+    <!-- NOTE: changes to this file may be ignored. Be sure to delete the wixobj file or update the    -->
+    <!-- NOTE: wixproj file in order to pick up new changes for this file.                             -->
+
+    <!-- Azure Devops variables -->
+    <When Condition="$(Build_StagingDirectory) != ''">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);BinOutputPath=$(Build_StagingDirectory)\bin\$(Configuration)</DefineConstants>
+      </PropertyGroup>
+    </When>
+
+    <!-- Local build -->
+    <Otherwise>
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);BinOutputPath=$(BinRoot)\$(Configuration)</DefineConstants>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <!-- This prevents APIScan and BinScope from running and erroring on wixproj files-->
+  <PropertyGroup>
+    <IsPackage>true</IsPackage>
+  </PropertyGroup>
+</Project>

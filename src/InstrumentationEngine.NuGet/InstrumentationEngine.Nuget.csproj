@@ -29,6 +29,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
     <NoWarn>2008</NoWarn>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -76,6 +77,7 @@
     <NugetBinInput>$(BinRoot)\$(Configuration)\$(Platform)\InstrumentationEngine</NugetBinInput>
   </PropertyGroup>
   <PropertyGroup>
+    <NuspecProperties>$(NuspecProperties);scriptdir=$(BinRoot)\$(Configuration)\$(Platform)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);bindir=$(NugetBinInput)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>
   </PropertyGroup>

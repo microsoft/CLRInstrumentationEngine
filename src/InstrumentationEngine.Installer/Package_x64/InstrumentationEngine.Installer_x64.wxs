@@ -1,0 +1,84 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Microsoft ClrInstrumentationEngine 1.0.21 (x64)'
+             Manufacturer='Microsoft Corporation'
+             Id='{CD661131-FD5B-422E-9FD4-A8D98832AE44}'
+             UpgradeCode='{5CE9CEF7-4A5F-4401-B0E7-F686CC695D40}'
+             Language='1033'
+             Codepage='1252'
+             Version='1.0.21'>
+        <Package Id='*'
+                 Keywords='Installer'
+                 Description='Microsoft ClrInstrumentationEngine 1.0.21 (x64) Installer'
+                 Comments='Copyright (c) All Rights Reserved.'
+                 Manufacturer='Microsoft Corporation'
+                 InstallerVersion='200'
+                 InstallPrivileges='elevated'
+                 InstallScope='perMachine'
+                 Platform='x64'
+                 Languages='1033'
+                 Compressed='yes'
+                 SummaryCodepage='1252' />
+        <Media Id='1'
+               Cabinet='InstrumentationEngine_x64.1.0.21.cab'
+               EmbedCab='yes' />
+<Directory Id="TARGETDIR" Name="SourceDir">
+    <Directory Id="ProgramFilesFolder" Name="PFiles32">
+        <Directory Id="InstrumentationEngine32" Name="InstrumentationEngine">
+            <Directory Id="Version32" Name="1.0.21">
+                <Directory Id="Instrumentation32" Name="Instrumentation32">
+                    <Directory Id="base32" Name="base">
+                        <Component Id="DiagnosticsExtensionsBase32.1.0.21" Guid="{86BF2AED-4A1F-40BA-AF8E-F4F5A7115409}" Win64="no">
+                            <RemoveFolder Id="base32" On="uninstall" />
+                            <File Id="DiagnosticsExtensionsBase32" Name="Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" KeyPath="yes" Source="$(var.BinOutputPath)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" />
+                        </Component>
+                        <Component Id="ExtensionsBase32.1.0.21" Guid="{7712A1C2-068F-4920-B7FE-7332711C4828}" Win64="no">
+                            <File Id="ExtensionsBase32" Name="Microsoft.InstrumentationEngine.Extensions.Base_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll" />
+                        </Component>
+                        <Component Id="Config32.1.0.21" Guid="{59C57552-5429-4509-A937-FD851A1429EF}" Win64="no">
+                            <File Id="Config32" Name="Microsoft.InstrumentationEngine.Extensions.config" KeyPath="yes" Source="$(var.BinOutputPath)\x86\Microsoft.InstrumentationEngine.Extensions.config" />
+                        </Component>
+                    </Directory>
+                    <Component Id="InstrumentationEngine32.1.0.21" Guid="{B083ED82-CCE4-4405-AD72-D23A12A64520}" Win64="no">
+                        <File Id="InstrumentationEngine32" Name="MicrosoftInstrumentationEngine_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\MicrosoftInstrumentationEngine_x86.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+    </Directory>
+    <Directory Id="ProgramFiles64Folder" Name="PFiles64">
+        <Directory Id="InstrumentationEngine64" Name="InstrumentationEngine">
+            <Directory Id="Version64" Name="1.0.21">
+                <Directory Id="Instrumentation64" Name="Instrumentation64">
+                    <Directory Id="base64" Name="base">
+                        <Component Id="DiagnosticsExtensionsBase64.1.0.21" Guid="{C2088D19-BAB7-4D9F-A8E1-DF755D4AF8A9}" Win64="yes">
+                            <RemoveFolder Id="base64" On="uninstall" />
+                            <File Id="DiagnosticsExtensionsBase64" Name="Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" KeyPath="yes" Source="$(var.BinOutputPath)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" />
+                        </Component>
+                        <Component Id="ExtensionsBase64.1.0.21" Guid="{722D4773-71CD-45DC-93F7-CE1F71031909}" Win64="yes">
+                            <File Id="ExtensionsBase64" Name="Microsoft.InstrumentationEngine.Extensions.Base_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll" />
+                        </Component>
+                        <Component Id="Config64.1.0.21" Guid="{84212479-CE2E-4A6F-96B9-A896B18EB75E}" Win64="yes">
+                            <File Id="Config64" Name="Microsoft.InstrumentationEngine.Extensions.config" KeyPath="yes" Source="$(var.BinOutputPath)\x64\Microsoft.InstrumentationEngine.Extensions.config" />
+                        </Component>
+                    </Directory>
+                    <Component Id="InstrumentationEngine64.1.0.21" Guid="{F2D84B8A-DCD3-400F-A43F-DB21CB31E8EC}" Win64="yes">
+                        <File Id="InstrumentationEngine64" Name="MicrosoftInstrumentationEngine_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\MicrosoftInstrumentationEngine_x64.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+    </Directory>
+</Directory>
+        <Feature Id='ClrInstrumentationEngineFeature' Level='1'>
+<ComponentRef Id='Config32.1.0.21' />
+<ComponentRef Id='Config64.1.0.21' />
+<ComponentRef Id='DiagnosticsExtensionsBase32.1.0.21' />
+<ComponentRef Id='DiagnosticsExtensionsBase64.1.0.21' />
+<ComponentRef Id='ExtensionsBase32.1.0.21' />
+<ComponentRef Id='ExtensionsBase64.1.0.21' />
+<ComponentRef Id='InstrumentationEngine32.1.0.21' />
+<ComponentRef Id='InstrumentationEngine64.1.0.21' />
+        </Feature>
+    </Product>
+</Wix>

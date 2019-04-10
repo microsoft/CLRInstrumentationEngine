@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputType>Module</OutputType>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>02c6784e-f1b7-4b3d-90ec-863ef9c954a6</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>InstrumentationEngine.Module_x86.$(PackageVersion)</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="InstrumentationEngine.Module_x86.wxs" />
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\packages\microbuild.core\$(MicroBuildCoreVersion)\build\MicroBuild.Core.targets" />
+</Project>

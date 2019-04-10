@@ -46,7 +46,8 @@
         <RemoteUnitExecutorVersion>2.5.1</RemoteUnitExecutorVersion>
         <ApplicationInsightsAgentInterceptVersion>2.4.0</ApplicationInsightsAgentInterceptVersion>
         <LegacyApplicationInsightsAgentInterceptVersion>2.0.1</LegacyApplicationInsightsAgentInterceptVersion>
-        <MicroBuildCoreVersion>0.2.0</MicroBuildCoreVersion>
+        <MicroBuildCoreVersion>0.3.0</MicroBuildCoreVersion>
+        <WixVersion>3.11.1</WixVersion>
     </PropertyGroup>
 
     <PropertyGroup Label="Configuration">
