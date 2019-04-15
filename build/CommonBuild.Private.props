@@ -50,10 +50,6 @@
         <WixVersion>3.11.1</WixVersion>
     </PropertyGroup>
 
-    <PropertyGroup>
-
-    </PropertyGroup>
-
     <PropertyGroup Label="Configuration">
         <SpectreMitigation>Spectre</SpectreMitigation>
     </PropertyGroup>

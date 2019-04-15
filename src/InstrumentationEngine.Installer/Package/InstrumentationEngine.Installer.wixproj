@@ -14,14 +14,15 @@
     <ProjectGuid>b3ef81c4-2afc-4134-969c-785f46b6e1eb</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>InstrumentationEngine.Installer_$(Platform).$(PackageVersion)</OutputName>
+    <DefineConstants>$(DefineConstants);OutputPath=$(OutputPath)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="InstrumentationEngine.Installer.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WixLibrary\InstrumentationEngine.Fragment.wixproj">
-      <Name>InstrumentationEngine.Fragment</Name>
-      <Project>{2f7e3158-2868-4f83-b44b-908d92121574}</Project>
+    <ProjectReference Include="..\Module\InstrumentationEngine.Module.wixproj">
+      <Name>InstrumentationEngine.Module</Name>
+      <Project>{1224c7a6-57c8-4758-8fe8-c8af4a3da2ad}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

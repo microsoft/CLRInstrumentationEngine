@@ -27,6 +27,10 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstrumentationEngine.Module", "InstrumentationEngine.Installer\Module\InstrumentationEngine.Module.wixproj", "{1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstrumentationEngine.Installer", "InstrumentationEngine.Installer\Package\InstrumentationEngine.Installer.wixproj", "{B3EF81C4-2AFC-4134-969C-785F46B6E1EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2F7E3158-2868-4F83-B44B-908D92121574} = {2F7E3158-2868-4F83-B44B-908D92121574}
+		{1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD} = {1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD}
+	EndProjectSection
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstrumentationEngine.Fragment", "InstrumentationEngine.Installer\WixLibrary\InstrumentationEngine.Fragment.wixproj", "{2F7E3158-2868-4F83-B44B-908D92121574}"
 EndProject

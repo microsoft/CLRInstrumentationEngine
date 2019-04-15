@@ -4,7 +4,7 @@
              Manufacturer='Microsoft Corporation'
              Id='*'
              UpgradeCode='$(var.UpgradeGuid)'
-             Language='1033'
+             Language='0'
              Codepage='1252'
              Version='$(var.Version)'>
         <Package Id='*'
@@ -16,18 +16,27 @@
                  InstallPrivileges='elevated'
                  InstallScope='perMachine'
                  Platform='$(sys.BUILDARCH)'
-                 Languages='1033'
+                 Languages='0'
                  Compressed='yes'
                  SummaryCodepage='1252' />
         <Media Id='1'
                Cabinet='InstrumentationEngine_$(sys.BUILDARCH).$(var.Version).cab'
                EmbedCab='yes' />
-        <DirectoryRef Id="INSTALLDIR" />
+        <Directory Id='TARGETDIR' Name='SourceDir'>
 <?if $(sys.BUILDARCH) = x64?>
-        <FeatureRef Id='ClrInstrumentationEngineFeature64' />
+            <Merge Id="ClrInstrumentationEngine"
+                   Language="0"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_x64.$(var.PackageVersion).msm"
+                   DiskId="1" />
+<?else?>
+            <Merge Id="ClrInstrumentationEngine"
+                   Language="0"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_x86.$(var.PackageVersion).msm"
+                   DiskId="1" />
 <?endif?>
-        <FeatureRef Id='ClrInstrumentationEngineFeature32' />
+        </Directory>
+        <Feature Id="ClrInstrumentationEngineFeature">
+            <MergeRef Id="ClrInstrumentationEngine" />
+        </Feature>
     </Product>
-
-    <?include $(sys.CURRENTDIR)\..\Common\Installer\features.wxi ?>
 </Wix>

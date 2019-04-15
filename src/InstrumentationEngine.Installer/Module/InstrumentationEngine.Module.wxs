@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Module Id='ClrInstrumentationEngine_$(sys.BUILDARCH).$(var.Version)'
-            Language='1033'
+            Language='0'
             Codepage='1252'
             Version='$(var.Version)'>
         <Package Id='$(var.ModuleGuid)'
@@ -13,7 +13,7 @@
                  InstallPrivileges='elevated'
                  InstallScope='perMachine'
                  Platform='$(sys.BUILDARCH)'
-                 Languages='1033,0'
+                 Languages='0'
                  SummaryCodepage='1252' />
 
         <DirectoryRef Id="INSTALLDIR" />
