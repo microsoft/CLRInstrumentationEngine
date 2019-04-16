@@ -23,17 +23,10 @@
                Cabinet='InstrumentationEngine_$(sys.BUILDARCH).$(var.Version).cab'
                EmbedCab='yes' />
         <Directory Id='TARGETDIR' Name='SourceDir'>
-<?if $(sys.BUILDARCH) = x64?>
             <Merge Id="ClrInstrumentationEngine"
                    Language="0"
-                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_x64.$(var.PackageVersion).msm"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_$(sys.BUILDARCH).$(var.PackageVersion).msm"
                    DiskId="1" />
-<?else?>
-            <Merge Id="ClrInstrumentationEngine"
-                   Language="0"
-                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_x86.$(var.PackageVersion).msm"
-                   DiskId="1" />
-<?endif?>
         </Directory>
         <Feature Id="ClrInstrumentationEngineFeature">
             <MergeRef Id="ClrInstrumentationEngine" />
