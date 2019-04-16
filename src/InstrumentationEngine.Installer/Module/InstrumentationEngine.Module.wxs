@@ -4,7 +4,7 @@
             Language='0'
             Codepage='1252'
             Version='$(var.Version)'>
-        <Package Id='$(var.ModuleGuid)'
+        <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
                  Description='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH)) Installer'
                  Comments='Copyright (c) All Rights Reserved.'

@@ -7,11 +7,6 @@ param(
     [switch] $SkipPackaging,
     [switch] $SkipCleanAndRestore,
     [switch] $Release,
-
-    # Internal Only
-    [ValidateSet("Real", "Test", "None", IgnoreCase=$false)]
-    [string] $SignType = "None",
-
     [switch] $Verbose
 )
 
@@ -81,6 +76,8 @@ else
     $configuration = "Debug"
 }
 
+$SignType = 'None' # Used for internal testing of signing.
+
 ###
 # Attempt to find CLR Instrumentation Engine repo
 ###
@@ -98,12 +95,6 @@ if ($repoRoot)
 if (-not ($repoPath))
 {
     $repoPath = Read-Host "Please enter the full path to the local repository"
-}
-
-# Internal Only
-if ($SignType -and $SignType -ine 'None')
-{
-    & "nuget" install MicroBuild.Plugins.Signing -source https://devdiv.pkgs.visualstudio.com/_packaging/MicroBuildToolset/nuget/v3/index.json -outputDirectory $RepoPath\packages
 }
 
 ###

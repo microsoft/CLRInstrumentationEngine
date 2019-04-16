@@ -2,12 +2,12 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Product Name='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH))'
              Manufacturer='Microsoft Corporation'
-             Id='*'
+             Id='$(var.ProductGuid)'
              UpgradeCode='$(var.UpgradeGuid)'
              Language='0'
              Codepage='1252'
              Version='$(var.Version)'>
-        <Package Id='*'
+        <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
                  Description='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH)) Installer'
                  Comments='Copyright (c) All Rights Reserved.'

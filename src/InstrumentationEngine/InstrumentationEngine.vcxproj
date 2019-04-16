@@ -3,7 +3,7 @@
       -->
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
-  <Import Project="$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props')" />
+  <Import Project="$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -161,13 +161,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.targets')" />
+    <Import Project="$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props'))" />
-    <Error Condition="!Exists('$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.targets'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props'))" />
+    <Error Condition="!Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets'))" />
   </Target>
 </Project>

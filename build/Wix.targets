@@ -14,4 +14,27 @@
       </FilesToSign>
     </ItemGroup>
   </Target>
+
+  <Target Name="GenerateGuids" BeforeTargets="PrepareForBuild" Condition=" $(TargetExt) != '.wixlib' ">
+    <CreateProperty Value="$([System.Guid]::NewGuid())">
+      <Output TaskParameter="Value" PropertyName="UpgradeGuid" />
+    </CreateProperty>
+    <CreateProperty Value="$([System.Guid]::NewGuid())">
+      <Output TaskParameter="Value" PropertyName="PackageGuid" />
+    </CreateProperty>
+    <CreateProperty Value="$([System.Guid]::NewGuid())">
+      <Output TaskParameter="Value" PropertyName="ProductGuid" />
+    </CreateProperty>
+    <PropertyGroup>
+      <GeneratedGuids>PackageGuid=$(PackageGuid)</GeneratedGuids>
+      <GeneratedGuids Condition=" $(TargetExt) == '.msi' ">$(GeneratedGuids);UpgradeGuid=$(UpgradeGuid)</GeneratedGuids>
+      <GeneratedGuids Condition=" $(TargetExt) == '.msi' ">$(GeneratedGuids);ProductGuid=$(ProductGuid)</GeneratedGuids>
+       <!-- Pass values to wix -->
+      <DefineConstants>$(DefineConstants);$(GeneratedGuids)</DefineConstants>
+      <GuidFilePath>$(OutputPath)\$(MSBuildProjectName)_$(Platform).guids</GuidFilePath>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(GuidFilePath)"
+      Lines="PackageVersion=$(PackageVersion);$(GeneratedGuids)"
+      Overwrite="true" />
+  </Target>
 </Project>
