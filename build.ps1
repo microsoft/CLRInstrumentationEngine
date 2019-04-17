@@ -170,6 +170,17 @@ if (!$SkipBuild)
 
 if (!$SkipPackaging)
 {
+    # Remove files from obj folders as they can become stale
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Fragment" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Module" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Installer" -Recurse -Force -ErrorAction SilentlyContinue
+
+    # The SkipBuild switch prevents bin/obj cleanup and also means we're testing packaging. This will cleanup old/stale packages
+    if ($SkipBuild)
+    {
+        # Remove package artifacts from bin folders
+        Get-ChildItem "$repoPath\bin" -Include *.msi,*.msm,*.wixlib,*.nupkg -Recurse | Remove-Item -Force
+    }
 
     # NuGet restore disregards platform/configuration
     # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
