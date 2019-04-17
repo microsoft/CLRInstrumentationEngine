@@ -6,7 +6,7 @@
             Version='$(var.Version)'>
         <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
-                 Description='Microsoft ClrInstrumentationEngine $(var.Version) ($(sys.BUILDARCH)) Installer'
+                 Description='Microsoft ClrInstrumentationEngine $(var.PackageVersion) ($(sys.BUILDARCH)) Installer $(var.InstrumentationEngine.Fragment.Configuration)'
                  Comments='Copyright (c) All Rights Reserved.'
                  Manufacturer='Microsoft Corporation'
                  InstallerVersion='200'
@@ -15,7 +15,6 @@
                  Platform='$(sys.BUILDARCH)'
                  Languages='0'
                  SummaryCodepage='1252' />
-
         <DirectoryRef Id="INSTALLDIR" />
 <?if $(sys.BUILDARCH) = x64?>
         <ComponentRef Id="DiagnosticsExtensionsBase64.$(var.Version)" />
