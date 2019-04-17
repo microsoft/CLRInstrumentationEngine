@@ -179,7 +179,7 @@ if (!$SkipPackaging)
     if ($SkipBuild)
     {
         # Remove package artifacts from bin folders
-        Get-ChildItem "$repoPath\bin" -Include *.msi,*.msm,*.wixlib,*.nupkg -Recurse | Remove-Item -Force
+        Get-ChildItem "$repoPath\bin\$configuration" -Include *.msi,*.msm,*.wixlib,*.nupkg -Recurse | Remove-Item -Force
     }
 
     # NuGet restore disregards platform/configuration
