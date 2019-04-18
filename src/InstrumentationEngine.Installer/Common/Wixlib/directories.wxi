@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
+    <?if $(var.Configuration) = Debug ?>
+        <?define VersionFolder = $(var.PackageVersion)_$(var.Configuration) ?>
+    <?else?>
+        <?define VersionFolder = $(var.PackageVersion) ?>
+    <?endif?>
+
     <Fragment>
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="INSTALLDIR" />
@@ -8,60 +14,28 @@
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Directory Id="ProgramFiles64Folder" Name="PFiles64" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
-                <Directory Id="InstrumentationEngine64" Name="InstrumentationEngine" />
+                <Directory Id="InstrumentationEngine64" Name="InstrumentationEngine">
+                    <Directory Id="Version64" Name="$(var.VersionFolder)">
+                        <Directory Id="Instrumentation64" Name="Instrumentation64">
+                            <Directory Id="base64" Name="base" />
+                        </Directory>
+                    </Directory>
+                </Directory>
             </Directory>
         </DirectoryRef>
     </Fragment>
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Directory Id="ProgramFilesFolder" Name="PFiles32" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
-                <Directory Id="InstrumentationEngine32" Name="InstrumentationEngine" />
-            </Directory>
-        </DirectoryRef>
-    </Fragment>
-
-<?if $(var.Configuration) = Debug ?>
-
-    <Fragment>
-        <DirectoryRef Id="InstrumentationEngine64">
-            <Directory Id="Version64" Name="$(var.PackageVersion)_$(var.Configuration)">
-                <Directory Id="Instrumentation64" Name="Instrumentation64">
-                    <Directory Id="base64" Name="base" />
+                <Directory Id="InstrumentationEngine32" Name="InstrumentationEngine">
+                    <Directory Id="Version32" Name="$(var.VersionFolder)">
+                        <Directory Id="Instrumentation32" Name="Instrumentation32">
+                            <Directory Id="base32" Name="base" />
+                        </Directory>
+                    </Directory>
                 </Directory>
             </Directory>
         </DirectoryRef>
     </Fragment>
-    <Fragment>
-        <DirectoryRef Id="InstrumentationEngine32">
-            <Directory Id="Version32" Name="$(var.PackageVersion)_$(var.Configuration)">
-                <Directory Id="Instrumentation32" Name="Instrumentation32">
-                    <Directory Id="base32" Name="base" />
-                </Directory>
-            </Directory>
-        </DirectoryRef>
-    </Fragment>
-
-<?else?>
-
-    <Fragment>
-        <DirectoryRef Id="InstrumentationEngine64">
-            <Directory Id="Version64" Name="$(var.PackageVersion)">
-                <Directory Id="Instrumentation64" Name="Instrumentation64">
-                    <Directory Id="base64" Name="base" />
-                </Directory>
-            </Directory>
-        </DirectoryRef>
-    </Fragment>
-    <Fragment>
-        <DirectoryRef Id="InstrumentationEngine32">
-            <Directory Id="Version32" Name="$(var.PackageVersion)">
-                <Directory Id="Instrumentation32" Name="Instrumentation32">
-                    <Directory Id="base32" Name="base" />
-                </Directory>
-            </Directory>
-        </DirectoryRef>
-    </Fragment>
-
-<?endif?>
 
 </Include>
