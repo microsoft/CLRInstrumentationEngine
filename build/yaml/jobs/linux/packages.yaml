@@ -1,0 +1,56 @@
+# Job Template: Build Linux Packages
+
+parameters:
+  SignType: None
+
+jobs:
+- job: Linux_Packages
+  displayName: Linux Packages
+
+  strategy:
+    matrix:
+      Alpine_Release_x64:
+        Configuration: 'Release'
+        Platform: 'x64'
+        Distro: 'alpine'
+      Ubuntu_Release_x64:
+        Configuration: 'Release'
+        Platform: 'x64'
+        Distro: 'ubuntu'
+      ${{ if in(parameters.SignType, '', 'None') }}:
+        Ubuntu_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'ubuntu'
+        Alpine_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'alpine'
+
+  pool:
+    name: VSEng-MicroBuildVS2017
+    demands:
+    - msbuild
+    - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/microbuild/signing.yaml
+    parameters:
+      SignType: ${{ parameters.SignType }}
+
+  - template: ../../steps/linux/packages.yaml
+
+  - template: ../../steps/microbuild/publishbuildartifacts.yaml
+    parameters:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+      ArtifactName: 'packages-linux-$(Distro)-$(Configuration)'
+
+  - template: ../../steps/microbuild/cleanup.yaml
+
+  - template: ../../steps/microbuild/componentgovernance.yaml

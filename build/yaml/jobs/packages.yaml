@@ -1,0 +1,49 @@
+# Job Template: Build All Packages
+# Builds packages for all platforms
+
+parameters:
+  SignType: None
+
+jobs:
+# Windows Packages
+- template: windows/packages.yaml
+  parameters:
+    SignType: ${{ parameters.SignType }}
+
+# Linux Packages
+- template: linux/packages.yaml
+  parameters:
+    SignType: ${{ parameters.SignType }}
+
+# Publish all packages
+- job: Publish_All_Packages
+  displayName: Publish All Packages
+
+  dependsOn:
+    - Windows_Packages
+    - Linux_Packages
+
+  pool:
+    name: VSEng-MicroBuildVS2017
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download All Packages'
+    inputs:
+      downloadType: specific
+      itemPattern: |
+        **\*.nupkg
+        **\*.zip
+        **\*.msi
+        **\*.msm
+        **\*.guids
+      downloadPath: '$(Build.ArtifactStagingDirectory)\packages'
+    continueOnError: true
+    condition: succeededOrFailed()
+
+  - template: ../steps/microbuild/publishbuildartifacts.yaml
+    parameters:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)\packages'
+      ArtifactName: 'packages-all'
+
+  - template: ../steps/microbuild/cleanup.yaml

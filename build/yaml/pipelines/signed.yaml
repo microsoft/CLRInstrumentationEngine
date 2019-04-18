@@ -1,0 +1,25 @@
+# Build Pipeline: Signed build
+# Validates:
+# - binaries can be built for all platforms and Release configuration
+# - packages can be built for all platforms and Release configuration
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+variables:
+  TeamName: ClrInstrumentationEngine
+
+stages:
+- stage: Build
+  jobs:
+  # Binaries (Windows & Linux)
+  - template: ../jobs/binaries.yaml
+    parameters:
+      IndexSources: true
+      SignType: $(SignType)
+
+- stage: Package
+  jobs:
+  # Packages (Windows & Linux)
+  - template: ../jobs/packages.yaml
+    parameters:
+      SignType: $(SignType)

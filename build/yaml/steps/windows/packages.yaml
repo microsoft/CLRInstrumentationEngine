@@ -1,0 +1,25 @@
+# Step Template: Build Windows Packages
+
+parameters:
+  WindowsBinRoot: ''
+
+steps:
+# download binaries
+- template: ../microbuild/downloadbuildartifacts.yaml
+  parameters:
+    ArtifactName: binaries-windows-$(Configuration)
+
+# nuget restore InstrumentationEngine.Packages.sln
+- template: nugetrestore.yaml
+  parameters:
+    Solution: src/InstrumentationEngine.Packages.sln
+
+# msbuild InstrumentationEngine.Packages.sln
+- task: MSBuild@1
+  displayName: 'Build solution InstrumentationEngine.Packages.sln $(Platform)'
+  inputs:
+    solution: src/InstrumentationEngine.Packages.sln
+    msbuildVersion: 15.0
+    platform: $(Platform)
+    configuration: $(Configuration)
+    msbuildArguments: /p:InputBinCfgRoot="${{ parameters.WindowsBinRoot }}"

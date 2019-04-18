@@ -1,0 +1,51 @@
+# Job Template: Build Linux Binaries
+
+parameters:
+  SignType: None
+
+jobs:
+- job: Linux
+  displayName: Linux
+
+  strategy:
+    matrix:
+      Alpine_Release_x64:
+        Configuration: 'Release'
+        Platform: 'x64'
+        Distro: 'alpine'
+      Ubuntu_Release_x64:
+        Configuration: 'Release'
+        Platform: 'x64'
+        Distro: 'ubuntu'
+      ${{ if in(parameters.SignType, '', 'None') }}:
+        Ubuntu_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'ubuntu'
+        Alpine_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'alpine'
+
+
+  pool:
+    name: DotNet-Build
+    demands:
+    - docker
+    - sh
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/linux/binaries.yaml
+
+  - template: ../../steps/microbuild/publishbuildartifacts.yaml
+    parameters:
+      PathtoPublish: '$(Build.SourcesDirectory)/out/Linux/bin/x64.$(Configuration)'
+      ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
+
+  - template: ../../steps/microbuild/cleanup.yaml

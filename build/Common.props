@@ -6,6 +6,6 @@
     <CommonBuildPropsIncluded>True</CommonBuildPropsIncluded>
   </PropertyGroup>
   <Import Project=".\CommonBuild.Global.props" />
-  <Import Project=".\Signing.props" />
+  <Import Project=".\Signing.props" Condition=" '$(SignType)' != '' AND '$(SignType)' != 'None' " />
   <Import Project=".\Version.props" />
 </Project>

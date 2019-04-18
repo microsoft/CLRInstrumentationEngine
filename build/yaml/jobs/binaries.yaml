@@ -1,0 +1,18 @@
+# Job Template: Build All Binaries
+# Builds binaries for all platforms
+
+parameters:
+  IndexSources: false
+  SignType: None
+
+jobs:
+# Windows Binaries
+- template: windows/binaries.yaml
+  parameters:
+    IndexSources: ${{ parameters.IndexSources }}
+    SignType: ${{ parameters.SignType }}
+
+# Linux Binaries
+- template: linux/binaries.yaml
+  parameters:
+    SignType: ${{ parameters.SignType }}

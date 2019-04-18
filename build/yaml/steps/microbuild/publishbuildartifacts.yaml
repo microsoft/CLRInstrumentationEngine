@@ -1,0 +1,15 @@
+# Step Template: MicroBuild Publish Build Artifacts
+
+parameters:
+  PathtoPublish: ''
+  ArtifactName: ''
+
+steps:
+# publish binaries
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Binaries'
+  inputs:
+    PathtoPublish: ${{ parameters.PathtoPublish }}
+    ArtifactName: ${{ parameters.ArtifactName }}
+  continueOnError: true
+  condition: succeededOrFailed()

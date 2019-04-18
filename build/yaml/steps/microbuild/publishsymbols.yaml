@@ -1,0 +1,8 @@
+# Step Template: MicroBuild Publish Symbols
+
+steps:
+# publish symbols
+- task: PublishSymbols@1
+  displayName: 'Publish symbols path'
+  inputs:
+    SymbolsFolder: '$(Build.ArtifactStagingDirectory)'

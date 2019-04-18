@@ -1,0 +1,13 @@
+# Step Template: MicroBuild Signing and Verification
+
+parameters:
+  SignType: None
+
+steps:
+# nuget install MicroBuild.Plugins.Signing
+- ${{ if notIn(parameters.SignType, '', 'None') }}:
+  - task: MicroBuildSigningPlugin@2
+    displayName: Install Signing Plugin
+    inputs:
+      signType: ${{ parameters.SignType }}
+      zipSources: false

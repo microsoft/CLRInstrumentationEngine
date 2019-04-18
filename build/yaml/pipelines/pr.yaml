@@ -1,0 +1,25 @@
+# Build Pipeline: Pull Request
+# Validates:
+# - binaries can be built for all platforms and configurations
+# - packages can be built for all platforms and configurations
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+variables:
+  TeamName: ClrInstrumentationEngine
+
+stages:
+- stage: Build
+  jobs:
+  # Binaries (Windows & Linux)
+  - template: ../jobs/binaries.yaml
+
+- stage: Test
+  jobs:
+  # Tests (Windows)
+  - template: ../jobs/tests.yaml
+
+- stage: Package
+  jobs:
+  # Packages (Windows & Linux)
+  - template: ../jobs/packages.yaml

@@ -1,0 +1,13 @@
+# Step Template: MicroBuild Download Build Artifacts
+
+parameters:
+  ArtifactName: ''
+
+steps:
+# download binaries
+- task: DownloadBuildArtifacts@0
+  displayName: Download Files
+  inputs:
+    downloadType: single
+    artifactName: ${{ parameters.ArtifactName }}
+    downloadPath: $(Build.ArtifactStagingDirectory)

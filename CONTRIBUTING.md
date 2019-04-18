@@ -16,7 +16,8 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## Pull Request Process
 
 1. Ensure the README.md and any documentation are up-to-date with details of changes made. This will help maintain the accuracy of the documentation to the current state of the code.
-2. Increment the semantic version number and date in the [Version.props](build/version.props) file. The CLR Instrumentation Engine follows the [semantic versioning](https://semver.org/) scheme.
+2. Increment the semantic version number and date in the [Version.props](build/version.props) file if necessary. The CLR Instrumentation Engine follows the [semantic versioning](https://semver.org/) scheme.
+3. Submit your Pull Requests and notify clrieowners@microsoft.com. We will initiate the Pull Request validation build if we have no concerns with your changes.
 3. Once at least two approvals are given for the PR, you may merge your changes.
 
 ## Branches
@@ -25,14 +26,14 @@ Active development is happening in `develop` branch.
 
 Last released version is in `master` branch.
 
-## Submitting PR:
+## Submitting your Pull Request:
 
 - Build solution in both `Release` and `Debug` configurations (see *Building locally* section)
-- Create a PR against the `develop` branch and add clrieowners@microsoft.com as a reviewer
+- Create a Pull Request against the `develop` branch and add clrieowners@microsoft.com as a reviewer
 
 ## Instrumentation Engine Api Changes
 
-Apis are contributed via midl, which is not available for Linux, so all midl builds must be executed on Windows only. In order to make changes to InstrumentationEngine Api, do the following:
+Apis are contributed via midl (in the form of .idl files), which is not available for Linux, so all midl builds must be executed on Windows only. In order to make changes to InstrumentationEngine Api, do the following:
 
 - Make edits to the .idl file in InstrumentationEngine.Api
 - Build the InstrumentationEngine.Api project manually for either x86 or x64. The output is the same either way.

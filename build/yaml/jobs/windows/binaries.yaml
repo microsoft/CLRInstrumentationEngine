@@ -1,0 +1,81 @@
+# Job Template: Build Windows Binaries
+
+parameters:
+  IndexSources: false
+  SignType: None
+
+jobs:
+- job: Windows
+  displayName: Windows
+
+  strategy:
+    matrix:
+      Release_x86:
+        Configuration: 'Release'
+        Platform: 'x86'
+      Release_x64:
+        Configuration: 'Release'
+        Platform: 'x64'
+      Release_AnyCPU:
+        Configuration: 'Release'
+        Platform: 'Any CPU'
+      ${{ if in(parameters.SignType, '', 'None') }}:
+        Debug_x86:
+          Configuration: 'Debug'
+          Platform: 'x86'
+        Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+        Debug_AnyCPU:
+          Configuration: 'Debug'
+          Platform: 'Any CPU'
+
+  pool:
+    name: VSEng-MicroBuildVS2017
+    demands:
+    - msbuild
+    - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/microbuild/signing.yaml
+    parameters:
+      SignType: ${{ parameters.SignType }}
+
+  - template: ../../steps/windows/binaries.yaml
+
+  - ${{ if eq('true', parameters.IndexSources) }}:
+    - template: ../../steps/microbuild/publishsymbols.yaml
+
+  - ${{ if notIn(parameters.SignType, '', 'None') }}:
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
+      inputs:
+        SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\Release'
+        Contents: |
+          **
+          !**\Nagler*
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
+        CleanTargetFolder: true
+        OverWrite: true
+
+    - template: ../../steps/microbuild/publishbuildartifacts.yaml
+      parameters:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
+        ArtifactName: 'binaries-windows-$(Configuration)'
+
+  - ${{ if in(parameters.SignType, '', 'None') }}:
+    - template: ../../steps/microbuild/publishbuildartifacts.yaml
+      parameters:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+        ArtifactName: 'binaries-windows-$(Configuration)'
+
+  - template: ../../steps/microbuild/cleanup.yaml
+
+  - template: ../../steps/microbuild/componentgovernance.yaml
+
