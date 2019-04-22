@@ -10,7 +10,7 @@ steps:
   inputs:
     versionSpec: '4.9.4'
 
-# nuget restore DiagnosticsAgent.sln
+# nuget restore
 - task: NuGetCommand@2
   displayName: Restore ${{ parameters.Solution }}
   inputs:
