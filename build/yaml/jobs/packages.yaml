@@ -3,47 +3,55 @@
 
 parameters:
   SignType: None
+  Configuration: Both
 
 jobs:
 # Windows Packages
 - template: windows/packages.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
+    MatrixStrategy:
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
+        Release_x86:
+          Configuration: 'Release'
+          Platform: 'x86'
+        Release_x64:
+          Configuration: 'Release'
+          Platform: 'x64'
+        Release_AnyCPU:
+          Configuration: 'Release'
+          Platform: 'Any CPU'
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
+        Debug_x86:
+          Configuration: 'Debug'
+          Platform: 'x86'
+        Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+        Debug_AnyCPU:
+          Configuration: 'Debug'
+          Platform: 'Any CPU'
 
 # Linux Packages
 - template: linux/packages.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
-
-# Publish all packages
-- job: Publish_All_Packages
-  displayName: Publish All Packages
-
-  dependsOn:
-    - Windows_Packages
-    - Linux_Packages
-
-  pool:
-    name: VSEng-MicroBuildVS2017
-
-  steps:
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download All Packages'
-    inputs:
-      downloadType: specific
-      itemPattern: |
-        **\*.nupkg
-        **\*.zip
-        **\*.msi
-        **\*.msm
-        **\*.guids
-      downloadPath: '$(Build.ArtifactStagingDirectory)\packages'
-    continueOnError: true
-    condition: succeededOrFailed()
-
-  - template: ../steps/microbuild/publishbuildartifacts.yaml
-    parameters:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)\packages'
-      ArtifactName: 'packages-all'
-
-  - template: ../steps/microbuild/cleanup.yaml
+    MatrixStrategy:
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
+        Alpine_Release_x64:
+          Configuration: 'Release'
+          Platform: 'x64'
+          Distro: 'alpine'
+        Ubuntu_Release_x64:
+          Configuration: 'Release'
+          Platform: 'x64'
+          Distro: 'ubuntu'
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
+        Ubuntu_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'ubuntu'
+        Alpine_Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          Distro: 'alpine'

@@ -1,7 +1,7 @@
-# Step Template: MicroBuild Publish Build Artifacts
+# Step Template: Azure DevOps Publish Build Artifacts
 
 parameters:
-  PathtoPublish: ''
+  PathToPublish: ''
   ArtifactName: ''
 
 steps:
@@ -9,7 +9,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Binaries'
   inputs:
-    PathtoPublish: ${{ parameters.PathtoPublish }}
+    PathToPublish: ${{ parameters.PathToPublish }}
     ArtifactName: ${{ parameters.ArtifactName }}
   continueOnError: true
   condition: succeededOrFailed()

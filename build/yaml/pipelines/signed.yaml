@@ -16,6 +16,7 @@ stages:
     parameters:
       IndexSources: true
       SignType: $(SignType)
+      Configuration: Release
 
 - stage: Package
   jobs:
@@ -23,3 +24,4 @@ stages:
   - template: ../jobs/packages.yaml
     parameters:
       SignType: $(SignType)
+      Configuration: Release

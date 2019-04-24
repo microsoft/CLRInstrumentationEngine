@@ -2,6 +2,7 @@
 
 parameters:
   SignType: None
+  MatrixStrategy: {}
 
 jobs:
 - job: Linux
@@ -9,24 +10,7 @@ jobs:
 
   strategy:
     matrix:
-      Alpine_Release_x64:
-        Configuration: 'Release'
-        Platform: 'x64'
-        Distro: 'alpine'
-      Ubuntu_Release_x64:
-        Configuration: 'Release'
-        Platform: 'x64'
-        Distro: 'ubuntu'
-      ${{ if in(parameters.SignType, '', 'None') }}:
-        Ubuntu_Debug_x64:
-          Configuration: 'Debug'
-          Platform: 'x64'
-          Distro: 'ubuntu'
-        Alpine_Debug_x64:
-          Configuration: 'Debug'
-          Platform: 'x64'
-          Distro: 'alpine'
-
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
     name: DotNet-Build
@@ -43,9 +27,9 @@ jobs:
 
   - template: ../../steps/linux/binaries.yaml
 
-  - template: ../../steps/microbuild/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
-      PathtoPublish: '$(Build.SourcesDirectory)/out/Linux/bin/x64.$(Configuration)'
+      PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
 
   - template: ../../steps/microbuild/cleanup.yaml

@@ -15,13 +15,18 @@ stages:
   - template: ../jobs/binaries.yaml
     parameters:
       IndexSources: true
+      Configuration: Both
 
 - stage: Test
   jobs:
   # Tests (Windows)
   - template: ../jobs/tests.yaml
+    parameters:
+      Configuration: Both
 
 - stage: Package
   jobs:
   # Packages (Windows & Linux)
   - template: ../jobs/packages.yaml
+    parameters:
+      Configuration: Both

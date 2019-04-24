@@ -5,11 +5,6 @@ parameters:
   Platform: ''
 
 steps:
-# download binaries
-- template: ../microbuild/downloadbuildartifacts.yaml
-  parameters:
-    ArtifactName: binaries-windows-$(Configuration)
-
 - task: VSTest@2
   displayName: 'Test Assemblies $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\**\$(Platform)\**\*Tests*.dll'
   inputs:

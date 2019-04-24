@@ -2,6 +2,7 @@
 
 parameters:
   SignType: None
+  MatrixStrategy: {}
 
 jobs:
 - job: Windows_Packages
@@ -9,26 +10,7 @@ jobs:
 
   strategy:
     matrix:
-      Release_x86:
-        Configuration: 'Release'
-        Platform: 'x86'
-      Release_x64:
-        Configuration: 'Release'
-        Platform: 'x64'
-      Release_AnyCPU:
-        Configuration: 'Release'
-        Platform: 'Any CPU'
-      ${{ if in(parameters.SignType, '', 'None') }}:
-        Debug_x86:
-          Configuration: 'Debug'
-          Platform: 'x86'
-        Debug_x64:
-          Configuration: 'Debug'
-          Platform: 'x64'
-        Debug_AnyCPU:
-          Configuration: 'Debug'
-          Platform: 'Any CPU'
-
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
   pool:
     name: VSEng-MicroBuildVS2017
     demands:
@@ -45,6 +27,10 @@ jobs:
   - template: ../../steps/microbuild/signing.yaml
     parameters:
       SignType: ${{ parameters.SignType }}
+
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-windows-$(Configuration)
 
   - template: ../../steps/windows/packages.yaml
     parameters:
@@ -65,12 +51,16 @@ jobs:
     continueOnError: true
     condition: succeededOrFailed()
 
-  - template: ../../steps/microbuild/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)\packages'
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-windows-$(Configuration)'
 
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
+      ArtifactName: 'packages-all'
 
   - template: ../../steps/microbuild/cleanup.yaml
 
-  - template: ../../steps/microbuild/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml

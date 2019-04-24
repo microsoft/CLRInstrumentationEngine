@@ -1,4 +1,4 @@
-# Step Template: MicroBuild Download Build Artifacts
+# Step Template: Azure DevOps Download Build Artifacts
 
 parameters:
   ArtifactName: ''

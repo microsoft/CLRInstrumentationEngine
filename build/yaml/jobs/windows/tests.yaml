@@ -1,23 +1,15 @@
 # Job Template: Test Windows Binaries
 
+parameters:
+  MatrixStrategy: {}
+
 jobs:
 - job: Test_Windows_Binaries
   displayName: Windows Tests
 
   strategy:
     matrix:
-      Debug_x86:
-        Configuration: 'Debug'
-        Platform: 'x86'
-        RunSettingsFile: 'x86.runsettings'
-      Debug_x64:
-        Configuration: 'Debug'
-        Platform: 'x64'
-        RunSettingsFile: 'x64.runsettings'
-      Debug_AnyCPU:
-        Configuration: 'Debug'
-        Platform: 'AnyCPU' # no-space; used in the context of files, not task parameters.
-        RunSettingsFile: 'x86.runsettings'
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
     name: VSEng-MicroBuildVS2017
@@ -32,6 +24,10 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-windows-$(Configuration)
+
   - template: ../../steps/windows/tests.yaml
     parameters:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
@@ -39,4 +35,4 @@ jobs:
 
   - template: ../../steps/microbuild/cleanup.yaml
 
-  - template: ../../steps/microbuild/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml

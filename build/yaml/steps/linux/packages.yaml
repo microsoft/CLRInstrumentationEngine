@@ -2,7 +2,7 @@
 
 steps:
 # download binaries
-- template: ../microbuild/downloadbuildartifacts.yaml
+- template: ../azuredevops/downloadbuildartifacts.yaml
   parameters:
     ArtifactName: binaries-linux-$(Distro)-$(Configuration)
 

@@ -1,4 +1,4 @@
-# Step Template: MicroBuild Publish Symbols
+# Step Template: Azure DevOps Publish Symbols
 
 steps:
 # publish symbols

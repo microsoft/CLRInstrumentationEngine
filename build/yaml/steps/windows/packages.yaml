@@ -4,11 +4,6 @@ parameters:
   WindowsBinRoot: ''
 
 steps:
-# download binaries
-- template: ../microbuild/downloadbuildartifacts.yaml
-  parameters:
-    ArtifactName: binaries-windows-$(Configuration)
-
 # nuget restore InstrumentationEngine.Packages.sln
 - template: nugetrestore.yaml
   parameters:
