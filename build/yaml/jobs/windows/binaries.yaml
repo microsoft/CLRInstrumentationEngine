@@ -4,6 +4,8 @@ parameters:
   IndexSources: false
   SignType: None
   MatrixStrategy: {}
+  CopyFilters: |
+    **
 
 jobs:
 - job: Windows
@@ -35,28 +37,19 @@ jobs:
   - ${{ if eq('true', parameters.IndexSources) }}:
     - template: ../../steps/azuredevops/publishsymbols.yaml
 
-  - ${{ if notIn(parameters.SignType, '', 'None') }}:
-    - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
-      inputs:
-        SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\Release'
-        Contents: |
-          **
-          !**\Nagler*
-        TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
-        CleanTargetFolder: true
-        OverWrite: true
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+      Contents: ${{ parameters.CopyFilters }}
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+      CleanTargetFolder: true
+      OverWrite: true
 
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
-      parameters:
-        PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\ReleaseFiltered'
-        ArtifactName: 'binaries-windows-$(Configuration)'
-
-  - ${{ if in(parameters.SignType, '', 'None') }}:
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
-      parameters:
-        PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
-        ArtifactName: 'binaries-windows-$(Configuration)'
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+      ArtifactName: 'binaries-windows-$(Configuration)'
 
   - template: ../../steps/microbuild/cleanup.yaml
 

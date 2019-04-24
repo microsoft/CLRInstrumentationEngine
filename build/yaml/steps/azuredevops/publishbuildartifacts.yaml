@@ -5,9 +5,9 @@ parameters:
   ArtifactName: ''
 
 steps:
-# publish binaries
+# publish Artifacts
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Binaries'
+  displayName: Publish Artifacts
   inputs:
     PathToPublish: ${{ parameters.PathToPublish }}
     ArtifactName: ${{ parameters.ArtifactName }}

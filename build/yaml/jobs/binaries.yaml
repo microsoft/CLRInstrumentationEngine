@@ -12,6 +12,12 @@ jobs:
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
+    ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
+      CopyFilters: |
+        **
+        !**\Nagler*
+        !**\*Tests*
+        !**\*Tests*\**
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Release_x86:
