@@ -18,7 +18,7 @@
   <files>
     <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
     <file src="$bindir$\**\*" target="content\Microsoft.InstrumentationEngine" />
-    <file src="$scriptdir$\install.ps1" target="Tools" />
+    <file src="$scriptdir$\Install.ps1" target="Tools" />
 
     <!-- Support installation on managed projects -->
     <file src="" target="lib\net40\_._" />

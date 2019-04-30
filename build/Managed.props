@@ -3,7 +3,7 @@
       -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="Common.Props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
-  <Import Project="$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\MicroBuild.Core\$(MicrobuildCoreVersion)\build\MicroBuild.Core.props')" />
+  <Import Project="$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
   <Import Project="Managed.Signing.props" />
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

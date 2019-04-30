@@ -21,6 +21,15 @@ The CLR Instrumentation Engine is a profiler implementation and is enabled and c
 
 Please read [Contributing](CONTRIBUTING.md) for details on the Contributor License Agreement (CLA) and the process for submitting pull requests to us.
 
+This repo builds using Visual Studio 2017 and requires the following components:
+|Component Id|Component Friendly Name|
+|:--|:--
+Microsoft.Component.MSBuild|MSBuild
+Microsoft.VisualStudio.Workload.NativeDesktop|Desktop development with C++ (Workload)
+Microsoft.VisualStudio.Component.VC.ATL.Spectre|Visual C++ ATL (x86/x64) with Spectre Mitigations
+Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre|VC++ 2017 version 15.9 v14.16 libs for spectre (x86 and x64)
+Optionally, in order to develop Wixproj files in Visual Studio, you will need to install the [Wix Toolset Visual 2017 Extension](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension), also known as the "Votive" extension.
+
 * [Design Notes](DESIGN-NOTES.md) - the overall design for CLR Instrumentation Engine.
 * [Build](docs/build.md) - how to run local builds.
 * [Test](docs/test.md) - how to run tests.

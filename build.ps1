@@ -76,6 +76,8 @@ else
     $configuration = "Debug"
 }
 
+$SignType = 'None' # Used for internal testing of signing.
+
 ###
 # Attempt to find CLR Instrumentation Engine repo
 ###
@@ -170,15 +172,26 @@ if (!$SkipBuild)
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
 
 if (!$SkipPackaging)
 {
+    # Remove files from obj folders as they can become stale
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Fragment" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Module" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Installer" -Recurse -Force -ErrorAction SilentlyContinue
+
+    # The SkipBuild switch prevents bin/obj cleanup and also means we're testing packaging. This will cleanup old/stale packages
+    if ($SkipBuild)
+    {
+        # Remove package artifacts from bin folders
+        Get-ChildItem "$repoPath\bin\$configuration" -Include *.msi,*.msm,*.wixlib,*.nupkg -Recurse | Remove-Item -Force
+    }
 
     # NuGet restore disregards platform/configuration
     # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
@@ -191,11 +204,11 @@ if (!$SkipPackaging)
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
-    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentaitonEngine.Packages.sln'
+    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
 # Build Tests

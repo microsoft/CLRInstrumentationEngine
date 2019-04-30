@@ -18,7 +18,7 @@ There are two ways to run the CLR Instrumentation Engine unit tests - Visual Stu
 
 #### Via Script
 
-Run the script `[CLRInstrumentationEngine repo]\build.ps1` with IncludeTests. This will invoke the unit tests for x86, x64, and AnyCPU against either `Debug` or `Release` configuration.
+Run the script `[CLRInstrumentationEngine repo]\build.ps1` with IncludeTests. This will invoke the unit tests for x86, x64, and AnyCPU against either `Debug` or `Release` configuration post-build.
 |Flag|Description|
 |-|-|
 IncludeTests|Runs unit tests after build.

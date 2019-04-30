@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+    <Fragment>
+        <DirectoryRef Id="base64">
+            <Component Id="DiagnosticsExtensionsBase64.$(var.Version)" Guid="*" Win64="yes">
+                <RemoveFolder Id="base64" On="uninstall" />
+                <File Id="DiagnosticsExtensionsBase64" Name="Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" KeyPath="yes" Source="$(var.BinOutputPath)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="base64">
+            <Component Id="ExtensionsBase64.$(var.Version)" Guid="*" Win64="yes">
+                <File Id="ExtensionsBase64" Name="Microsoft.InstrumentationEngine.Extensions.Base_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="base64">
+            <Component Id="Config64.$(var.Version)" Guid="*" Win64="yes">
+                <File Id="Config64" Name="Microsoft.InstrumentationEngine.Extensions.config" KeyPath="yes" Source="$(var.BinOutputPath)\x64\Microsoft.InstrumentationEngine.Extensions.config" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="Instrumentation64">
+            <Component Id="InstrumentationEngine64.$(var.Version)" Guid="*" Win64="yes">
+                <File Id="InstrumentationEngine64" Name="MicrosoftInstrumentationEngine_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\MicrosoftInstrumentationEngine_x64.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="base32">
+            <Component Id="DiagnosticsExtensionsBase32.$(var.Version)" Guid="*" Win64="no">
+                <RemoveFolder Id="base32" On="uninstall" />
+                <File Id="DiagnosticsExtensionsBase32" Name="Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" KeyPath="yes" Source="$(var.BinOutputPath)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="base32">
+            <Component Id="ExtensionsBase32.$(var.Version)" Guid="*" Win64="no">
+                <File Id="ExtensionsBase32" Name="Microsoft.InstrumentationEngine.Extensions.Base_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="base32">
+            <Component Id="Config32.$(var.Version)" Guid="*" Win64="no">
+                <File Id="Config32" Name="Microsoft.InstrumentationEngine.Extensions.config" KeyPath="yes" Source="$(var.BinOutputPath)\x86\Microsoft.InstrumentationEngine.Extensions.config" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="Instrumentation32">
+            <Component Id="InstrumentationEngine32.$(var.Version)" Guid="*" Win64="no">
+                <File Id="InstrumentationEngine32" Name="MicrosoftInstrumentationEngine_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\MicrosoftInstrumentationEngine_x86.dll" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Include>
