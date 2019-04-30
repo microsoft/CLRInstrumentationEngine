@@ -247,30 +247,48 @@ namespace MicrosoftInstrumentationEngine
         // Set the default event mask. This is union'd with the event mask from instrumentation methods and the host.
         static DWORD GetDefaultEventMask();
 
+        //Template method to either QI or simple copy the InstrumentionMethod ComPtr. These methods support CopyInstrumentationMethods.
+        template<typename TInterfaceType>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, TInterfaceType** pInterface)
+        {
+            return pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (void**)pInterface);
+        }
+
+        template<>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, IInstrumentationMethod** pInterface)
+        {
+            return pRawInstrumentationMethod.CopyTo(pInterface);
+        }
+
+        template<typename TInterfaceType>
+        HRESULT CopyInstrumentationMethods(std::vector<CComPtr<TInterfaceType>>& callbackVector)
+        {
+            CCriticalSectionHolder lock(&m_cs);
+            HRESULT hr;
+            // Holding the lock during the callback functions is dangerous since rentrant
+            // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+            for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
+            {
+                CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
+                IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
+
+                CComPtr<TInterfaceType> pInterface;
+                if (SUCCEEDED(GetInterfaceType(pRawInstrumentationMethod, &pInterface)))
+                {
+                    callbackVector.push_back(pInterface);
+                }
+            }
+
+            return S_OK;
+        }
+
         template<typename TInterfaceType, typename TReturnType, typename... TParameters>
         HRESULT SendEventToInstrumentationMethods(TReturnType(__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
         {
             HRESULT hr = S_OK;
 
             vector<CComPtr<TInterfaceType>> callbackVector;
-
-            {
-                CCriticalSectionHolder lock(&m_cs);
-
-                // Holding the lock during the callback functions is dangerous since rentrant
-                // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-                for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
-                {
-                    CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-                    IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-
-                    CComPtr<TInterfaceType> pInterface;
-                    if (SUCCEEDED(pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (LPVOID*)&pInterface)))
-                    {
-                        callbackVector.push_back(pInterface);
-                    }
-                }
-            }
+            IfFailRet(CopyInstrumentationMethods(callbackVector));
 
             // Send event to instrumentation methods
             for (CComPtr<TInterfaceType> pInstrumentationMethod : callbackVector)
@@ -291,18 +309,7 @@ namespace MicrosoftInstrumentationEngine
             HRESULT hr = S_OK;
             vector<CComPtr<IInstrumentationMethod>> callbackVector;
 
-            {
-                CCriticalSectionHolder lock(&m_cs);
-
-                // Holding the lock during the callback functions is dangerous since rentrant
-                // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-                for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
-                {
-                    CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-                    IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-                    callbackVector.push_back(pRawInstrumentationMethod);
-                }
-            }
+            IfFailRet(CopyInstrumentationMethods(callbackVector));
 
             for (auto pInstrumentationMethod : callbackVector)
             {
