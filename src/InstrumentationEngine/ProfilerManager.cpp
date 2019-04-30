@@ -3481,21 +3481,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallShouldInstrumentOn
     CLogging::LogMessage(_T("Start CProfilerManager::CallShouldInstrumentOnInstrumentationMethods"));
 
     vector<CComPtr<IInstrumentationMethod>> instrumentMethodVector;
-    {
-        CCriticalSectionHolder lock(&m_cs);
-
-        // Holding the lock during the callback functions is dangerous since rentrant
-        // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-        TInstrumentationMethodsCollection::const_iterator it;
-        for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
-        {
-            CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-            IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-
-            CComQIPtr<IInstrumentationMethod> pInterface = pRawInstrumentationMethod.p;
-            instrumentMethodVector.push_back(pInterface);
-        }
-    }
+    IfFailRet(CopyInstrumentationMethods(instrumentMethodVector));
 
     // Send event to instrumentation methods
     for (CComPtr<IInstrumentationMethod> pCurrInstrumentationMethod : instrumentMethodVector)
@@ -3577,15 +3563,12 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstr
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Start CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
 
-    CCriticalSectionHolder lock(&m_cs);
+    vector<CComPtr<IInstrumentationMethod>> methods;
+    IfFailRet(CopyInstrumentationMethods(methods));
 
     BOOL bShouldAllowInline = TRUE;
-    TInstrumentationMethodsCollection::const_iterator it;
-    for (it = m_instrumentationMethods.begin(); it != m_instrumentationMethods.end(); ++it)
+    for (CComPtr<IInstrumentationMethod> pRawInstrumentationMethod : methods)
     {
-        CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-        IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-
         hr = pRawInstrumentationMethod->AllowInlineSite(pInlineeMethodInfo, pInlineSiteMethodInfo, &bShouldAllowInline);
         if (FAILED(hr))
         {
