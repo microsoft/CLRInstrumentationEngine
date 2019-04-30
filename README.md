@@ -8,45 +8,28 @@ Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/bui
 
 The CLR Instrumentation Engine is a cooperation profiler that allows running multiple profiling extensions in the same process. It was built to satisfy Application Insights, IntelliTrace, and Production Breakpoints scenarios.
 
-Currently the CLR Instrumentation Engine is installed by:
-
-* Latest versions of Microsoft Monitoring Agent:
-  - [64-bit windows](https://go.microsoft.com/fwlink/?LinkID=517476)
-  - [32-bit windows](https://go.microsoft.com/fwlink/?LinkID=615592)
-* [Application Insights](docs/scenarios/applicationinsights.md)
-  - [Status Monitor](http://go.microsoft.com/fwlink/?linkid=506648&clcid=0x409)
-  - Shipped in the [Application Insights Private Site Extension](https://www.nuget.org/packages/Microsoft.ApplicationInsights.AzureWebSites/) for [Azure App Services](docs/scenarios/azureappservice.md)
-* [Snapshot Debugger](docs/scenarios/snapshotdebugger.md)
-  - Shipped as a [Preinstalled Site Extension](https://github.com/projectkudu/kudu/wiki/Azure-Site-Extensions) for [Azure App Services](docs/scenarios/azureappservice.md)
-* You can also use the following NuGet packages:
-  - [Microsoft.ApplicationInsights.Agent_x64](http://www.nuget.org/packages/Microsoft.ApplicationInsights.Agent_x64)
-  - [Microsoft.ApplicationInsights.Agent_x86](http://www.nuget.org/packages/Microsoft.ApplicationInsights.Agent_x86)
+For more information about our current and future project scope, please see the [CLRIE Road Map](roadmap.md).
 
 ## Getting Started
 
 The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process. Please see [Getting Started](docs/getting_started.md) for more details.
 
-See the [Design Notes](DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
-
-## Building
-
-Please refer to [Build](docs/build.md) for details on how to run local builds.
-
-## Running Tests
-
-Please refer to [Test](docs/test.md) for details on how to run tests.
+* [Environment Variables](docs/environment_variables.md)
+* [Configure Instrumentation Methods](docs/configuration.md)
 
 ## Contributing
 
 Please read [Contributing](CONTRIBUTING.md) for details on the Contributor License Agreement (CLA) and the process for submitting pull requests to us.
 
+* [Design Notes](DESIGN-NOTES.md) - the overall design for CLR Instrumentation Engine.
+* [Build](docs/build.md) - how to run local builds.
+* [Test](docs/test.md) - how to run tests.
+* [Release Process](docs/release_process.md) - how to release CLRIE to various platforms.
+
 ## Versioning
 
 The CLR Instrumentation Engine follows the [Semantic Versioning](https://semver.org/) scheme.
 
-## Release
-
-Please read [Release](docs/release.md) for details on the release process.
 
 ## Encountering and reporting issues
 
