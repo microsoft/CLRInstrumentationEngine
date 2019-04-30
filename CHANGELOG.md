@@ -8,10 +8,13 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.21
++ New:
+  + Added generating MSI and MSM packages
 + BugFixes:
   + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
 + Updates:
   + Removed ExtensionsHost variables in favor of default host.
+  + Use public MicroBuild package
 
 # 1.0.20
 + New:
