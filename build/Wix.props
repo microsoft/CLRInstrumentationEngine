@@ -11,9 +11,10 @@
     <!-- NOTE: wixproj file in order to pick up new changes for this file.                             -->
 
     <!-- Azure Devops variables -->
-    <When Condition="$(Build_StagingDirectory) != ''">
+    <When Condition="$(InputBinCfgRoot) != ''">
       <PropertyGroup>
-        <DefineConstants>$(DefineConstants);BinOutputPath=$(Build_StagingDirectory)\bin\$(Configuration)</DefineConstants>
+        <!-- InputBinCfgRoot = $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration) -->
+        <DefineConstants>$(DefineConstants);BinOutputPath=$(InputBinCfgRoot)</DefineConstants>
       </PropertyGroup>
     </When>
 
