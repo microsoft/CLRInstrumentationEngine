@@ -1,4 +1,4 @@
-# Building the CLR Instrumentation Engine
+﻿# Building the CLR Instrumentation Engine
 
 CI/CD Builds for the CLR Instrumentation Engine are defined with yaml files (see build/yaml/ folder) which are leveraged by Azure DevOps pipeline builds.
 
@@ -18,7 +18,7 @@ The yaml files are located in the $RepoRoot$/build/yaml folder. The code is stru
 
 We restrict access to running the above builds as it requires internal processes such as signing and security checks. If you require modifications or changes to the build, you are free to update the yaml files.
 
-Please contact clrieowners@microsoft.com regrading questions or requesting the release of a new version. This process involves regression testing with both our internal Microsoft products as well as the products of external partners.
+Please contact clrieowners@microsoft.com regarding questions or requesting the release of a new version. This process involves regression testing with both our internal Microsoft products as well as the products of external partners.
 
 ## Building locally
 

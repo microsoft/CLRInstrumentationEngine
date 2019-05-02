@@ -10,6 +10,7 @@ Please format the changes as follows:
 # 1.0.21
 + New:
   + Added generating MSI and MSM packages
+  + Added yaml builds
 + BugFixes:
   + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
 + Updates:
