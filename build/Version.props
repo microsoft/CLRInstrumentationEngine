@@ -40,7 +40,8 @@
     <AssemblyFileVersion>$(FileVersionMajor).$(FileVersionMinor).$(FileVersionPatch).$(PreReleaseVersion)</AssemblyFileVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</PackageVersion>
+    <ReleaseVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</ReleaseVersion>
+    <PackageVersion>$(ReleaseVersion)</PackageVersion>
     <PackageVersion Condition="'$(PublicRelease)' != 'True'">$([System.String]::Format('$(PackageVersion)-build{0:D5}', $([System.Int32]::Parse($(PreReleaseVersion)))))</PackageVersion>
     <PackageAuthors>Microsoft</PackageAuthors>
     <PackageAuthors Condition="'$(PublicRelease)' != 'True'">Microsoft</PackageAuthors>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <TargetExt>.msi</TargetExt>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$(EnlistmentRoot)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>b3ef81c4-2afc-4134-969c-785f46b6e1eb</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>InstrumentationEngine.Installer_$(Platform).$(PackageVersion)</OutputName>
+    <DefineConstants>$(DefineConstants);OutputPath=$(OutputPath)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="InstrumentationEngine.Installer.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Module\InstrumentationEngine.Module.wixproj">
+      <Name>InstrumentationEngine.Module</Name>
+      <Project>{1224c7a6-57c8-4758-8fe8-c8af4a3da2ad}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" />
+</Project>

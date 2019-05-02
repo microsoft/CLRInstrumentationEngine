@@ -76,6 +76,8 @@ else
     $configuration = "Debug"
 }
 
+$SignType = 'None' # Used for internal testing of signing.
+
 ###
 # Attempt to find CLR Instrumentation Engine repo
 ###
@@ -107,14 +109,25 @@ $VsRequirements = @(
 
 Write-Verbose -Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
-$filterArgs = "-latest -prerelease -version `"[15.0,16.0)`" -requires $($VsRequirements -join ' ') -property installationPath"
-$installationPath = Invoke-ExpressionHelper -Executable $vswhere -Arguments $filterArgs -Activity 'Determine MSBuild location'
-if (!$installationPath)
+$filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
+
+# Restrict the VS version if running from a context that has the VisualStudioVersion env variable (e.g. Developer Command Prompt).
+# This will make sure that VisualStudioVersion matches the VS version of MSBuild in order to avoid mismatches (e.g. using a Dev15
+# Developer Command Prompt but invoking Dev16's MSBuild).
+if ($env:VisualStudioVersion)
 {
-    Write-Error "Please check the Individual Components installed with your latest VS installation. This project requires version 10493 of the Windows 10 SDK component and both the 'Visual C++ ATL (x86/x64) with Spectre Mitigations' and 'VC++ 2017 version 15.8 v14.15 Libs for Spectre (x86 and x64)'."
+    $vsversion = [version]$($env:VisualStudioVersion)
+    # This is a version range that looks like "[15.0,16.0)"
+    $filterArgs = "$filterArgs -version `"[$($vsversion.Major).0,$($vsversion.Major + 1).0)`""
 }
 
+$installationPath = Invoke-Expression "& $vswhere $filterArgs"
 $msbuild = Join-Path $installationPath 'MSBuild\15.0\bin\MSBuild.exe'
+if (-not (Test-Path $msbuild))
+{
+    $msbuild = Join-Path $installationPath 'MSBuild\Current\bin\MSBuild.exe'
+}
+
 if (-not (Test-Path $msbuild))
 {
     $msbuild = Join-Path (Read-Host "Please enter the full path to your VS installation (eg. 'C:\Program Files (x86)\Microsoft Visual Studio\Preview\Enterprise)'`r`n") 'MSBuild\15.0\Bin\MSBuild.exe'
@@ -159,15 +172,26 @@ if (!$SkipBuild)
 
     # Build InstrumentationEngine.sln
     $buildArgs = @(
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
+        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
 
 if (!$SkipPackaging)
 {
+    # Remove files from obj folders as they can become stale
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Fragment" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Module" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$repoPath\obj\InstrumentationEngine.Installer" -Recurse -Force -ErrorAction SilentlyContinue
+
+    # The SkipBuild switch prevents bin/obj cleanup and also means we're testing packaging. This will cleanup old/stale packages
+    if ($SkipBuild)
+    {
+        # Remove package artifacts from bin folders
+        Get-ChildItem "$repoPath\bin\$configuration" -Include *.msi,*.msm,*.wixlib,*.nupkg -Recurse | Remove-Item -Force
+    }
 
     # NuGet restore disregards platform/configuration
     # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
@@ -180,11 +204,11 @@ if (!$SkipPackaging)
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgs = @(
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
     )
-    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentaitonEngine.Packages.sln'
+    Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
 # Build Tests
