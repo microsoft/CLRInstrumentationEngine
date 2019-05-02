@@ -1,0 +1,35 @@
+# Job Template: Build Linux Binaries
+
+parameters:
+  SignType: None
+  MatrixStrategy: {}
+
+jobs:
+- job: Linux
+  displayName: Linux
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
+
+  pool:
+    name: DotNet-Build
+    demands:
+    - docker
+    - sh
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/linux/binaries.yaml
+
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
+      ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
+
+  - template: ../../steps/microbuild/cleanup.yaml

@@ -1,0 +1,16 @@
+# Step Template: Build Windows Binaries
+
+steps:
+# nuget restore InstrumentationEngine.sln
+- template: nugetrestore.yaml
+  parameters:
+    Solution: InstrumentationEngine.sln
+
+# msbuild InstrumentationEngine.sln
+- task: MSBuild@1
+  displayName: 'Build solution InstrumentationEngine.sln $(Platform)'
+  inputs:
+    solution: InstrumentationEngine.sln
+    msbuildVersion: 15.0
+    platform: $(Platform)
+    configuration: $(Configuration)

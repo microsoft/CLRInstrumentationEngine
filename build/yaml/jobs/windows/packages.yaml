@@ -1,0 +1,66 @@
+# Job Template: Build Windows Packages
+
+parameters:
+  SignType: None
+  MatrixStrategy: {}
+
+jobs:
+- job: Windows_Packages
+  displayName: Windows Packages
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
+  pool:
+    name: VSEng-MicroBuildVS2017
+    demands:
+    - msbuild
+    - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/microbuild/signing.yaml
+    parameters:
+      SignType: ${{ parameters.SignType }}
+
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-windows-$(Configuration)
+
+  - template: ../../steps/windows/packages.yaml
+    parameters:
+      WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
+
+  - task: CopyFiles@2
+    displayName: 'Copy Packages'
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+      Contents: |
+        **\*.nupkg
+        **\*.zip
+        **\*.msi
+        **\*.msm
+        **\*.guids
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\packages'
+      CleanTargetFolder: true
+    continueOnError: true
+    condition: succeededOrFailed()
+
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
+      ArtifactName: 'packages-windows-$(Configuration)'
+
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
+      ArtifactName: 'packages-all'
+
+  - template: ../../steps/microbuild/cleanup.yaml
+
+  - template: ../../steps/azuredevops/componentgovernance.yaml

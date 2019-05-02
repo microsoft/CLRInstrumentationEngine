@@ -1,10 +1,24 @@
-# Building the CLR Instrumentation Engine
+﻿# Building the CLR Instrumentation Engine
 
-CI/CD Builds for the CLR Instrumentation Engine are currently managed in a private Visual Studio Team Services (VSTS) account. We restrict access to this build as it provides internal processes such as signing and security checks. If you require modifications or changes to the build, please reach out to clrieowners@microsoft.com.
+CI/CD Builds for the CLR Instrumentation Engine are defined with yaml files (see build/yaml/ folder) which are leveraged by Azure DevOps pipeline builds.
 
-## Automated VSTS builds
+### Yaml
 
-Please contact clrieowners@microsoft.com to request releasing a new version.
+[Yaml Schema Reference](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema)
+
+The yaml files are located in the $RepoRoot$/build/yaml folder. The code is structured in the following manner:
+* Pipelines – The top level yaml file that is queued for a given Azure DevOps build. A pipeline defines the jobs to run.
+  * [ClrInstrumentationEngine-PR-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11217) uses PR.yaml
+  * [ClrInstrumentationEngine-CI-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11310) uses CI.yaml
+  * [ClrInstrumentationEngine-Signed-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11311) uses Signed.yaml
+* Jobs – A job represents the execution boundary of a set of steps on an agent machine.
+  * The three high-level jobs include Binaries.yaml, Test.yaml, and Packages.yaml.
+  * Jobs/Binaries.yaml and Jobs/Packages.yaml reference the corresponding files in the Windows and Linux folders for parallelization
+* Steps – The task to run (eg. Nuget restore, msbuild solution, copy files).
+
+We restrict access to running the above builds as it requires internal processes such as signing and security checks. If you require modifications or changes to the build, you are free to update the yaml files.
+
+Please contact clrieowners@microsoft.com regarding questions or requesting the release of a new version. This process involves regression testing with both our internal Microsoft products as well as the products of external partners.
 
 ## Building locally
 

@@ -1,0 +1,5 @@
+# Step Template: Azure DevOps Component Governance Detection
+
+steps:
+- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+  displayName: 'Component Detection'

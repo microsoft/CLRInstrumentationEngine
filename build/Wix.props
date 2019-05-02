@@ -2,7 +2,7 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
       -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(EnlistmentRoot)\packages\wix\$(WiXVersion)\build\Wix.props" Condition="Exists('$(EnlistmentRoot)\packages\wix\$(WiXVersion)\build\Wix.props')" />
+  <Import Project="$(PackagesDir)\wix\$(WiXVersion)\build\Wix.props" Condition="Exists('$(PackagesDir)\wix\$(WiXVersion)\build\Wix.props')" />
   <Choose>
     <!-- NOTE: The WixToolSet compiles with candle.exe which generates a wixobj file from the wixproj. -->
     <!-- NOTE: The wixobj file then gets linked by light.exe and outputs the resultant msi/msm file.   -->
@@ -11,9 +11,10 @@
     <!-- NOTE: wixproj file in order to pick up new changes for this file.                             -->
 
     <!-- Azure Devops variables -->
-    <When Condition="$(Build_StagingDirectory) != ''">
+    <When Condition="$(InputBinCfgRoot) != ''">
       <PropertyGroup>
-        <DefineConstants>$(DefineConstants);BinOutputPath=$(Build_StagingDirectory)\bin\$(Configuration)</DefineConstants>
+        <!-- InputBinCfgRoot = $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration) -->
+        <DefineConstants>$(DefineConstants);BinOutputPath=$(InputBinCfgRoot)</DefineConstants>
       </PropertyGroup>
     </When>
 

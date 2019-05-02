@@ -4,11 +4,20 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="Common.Props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
     <PropertyGroup>
+    <!-- Builds can override this property to change the location from which the packaging projects
+         will pick up the binaries that they are trying to package. For example, by specifying the
+         /p:InputBinCfgRoot property when invoking msbuild.exe, this value will be overridden. This
+         is useful for distributed build systems to download the binary artifacts to an arbitrary
+         location that the source code would not necessarily know. -->
+    <InputBinCfgRoot Condition=" '$(InputBinCfgRoot)'=='' ">$(BinRoot)\$(Configuration)</InputBinCfgRoot>
+  </PropertyGroup>
+    <PropertyGroup Condition=" $(TargetExt) == '.nupkg' ">
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
         <NuspecProperties>$(NuspecProperties);enlistmentroot=$(EnlistmentRoot)</NuspecProperties>
         <NuspecProperties>$(NuspecProperties);packageid=$(PackageId)</NuspecProperties>
         <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+        <NuspecProperties>$(NuspecProperties);binCfgRoot=$(InputBinCfgRoot)</NuspecProperties>
         <NuspecProperties>$(NuspecProperties);authors=$(PackageAuthors)</NuspecProperties>
         <NuspecProperties>$(NuspecProperties);configuration=$(Configuration)</NuspecProperties>
         <NuspecProperties>$(NuspecProperties);platform=$(Platform)</NuspecProperties>

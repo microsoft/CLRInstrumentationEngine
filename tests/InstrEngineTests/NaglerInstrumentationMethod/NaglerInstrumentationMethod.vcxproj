@@ -112,10 +112,10 @@
     <ClInclude Include="*.h" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InstrumentationMethod_x64.xml">
+    <Content Include="NaglerInstrumentationMethod_x64.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InstrumentationMethod_x86.xml">
+    <Content Include="NaglerInstrumentationMethod_x86.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -13,7 +13,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\NuGet.props" />
+  <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -42,37 +42,37 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
   </ItemGroup>
-  <!-- Extensions host -->
   <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
+    <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll">
+    <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb">
+    <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
+    <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll">
+    <Content Include="$(InputBinCfgRoot)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll">
       <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(BinRoot)\$(Configuration)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb">
+    <Content Include="$(InputBinCfgRoot)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb">
       <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <!-- CopyToOutputDirectory will copy files from $(InputBinCfgRoot) to $(BinRoot)\$(Configuration) path-->
   <PropertyGroup Condition="'$(PlatformOS)'!='Linux'">
     <NugetBinInput>$(BinRoot)\$(Configuration)\$(Platform)\InstrumentationEngine</NugetBinInput>
   </PropertyGroup>
@@ -82,6 +82,6 @@
     <NuspecProperties>$(NuspecProperties);suffix=$(NugetSuffix)</NuspecProperties>
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Target Name="VerifyPackCompleteEngine" AfterTargets="Pack" />
 </Project>

@@ -84,7 +84,7 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
             psi.EnvironmentVariables.Add(
                 is32bitTest? HostConfig32PathEnvName : HostConfig64PathEnvName,
-                Path.Combine(PathUtils.GetAssetsPath(), string.Format("InstrumentationMethod_{0}.xml", bitnessSuffix)));
+                Path.Combine(PathUtils.GetAssetsPath(), string.Format("NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 

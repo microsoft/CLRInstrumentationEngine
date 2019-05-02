@@ -1,0 +1,13 @@
+# Step Template: Azure DevOps Download Build Artifacts
+
+parameters:
+  ArtifactName: ''
+
+steps:
+# download Artifacts
+- task: DownloadBuildArtifacts@0
+  displayName: Download Artifacts
+  inputs:
+    downloadType: single
+    artifactName: ${{ parameters.ArtifactName }}
+    downloadPath: $(Build.ArtifactStagingDirectory)
