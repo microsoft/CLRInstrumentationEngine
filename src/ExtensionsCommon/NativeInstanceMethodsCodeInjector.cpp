@@ -119,7 +119,7 @@ namespace Instrumentation
 
 		std::vector<COR_SIGNATURE> vecUpdatedSignature;
 		// reserving extra space in the signature for [this] of native object
-		vecUpdatedSignature.reserve(cbSignature + NumberOfExtraMethodParameters);
+		vecUpdatedSignature.reserve((size_t)cbSignature + NumberOfExtraMethodParameters);
 
 		// defining call convention as STDCALL
 		vecUpdatedSignature.push_back(IMAGE_CEE_UNMANAGED_CALLCONV_STDCALL);

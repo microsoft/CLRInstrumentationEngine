@@ -20,6 +20,9 @@
                             <Directory Id="base64" Name="base" />
                         </Directory>
                     </Directory>
+                    <Directory Id="Proxy64" Name="Proxy">
+                        <Directory Id="ProxyVersion64" Name="v$(var.MajorVersion)" />
+                    </Directory>
                 </Directory>
             </Directory>
         </DirectoryRef>
@@ -32,6 +35,9 @@
                         <Directory Id="Instrumentation32" Name="Instrumentation32">
                             <Directory Id="base32" Name="base" />
                         </Directory>
+                    </Directory>
+                    <Directory Id="Proxy32" Name="Proxy">
+                        <Directory Id="ProxyVersion32" Name="v$(var.MajorVersion)" />
                     </Directory>
                 </Directory>
             </Directory>

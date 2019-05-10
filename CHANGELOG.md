@@ -11,6 +11,7 @@ Please format the changes as follows:
 + New:
   + Added generating MSI and MSM packages
   + Added yaml builds
+  + Added ProfilerProxy
 + BugFixes:
   + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
 + Updates:
