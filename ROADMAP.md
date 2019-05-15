@@ -6,16 +6,21 @@ The CLRIE's goal is to provide the foundation for cooperation among profilers. B
 
 ## Released Versions
 
-* [Release Notes](changelog.md)
+* [Latest Updates](changelog.md)
 
 ## Upcoming Milestones and Releases
 
 For Azure platforms, CLRIE is available as a first-party extension and new versions are released ad-hoc based on the needs of the depending products such as Snapshot Debugger and Application Insights.
 
+| Milestone         | Goals                                    |
+|-------------------|------------------------------------------|
+| 2019 Q2 (Apr-Jun) | Open source by the end of June           |
+| 2019 Q3 (Jul-Sep) | Provide E2E Testing                      |
+| 2019 Q4+ (Oct-???)| Support distributing on Linux            |
+
 See the [CLRIE projects](https://github.com/Microsoft/CLRInstrumentationEngine/projects) for in-progress and upcoming work for large objectives.
 
 Milestone information for current and future releases available at [CLRIE milestones](https://github.com/Microsoft/CLRInstrumentationEngine/milestones).
-
 
 ## Feedback
 
