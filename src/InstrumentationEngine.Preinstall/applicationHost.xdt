@@ -3,9 +3,9 @@
       -->
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <!--
-       TL;DR: Do not include <location path="%XDT_SITENAME%" xdt:Locator="Match(path)">
+       TL;DR: Do not include <location path="..." xdt:Locator="Match(path)">
 
-       FACTS: 1) "path="%XDT_SITENAME%" in <location /> attribute enforces this file to only transform the site w3wp and not kudu w3wp.
+       FACTS: 1) path="..." in <location /> attribute enforces this file to only transform the site w3wp and not kudu w3wp.
               2) The site w3wp looks at applicationHost.xdt (if exists) otherwise no-op.
               3) the kudu w3wp looks at scmApplicationHost.xdt (if exists) otherwise applicationHost.xdt (if exists) otherwise no-op.
               4) XDTs that omit <location /> will overwrite "previous" xdts that provide it for the given section, but will merge the section with previous XDTs that also omit it.
