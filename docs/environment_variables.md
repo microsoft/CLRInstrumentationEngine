@@ -39,7 +39,7 @@ MicrosoftInstrumentationEngine_FileLogPath|"[FULL PATH TO LOGGING FILE]"|File to
 MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signature validation
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
 
-## Deprecated as of Version 1.0.21
+## Deprecated as of Version 1.0.22
 The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting logging flags and loading Instrumentation Methods.
 
 These variables are deprecated in favor of the default ExtensionsHost implementation to promote collaboration around one protocol for onboarding Instrumentation Methods.
