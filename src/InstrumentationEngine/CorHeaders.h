@@ -207,7 +207,7 @@ typedef struct tagCOR_ILMETHOD_FAT : IMAGE_COR_ILMETHOD_FAT
     unsigned GetMaxStack () const        { return MaxStack; }
     unsigned GetCodeSize () const        { return CodeSize; }
     mdToken  GetLocalVarSigTok () const  { return LocalVarSigTok; }
-    BYTE*    GetCode () const            { return ((BYTE*) this) + (4L * Size)/*size in DWords of this structure (currently 3)*/ ; }
+    BYTE*    GetCode () const            { return ((BYTE*) this) + (4 * Size)/*size in DWords of this structure (currently 3)*/ ; }
 
 	// SEH sections are the only additional sections in the first release of CLR
 	// additional section begins with the section header,

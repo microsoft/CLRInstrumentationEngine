@@ -39,7 +39,7 @@
       Build version is used to distinguish internally built NuGet packages.
       Build version (if not set by msbuild):
           Minutes since semantic version was set,
-          divided by 10 (to buffer 5 minutes, there's a small window where the value changes when building multiple projects),
+          divided by 5 (to buffer 5 minutes, there's a small window where the value changes when building multiple projects),
           mod by 65536 (restrict to UINT16, since version digits are restricted to 16-bits)
       Pull the first number out of BUILD_BUILDNUMBER string before parsing as int since microbuild features
       can append non-numeric characters on there.
