@@ -9,7 +9,6 @@
 #ifndef PLATFORM_UNIX
 
 #include "AtlModule.h"
-#include "refcount.h"
 
 extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
 

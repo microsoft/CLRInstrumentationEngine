@@ -31,6 +31,10 @@ namespace MicrosoftInstrumentationEngine
 
 #endif // DEBUG
 
+#ifndef ARRAYSIZE
+#define ARRAYSIZE(a)    (sizeof(a)/sizeof((a)[0]))
+#endif
+
     // ----------------------------------------------------------------------------
     // Define generic method delegation from a derived class to a base class.
     //

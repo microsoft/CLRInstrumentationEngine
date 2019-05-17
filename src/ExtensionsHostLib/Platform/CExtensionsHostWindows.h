@@ -9,6 +9,8 @@
 
 #include "../../ExtensionsCommon/ProfilerManagerHostBase.h"
 #include "../../ExtensionsCommon/ModuleHandle.h"
+#include "../../InstrumentationEngine.Lib/ImplQueryInterface.h"
+#include "../../InstrumentationEngine.Lib/refcount.h"
 
 class CExtensionsHost :
     public CProfilerManagerHostBase,

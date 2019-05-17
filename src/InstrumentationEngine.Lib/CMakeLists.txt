@@ -13,8 +13,12 @@ build_init(CPP InstrumentationEngine.Lib)
 set(src_files
     ./stdafx.cpp
     ./ConfigurationLoader.cpp
+    ./FileLoggerSink.cpp
+    ./HostLoggerSink.cpp
+    ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
     ./Logging.cpp
+    ./refcount.cpp
 )
 
 add_lib(${PROJECT_NAME}

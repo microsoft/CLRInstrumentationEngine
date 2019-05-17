@@ -43,7 +43,7 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(EnableDiagnosticLogToDebugPort)(_In_ BOOL enable) override
         {
-            CLogging::EnableDiagnosticLogToDebugPort(enable != 0);
+            CLogging::SetLogToDebugPort(enable != 0);
             return S_OK;
         }
 

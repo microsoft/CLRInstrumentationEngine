@@ -62,51 +62,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
     }
 #endif
 
-    WCHAR wszLogLevel[MAX_PATH];
-    ZeroMemory(wszLogLevel, MAX_PATH);
-    bool fHasLogLevel = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_LogLevel"), wszLogLevel, MAX_PATH) > 0;
-
-    if (fHasLogLevel)
-    {
-        // Only want to support error logging in the event log, so specify that the allowed flags is Errors.
-        // Currently, downstream dependencies also log only when this flag is set.
-        LoggingFlags loggingType = ExtractLoggingFlags(wszLogLevel, LoggingFlags_Errors);
-
-        if (loggingType != LoggingFlags_None)
-        {
-            CLogging::InitializeEventLogging();
-            CLogging::SetLoggingFlags(loggingType);
-        }
-    }
-
-    WCHAR wszFileLogLevel[MAX_PATH];
-    ZeroMemory(wszFileLogLevel, MAX_PATH);
-    bool fHasFileLogLevel = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszFileLogLevel, MAX_PATH) > 0;
-
-    WCHAR wszFileLogPath[MAX_PATH];
-    ZeroMemory(wszFileLogPath, MAX_PATH);
-    bool fHasFileLogPath = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), wszFileLogPath, MAX_PATH) > 0;
-
-    // Determine from where the file logging flags should be parsed.
-    // File logging supports all log levels, so specify that the allowed flags is All.
-    // File logging is enabled under two scenarios:
-    // 1) If the FileLog env var is specified and it has a value that is something other than None, when parsed.
-    // 2) If the LogLevel env var AND FileLogPath env var are specified and the LogLevel value is something other than None, when parsed.
-    LoggingFlags fileLoggingFlags = LoggingFlags_None;
-    if (fHasFileLogLevel)
-    {
-        fileLoggingFlags = ExtractLoggingFlags(wszFileLogLevel, LoggingFlags_All);
-    }
-    else if (fHasLogLevel && fHasFileLogPath)
-    {
-        fileLoggingFlags = ExtractLoggingFlags(wszLogLevel, LoggingFlags_All);
-    }
-
-    // Enable file logging
-    if (fileLoggingFlags != LoggingFlags_None)
-    {
-        CLogging::EnableLoggingToFile(fileLoggingFlags, wszFileLogPath);
-    }
+    CLogging::Initialize();
 
 #ifndef PLATFORM_UNIX
     //
@@ -137,7 +93,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
 MicrosoftInstrumentationEngine::CProfilerManager::~CProfilerManager()
 {
     DeleteCriticalSection(&m_cs);
-    CLogging::TerminateEventLogging();
+    CLogging::Shutdown();
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
@@ -381,7 +337,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogDumpMessage(_In_ co
 // as to the host.
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::EnableDiagnosticLogToDebugPort(_In_ BOOL enable)
 {
-    CLogging::EnableDiagnosticLogToDebugPort(enable != 0);
+    CLogging::SetLogToDebugPort(enable != 0);
     return S_OK;
 }
 
