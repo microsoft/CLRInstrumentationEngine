@@ -7,7 +7,7 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
-# 1.0.21
+# 1.0.22
 + New:
   + Added generating MSI and MSM packages
   + Added yaml builds
@@ -17,6 +17,10 @@ Please format the changes as follows:
 + Updates:
   + Removed ExtensionsHost variables in favor of default host.
   + Use public MicroBuild package
+
+# 1.0.21
++ BugFixes:
+  + Fixed xdt files to not contain '--' (via %XDT_SITENAME% & %XDT_SCMSITENAME%)
 
 # 1.0.20
 + New:

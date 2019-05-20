@@ -6,9 +6,11 @@ Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/bui
 
 ## Overview
 
-The CLR Instrumentation Engine is a cooperation profiler that allows running multiple profiling extensions in the same process. It was built to satisfy Application Insights, IntelliTrace, and Production Breakpoints scenarios.
+The CLR Instrumentation Engine (CLRIE) is a cooperation profiler that allows running multiple profiling extensions in the same process. It was built to satisfy Application Insights, IntelliTrace, and Production Breakpoints scenarios.
 
-For more information about our current and future project scope, please see the [CLRIE Road Map](roadmap.md).
+The CLRIE's goal is to create a cooperative environment for different profilers to work together on various platforms. In order to further this goal, we plan to open source this repo to the community by the end June 2019.
+
+For more information about our current and future project scope and to track our progress, please see the [CLRIE Road Map](roadmap.md).
 
 ## Getting Started
 
