@@ -23,10 +23,17 @@
                Cabinet='InstrumentationEngine_$(sys.BUILDARCH).$(var.Version).cab'
                EmbedCab='yes' />
         <Directory Id='TARGETDIR' Name='SourceDir'>
+<?if $(var.Configuration) = Debug?>
+            <Merge Id="ClrInstrumentationEngine"
+                   Language="0"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_$(sys.BUILDARCH).$(var.PackageVersion)_$(var.Configuration).msm"
+                   DiskId="1" />
+<?else?>
             <Merge Id="ClrInstrumentationEngine"
                    Language="0"
                    SourceFile="$(var.OutputPath)InstrumentationEngine.Module_$(sys.BUILDARCH).$(var.PackageVersion).msm"
                    DiskId="1" />
+<?endif?>
         </Directory>
         <Feature Id="ClrInstrumentationEngineFeature">
             <MergeRef Id="ClrInstrumentationEngine" />

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // dllmain.cpp : Defines the entry point for the DLL application.
 
@@ -24,8 +24,7 @@ namespace ProfilerProxy
 #else
     static constexpr const WCHAR* profilerRelativeFileName = _T("Instrumentation32\\MicrosoftInstrumentationEngine_x86.dll");
 #endif
-
-    BOOL APIENTRY DllMain(
+    extern "C" BOOL APIENTRY DllMain(
         HMODULE hModule,   // handle to DLL module
         DWORD fdwReason,   // reason for calling function
         LPVOID lpReserved) // reserved
@@ -64,7 +63,6 @@ namespace ProfilerProxy
         HRESULT hr = S_OK;
         *hasProfiler = FALSE;
 
-        WIN32_FIND_DATA findFileData;
         WCHAR wszEngineFullPath[MAX_PATH];
         errno_t error = wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath);
         if (error != 0)
@@ -107,10 +105,12 @@ namespace ProfilerProxy
 #pragma endregion
 
         versionFolder.clear();
-        
+
         WIN32_FIND_DATA findFileData;
         std::wstring profilerPathFilter = std::wstring(wszProfilerPath);
-        profilerPathFilter += _T("*"); // FilePattern
+
+        // FilePattern
+        profilerPathFilter += _T("\\*");
 
         SafeFindFileHandle hSearchHandle = FindFirstFile(profilerPathFilter.c_str(), &findFileData);
         if (hSearchHandle == INVALID_HANDLE_VALUE)
@@ -142,8 +142,7 @@ namespace ProfilerProxy
 
             // Skip any folders without profiler
             BOOL hasProfiler;
-            IfFailRetNoLog(HasProfilerDll(wszProfilerPath, folderVersion.c_str(), &hasProfiler));
-            if (!hasProfiler)
+            if (FAILED(HasProfilerDll(wszProfilerPath, folderVersion.c_str(), &hasProfiler)) || !hasProfiler)
             {
                 continue;
             }
@@ -158,8 +157,8 @@ namespace ProfilerProxy
 
         // Only return if no VersionFolder found
         DWORD dError = GetLastError();
-        if (!latestVersionFolder.IsValid() && dError == ERROR_NO_MORE_FILES ||
-            dError != 0)
+        if (!latestVersionFolder.IsValid() ||
+            dError > 0 && dError != ERROR_NO_MORE_FILES)
         {
             versionFolder.clear();
             return HRESULT_FROM_WIN32(dError);
@@ -181,7 +180,7 @@ namespace ProfilerProxy
      *                 MicrosoftInstrumentationEngine_x64|86.dll
      */
     _Check_return_
-        HRESULT __stdcall DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ PVOID* ppObj)
+    STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ PVOID* ppObj)
     {
         HRESULT hr = S_OK;
         WCHAR wszEnvVar[MAX_PATH];
@@ -208,12 +207,12 @@ namespace ProfilerProxy
 
         WCHAR wszProfilerPath[MAX_PATH];
         ZeroMemory(wszProfilerPath, MAX_PATH);
-        if (GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH) > 0)
+        if (!GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH))
         {
             return E_UNEXPECTED;
         }
 
-#pragma endregion 
+#pragma endregion
 
 #pragma region CIEFolder
 
@@ -224,9 +223,8 @@ namespace ProfilerProxy
 #pragma region VersionFolder
 
         WCHAR specificVersionStr[MAX_PATH];
-        bool useSpecificVersion = GetEnvironmentVariable(useSpecificVersionVar, specificVersionStr, 1) > 0;
+        BOOL useSpecificVersion = GetEnvironmentVariable(useSpecificVersionVar, specificVersionStr, 1) > 0;
 
-        // Find the latest version
         std::wstring versionFolder;
         if (useSpecificVersion)
         {
@@ -273,7 +271,7 @@ namespace ProfilerProxy
     }
 
     __control_entrypoint(DllExport)
-        HRESULT __stdcall DllCanUnloadNow(void)
+    STDAPI DLLEXPORT(DllCanUnloadNow, 0)(void)
     {
         HRESULT hr = S_OK;
 
@@ -297,5 +295,4 @@ namespace ProfilerProxy
 
         return hr;
     }
-
 }

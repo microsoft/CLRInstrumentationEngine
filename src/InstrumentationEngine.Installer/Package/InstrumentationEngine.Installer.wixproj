@@ -14,6 +14,7 @@
     <ProjectGuid>b3ef81c4-2afc-4134-969c-785f46b6e1eb</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>InstrumentationEngine.Installer_$(Platform).$(PackageVersion)</OutputName>
+    <OutputName Condition=" '$(Configuration)' == 'Debug' ">$(OutputName)_$(Configuration)</OutputName>
     <DefineConstants>$(DefineConstants);OutputPath=$(OutputPath)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
