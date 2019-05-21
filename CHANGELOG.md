@@ -12,6 +12,7 @@ Please format the changes as follows:
   + Added generating MSI and MSM packages
   + Added yaml builds
   + Added ProfilerProxy
+  + Added export for logger with no association with any IProfilerManager instances.
 + BugFixes:
   + Revert License.md to LICENSE and fix NuGet pack. This also fixes doc links.
 + Updates:

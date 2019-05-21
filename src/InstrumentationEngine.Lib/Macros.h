@@ -5,12 +5,16 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-    // for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
-    #ifdef _WIN64
-    #define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD ",PRIVATE")) METHOD
-    #else
-    #define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD "=_" #METHOD "@" #ARGSIZE ",PRIVATE")) METHOD
-    #endif
+// for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
+#ifndef PLATFORM_UNIX
+#ifdef _WIN64
+#define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD ",PRIVATE")) METHOD
+#else
+#define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD "=_" #METHOD "@" #ARGSIZE ",PRIVATE")) METHOD
+#endif
+#else
+#define DLLEXPORT(METHOD, ARGSIZE) __attribute__((visibility("default"))) METHOD
+#endif
 
 #ifndef PLATFORM_UNIX
 #define __FUNCTIONT__ _T(__FUNCTION__)
