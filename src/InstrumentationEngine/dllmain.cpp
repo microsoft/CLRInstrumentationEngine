@@ -4,6 +4,8 @@
 #include "stdafx.h"
 
 #include "ProfilerManager.h"
+#include "LoggingWrapper.h"
+
 #ifndef PLATFORM_UNIX
 
 #include "AtlModule.h"
@@ -91,6 +93,7 @@ STDAPI DLLEXPORT(DllCanUnloadNow, 0)(void)
 {
     return _AtlModule.DllCanUnloadNow();
 }
+#endif
 
 STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
 {
@@ -105,6 +108,7 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
     return E_NOINTERFACE;
 }
 
+#ifndef PLATFORM_UNIX
 STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
@@ -114,17 +118,22 @@ STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
-#else
-extern "C" HRESULT __attribute__((visibility("default"))) DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
-{
-    CComPtr<IClassFactory> pClassFactory;
-    pClassFactory.Attach(new CCrossPlatClassFactory);
+#endif
 
-    if (pClassFactory != nullptr)
+STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLogging** ppLogging)
+{
+    if (nullptr == ppLogging)
     {
-        return pClassFactory->QueryInterface(riid, ppv);
+        return E_POINTER;
     }
 
-    return E_NOINTERFACE;
+    CComPtr<CLoggingWrapper> pLogging;
+    pLogging.Attach(new CLoggingWrapper());
+    if (nullptr == pLogging)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    *ppLogging = pLogging.Detach();
+    return S_OK;
 }
-#endif
