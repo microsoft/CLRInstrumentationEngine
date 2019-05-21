@@ -6,13 +6,17 @@
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
 
+typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+
 namespace ProfilerProxy
 {
     // Handle to profiler module.
-    HMODULE hProfiler = nullptr;
+    HMODULE g_hProfiler = nullptr;
 
     // Critical section object which provides synchronization when accessing hProfiler.
-    CRITICAL_SECTION criticalSection;
+    CRITICAL_SECTION g_criticalSection;
+
+    LPFN_ISWOW64PROCESS fnIsWow64Process;
 
     static constexpr const WCHAR* instrumentationEngineFolder = _T("Microsoft CLR Instrumentation Engine");
     static constexpr const WCHAR* useDebugVar = _T("InstrumentationEngineProxy_UseDebug");
@@ -39,7 +43,7 @@ namespace ProfilerProxy
         case DLL_PROCESS_ATTACH:
             // Initialize once for each new process.
             // Return FALSE to fail DLL load.
-            InitializeCriticalSection(&criticalSection);
+            InitializeCriticalSection(&g_criticalSection);
             break;
         case DLL_THREAD_ATTACH:
             // Do thread-specific initialization.
@@ -49,10 +53,35 @@ namespace ProfilerProxy
             break;
         case DLL_PROCESS_DETACH:
             // Perform any necessary cleanup.
-            DeleteCriticalSection(&criticalSection);
+            DeleteCriticalSection(&g_criticalSection);
             break;
         }
         return TRUE;
+    }
+
+    /*
+     * This function returns whether the current process is running under Wow64
+     */
+    static HRESULT IsWow64(_Out_ BOOL* bIsWow64)
+    {
+        *bIsWow64 = FALSE;
+
+        // IsWow64Process is not available on all supported versions of Windows.
+        // Use GetModuleHandle to get a handle to the DLL that contains the function.
+        // and GetProcAddress to get a pointer to the function if available.
+        fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+            GetModuleHandle(_T("kernel32")), "IsWow64Process");
+
+        if (NULL != fnIsWow64Process)
+        {
+            if (!fnIsWow64Process(GetCurrentProcess(), bIsWow64))
+            {
+                // handle error
+                return HRESULT_FROM_WIN32(GetLastError());
+            }
+        }
+
+        return S_OK;
     }
 
     /*
@@ -75,9 +104,13 @@ namespace ProfilerProxy
 
         FILE* file;
         error = _wfopen_s(&file, wszEngineFullPath, _T("r"));
-        if (error == 0)
+        if (file != nullptr)
         {
             fclose(file);
+        }
+
+        if (error == 0)
+        {
             *hasProfiler = TRUE;
             return S_OK;
         }
@@ -92,17 +125,20 @@ namespace ProfilerProxy
     {
         HRESULT hr = S_OK;
 
-#pragma region ConfigurationFlags
+        //
+        // Check configuration flags
+        //
 
-        WCHAR wszUseDebug[2];
-        ZeroMemory(wszUseDebug, 2);
-        BOOL useDebug = GetEnvironmentVariable(useDebugVar, wszUseDebug, 2) > 0 && wcscmp(wszUseDebug, _T("1")) == 0;
+        WCHAR wszBuffer[2];
+        ZeroMemory(wszBuffer, 2);
+        BOOL useDebug = GetEnvironmentVariable(useDebugVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
-        WCHAR wszUsePreviewVal[2];
-        ZeroMemory(wszUsePreviewVal, 2);
-        BOOL usePreview = GetEnvironmentVariable(usePreviewVar, wszUsePreviewVal, 2) > 0 && wcscmp(wszUsePreviewVal, _T("1")) == 0;
+        ZeroMemory(wszBuffer, 2);
+        BOOL usePreview = GetEnvironmentVariable(usePreviewVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
-#pragma endregion
+        //
+        // Iterate folders & compare versions
+        //
 
         versionFolder.clear();
 
@@ -127,13 +163,13 @@ namespace ProfilerProxy
             }
 
             // Skip any invalid folder formats
-            InstrumentationEngineVersion folderVersion(findFileData.cFileName);
-            if (!folderVersion.IsValid())
+            InstrumentationEngineVersion folderVersion;
+            if (FAILED(InstrumentationEngineVersion::Create(findFileData.cFileName, folderVersion)))
             {
                 continue;
             }
 
-            // Skip any versions that are filtered by Configuration flags
+            // Skip any versions that are filtered by configuration flags
             if (folderVersion.IsDebug() != useDebug ||
                 (!usePreview && folderVersion.IsPreview()))
             {
@@ -147,8 +183,7 @@ namespace ProfilerProxy
                 continue;
             }
 
-            if (!latestVersionFolder.IsValid() ||
-                latestVersionFolder.Compare(folderVersion) < 0)
+            if (latestVersionFolder.Compare(folderVersion) < 0)
             {
                 latestVersionFolder = folderVersion;
             }
@@ -157,7 +192,7 @@ namespace ProfilerProxy
 
         // Only return if no VersionFolder found
         DWORD dError = GetLastError();
-        if (!latestVersionFolder.IsValid() ||
+        if (latestVersionFolder.ToString().empty() ||
             dError > 0 && dError != ERROR_NO_MORE_FILES)
         {
             versionFolder.clear();
@@ -192,14 +227,17 @@ namespace ProfilerProxy
             }
         }
 
-#pragma region ProgramFilesFolder
+        //
+        // Determine "Program Files" folder
+        //
 
         LPCWSTR programFilesVar = _T("ProgramFiles");
 
 #ifndef _WIN64
         // WoW64 = Windows (32bit) on Windows 64bit
-        BOOL fIsOs64bit = FALSE;
-        if (IsWow64Process(GetCurrentProcess(), &fIsOs64bit) && fIsOs64bit)
+        BOOL bIsWow64 = FALSE;
+        IfFailRetNoLog(IsWow64(&bIsWow64));
+        if (bIsWow64)
         {
             programFilesVar = _T("ProgramFiles(x86)");
         }
@@ -212,15 +250,15 @@ namespace ProfilerProxy
             return E_UNEXPECTED;
         }
 
-#pragma endregion
-
-#pragma region CIEFolder
+        //
+        // Determine CIE folder
+        //
 
         IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
 
-#pragma endregion
-
-#pragma region VersionFolder
+        //
+        // Determine Version folder
+        //
 
         WCHAR specificVersionStr[MAX_PATH];
         BOOL useSpecificVersion = GetEnvironmentVariable(useSpecificVersionVar, specificVersionStr, 1) > 0;
@@ -237,18 +275,18 @@ namespace ProfilerProxy
 
         IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
 
-#pragma endregion
-
-#pragma region ProfilerLoad
+        //
+        // Determine and load Profiler
+        //
 
         IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
 
-        ::EnterCriticalSection(&criticalSection);
+        ::EnterCriticalSection(&g_criticalSection);
 
-        hProfiler = ::LoadLibrary(wszProfilerPath);
-        if (hProfiler != nullptr)
+        g_hProfiler = ::LoadLibrary(wszProfilerPath);
+        if (g_hProfiler != nullptr)
         {
-            LPFNGETCLASSOBJECT dllGetClassObj = (LPFNGETCLASSOBJECT)::GetProcAddress(hProfiler, "DllGetClassObject");
+            LPFNGETCLASSOBJECT dllGetClassObj = (LPFNGETCLASSOBJECT)::GetProcAddress(g_hProfiler, "DllGetClassObject");
             if (dllGetClassObj != nullptr)
             {
                 hr = dllGetClassObj(rclsid, riid, ppObj);
@@ -263,9 +301,7 @@ namespace ProfilerProxy
             hr = HRESULT_FROM_WIN32(GetLastError());
         }
 
-        ::LeaveCriticalSection(&criticalSection);
-
-#pragma endregion
+        ::LeaveCriticalSection(&g_criticalSection);
 
         return S_OK;
     }
@@ -275,23 +311,23 @@ namespace ProfilerProxy
     {
         HRESULT hr = S_OK;
 
-        ::EnterCriticalSection(&criticalSection);
+        ::EnterCriticalSection(&g_criticalSection);
 
-        if (hProfiler != nullptr)
+        if (g_hProfiler != nullptr)
         {
-            LPFNCANUNLOADNOW dllCanUnloadNow = (LPFNCANUNLOADNOW)::GetProcAddress(hProfiler, "DllCanUnloadNow");
+            LPFNCANUNLOADNOW dllCanUnloadNow = (LPFNCANUNLOADNOW)::GetProcAddress(g_hProfiler, "DllCanUnloadNow");
             if (dllCanUnloadNow != nullptr)
             {
                 hr = dllCanUnloadNow();
                 if (hr == S_OK)
                 {
-                    ::FreeLibrary(hProfiler);
+                    ::FreeLibrary(g_hProfiler);
                     hProfiler = nullptr;
                 }
             }
         }
 
-        ::LeaveCriticalSection(&criticalSection);
+        ::LeaveCriticalSection(&g_criticalSection);
 
         return hr;
     }

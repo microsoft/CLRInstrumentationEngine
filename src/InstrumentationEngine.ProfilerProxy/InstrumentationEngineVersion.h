@@ -10,23 +10,38 @@ namespace ProfilerProxy
     class InstrumentationEngineVersion
     {
     public:
-        InstrumentationEngineVersion();
+        static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion& validVersion)
+        {
+            HRESULT hr = S_OK;
 
-        InstrumentationEngineVersion(_In_ std::wstring versionStr);
+            std::wsmatch versionMatch;
+            validVersion = InstrumentationEngineVersion();
+            if (std::regex_match(versionStr, versionMatch, versionRegex))
+            {
+                validVersion.m_versionStr = versionStr;
+                validVersion.m_semanticVersionStr = versionMatch[1];
+                validVersion.m_isPreview = versionMatch[2].matched;
+                validVersion.m_isDebug = versionMatch[3].matched;
 
-        BOOL IsValid() const;
+                return S_OK;
+            }
 
-        std::wstring GetSemanticVersionString() const;
+            return E_FAIL;
+        }
+
+        const std::wstring& GetSemanticVersionString() const;
 
         BOOL IsPreview() const;
 
         BOOL IsDebug() const;
 
-        std::wstring ToString() const;
+        const std::wstring& ToString() const;
 
         LPCWSTR c_str() const;
 
-        int Compare(const InstrumentationEngineVersion& right) const noexcept;
+        int Compare(_In_ const InstrumentationEngineVersion& right) const noexcept;
+
+        static const std::wregex versionRegex;
 
     private:
         std::wstring m_versionStr;
