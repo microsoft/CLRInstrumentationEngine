@@ -127,7 +127,8 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
         return E_POINTER;
     }
 
-    CComPtr<CLoggingWrapper> pLogging(new CLoggingWrapper());
+    CComPtr<CLoggingWrapper> pLogging;
+    pLogging.Attach(new CLoggingWrapper());
     if (nullptr == pLogging)
     {
         return E_OUTOFMEMORY;
