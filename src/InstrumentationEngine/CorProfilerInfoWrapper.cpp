@@ -337,11 +337,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     *ppMethodHeader = nullptr;
     *pcbMethodSize = 0;
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
     CComPtr<CAppDomainCollection> pAppDomainCollection;
-    IfFailRet(pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
+    IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
 
     CComPtr<CModuleInfo> pModuleInfo;
 	CComPtr<CMethodInfo> pMethodInfo;
@@ -404,11 +401,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
 {
     HRESULT hr = S_OK;
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
     CComPtr<CAppDomainCollection> pAppDomainCollection;
-    IfFailRet(pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
+    IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
 
     CComPtr<CModuleInfo> pModuleInfo;
     if (SUCCEEDED(pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
@@ -487,7 +481,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILInstrument
     HRESULT hr = S_OK;
 
     CComPtr<CMethodInfo> pMethodInfo;
-    IfFailRet(CMethodInfo::GetMethodInfoById(functionId, &pMethodInfo));
+    IfFailRet(m_pProfilerManager->GetMethodInfoById(functionId, &pMethodInfo));
 
     IfFailRet(pMethodInfo->MergeILInstrumentedCodeMap(cILMapEntries, rgILMapEntries));
 

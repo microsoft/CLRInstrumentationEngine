@@ -35,10 +35,6 @@ namespace MicrosoftInstrumentationEngine
         static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
 
     private:
-        // currently, the profiler manager does not support in-proc sxs.
-        // If this is non-null during the initialize call, the profiler attach is rejected.
-        static CProfilerManager* s_profilerManagerInstance;
-
         // Instrumentation methods can disabling profiling on this process before it starts by calling this during initialize.
         bool m_bProfilingDisabled;
 
@@ -102,6 +98,11 @@ namespace MicrosoftInstrumentationEngine
 
         // If flag set - only trusted instrumentation methods can be loaded
         bool m_bValidateCodeSignature;
+
+        // Map of method infos by function id. This is needed becasue some raw profiler
+        // callbacks only take a FunctionID instead of a moduleid / functionid
+        // these are cleaned up after instrumentation for the method is over.
+        std::unordered_map<FunctionID, CComPtr<CMethodInfo>> m_methodInfos;
 
         // private nested class for holding the raw pointers to the callbacks.
         // This just makes it easy to have the destructor do Release while allowing for
@@ -183,8 +184,6 @@ namespace MicrosoftInstrumentationEngine
         void SetInitializingInstrumentationMethodFlags(_In_ DWORD dwFlags);
         DWORD GetInitializingInstrumentationMethodFlags() const;
 
-        static HRESULT GetProfilerManagerInstance(_Out_ CProfilerManager** ppProfilerManager);
-
         HRESULT GetEventMask(_Out_ DWORD* dwEventMask);
         HRESULT SetEventMask(DWORD dwEventMask);
         HRESULT GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh);
@@ -203,6 +202,10 @@ namespace MicrosoftInstrumentationEngine
         HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
         CLogging* GetLogging();
+
+        HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
+        HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
+        HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
         // IUnknown
     public:

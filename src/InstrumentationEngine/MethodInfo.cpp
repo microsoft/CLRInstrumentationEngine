@@ -13,19 +13,15 @@
 #include "SingleRetDefaultInstrumentation.h"
 #include "Util.h"
 
-//static
-std::unordered_map<FunctionID, CComPtr<MicrosoftInstrumentationEngine::CMethodInfo>> MicrosoftInstrumentationEngine::CMethodInfo::s_methodInfos;
-
-bool MicrosoftInstrumentationEngine::CMethodInfo::s_bIsDumpingMethod = false;
-
-
 MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
+    _In_ CProfilerManager* pProfilerManager,
     _In_ FunctionID functionId,
     _In_ mdToken functionToken,
     _In_ ClassID classId,
     _In_ CModuleInfo* pModuleInfo,
     _In_opt_ ICorProfilerFunctionControl* pFunctionControl
     ) :
+    m_pProfilerManager(pProfilerManager),
     m_bIsStandaloneMethodInfo(false),
     m_functionId(functionId),
     m_tkFunction(functionToken),
@@ -90,12 +86,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::Initialize(_In_ bool bAddTo
     // During a rejit, the function id will not be valid
     if (bAddToMethodInfoMap)
     {
-        if (m_functionId == 0)
-        {
-            CLogging::LogError(_T("CMethodInfo::Initialize - cannot add to method info map without a function id"));
-            return E_FAIL;
-        }
-        s_methodInfos.insert({ m_functionId, this });
+        IfFailRet(m_pProfilerManager->AddMethodInfoToMap(m_functionId, this));
     }
 
     if (isRejit)
@@ -127,34 +118,11 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::Cleanup()
     {
         m_pModuleInfo->ReleaseMethodInfo(m_functionId);
 
-        s_methodInfos.erase(m_functionId);
+        m_pProfilerManager->RemoveMethodInfoFromMap(m_functionId);
     }
 
     // Don't touch the this pointer after this point.
 
-    return S_OK;
-}
-
-//static
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetMethodInfoById(_In_ FunctionID functionId, _In_ CMethodInfo** ppMethodInfo)
-{
-    HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CMethodInfo::GetMethodById"));
-    IfNullRetPointer(ppMethodInfo);
-    *ppMethodInfo = NULL;
-
-    CComPtr<CMethodInfo> pMethodInfo = s_methodInfos[functionId];
-    if (pMethodInfo != NULL)
-    {
-        *ppMethodInfo = pMethodInfo.Detach();
-    }
-    else
-    {
-        CLogging::LogMessage(_T("CMethodInfo::GetMethodById - No method info found"));
-        return E_FAIL;
-    }
-
-    CLogging::LogMessage(_T("End CMethodInfo::GetMethodById"));
     return S_OK;
 }
 
@@ -171,7 +139,6 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetModuleInfo(_Out_ IModule
     CLogging::LogMessage(_T("End CMethodInfo::GetModuleInfo"));
     return hr;
 }
-
 
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetName(_Out_ BSTR* pbstrName)
 {
@@ -520,11 +487,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeHeader(
         *pcbMethodSize = 0;
     }
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
-    IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
+    IfFailRet(m_pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
     IMAGE_COR_ILMETHOD* pMethodHeader = nullptr;
     ULONG cbMethodSize = 0;
@@ -1231,11 +1195,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeGenericParameters
     }
     else if (m_functionId)
     {
-        CComPtr<CProfilerManager> pProfilerManager;
-        IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
         CComPtr<ICorProfilerInfo> pCorProfilerInfo;
-        IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
+        IfFailRet(m_pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
         CComPtr<ICorProfilerInfo2> pCorProfilerInfo2;
         IfFailRet(pCorProfilerInfo->QueryInterface(&pCorProfilerInfo2));
@@ -1354,11 +1315,8 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         return E_FAIL;
     }
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
-    IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
+    IfFailRet(m_pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
     if (!IsRejit())
     {
@@ -1603,8 +1561,6 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
         return;
     }
 
-    s_bIsDumpingMethod = true;
-
     CComBSTR bstrMethodName;
     this->GetName(&bstrMethodName);
 
@@ -1756,8 +1712,6 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
     }
 
     CLogging::LogDumpMessage(_T("</InstrumentedMethod>\r\n"));
-
-    s_bIsDumpingMethod = false;
 }
 
 

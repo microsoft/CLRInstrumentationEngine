@@ -10,7 +10,14 @@
 #include "StrongName.h"
 #endif
 
-MicrosoftInstrumentationEngine::CAssemblyInfo::CAssemblyInfo() : m_assemblyId(0), m_tkAssembly(mdTokenNil), m_manifestModuleID(0), m_pPublicKey(NULL), m_cbPublicKey(0), m_publicKeyTokenInitialized(false)
+MicrosoftInstrumentationEngine::CAssemblyInfo::CAssemblyInfo(CProfilerManager* pProfilerManager) :
+    m_pProfilerManager(pProfilerManager),
+    m_assemblyId(0),
+    m_tkAssembly(mdTokenNil),
+    m_manifestModuleID(0),
+    m_pPublicKey(NULL),
+    m_cbPublicKey(0),
+    m_publicKeyTokenInitialized(false)
 {
     DEFINE_REFCOUNT_NAME(CAssemblyInfo);
     InitializeCriticalSection(&m_cs);
@@ -91,10 +98,8 @@ HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::HandleManifestModuleLoad(
     IfFailRet(pMetaDataAssemblyImport->GetAssemblyFromScope(&m_tkAssembly));
     IfFailRet(pMetaDataAssemblyImport->GetAssemblyProps(m_tkAssembly, &m_pPublicKey, &m_cbPublicKey, nullptr, nullptr, 0, nullptr, nullptr, nullptr));
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    CProfilerManager::GetProfilerManagerInstance(&pProfilerManager);
     COR_PRF_RUNTIME_TYPE runtimeType;
-    if (FAILED(pProfilerManager->GetRuntimeType(&runtimeType)) ||
+    if (FAILED(m_pProfilerManager->GetRuntimeType(&runtimeType)) ||
         runtimeType != COR_PRF_CORE_CLR) // Don't attempt to calculate public key token in coreclr case.
     {
         IfFailRet(InitializePublicKeyToken());

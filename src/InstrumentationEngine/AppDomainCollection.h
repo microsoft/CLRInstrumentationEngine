@@ -19,8 +19,10 @@ namespace MicrosoftInstrumentationEngine
         // Locking: hold m_cs
         std::unordered_map<AppDomainID, CComPtr<CAppDomainInfo>> m_appDomains;
 
+        CComPtr<CProfilerManager> m_pProfilerManager;
+
     public:
-        CAppDomainCollection();
+        CAppDomainCollection(_In_ CProfilerManager* pProfilerManager);
         ~CAppDomainCollection();
 
     public:

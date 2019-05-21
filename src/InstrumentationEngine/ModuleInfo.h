@@ -14,6 +14,7 @@ namespace MicrosoftInstrumentationEngine
 {
     class CMethodInfo;
     class CMethodJitInfo;
+    class CProfilerManager;
 
     class __declspec(uuid("CDD3824F-B876-4450-9459-885BA1C21540"))
     CModuleInfo : public IModuleInfo3, public CDataContainer
@@ -93,6 +94,8 @@ namespace MicrosoftInstrumentationEngine
         // Map used to track where methods from this module have been inlined into.
         CComPtr<CInlineSiteMap> m_pInlineSiteMap;
 
+        CComPtr<CProfilerManager> m_pProfilerManager;
+
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CModuleInfo);
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CModuleInfo);
@@ -109,7 +112,7 @@ namespace MicrosoftInstrumentationEngine
         }
 
     public:
-        CModuleInfo();
+        CModuleInfo(_In_ CProfilerManager* pProfilerManager);
         ~CModuleInfo();
 
         HRESULT Initialize(

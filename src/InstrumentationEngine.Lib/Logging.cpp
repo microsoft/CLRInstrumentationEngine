@@ -158,16 +158,6 @@ void MicrosoftInstrumentationEngine::CLogging::LogMessage(_In_ const WCHAR* szLi
 {
     CCriticalSectionHolder holder(&s_loggingCs);
 
-    // Don't log trace messages generated during the dump process.
-    // NOTE: this disables them globally, so if another thread performs
-    // an operation, it to won't be logged. This is okay since the instrumentation
-    // callbacks are protected by the top level critical section
-    // TODO: Disabling this protection temporarily
-    //if (s_bIsDumpingMethod)
-    //{
-    //    return;
-    //}
-
     if (!AllowLogEntry(LoggingFlags_Trace) && !s_bEnableDiagnosticLogToDebugPort)
     {
         // Verbose logging is not enabled.
