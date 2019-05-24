@@ -32,9 +32,6 @@ namespace MicrosoftInstrumentationEngine
                      public ICorProfilerCallback7
     {
     private:
-        static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-
-    private:
         // Instrumentation methods can disabling profiling on this process before it starts by calling this during initialize.
         bool m_bProfilingDisabled;
 
@@ -382,19 +379,6 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
-
-        // Returns the LoggingFlags parsed from their representation in wszRequestedFlagNames so long as they are contained by allowedFlags.
-        LoggingFlags ExtractLoggingFlags(
-            _In_ LPCWSTR wszRequestedFlagNames,
-            _In_ LoggingFlags allowedFlags
-            );
-        // Returns the test flag if (1) it is a subset of the allowed flags and (2) the test flag name is contained by requested flag names.
-        LoggingFlags ExtractLoggingFlag(
-            _In_ LPCWSTR wszRequestedFlagNames,
-            _In_ LoggingFlags allowedFlags,
-            _In_ LPCWSTR wszSingleTestFlagName,
-            _In_ LoggingFlags singleTestFlag
-            );
 
         // IProfilerManager methods
     public:

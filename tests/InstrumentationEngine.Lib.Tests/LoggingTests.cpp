@@ -20,6 +20,8 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(EnableLoggingToFileWillNotFailWithIncorrectPath)
         {
+            CLogging::Initialize();
+
             CLogging::EnableLoggingToFile(LoggingFlags_Errors, L"c:\\c:\\c:\\");
 
             CLogging::LogError(L"error");
@@ -30,6 +32,8 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(EnableLoggingToFileCanWriteFile)
         {
+            CLogging::Initialize();
+
             auto dir = fs::current_path();
 
             CLogging::EnableLoggingToFile(LoggingFlags_Errors, dir);
@@ -42,6 +46,8 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(EnableLoggingToFileCanWriteExactFile)
         {
+            CLogging::Initialize();
+
             auto fileName = fs::current_path() / L"Log.txt";
 
             if (exists(fileName))
@@ -66,7 +72,7 @@ namespace InstrumentationEngineLibTests
                 remove(fileName);
             }
 
-            Assert::IsTrue(content.find(L"error") > 0, content.c_str());
+            Assert::IsTrue(content.find(L"error") != wstring::npos, content.c_str());
         }
     };
 }

@@ -28,9 +28,17 @@ CComPtr<IProfilerManagerLoggingHost> MicrosoftInstrumentationEngine::CLogging::s
 
 std::unique_ptr<FILE, FILEDeleter> MicrosoftInstrumentationEngine::CLogging::s_outputFile;
 
+CInitOnce MicrosoftInstrumentationEngine::CLogging::s_initialize([=]() { return InitializeCore(); });
+volatile unsigned int MicrosoftInstrumentationEngine::CLogging::s_usageCount = 0;
+
 // static
 HRESULT MicrosoftInstrumentationEngine::CLogging::SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return E_UNEXPECTED;
+    }
+
     CCriticalSectionHolder holder(&s_loggingCs);
     s_pLoggingHost = pLoggingHost;
     return S_OK;
@@ -40,6 +48,11 @@ HRESULT MicrosoftInstrumentationEngine::CLogging::SetLoggingHost(_In_ IProfilerM
 // static
 HRESULT MicrosoftInstrumentationEngine::CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return E_UNEXPECTED;
+    }
+
     HRESULT hr = S_OK;
 
     IfNullRetPointer(pLoggingFlags);
@@ -52,6 +65,16 @@ HRESULT MicrosoftInstrumentationEngine::CLogging::GetLoggingFlags(_Out_ LoggingF
 // Allows instrumentation methods and hosts to modify the current logging level
 // static
 HRESULT MicrosoftInstrumentationEngine::CLogging::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
+{
+    if (!s_initialize.IsSuccessful())
+    {
+        return E_UNEXPECTED;
+    }
+
+    return SetLoggingFlagsCore(loggingFlags);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CLogging::SetLoggingFlagsCore(_In_ LoggingFlags loggingFlags)
 {
     HRESULT hr = S_OK;
 
@@ -73,11 +96,27 @@ LoggingFlags MicrosoftInstrumentationEngine::CLogging::GetCurrentLoggingFlags()
 //static
 void MicrosoftInstrumentationEngine::CLogging::EnableDiagnosticLogToDebugPort(_In_ bool enable)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
     s_bEnableDiagnosticLogToDebugPort = enable;
 }
 
 //static
 void MicrosoftInstrumentationEngine::CLogging::EnableLoggingToFile(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath)
+{
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
+    EnableLoggingToFileCore(loggingFlags, filePath);
+}
+
+// static
+void MicrosoftInstrumentationEngine::CLogging::EnableLoggingToFileCore(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath)
 {
     CloseLogFile();
 
@@ -156,6 +195,11 @@ void MicrosoftInstrumentationEngine::CLogging::EnableLoggingToFile(_In_ LoggingF
 
 void MicrosoftInstrumentationEngine::CLogging::LogMessage(_In_ const WCHAR* szLine, ...)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
     CCriticalSectionHolder holder(&s_loggingCs);
 
     if (!AllowLogEntry(LoggingFlags_Trace) && !s_bEnableDiagnosticLogToDebugPort)
@@ -199,6 +243,11 @@ void MicrosoftInstrumentationEngine::CLogging::LogMessage(_In_ const WCHAR* szLi
 // static
 void MicrosoftInstrumentationEngine::CLogging::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
     CCriticalSectionHolder holder(&s_loggingCs);
 
     HRESULT result = s_pLoggingHost.CopyTo(ppLoggingHost);
@@ -272,6 +321,11 @@ HRESULT MicrosoftInstrumentationEngine::CLogging::TerminateEventLogging()
 // static
 void MicrosoftInstrumentationEngine::CLogging::LogError(_In_ const WCHAR* szLine, ...)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
     CCriticalSectionHolder holder(&s_loggingCs);
 
     if (!AllowLogEntry(LoggingFlags_Errors))
@@ -444,6 +498,11 @@ HRESULT MicrosoftInstrumentationEngine::CLogging::ReadFromSharedBuffer(_Out_ tst
 //static
 void MicrosoftInstrumentationEngine::CLogging::LogDumpMessage(_In_ const WCHAR* szLine, ...)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return;
+    }
+
     CCriticalSectionHolder holder(&s_loggingCs);
 
     if (!AllowLogEntry(LoggingFlags_InstrumentationResults))
@@ -555,7 +614,147 @@ void MicrosoftInstrumentationEngine::CLogging::CloseLogFile()
 // static
 bool MicrosoftInstrumentationEngine::CLogging::AllowLogEntry(_In_ LoggingFlags flags)
 {
+    if (!s_initialize.IsSuccessful())
+    {
+        return false;
+    }
+
     return IsFlagSet(s_loggingFlags, flags) || IsFlagSet(s_enableLoggingToFile, flags);
+}
+
+// static
+HRESULT MicrosoftInstrumentationEngine::CLogging::Initialize()
+{
+    HRESULT hr = s_initialize.Get();
+    if (SUCCEEDED(hr))
+    {
+        InterlockedIncrement(&s_usageCount);
+    }
+    return hr;
+}
+
+// static
+HRESULT MicrosoftInstrumentationEngine::CLogging::InitializeCore()
+{
+    HRESULT hr = S_OK;
+
+    WCHAR wszLogLevel[MAX_PATH];
+    ZeroMemory(wszLogLevel, MAX_PATH);
+    bool fHasLogLevel = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_LogLevel"), wszLogLevel, MAX_PATH) > 0;
+
+    if (fHasLogLevel)
+    {
+        // Only want to support error logging in the event log, so specify that the allowed flags is Errors.
+        // Currently, downstream dependencies also log only when this flag is set.
+        LoggingFlags loggingType = ExtractLoggingFlags(wszLogLevel, LoggingFlags_Errors);
+
+        if (loggingType != LoggingFlags_None)
+        {
+            if (FAILED(hr = CLogging::InitializeEventLogging()))
+            {
+                return hr;
+            }
+            if (FAILED(hr = CLogging::SetLoggingFlagsCore(loggingType)))
+            {
+                return hr;
+            }
+        }
+    }
+
+    WCHAR wszFileLogLevel[MAX_PATH];
+    ZeroMemory(wszFileLogLevel, MAX_PATH);
+    bool fHasFileLogLevel = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszFileLogLevel, MAX_PATH) > 0;
+
+    WCHAR wszFileLogPath[MAX_PATH];
+    ZeroMemory(wszFileLogPath, MAX_PATH);
+    bool fHasFileLogPath = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), wszFileLogPath, MAX_PATH) > 0;
+
+    // Determine from where the file logging flags should be parsed.
+    // File logging supports all log levels, so specify that the allowed flags is All.
+    // File logging is enabled under two scenarios:
+    // 1) If the FileLog env var is specified and it has a value that is something other than None, when parsed.
+    // 2) If the LogLevel env var AND FileLogPath env var are specified and the LogLevel value is something other than None, when parsed.
+    LoggingFlags fileLoggingFlags = LoggingFlags_None;
+    if (fHasFileLogLevel)
+    {
+        fileLoggingFlags = ExtractLoggingFlags(wszFileLogLevel, LoggingFlags_All);
+    }
+    else if (fHasLogLevel && fHasFileLogPath)
+    {
+        fileLoggingFlags = ExtractLoggingFlags(wszLogLevel, LoggingFlags_All);
+    }
+
+    // Enable file logging
+    if (fileLoggingFlags != LoggingFlags_None)
+    {
+        CLogging::EnableLoggingToFileCore(fileLoggingFlags, wszFileLogPath);
+    }
+
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CLogging::Shutdown()
+{
+    if (!s_initialize.IsSuccessful())
+    {
+        return E_UNEXPECTED;
+    }
+
+    if (0 == InterlockedDecrement(&s_usageCount))
+    {
+        return TerminateEventLogging();
+    }
+    return S_OK;
+}
+
+// static
+LoggingFlags MicrosoftInstrumentationEngine::CLogging::ExtractLoggingFlags(
+    _In_ LPCWSTR wszRequestedFlagNames,
+    _In_ LoggingFlags allowedFlags
+)
+{
+    if (nullptr == wszRequestedFlagNames)
+    {
+        return LoggingFlags_None;
+    }
+
+    // If the request is for all logging flags, just return the allowable flags
+    if (wcsstr(wszRequestedFlagNames, _T("All")) != nullptr)
+    {
+        return allowedFlags;
+    }
+
+    // For each logging flag, check that the named flag was specified and that the log flag is something
+    // that we are actually trying to find. Combine the results of each (since each result will be a
+    // single flag) and return the combination.
+    return (LoggingFlags)(
+        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Errors"), LoggingFlags_Errors) |
+        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Messages"), LoggingFlags_Trace) |
+        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Dumps"), LoggingFlags_InstrumentationResults)
+        );
+}
+
+// static
+LoggingFlags MicrosoftInstrumentationEngine::CLogging::ExtractLoggingFlag(
+    _In_ LPCWSTR wszRequestedFlagNames,
+    _In_ LoggingFlags allowedFlags,
+    _In_ LPCWSTR wszSingleTestFlagName,
+    _In_ LoggingFlags singleTestFlag
+)
+{
+    if (nullptr == wszRequestedFlagNames || nullptr == wszSingleTestFlagName)
+    {
+        return LoggingFlags_None;
+    }
+
+    // Test that the desired flag is in the combination of flags that are allowed to be checked.
+    // Additionally, check that the name of the flag is in the string that specifies what types
+    // of messages are requested to be logged.
+    if (IsFlagSet(allowedFlags, singleTestFlag) && wcsstr(wszRequestedFlagNames, wszSingleTestFlagName) != nullptr)
+    {
+        return singleTestFlag;
+    }
+    return LoggingFlags_None;
 }
 
 MicrosoftInstrumentationEngine::CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int indent)

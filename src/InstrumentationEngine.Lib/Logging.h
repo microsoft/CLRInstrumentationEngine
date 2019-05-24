@@ -10,6 +10,7 @@
 #include <thread>
 #endif
 #include <queue>
+#include "InitOnce.h"
 #include "InstrumentationEngine.h"
 #include "File.h"
 
@@ -56,6 +57,7 @@ namespace MicrosoftInstrumentationEngine
         static constexpr const WCHAR* ERROR_PREFIX_FORMAT = _T("LogError[%H:%M:%S]:");
         static constexpr const WCHAR* MESSAGE_PREFIX_FORMAT = _T("LogMessage[%H:%M:%S]:");
 #endif
+        static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
 
     private:
         static volatile LoggingFlags s_loggingFlags;
@@ -80,7 +82,12 @@ namespace MicrosoftInstrumentationEngine
         static std::queue<tstring> s_EventLogMessageQueue;
         static size_t s_queueLength;
 
+        static CInitOnce s_initialize;
+        static volatile unsigned int s_usageCount;
+
     private:
+        static HRESULT InitializeCore();
+
         static void OutputLogFilePrefix(_In_ LoggingFlags loggingFlags);
         static void OutputLogFileLine(_In_ const WCHAR* szLine);
         static void CloseLogFile();
@@ -89,13 +96,36 @@ namespace MicrosoftInstrumentationEngine
 
         static LoggingFlags GetCurrentLoggingFlags();
 
+        static HRESULT InitializeEventLogging();
+        static HRESULT TerminateEventLogging();
         //LPTHREAD_START_ROUTINE
         static DWORD WINAPI LogReportEvent(_In_ LPVOID lpParam);
 
         static HRESULT WriteToSharedBuffer(_In_ LPCWSTR wszEventLog);
         static HRESULT ReadFromSharedBuffer(_Out_ tstring& wszEventLog);
 
+        // Returns the LoggingFlags parsed from their representation in wszRequestedFlagNames so long as they are contained by allowedFlags.
+        static LoggingFlags ExtractLoggingFlags(
+            _In_ LPCWSTR wszRequestedFlagNames,
+            _In_ LoggingFlags allowedFlags
+            );
+
+        // Returns the test flag if (1) it is a subset of the allowed flags and (2) the test flag name is contained by requested flag names.
+        static LoggingFlags ExtractLoggingFlag(
+            _In_ LPCWSTR wszRequestedFlagNames,
+            _In_ LoggingFlags allowedFlags,
+            _In_ LPCWSTR wszSingleTestFlagName,
+            _In_ LoggingFlags singleTestFlag
+            );
+
+        static HRESULT SetLoggingFlagsCore(_In_ LoggingFlags loggingFlags);
+
+        static void EnableLoggingToFileCore(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath);
+
     public:
+        // Call this to ensure that logging infrastructure is initialized
+        static HRESULT Initialize();
+
         static void LogMessage(_In_ const WCHAR* szMessage, ...);
         static void LogError(_In_ const WCHAR* szError, ...);
         static void LogDumpMessage(_In_ const WCHAR* szMessage, ...);
@@ -103,7 +133,6 @@ namespace MicrosoftInstrumentationEngine
         static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
 
         static void EnableDiagnosticLogToDebugPort(_In_ bool enable);
-        static void EnableLoggingToFile(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath);
 
         // Allows instrumentation methods and hosts to ask for the current logging flags
         static HRESULT GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
@@ -114,9 +143,11 @@ namespace MicrosoftInstrumentationEngine
         // Call this to determine if logging should be allowed for a specific log type.
         static bool AllowLogEntry(_In_ LoggingFlags flags);
 
-        // Sets up the EventLogging thread
-        static HRESULT InitializeEventLogging();
+        // Call this to inform the logging infrastructure that it is no longer being used.
+        static HRESULT Shutdown();
 
-        static HRESULT TerminateEventLogging();
+        // Only used for testing
+    public:
+        static void EnableLoggingToFile(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath);
     };
 }
