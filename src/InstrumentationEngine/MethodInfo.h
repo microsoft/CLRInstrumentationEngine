@@ -124,7 +124,8 @@ namespace MicrosoftInstrumentationEngine
 
         bool m_bIsRejit;
 
-        CComPtr<CProfilerManager> m_pProfilerManager;
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CMethodInfo);

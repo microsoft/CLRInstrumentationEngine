@@ -19,7 +19,8 @@ namespace MicrosoftInstrumentationEngine
         // Locking: hold m_cs
         std::unordered_map<AppDomainID, CComPtr<CAppDomainInfo>> m_appDomains;
 
-        CComPtr<CProfilerManager> m_pProfilerManager;
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
 
     public:
         CAppDomainCollection(_In_ CProfilerManager* pProfilerManager);

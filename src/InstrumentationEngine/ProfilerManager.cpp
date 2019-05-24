@@ -3262,11 +3262,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_I
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo)
 {
+    IfNullRetPointer(pMethodInfo);
+
     if (functionId == 0)
     {
         CLogging::LogError(_T("CProfilerManager::AddMethodInfoToMap - cannot add to method info map without a function id"));
         return E_FAIL;
     }
+
     m_methodInfos.insert({ functionId, pMethodInfo });
     return S_OK;
 }
@@ -3284,9 +3287,10 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetMethodInfoById(_In_
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
 
-    CComPtr<CMethodInfo> pMethodInfo(m_methodInfos[functionId]);
-    if (pMethodInfo != NULL)
+    unordered_map<FunctionID, CComPtr<CMethodInfo>>::iterator it = m_methodInfos.find(functionId);
+    if (it != m_methodInfos.end())
     {
+        CComPtr<CMethodInfo> pMethodInfo = it->second;
         *ppMethodInfo = pMethodInfo.Detach();
     }
     else

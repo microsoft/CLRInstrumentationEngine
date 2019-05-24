@@ -13,7 +13,8 @@ namespace MicrosoftInstrumentationEngine
     class __declspec(uuid("6C8D8C14-8BCB-4773-BD0B-A1F7D4BED0E7"))
     CAssemblyInfo : public IAssemblyInfo, public CDataContainer
     {
-        CComPtr<CProfilerManager> m_pProfilerManager;
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
 
         CRITICAL_SECTION m_cs;
 

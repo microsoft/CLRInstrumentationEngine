@@ -94,7 +94,8 @@ namespace MicrosoftInstrumentationEngine
         // Map used to track where methods from this module have been inlined into.
         CComPtr<CInlineSiteMap> m_pInlineSiteMap;
 
-        CComPtr<CProfilerManager> m_pProfilerManager;
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CModuleInfo);
