@@ -114,9 +114,9 @@ namespace MicrosoftInstrumentationEngine
             CComPtr<ICorProfilerCallback2> m_CorProfilerCallback2;
             CComPtr<ICorProfilerCallback3> m_CorProfilerCallback3;
             CComPtr<ICorProfilerCallback4> m_CorProfilerCallback4;
-			CComPtr<ICorProfilerCallback5> m_CorProfilerCallback5;
-			CComPtr<ICorProfilerCallback6> m_CorProfilerCallback6;
-			CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
+            CComPtr<ICorProfilerCallback5> m_CorProfilerCallback5;
+            CComPtr<ICorProfilerCallback6> m_CorProfilerCallback6;
+            CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
 
             IUnknown* GetMemberForInterface(REFGUID guidInterface)
             {
@@ -136,19 +136,19 @@ namespace MicrosoftInstrumentationEngine
                 {
                     return m_CorProfilerCallback4;
                 }
-				else if (guidInterface == __uuidof(ICorProfilerCallback5))
-				{
-					return m_CorProfilerCallback5;
-				}
-				else if (guidInterface == __uuidof(ICorProfilerCallback6))
-				{
-					return m_CorProfilerCallback6;
-				}
-				else if (guidInterface == __uuidof(ICorProfilerCallback7))
-				{
-					return m_CorProfilerCallback7;
-				}
-				else
+                else if (guidInterface == __uuidof(ICorProfilerCallback5))
+                {
+                    return m_CorProfilerCallback5;
+                }
+                else if (guidInterface == __uuidof(ICorProfilerCallback6))
+                {
+                    return m_CorProfilerCallback6;
+                }
+                else if (guidInterface == __uuidof(ICorProfilerCallback7))
+                {
+                    return m_CorProfilerCallback7;
+                }
+                else
                 {
                     CLogging::LogError(_T("CProfilerCallbackHolder::GetMemberForInterface Bogus interface member requested"));
                     return NULL;
@@ -435,8 +435,8 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod));
 
-		// Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
-		STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
+        STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
 
 
     // IProfilerManager2 Methods
@@ -1026,8 +1026,8 @@ public:
 #endif
 
 #define IGNORE_IN_NET20_BEGIN \
-	if (m_attachedClrVersion != ClrVersion_2) \
-	{ \
+    if (m_attachedClrVersion != ClrVersion_2) \
+    { \
 
 #define IGNORE_IN_NET20_END \
-	}
+    }
