@@ -20,7 +20,7 @@ namespace MicrosoftInstrumentationEngine
         CInitOnce(std::function<HRESULT()> func) : m_isCreated(false), m_func(func), m_result(0) { }
 
     public:
-        HRESULT& Get()
+        HRESULT Get()
         {
             if (!m_isCreated.load(std::memory_order_acquire))
             {

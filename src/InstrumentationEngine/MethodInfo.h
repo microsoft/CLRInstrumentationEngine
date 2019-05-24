@@ -25,6 +25,9 @@ namespace MicrosoftInstrumentationEngine
     CMethodInfo : public IMethodInfo2, public CDataContainer
     {
     private:
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
+
         // True if this method info is not shared across calls and therefore not stored in s_methodInfos or within the containing module info
         // This ensures unrelated calls do not stomp on the lifetime of methodinfos.
         bool m_bIsStandaloneMethodInfo;
@@ -123,9 +126,6 @@ namespace MicrosoftInstrumentationEngine
         bool m_bIsCreateBaselineEnabled;
 
         bool m_bIsRejit;
-
-        // Non-addref'd back pointer the profiler manager.
-        CProfilerManager* m_pProfilerManager;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CMethodInfo);

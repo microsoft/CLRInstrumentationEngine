@@ -43,6 +43,9 @@ namespace MicrosoftInstrumentationEngine
             };
         };
     private:
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
+
         CRITICAL_SECTION m_cs;
 
         ModuleID m_moduleID;
@@ -93,9 +96,6 @@ namespace MicrosoftInstrumentationEngine
 
         // Map used to track where methods from this module have been inlined into.
         CComPtr<CInlineSiteMap> m_pInlineSiteMap;
-
-        // Non-addref'd back pointer the profiler manager.
-        CProfilerManager* m_pProfilerManager;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CModuleInfo);

@@ -14,13 +14,13 @@ namespace MicrosoftInstrumentationEngine
     CAppDomainCollection : public IAppDomainCollection, public CDataContainer
     {
     private:
+        // Non-addref'd back pointer the profiler manager.
+        CProfilerManager* m_pProfilerManager;
+
         CRITICAL_SECTION m_cs;
 
         // Locking: hold m_cs
         std::unordered_map<AppDomainID, CComPtr<CAppDomainInfo>> m_appDomains;
-
-        // Non-addref'd back pointer the profiler manager.
-        CProfilerManager* m_pProfilerManager;
 
     public:
         CAppDomainCollection(_In_ CProfilerManager* pProfilerManager);
