@@ -150,6 +150,19 @@ library MicrosoftInstrumentationEngine
         HRESULT GetApiVersion([out] DWORD* pApiVer);
     };
 
+    [
+        object,
+        uuid(24100BD8-58F2-483A-948A-5B0B8186E451),
+        pointer_default(unique)
+    ]
+    interface IProfilerManager4 : IUnknown
+    {
+        // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
+        // to log to the logging service independently of the profiler manager. This instance is
+        // guaranteed to not depend on the lifetime of the profiler manager from which it is acquired.
+        HRESULT GetStaticLoggingInstance([out] IProfilerManagerLogging** ppLogging);
+    };
+
     // The profiler manager host is created by the profiler manager during the call to initialize after the clr
     // The profiler manager host should call SetupProfilingEnvironment to enable registered instrumentation methods and
     // call AddRawProfilerHook to get access to the raw ICorProfiler events.
