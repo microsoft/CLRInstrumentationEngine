@@ -6,6 +6,13 @@
 #include "Macros.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 
+#ifndef PLATFORM_UNIX
+#include "DebugLoggerSink.h"
+#include "EventLoggerSink.h"
+#endif
+#include "FileLoggerSink.h"
+#include "HostLoggerSink.h"
+
 using namespace MicrosoftInstrumentationEngine;
 using namespace std;
 
@@ -127,12 +134,7 @@ HRESULT CLoggerService::InitializeCore()
         m_defaultFlags = ExtractLoggingFlags(wszLogLevel);
     }
 
-    if (!m_pSinksProvider)
-    {
-        m_pSinksProvider = make_shared<CLoggerSinkProvider>();
-    }
-
-    if (FAILED(hr = m_pSinksProvider->GetSinks(m_allSinks)))
+    if (FAILED(CreateSinks(m_allSinks)))
     {
         return hr;
     }
@@ -162,8 +164,8 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
         return;
     }
 
-    WCHAR szLogEntry[MaxLogEntry];
-    _vsnwprintf_s(szLogEntry, MaxLogEntry, _TRUNCATE, wszMessage, argptr);
+    WCHAR szLogEntry[LogEntryMaxSize];
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
     for (shared_ptr<ILoggerSink>& pSink : m_messageSinks)
     {
@@ -193,8 +195,8 @@ void CLoggerService::LogError(_In_ LPCWSTR wszError, va_list argptr)
         return;
     }
 
-    WCHAR szLogEntry[MaxLogEntry];
-    _vsnwprintf_s(szLogEntry, MaxLogEntry, _TRUNCATE, wszError, argptr);
+    WCHAR szLogEntry[LogEntryMaxSize];
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszError, argptr);
 
     for (shared_ptr<ILoggerSink>& pSink : m_errorSinks)
     {
@@ -236,8 +238,8 @@ void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, va_list argptr)
         return;
     }
 
-    WCHAR szLogEntry[MaxLogEntry];
-    _vsnwprintf_s(szLogEntry, MaxLogEntry, _TRUNCATE, wszMessage, argptr);
+    WCHAR szLogEntry[LogEntryMaxSize];
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
     for (shared_ptr<ILoggerSink>& pSink : m_dumpSinks)
     {
@@ -366,12 +368,15 @@ HRESULT CLoggerService::Shutdown()
 
     m_pLoggingHost.Release();
 
-    m_pSinksProvider = nullptr;
-
     return S_OK;
 }
 
-void CLoggerService::SetProvider(_In_ const std::shared_ptr<CLoggerSinkProvider>& pSinksProvider)
+HRESULT CLoggerService::CreateSinks(std::vector<std::shared_ptr<ILoggerSink>>& sinks)
 {
-    m_pSinksProvider = pSinksProvider;
+    sinks.push_back(make_shared<CDebugLoggerSink>());
+    sinks.push_back(make_shared<CEventLoggerSink>());
+    sinks.push_back(make_shared<CFileLoggerSink>());
+    sinks.push_back(make_shared<CHostLoggerSink>());
+
+    return S_OK;
 }

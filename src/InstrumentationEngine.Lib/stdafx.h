@@ -72,6 +72,8 @@ using namespace ATL;
 #endif
 
 #include "CriticalSectionHolder.h"
+#include "InitOnce.h"
+#include "Singleton.h"
 #include "Logging.h"
 #include "SharedArray.h"
 

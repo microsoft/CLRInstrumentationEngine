@@ -1,7 +1,6 @@
 #pragma once
 
 #include "LoggerService.h"
-#include "InitOnce.h"
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -9,7 +8,6 @@ namespace MicrosoftInstrumentationEngine
         public ILoggerSink
     {
     private:
-        std::function<void(const tstring&)> m_callback;
         // critical section which protects the shared buffer for reads/writes
         CCriticalSection m_cs;
         std::deque<tstring> m_eventQueue;
@@ -43,10 +41,10 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AppendToQueue(_In_ wstring wsEventLog);
         HRESULT InitializeEventSource();
         static bool IsSignaled(_In_ const CEvent& event);
-        static DWORD WINAPI LogReportEvent(_In_ LPVOID lpParam);
+        static DWORD WINAPI LogEventThreadProc(_In_ LPVOID lpParam);
         HRESULT ShutdownCore();
 
-    public:
-        void SetEventCallback(_In_ std::function<void(const tstring&)> callback);
+    protected:
+        virtual void LogEvent(const tstring& tsEntry);
     };
 }

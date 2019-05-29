@@ -11,9 +11,7 @@
 #include <thread>
 #endif
 #include <queue>
-#include "InitOnce.h"
 #include "LoggerSink.h"
-#include "LoggerSinkProvider.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 
 namespace MicrosoftInstrumentationEngine
@@ -21,20 +19,22 @@ namespace MicrosoftInstrumentationEngine
     class CLoggerService
     {
     private:
+        static const int LogEntryMaxSize = 4096;
         static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-        static const int MaxLogEntry = 4096;
 
     private:
         // Used to protect all fields
         CCriticalSection m_cs;
 
+        // The flags initially determined by the service or set via the SetLoggingFlags method.
         LoggingFlags m_defaultFlags;
+        // The effective set of flags (flags that are in actual use) as determined by querying
+        // each of the logger sinks. This is updated each time a logger sink dependency is changed
+        // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
         LoggingFlags m_effectiveFlags;
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
         ATL::CComPtr<IProfilerManagerLoggingHost> m_pLoggingHost;
-
-        std::shared_ptr<CLoggerSinkProvider> m_pSinksProvider;
 
         std::vector<std::shared_ptr<ILoggerSink>> m_allSinks;
         std::vector<std::shared_ptr<ILoggerSink>> m_errorSinks;
@@ -85,8 +85,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT Shutdown();
 
-        // Methods used for testing
-    public:
-        void SetProvider(_In_ const std::shared_ptr<CLoggerSinkProvider>& pSinksProvider);
+    protected:
+        virtual HRESULT CreateSinks(std::vector<std::shared_ptr<ILoggerSink>>& sinks);
     };
 }

@@ -4,7 +4,7 @@
 using namespace MicrosoftInstrumentationEngine;
 
 CFileLoggerSink::CFileLoggerSink() :
-    m_fileFlags(LoggingFlags_None),
+    m_flags(LoggingFlags_None),
     m_pOutputFile(nullptr)
 {
 }
@@ -16,21 +16,7 @@ CFileLoggerSink::~CFileLoggerSink()
 
 HRESULT CFileLoggerSink::Initialize(_In_ CLoggerService* pLogging)
 {
-    WCHAR wszFileLogLevel[MAX_PATH];
-    ZeroMemory(wszFileLogLevel, MAX_PATH);
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszFileLogLevel, MAX_PATH) > 0)
-    {
-        m_fileFlags = CLoggerService::ExtractLoggingFlags(wszFileLogLevel);
-    }
-
-    WCHAR wszFileLogPath[MAX_PATH];
-    ZeroMemory(wszFileLogPath, MAX_PATH);
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), wszFileLogPath, MAX_PATH) > 0)
-    {
-        m_tsFilePath = wszFileLogPath;
-    }
-
-    return S_OK;
+    return GetPathAndFlags(&m_tsPathCandidate, &m_flags);
 }
 
 void CFileLoggerSink::LogMessage(_In_ LPCWSTR wszMessage)
@@ -60,20 +46,70 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
     *pEffectiveFlags = LoggingFlags_None;
 
     // Use flags from FileLog environment variable first. If not defined, then use the requested flags.
-    LoggingFlags effectiveFlags = m_fileFlags;
+    LoggingFlags effectiveFlags = m_flags;
     if (LoggingFlags_None == effectiveFlags)
     {
         effectiveFlags = defaultFlags;
     }
 
     // Start logging to file if logging has been enabled (has flags, not already enabled, and has file path).
-    if (LoggingFlags_None != effectiveFlags && !m_pOutputFile && !m_tsFilePath.empty())
+    if (LoggingFlags_None != effectiveFlags && !m_pOutputFile && !m_tsPathCandidate.empty())
     {
-        // Do not use IfFailRet (or CLogger) as it will cause a deadlock
-        HRESULT hr;
-        if (FAILED(hr = InitializeLogFile()))
+        // Split the provided path in parts
+        WCHAR wszDrive[_MAX_DRIVE];
+        WCHAR wszDirectory[_MAX_DIR];
+        WCHAR wszFile[_MAX_FNAME];
+        WCHAR wszExtension[_MAX_EXT];
+        _wsplitpath_s(
+            m_tsPathCandidate.c_str(),
+            wszDrive,
+            _MAX_DRIVE,
+            wszDirectory,
+            _MAX_DIR,
+            wszFile,
+            _MAX_FNAME,
+            wszExtension,
+            _MAX_EXT);
+
+        tstring tsFile(wszFile);
+        tstring tsExtension(wszExtension);
+
+        // The file name is empty if (a) the last character in the path is a path separator
+        // or (b) if no file name is given e.g. the file starts with a period.
+        // Generate a file name if the file name is empty and the ext is either empty or "."
+        if (tsFile.empty() && (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T(""))))
         {
-            return hr;
+            tsFile.assign(_T("ProfilerLog_"));
+
+            WCHAR szPid[MAX_PATH];
+            swprintf_s(szPid, MAX_PATH, _T("%u"), GetCurrentProcessId());
+            tsFile.append(szPid);
+
+            tsExtension.clear();
+            tsExtension.assign(_T(".txt"));
+        }
+
+        // Combine path parts together for overall path
+        WCHAR wszFilePath[MAX_PATH];
+        _wmakepath_s(
+            wszFilePath,
+            MAX_PATH,
+            wszDrive,
+            wszDirectory,
+            tsFile.c_str(),
+            tsExtension.c_str());
+
+        // _wfsopen just returns nullptr on PLATFORM_UNIX
+#ifdef PLATFORM_UNIX
+        m_pOutputFile.reset(_wfopen(wszFilePath, _T("a")));
+#else
+        m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR));
+#endif
+
+        m_tsPathActual.clear();
+        if (m_pOutputFile)
+        {
+            m_tsPathActual = wszFilePath;
         }
     }
 
@@ -88,21 +124,6 @@ HRESULT CFileLoggerSink::Shutdown()
     return S_OK;
 }
 
-void CFileLoggerSink::SetFlags(_In_ LoggingFlags fileFlags)
-{
-    m_fileFlags = fileFlags;
-}
-
-void CFileLoggerSink::SetFilePath(_In_ const tstring& tsFilePath)
-{
-    m_tsFilePath = tsFilePath;
-}
-
-const tstring CFileLoggerSink::GetEffectiveFilePath()
-{
-    return m_tsFilePathActual;
-}
-
 void CFileLoggerSink::CloseLogFile()
 {
     FILE* pOutputFile = m_pOutputFile.get();
@@ -113,75 +134,6 @@ void CFileLoggerSink::CloseLogFile()
         fflush(pOutputFile);
         fclose(pOutputFile);
     }
-}
-
-HRESULT CFileLoggerSink::InitializeLogFile()
-{
-    tstring tsCandidateFilePath(m_tsFilePath);
-    if (tsCandidateFilePath.empty())
-    {
-        WCHAR buffer[MAX_PATH + 1];
-        GetTempPath(MAX_PATH, buffer);
-        tsCandidateFilePath = buffer;
-    }
-
-    // Split the provided path in parts
-    WCHAR wszDrive[_MAX_DRIVE];
-    WCHAR wszDirectory[_MAX_DIR];
-    WCHAR wszFile[_MAX_FNAME];
-    WCHAR wszExtension[_MAX_EXT];
-    _wsplitpath_s(
-        tsCandidateFilePath.c_str(),
-        wszDrive,
-        _MAX_DRIVE,
-        wszDirectory,
-        _MAX_DIR,
-        wszFile,
-        _MAX_FNAME,
-        wszExtension,
-        _MAX_EXT);
-
-    tstring tsFile(wszFile);
-    tstring tsExtension(wszExtension);
-
-    // The file name is empty if (a) the last character in the path is a path separator
-    // or (b) if no file name is given e.g. the file starts with a period.
-    // Generate a file name if the file name is empty and the ext is either empty or "."
-    if (tsFile.empty() && (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T(""))))
-    {
-        tsFile.assign(_T("ProfilerLog_"));
-
-        WCHAR szPid[MAX_PATH];
-        swprintf_s(szPid, MAX_PATH, _T("%u"), GetCurrentProcessId());
-        tsFile.append(szPid);
-
-        tsExtension.clear();
-        tsExtension.assign(_T(".txt"));
-    }
-
-    // Combine path parts together for overall path
-    WCHAR wszFilePath[MAX_PATH];
-    _wmakepath_s(
-        wszFilePath,
-        MAX_PATH,
-        wszDrive,
-        wszDirectory,
-        tsFile.c_str(),
-        tsExtension.c_str());
-
-    // _wfsopen just returns nullptr on PLATFORM_UNIX
-#ifdef PLATFORM_UNIX
-    m_pOutputFile.reset(_wfopen(wszFilePath, _T("a")));
-#else
-    m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR));
-#endif
-
-    if (m_pOutputFile)
-    {
-        m_tsFilePathActual = wszFilePath;
-    }
-
-    return S_OK;
 }
 
 void CFileLoggerSink::WritePrefix(_In_ LoggingFlags flags)
@@ -239,4 +191,36 @@ void CFileLoggerSink::WriteLine(_In_ LPCWSTR wszMessage)
         fwprintf(pOutputFile, _T("\n"));
         fflush(pOutputFile);
     }
+}
+
+const tstring& CFileLoggerSink::GetPathActual()
+{
+    return m_tsPathActual;
+}
+
+HRESULT CFileLoggerSink::GetPathAndFlags(_Out_ tstring* ptsPath, _Out_ LoggingFlags* pFlags)
+{
+    if (!ptsPath || !pFlags)
+    {
+        return E_POINTER;
+    }
+
+    ptsPath->clear();
+    *pFlags = LoggingFlags_None;
+
+    WCHAR wszFileLogLevel[MAX_PATH];
+    ZeroMemory(wszFileLogLevel, MAX_PATH);
+    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszFileLogLevel, MAX_PATH) > 0)
+    {
+        *pFlags = CLoggerService::ExtractLoggingFlags(wszFileLogLevel);
+    }
+
+    WCHAR wszFileLogPath[MAX_PATH];
+    ZeroMemory(wszFileLogPath, MAX_PATH);
+    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), wszFileLogPath, MAX_PATH) > 0)
+    {
+        *ptsPath = wszFileLogPath;
+    }
+
+    return S_OK;
 }

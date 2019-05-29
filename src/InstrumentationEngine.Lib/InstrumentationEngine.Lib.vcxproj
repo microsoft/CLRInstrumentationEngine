@@ -92,7 +92,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="LoggerSink.h" />
-    <ClInclude Include="LoggerSinkProvider.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="ConfigurationLoader.h" />
     <ClInclude Include="CriticalSectionHolder.h" />
@@ -124,7 +123,6 @@
     <ClCompile Include="InstrumentationMethod.cpp" />
     <ClCompile Include="LoggerService.cpp" />
     <ClCompile Include="HostLoggerSink.cpp" />
-    <ClCompile Include="LoggerSinkProvider.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="refcount.cpp" />
     <ClCompile Include="SignatureValidator.cpp" />

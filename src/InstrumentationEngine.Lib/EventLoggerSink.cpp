@@ -4,7 +4,6 @@
 using namespace MicrosoftInstrumentationEngine;
 
 CEventLoggerSink::CEventLoggerSink() :
-    m_callback(nullptr),
     // We use a small spin count here for when lock contention occurs.
     // Since this lock guards reads and writes to the buffer, contention is short.
     // This spincount allows the thread to spin briefly in hopes that the lock is
@@ -78,7 +77,8 @@ HRESULT CEventLoggerSink::Shutdown()
 
 HRESULT CEventLoggerSink::ShutdownCore()
 {
-    // Signal event source thread to shutdown
+    // Signal event source thread to shutdown.
+    // Block scope used to release critical section before end of method.
     {
         CCriticalSectionHolder holder(&m_cs);
 
@@ -98,6 +98,7 @@ HRESULT CEventLoggerSink::ShutdownCore()
     // Allow thread to drain the queue
     WaitForSingleObject(m_hEventQueueThread, INFINITE);
 
+    // Block scope used to release critical section before end of method.
     {
         CCriticalSectionHolder holder(&m_cs);
 
@@ -124,12 +125,12 @@ HRESULT CEventLoggerSink::InitializeEventSource()
     }
 
     HANDLE hEventQueueThread = CreateThread(
-        nullptr,           // default security
-        0,                 // default stack size
-        LogReportEvent,    // name of the thread function
-        this,              // instance of CEventLogSink
-        0,                 // default startup flags
-        nullptr            // thread id
+        nullptr,            // default security
+        0,                  // default stack size
+        LogEventThreadProc, // name of the thread function
+        this,               // instance of CEventLogSink
+        0,                  // default startup flags
+        nullptr             // thread id
         );
 
     if (nullptr == hEventQueueThread)
@@ -143,7 +144,7 @@ HRESULT CEventLoggerSink::InitializeEventSource()
 }
 
 //static
-DWORD WINAPI CEventLoggerSink::LogReportEvent(_In_ LPVOID lpParam)
+DWORD WINAPI CEventLoggerSink::LogEventThreadProc(_In_ LPVOID lpParam)
 {
     CEventLoggerSink* pThis = static_cast<CEventLoggerSink*>(lpParam);
 
@@ -157,7 +158,9 @@ DWORD WINAPI CEventLoggerSink::LogReportEvent(_In_ LPVOID lpParam)
         return hr;
     }
 
-    while (true)
+    bool fShutdown = false;
+
+    while (!fShutdown)
     {
         // Wait to be signaled
         DWORD dwWaitResult = WaitForSingleObject(
@@ -170,8 +173,9 @@ DWORD WINAPI CEventLoggerSink::LogReportEvent(_In_ LPVOID lpParam)
         }
 
         // Get copy of queued items and check if shutdown requested
-        bool fShutdown = false;
         deque<tstring> eventQueue;
+
+        // Block scope used to release critical section before processing queue items.
         {
             CCriticalSectionHolder holder(&pThis->m_cs);
 
@@ -196,45 +200,9 @@ DWORD WINAPI CEventLoggerSink::LogReportEvent(_In_ LPVOID lpParam)
                 continue; // ignore empty strings
             }
 
-            if (pThis->m_hEventSource)
-            {
-                LPCWSTR wszLogEntry = wsLogEntry.c_str();
-
-                if (pThis->m_callback)
-                {
-                    pThis->m_callback(wszLogEntry);
-                }
-                else
-                {
-                    const WORD wType = EVENTLOG_ERROR_TYPE;
-                    // Each event source can use event ids 0-65535. An event id is used to associate with an
-                    // event description registered in the registry by a message file. Since we don't have
-                    // access to the registry on Antares and the event description wouldn't be very useful
-                    // (we just spit out the error messages of any instrumentation method), the event id
-                    // is arbitrarily set.
-                    const DWORD dwEventId = 1000;
-
-                    // Write to event log. Note: if this fails, we're out of luck
-                    const BOOL fReport = ReportEvent(
-                        pThis->m_hEventSource,  // handle to event log
-                        wType,                  // event type
-                        0,                      // event category
-                        dwEventId,              // event id
-                        nullptr,                // SID of the current user
-                        1,                      // number of strings in szStringData
-                        0,                      // size of binary data in hrErr
-                        &wszLogEntry,           // string data in the event
-                        nullptr                 // binary data in the event
-                        );
-                }
-            }
+            pThis->LogEvent(wsLogEntry);
 
             eventQueue.pop_front();
-        }
-
-        if (fShutdown)
-        {
-            break;
         }
     }
 
@@ -275,7 +243,31 @@ bool CEventLoggerSink::IsSignaled(_In_ const CEvent& event)
     return WAIT_OBJECT_0 == WaitForSingleObject(event, 0);
 }
 
-void CEventLoggerSink::SetEventCallback(_In_ function<void(const tstring&)> callback)
+void CEventLoggerSink::LogEvent(const tstring& tsEntry)
 {
-    m_callback = callback;
+    if (m_hEventSource)
+    {
+        const WORD wType = EVENTLOG_ERROR_TYPE;
+        // Each event source can use event ids 0-65535. An event id is used to associate with an
+        // event description registered in the registry by a message file. Since we don't have
+        // access to the registry on Antares and the event description wouldn't be very useful
+        // (we just spit out the error messages of any instrumentation method), the event id
+        // is arbitrarily set.
+        const DWORD dwEventId = 1000;
+
+        LPCWSTR wszEntry = tsEntry.c_str();
+
+        // Write to event log. Note: if this fails, we're out of luck
+        const BOOL fReport = ReportEvent(
+            m_hEventSource, // handle to event log
+            wType,          // event type
+            0,              // event category
+            dwEventId,      // event id
+            nullptr,        // SID of the current user
+            1,              // number of strings in szStringData
+            0,              // size of binary data in hrErr
+            &wszEntry,      // string data in the event
+            nullptr         // binary data in the event
+        );
+    }
 }

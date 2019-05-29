@@ -18,10 +18,10 @@ namespace MicrosoftInstrumentationEngine
 #endif
 
     private:
-        LoggingFlags m_fileFlags;
+        LoggingFlags m_flags;
         std::unique_ptr<FILE, FILEDeleter> m_pOutputFile;
-        tstring m_tsFilePath;
-        tstring m_tsFilePathActual;
+        tstring m_tsPathActual;
+        tstring m_tsPathCandidate;
 
     public:
         CFileLoggerSink();
@@ -43,14 +43,11 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         void CloseLogFile();
-        HRESULT InitializeLogFile();
         void WritePrefix(_In_ LoggingFlags flags);
         void WriteLine(_In_ LPCWSTR wszMessage);
 
-        // Methods used for testing
-    public:
-        void SetFlags(_In_ LoggingFlags fileFlags);
-        void SetFilePath(_In_ const tstring& tsFilePath);
-        const tstring GetEffectiveFilePath();
+    protected:
+        const tstring& GetPathActual();
+        virtual HRESULT GetPathAndFlags(_Out_ tstring* ptsPath, _Out_ LoggingFlags* pFlags);
     };
 }

@@ -3,13 +3,11 @@
 
 #pragma once
 
+#include <atomic>
 #include <sstream>
 
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
-#include "InitOnce.h"
 #include "LoggerService.h"
-#include "Singleton.h"
-#include "tstring.h"
 
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX
@@ -45,8 +43,8 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         static CInitOnce s_initialize;
-        static CSingleton<CLoggerService> s_logger;
-        static volatile LONG s_initCount;
+        static CSingleton<CLoggerService> s_loggerService;
+        static std::atomic_size_t s_initCount;
 
     public:
         // Call this to determine if logging should be allowed for a specific log type.

@@ -127,10 +127,16 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
     }
 
     CComPtr<CLoggingWrapper> pLogging;
-    pLogging.Attach(new CLoggingWrapper());
+    pLogging.Attach(new (std::nothrow) CLoggingWrapper());
     if (nullptr == pLogging)
     {
         return E_OUTOFMEMORY;
+    }
+
+    HRESULT hr = S_OK;
+    if (FAILED(hr = pLogging->Initialize()))
+    {
+        return hr;
     }
 
     *ppLogging = pLogging.Detach();
