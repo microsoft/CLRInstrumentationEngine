@@ -450,7 +450,7 @@ namespace MicrosoftInstrumentationEngine
 
     // IProfilerManager4 Methods
     public:
-        STDMETHOD(GetStaticLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
 
     // IProfilerManagerLogging Methods
     public:

@@ -653,7 +653,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DW
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetStaticLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
 {
     if (nullptr == ppLogging)
     {
@@ -661,7 +661,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetStaticLoggingInstan
     }
 
     CComPtr<CLoggingWrapper> pLogging;
-    pLogging.Attach(new CLoggingWrapper());
+    pLogging.Attach(new (nothrow) CLoggingWrapper());
     if (nullptr == pLogging)
     {
         return E_OUTOFMEMORY;

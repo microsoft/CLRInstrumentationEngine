@@ -457,7 +457,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 3 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 4 )
 
 
 enum LoggingFlags
@@ -6851,7 +6851,7 @@ EXTERN_C const IID IID_IProfilerManager4;
     IProfilerManager4 : public IUnknown
     {
     public:
-        virtual HRESULT STDMETHODCALLTYPE GetStaticLoggingInstance( 
+        virtual HRESULT STDMETHODCALLTYPE GetGlobalLoggingInstance( 
             /* [out] */ IProfilerManagerLogging **ppLogging) = 0;
         
     };
@@ -6875,7 +6875,7 @@ EXTERN_C const IID IID_IProfilerManager4;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IProfilerManager4 * This);
         
-        HRESULT ( STDMETHODCALLTYPE *GetStaticLoggingInstance )( 
+        HRESULT ( STDMETHODCALLTYPE *GetGlobalLoggingInstance )( 
             IProfilerManager4 * This,
             /* [out] */ IProfilerManagerLogging **ppLogging);
         
@@ -6902,8 +6902,8 @@ EXTERN_C const IID IID_IProfilerManager4;
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IProfilerManager4_GetStaticLoggingInstance(This,ppLogging)	\
-    ( (This)->lpVtbl -> GetStaticLoggingInstance(This,ppLogging) ) 
+#define IProfilerManager4_GetGlobalLoggingInstance(This,ppLogging)	\
+    ( (This)->lpVtbl -> GetGlobalLoggingInstance(This,ppLogging) ) 
 
 #endif /* COBJMACROS */
 
