@@ -1,13 +1,13 @@
 # Usage:
-#   .\DockerLocalBuild.ps1 D:\ClrInstrumentationEngine alpine Debug
+#   .\DockerLocalBuild.ps1 D:\ClrInstrumentationEngine musl Debug
 #   Will create an alpine docker container and build ClrInstrumentationEngine repo with Debug configuration in the container.
 #   The build output will be immediately available on the host machine at D:\ClrInstrumentationEngine\out\Linux.
 #   Please note that this command builds clean and deliberately wipes out anything under D:\ClrInstrumentationEngine\out\Linux.
 #
 # NOTE: Currently this script supports building with glibc in Ubuntu 16.04 and musl-libc in Alpine 3.6.
-#       If you are using the sample Dockerfiles then you want "ubuntu" BaseImage for the Debian 9 sample and
-#       "alpine" BaseImage for the Alpine 3.7 sample. More generally, use "ubuntu" build output for glibc-
-#       based distros and "alpine" build output for musl-libc-based distros.
+#       If you are using the sample Dockerfiles then you want "gnu" CLib for the Debian 9 sample and
+#       "musl" CLib for the Alpine 3.7 sample. More generally, use "gnu" build output for glibc-
+#       based distros and "musl" build output for musl-libc-based distros.
 
 param
 (
@@ -18,8 +18,8 @@ param
 
     [Parameter(Mandatory=$true)]
     [ValidateNotNullOrEmpty()]
-    [ValidateSet('alpine', 'ubuntu')]
-    [String] $LinuxDistro,
+    [ValidateSet('gnu', 'musl')]
+    [String] $CLib,
 
     [Parameter()]
     [ValidateNotNullOrEmpty()]
@@ -32,17 +32,17 @@ param
 
 $ErrorActionPreference = "Stop"
 
-if ($LinuxDistro -eq "ubuntu")
+if ($CLib -eq "gnu")
 {
     $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
 }
-elseif ($LinuxDistro -eq "alpine")
+elseif ($CLib -eq "musl")
 {
     $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
 }
 else
 {
-    write-error "Unrecognized distro: $LinuxDistro."
+    write-error "Unrecognized C library: $CLib."
 }
 
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"

@@ -13,6 +13,7 @@
 #include "InstrumentationMethod.h"
 #include "ConfigurationLoader.h"
 #include "InstrumentationMethodEvents.h"
+#include "LoggingWrapper.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -605,6 +606,24 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DW
     IfNullRet(pApiVer);
 
     *pApiVer = CLR_INSTRUMENTATION_ENGINE_API_VER;
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
+{
+    if (nullptr == ppLogging)
+    {
+        return E_POINTER;
+    }
+
+    CComPtr<CLoggingWrapper> pLogging;
+    pLogging.Attach(new (nothrow) CLoggingWrapper());
+    if (nullptr == pLogging)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    *ppLogging = pLogging.Detach();
     return S_OK;
 }
 
