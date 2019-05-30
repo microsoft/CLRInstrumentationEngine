@@ -9,7 +9,6 @@
 #ifndef PLATFORM_UNIX
 
 #include "AtlModule.h"
-#include "refcount.h"
 
 extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
 
@@ -128,11 +127,14 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
     }
 
     CComPtr<CLoggingWrapper> pLogging;
-    pLogging.Attach(new CLoggingWrapper());
+    pLogging.Attach(new (std::nothrow) CLoggingWrapper());
     if (nullptr == pLogging)
     {
         return E_OUTOFMEMORY;
     }
+
+    HRESULT hr = S_OK;
+    IfFailRetNoLog(pLogging->Initialize());
 
     *ppLogging = pLogging.Detach();
     return S_OK;

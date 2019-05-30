@@ -127,7 +127,6 @@
     <ClCompile Include="FunctionType.cpp" />
     <ClCompile Include="GenericInstanceType.cpp" />
     <ClCompile Include="GenericParameterType.cpp" />
-    <ClCompile Include="ImplQueryInterface.cpp" />
     <ClCompile Include="InlineSite.cpp" />
     <ClCompile Include="InlineSiteMap.cpp" />
     <ClCompile Include="Instruction.cpp" />
@@ -140,7 +139,6 @@
     <ClCompile Include="ModifierType.cpp" />
     <ClCompile Include="ModuleInfo.cpp" />
     <ClCompile Include="ProfilerManager.cpp" />
-    <ClCompile Include="refcount.cpp" />
     <ClCompile Include="SignatureBuilder.cpp" />
     <ClCompile Include="SimpleType.cpp" />
     <ClCompile Include="SingleRetDefaultInstrumentation.cpp" />

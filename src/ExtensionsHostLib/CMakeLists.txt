@@ -12,8 +12,8 @@ build_init(CPP ExtensionsHost)
 set(src_files
     ./stdafx.cpp
     ./CExtensionsHost.cpp
-    ../InstrumentationEngine/refcount.cpp
-    ../InstrumentationEngine/ImplQueryInterface.cpp
+    ../InstrumentationEngine.Lib/ImplQueryInterface.cpp
+    ../InstrumentationEngine.Lib/refcount.cpp
 )
 
 add_lib(${PROJECT_NAME}

@@ -22,6 +22,7 @@
 #define VSASSERT(EXPR, text)
 #define ASSERT(EXPR) VSASSERT(EXPR, L"");
 
+using namespace MicrosoftInstrumentationEngine;
 
 //*****************************************************************************
 //

@@ -33,9 +33,6 @@ namespace MicrosoftInstrumentationEngine
                      public ICorProfilerCallback7
     {
     private:
-        static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-
-    private:
         // currently, the profiler manager does not support in-proc sxs.
         // If this is non-null during the initialize call, the profiler attach is rejected.
         static CProfilerManager* s_profilerManagerInstance;
@@ -972,7 +969,7 @@ public:
     CSEHTranslatorHolder()
         : released(false)
     {
-        m_oldSehTranslator = _set_se_translator(SehTranslatorFunc);
+        m_oldSehTranslator = _set_se_translator(MicrosoftInstrumentationEngine::SehTranslatorFunc);
     }
 
     void RestoreSEHTranslator()

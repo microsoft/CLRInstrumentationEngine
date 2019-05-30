@@ -2,7 +2,7 @@
 // 
 
 #include "stdafx.h"
-#include "InstrumentationEngine.h"
+#include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "InstrumentationMethod.h"
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
