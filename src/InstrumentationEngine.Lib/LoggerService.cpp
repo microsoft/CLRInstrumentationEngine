@@ -64,7 +64,12 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 
     CCriticalSectionHolder holder(&m_cs);
 
-    *pLoggingFlags = m_defaultFlags;
+    // Intentionally returning the effective flags instead of the default flags
+    // (ones set by default or by SetLoggingFlags). The GetLoggingFlags method
+    // is primarily meant for consumers external of the Instrumentation Engine
+    // assembly to determine which flags are supported rather than literally
+    // reporting what the default was or what was set by SetLoggingFlags.
+    *pLoggingFlags = m_effectiveFlags;
 
     return S_OK;
 }
