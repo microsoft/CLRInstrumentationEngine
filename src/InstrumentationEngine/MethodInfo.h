@@ -9,6 +9,7 @@
 #include "ExceptionSection.h"
 #include "InstructionFactory.h"
 #include "LocalVariableCollection.h"
+#include "../InstrumentationEngine.Lib/SharedArray.h"
 
 using namespace ATL;
 

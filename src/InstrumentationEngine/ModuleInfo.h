@@ -7,6 +7,7 @@
 #include "MethodInfo.h"
 #include "CachedILMethodBody.h"
 #include "InlineSiteMap.h"
+#include "../InstrumentationEngine.Lib/SharedArray.h"
 
 using namespace ATL;
 

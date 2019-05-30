@@ -32,7 +32,6 @@ set(src_files
     ./FunctionType.cpp
     ./GenericInstanceType.cpp
     ./GenericParameterType.cpp
-    ./ImplQueryInterface.cpp
     ./InlineSite.cpp
     ./InlineSiteMap.cpp
     ./Instruction.cpp
@@ -46,7 +45,6 @@ set(src_files
     ./ModifierType.cpp
     ./ModuleInfo.cpp
     ./ProfilerManager.cpp
-    ./refcount.cpp
     ./SignatureBuilder.cpp
     ./SimpleType.cpp
     ./SingleRetDefaultInstrumentation.cpp

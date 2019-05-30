@@ -292,6 +292,13 @@ typedef interface IProfilerManager3 IProfilerManager3;
 #endif 	/* __IProfilerManager3_FWD_DEFINED__ */
 
 
+#ifndef __IProfilerManager4_FWD_DEFINED__
+#define __IProfilerManager4_FWD_DEFINED__
+typedef interface IProfilerManager4 IProfilerManager4;
+
+#endif 	/* __IProfilerManager4_FWD_DEFINED__ */
+
+
 #ifndef __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 typedef interface IInstrumentationMethodExceptionEvents IInstrumentationMethodExceptionEvents;
@@ -450,7 +457,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 3 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 4 )
 
 
 enum LoggingFlags
@@ -6827,6 +6834,86 @@ EXTERN_C const IID IID_IProfilerManager3;
 
 
 #endif 	/* __IProfilerManager3_INTERFACE_DEFINED__ */
+
+
+#ifndef __IProfilerManager4_INTERFACE_DEFINED__
+#define __IProfilerManager4_INTERFACE_DEFINED__
+
+/* interface IProfilerManager4 */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IProfilerManager4;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("24100BD8-58F2-483A-948A-5B0B8186E451")
+    IProfilerManager4 : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetGlobalLoggingInstance( 
+            /* [out] */ IProfilerManagerLogging **ppLogging) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IProfilerManager4Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IProfilerManager4 * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IProfilerManager4 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IProfilerManager4 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetGlobalLoggingInstance )( 
+            IProfilerManager4 * This,
+            /* [out] */ IProfilerManagerLogging **ppLogging);
+        
+        END_INTERFACE
+    } IProfilerManager4Vtbl;
+
+    interface IProfilerManager4
+    {
+        CONST_VTBL struct IProfilerManager4Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IProfilerManager4_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IProfilerManager4_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IProfilerManager4_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IProfilerManager4_GetGlobalLoggingInstance(This,ppLogging)	\
+    ( (This)->lpVtbl -> GetGlobalLoggingInstance(This,ppLogging) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IProfilerManager4_INTERFACE_DEFINED__ */
 
 
 #ifndef __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__

@@ -13,6 +13,7 @@
 #include "InstrumentationMethod.h"
 #include "ConfigurationLoader.h"
 #include "InstrumentationMethodEvents.h"
+#include "LoggingWrapper.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -324,7 +325,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogDumpMessage(_In_ co
 // as to the host.
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::EnableDiagnosticLogToDebugPort(_In_ BOOL enable)
 {
-    CLogging::EnableDiagnosticLogToDebugPort(enable != 0);
+    CLogging::SetLogToDebugPort(enable != 0);
     return S_OK;
 }
 
@@ -592,6 +593,27 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DW
     IfNullRet(pApiVer);
 
     *pApiVer = CLR_INSTRUMENTATION_ENGINE_API_VER;
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
+{
+    if (nullptr == ppLogging)
+    {
+        return E_POINTER;
+    }
+
+    CComPtr<CLoggingWrapper> pLogging;
+    pLogging.Attach(new (nothrow) CLoggingWrapper());
+    if (nullptr == pLogging)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    HRESULT hr = S_OK;
+    IfFailRetNoLog(pLogging->Initialize());
+
+    *ppLogging = pLogging.Detach();
     return S_OK;
 }
 

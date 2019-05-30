@@ -70,10 +70,10 @@ using namespace ATL;
 
 using namespace std;
 
-#include "refcount.h"
-#include "ImplQueryInterface.h"
 #include "InstrumentationEngine.h"
-#include "Logging.h"
+#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
+#include "../InstrumentationEngine.Lib/Logging.h"
+#include "../InstrumentationEngine.Lib/refcount.h"
 
 #include "resource.h"
 

@@ -19,9 +19,9 @@
 
 using namespace std;
 
-#include "../InstrumentationEngine/refcount.h"
-#include "../InstrumentationEngine/ImplQueryInterface.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
+#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
+#include "../InstrumentationEngine.Lib/refcount.h"
 
 #endif

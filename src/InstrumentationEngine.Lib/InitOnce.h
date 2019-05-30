@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stdafx.h"
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
 #include <atomic>
