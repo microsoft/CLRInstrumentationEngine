@@ -59,7 +59,7 @@ library MicrosoftInstrumentationEngine
     // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number, 
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 3;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 4;
 
     [
         object,
@@ -148,6 +148,19 @@ library MicrosoftInstrumentationEngine
         // will supports the interface with the given iid. Used to ensure that the linked version
         // of the api is at least as new as the one that the client compiled against.
         HRESULT GetApiVersion([out] DWORD* pApiVer);
+    };
+
+    [
+        object,
+        uuid(24100BD8-58F2-483A-948A-5B0B8186E451),
+        pointer_default(unique)
+    ]
+    interface IProfilerManager4 : IUnknown
+    {
+        // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
+        // to log to the logging service independently of the profiler manager. This instance is
+        // guaranteed to not depend on the lifetime of the profiler manager from which it is acquired.
+        HRESULT GetGlobalLoggingInstance([out] IProfilerManagerLogging** ppLogging);
     };
 
     // The profiler manager host is created by the profiler manager during the call to initialize after the clr
