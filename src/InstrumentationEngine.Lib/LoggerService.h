@@ -11,8 +11,8 @@
 #include <thread>
 #endif
 #include <queue>
-#include "LoggerSink.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
+#include "LoggerSink.h"
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -21,6 +21,7 @@ namespace MicrosoftInstrumentationEngine
     private:
         static const int LogEntryMaxSize = 4096;
         static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
+        static constexpr const WCHAR* LogLevelEnvironmentVariableName = _T("MicrosoftInstrumentationEngine_LogLevel");
 
     private:
         // Used to protect all fields

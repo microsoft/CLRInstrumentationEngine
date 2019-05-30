@@ -185,7 +185,6 @@ namespace InstrumentationEngineLibTests
         TEST_METHOD(LogFileCanWriteDefaultFlags)
         {
             CTestLoggerService loggerService;
-            loggerService.SetFileFlags(LoggingFlags_Errors);
 
             // Create exact file path
             auto fileName = fs::current_path() / L"Log.txt";
@@ -200,7 +199,9 @@ namespace InstrumentationEngineLibTests
 
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_Trace));
 
-            loggerService.LogMessage(L"Message1");
+            // Log an error
+            tstring tsError1(L"Error1");
+            loggerService.LogError(tsError1.c_str());
 
             // Log file shall exist
             AssertLogFileExists(loggerService);
@@ -212,17 +213,17 @@ namespace InstrumentationEngineLibTests
             // Log file shall be empty
             Assert::AreEqual((size_t)0, lines.size(), fileName.c_str());
 
-            // Write an error
-            loggerService.LogError(L"Error1");
+            // Write an message
+            tstring tsMessage1(L"Message1");
+            loggerService.LogMessage(tsMessage1.c_str());
 
             // Get contents of log file
-            lines.clear();
             ReadAllLines(fileName, lines);
 
-            // Check file content only has error
+            // Check file content only has message
             Assert::AreEqual((size_t)1, lines.size(), fileName.c_str());
-            Assert::AreEqual(wstring::npos, lines.at(0).find(L"Message1"), lines.at(0).c_str());
-            Assert::AreNotEqual(wstring::npos, lines.at(0).find(L"Error1"), lines.at(0).c_str());
+            Assert::AreEqual(wstring::npos, lines.at(0).find(tsError1), lines.at(0).c_str());
+            Assert::AreNotEqual(wstring::npos, lines.at(0).find(tsMessage1), lines.at(0).c_str());
 
             AssertSucceeded(loggerService.Shutdown());
         }
@@ -269,7 +270,7 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.Shutdown());
         }
 
-        // Tests that tht log file sink cannot write to a log file
+        // Tests that the log file sink cannot write to a log file
         // after the logger has been shutdown.
         TEST_METHOD(LogFileCannotWriteAfterShutdown)
         {
@@ -325,7 +326,8 @@ namespace InstrumentationEngineLibTests
             CTestLoggerService loggerService;
             AssertSucceeded(loggerService.Initialize());
 
-            CComPtr<CTestLoggingHost> pLoggingHost(new CTestLoggingHost());
+            CComPtr<CTestLoggingHost> pLoggingHost(new (nothrow) CTestLoggingHost());
+            Assert::IsNotNull(pLoggingHost.p);
 
             AssertSucceeded(loggerService.SetLoggingHost(pLoggingHost));
 
@@ -351,7 +353,8 @@ namespace InstrumentationEngineLibTests
             CTestLoggerService loggerService;
             AssertSucceeded(loggerService.Initialize());
 
-            CComPtr<CTestLoggingHost> pLoggingHost(new CTestLoggingHost());
+            CComPtr<CTestLoggingHost> pLoggingHost(new (nothrow) CTestLoggingHost());
+            Assert::IsNotNull(pLoggingHost.p);
 
             AssertSucceeded(loggerService.SetLoggingHost(pLoggingHost));
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_Trace));
@@ -380,7 +383,8 @@ namespace InstrumentationEngineLibTests
             CTestLoggerService loggerService;
             AssertSucceeded(loggerService.Initialize());
 
-            CComPtr<CTestLoggingHost> pLoggingHost(new CTestLoggingHost());
+            CComPtr<CTestLoggingHost> pLoggingHost(new (nothrow) CTestLoggingHost());
+            Assert::IsNotNull(pLoggingHost.p);
 
             AssertSucceeded(loggerService.SetLoggingHost(pLoggingHost));
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_Trace));
@@ -421,14 +425,15 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.Shutdown());
         }
 
-        // Tests that tht logging host sink cannot write to a logging host
+        // Tests that the logging host sink cannot write to a logging host
         // after the logger has been shutdown.
         TEST_METHOD(LogHostCannotWriteAfterShutdown)
         {
             CTestLoggerService loggerService;
             AssertSucceeded(loggerService.Initialize());
 
-            CComPtr<CTestLoggingHost> pLoggingHost(new CTestLoggingHost());
+            CComPtr<CTestLoggingHost> pLoggingHost(new (nothrow) CTestLoggingHost());
+            Assert::IsNotNull(pLoggingHost.p);
 
             AssertSucceeded(loggerService.SetLoggingHost(pLoggingHost));
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_Trace));
@@ -456,7 +461,7 @@ namespace InstrumentationEngineLibTests
             Assert::AreEqual((size_t)0, pLoggingHost->m_messages.size());
         }
 
-        // Tests that tht event sink can write to the event source
+        // Tests that the event sink can write to the event source
         TEST_METHOD(LogEventCanWrite)
         {
             CTestLoggerService loggerService;
@@ -480,7 +485,7 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.Shutdown());
         }
 
-        // Tests that tht event sink can write to the event source
+        // Tests that the event sink can write to the event source
         TEST_METHOD(LogEventCanWriteWaitForDrain)
         {
             CTestLoggerService loggerService;
@@ -516,7 +521,7 @@ namespace InstrumentationEngineLibTests
             Assert::AreEqual((size_t)nCount, entriesAfterShutdown.size());
         }
 
-        // Tests that tht event sink cannot write after the logger has been shutdown.
+        // Tests that the event sink cannot write after the logger has been shutdown.
         TEST_METHOD(LogEventCannotWriteAfterShutdown)
         {
             CTestLoggerService loggerService;

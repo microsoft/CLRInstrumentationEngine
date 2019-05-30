@@ -31,17 +31,11 @@ CLoggerService::~CLoggerService()
 
 HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost)
 {
-    if (!ppLoggingHost)
-    {
-        return E_POINTER;
-    }
+    IfNullRetPointerNoLog(ppLoggingHost);
 
     *ppLoggingHost = nullptr;
 
-    if (!m_initialize.IsSuccessful())
-    {
-        return E_UNEXPECTED;
-    }
+    IfNotInitRetUnexpected(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
@@ -50,10 +44,7 @@ HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLog
 
 HRESULT CLoggerService::SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return E_UNEXPECTED;
-    }
+    IfNotInitRetUnexpected(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
@@ -66,12 +57,11 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
     HRESULT hr = S_OK;
 
-    IfNullRetPointer(pLoggingFlags);
+    IfNullRetPointerNoLog(pLoggingFlags);
 
-    if (!m_initialize.IsSuccessful())
-    {
-        return E_UNEXPECTED;
-    }
+    *pLoggingFlags = LoggingFlags_None;
+
+    IfNotInitRetUnexpected(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
@@ -82,10 +72,7 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 
 HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return E_UNEXPECTED;
-    }
+    IfNotInitRetUnexpected(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
@@ -96,20 +83,14 @@ HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 
 bool CLoggerService::GetLogToDebugPort()
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return false;
-    }
+    IfNotInitRetFalse(m_initialize);
 
     return m_fLogToDebugPort;
 }
 
 void CLoggerService::SetLogToDebugPort(_In_ bool enable)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return;
-    }
+    IfNotInitRet(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
@@ -127,24 +108,24 @@ HRESULT CLoggerService::InitializeCore()
 {
     HRESULT hr = S_OK;
 
+    // Get the general logging level from the environment variable
     WCHAR wszLogLevel[MAX_PATH];
     ZeroMemory(wszLogLevel, MAX_PATH);
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_LogLevel"), wszLogLevel, MAX_PATH) > 0)
+    if (GetEnvironmentVariable(LogLevelEnvironmentVariableName, wszLogLevel, MAX_PATH) > 0)
     {
         m_defaultFlags = ExtractLoggingFlags(wszLogLevel);
     }
 
+    // Get the list of sinks to which logging shall be sent
     if (FAILED(CreateSinks(m_allSinks)))
     {
         return hr;
     }
 
+    // Initialize each sink with the current logger service
     for (shared_ptr<ILoggerSink>& pSink : m_allSinks)
     {
-        if (FAILED(hr = pSink->Initialize(this)))
-        {
-            return hr;
-        }
+        IfFailRetNoLog(pSink->Initialize(this));
     }
 
     return RecalculateLoggingFlags();
@@ -152,21 +133,21 @@ HRESULT CLoggerService::InitializeCore()
 
 void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return;
-    }
+    IfNotInitRet(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
+    // Check if messages are allowed
     if (!AllowLogEntry(LoggingFlags_Trace))
     {
         return;
     }
 
+    // Format and truncate the message
     WCHAR szLogEntry[LogEntryMaxSize];
     _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
+    // Send formatted message to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_messageSinks)
     {
         pSink->LogMessage(szLogEntry);
@@ -183,21 +164,21 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, ...)
 
 void CLoggerService::LogError(_In_ LPCWSTR wszError, va_list argptr)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return;
-    }
+    IfNotInitRet(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
+    // Check if errors are allowed
     if (!AllowLogEntry(LoggingFlags_Errors))
     {
         return;
     }
 
+    // Format and truncate the error
     WCHAR szLogEntry[LogEntryMaxSize];
     _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszError, argptr);
 
+    // Send formatted error to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_errorSinks)
     {
         pSink->LogError(szLogEntry);
@@ -226,21 +207,21 @@ void CLoggerService::LogError(_In_ LPCWSTR wszError, ...)
 
 void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, va_list argptr)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return;
-    }
+    IfNotInitRet(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
+    // Check if dumps are allowed
     if (!AllowLogEntry(LoggingFlags_InstrumentationResults))
     {
         return;
     }
 
+    // Format and truncate the message
     WCHAR szLogEntry[LogEntryMaxSize];
     _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
+    // Send formatted message to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_dumpSinks)
     {
         pSink->LogDumpMessage(szLogEntry);
@@ -257,10 +238,7 @@ void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, ...)
 
 bool CLoggerService::AllowLogEntry(_In_ LoggingFlags flags)
 {
-    if (!m_initialize.IsSuccessful())
-    {
-        return false;
-    }
+    IfNotInitRetFalse(m_initialize);
 
     return IsFlagSet(m_effectiveFlags, flags);
 }
@@ -321,12 +299,11 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     LoggingFlags effectiveFlags = LoggingFlags_None;
     for (shared_ptr<ILoggerSink>& pSink : m_allSinks)
     {
+        // Reset the sink; get its desired logging level
         LoggingFlags sinkFlags;
-        if (FAILED(hr = pSink->Reset(m_defaultFlags, &sinkFlags)))
-        {
-            return hr;
-        }
+        IfFailRetNoLog(pSink->Reset(m_defaultFlags, &sinkFlags));
 
+        // Add the sink to each logging level vector
         if (IsFlagSet(sinkFlags, LoggingFlags_Errors))
         {
             m_errorSinks.push_back(pSink);
@@ -340,6 +317,7 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
             m_messageSinks.push_back(pSink);
         }
 
+        // Aggregate all logging levels together to get the overall logging level.
         effectiveFlags = static_cast<LoggingFlags>(effectiveFlags | sinkFlags);
     }
 
@@ -352,13 +330,10 @@ HRESULT CLoggerService::Shutdown()
 {
     CCriticalSectionHolder holder(&m_cs);
 
-    HRESULT hr;
+    HRESULT hr = S_OK;
     for (shared_ptr<ILoggerSink>& pSink : m_allSinks)
     {
-        if (FAILED(hr = pSink->Shutdown()))
-        {
-            return hr;
-        }
+        IfFailRetNoLog(pSink->Shutdown());
     }
 
     m_allSinks.clear();

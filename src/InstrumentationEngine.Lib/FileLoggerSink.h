@@ -2,6 +2,7 @@
 
 #include "File.h"
 #include "LoggerService.h"
+#include "LoggerSink.h"
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -17,6 +18,9 @@ namespace MicrosoftInstrumentationEngine
         static constexpr const WCHAR* MESSAGE_PREFIX_FORMAT = _T("LogMessage[%H:%M:%S]:");
 #endif
 
+        static constexpr const WCHAR* LogLevelEnvironmentVariableName = _T("MicrosoftInstrumentationEngine_FileLog");
+        static constexpr const WCHAR* LogPathEnvironmentVariableName = _T("MicrosoftInstrumentationEngine_FileLogPath");
+
     private:
         LoggingFlags m_flags;
         std::unique_ptr<FILE, FILEDeleter> m_pOutputFile;
@@ -28,7 +32,7 @@ namespace MicrosoftInstrumentationEngine
         ~CFileLoggerSink();
 
         // ILoggerSink Members
-    public:
+    protected:
         HRESULT Initialize(_In_ CLoggerService* pLogging) override;
 
         void LogMessage(_In_ LPCWSTR wszMessage) override;

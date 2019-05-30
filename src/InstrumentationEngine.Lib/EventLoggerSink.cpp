@@ -58,11 +58,8 @@ HRESULT CEventLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFla
     // Only start event source thread if logging has been enabled
     if (LoggingFlags_None != effectiveFlags)
     {
-        HRESULT hr;
-        if (FAILED(hr = m_initEventSource.Get()))
-        {
-            return hr;
-        }
+        HRESULT hr = S_OK;
+        IfFailRetNoLog(m_initEventSource.Get());
     }
 
     *pEffectiveFlags = effectiveFlags;

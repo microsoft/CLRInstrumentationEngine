@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LoggerService.h"
+#include "LoggerSink.h"
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -12,7 +13,7 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<IProfilerManagerLoggingHost> m_pLoggingHost;
 
         // ILoggerSink Members
-    public:
+    protected:
         HRESULT Initialize(_In_ CLoggerService* pLogging) override;
 
         void LogMessage(_In_ LPCWSTR wszMessage) override;

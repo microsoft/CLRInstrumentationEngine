@@ -8,8 +8,6 @@ namespace MicrosoftInstrumentationEngine
         public IProfilerManagerLogging,
         public CModuleRefCount
     {
-#define IfUnitializedRet if (!m_initialize.IsSuccessful()) { return E_UNEXPECTED; }
-
     private:
         CInitOnce m_initialize;
 
@@ -44,7 +42,7 @@ namespace MicrosoftInstrumentationEngine
     public:
         STDMETHOD(LogMessage)(_In_ const WCHAR* wszMessage) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             CLogging::LogMessage(wszMessage);
             return S_OK;
@@ -52,7 +50,7 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(LogError)(_In_ const WCHAR* wszError) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             CLogging::LogError(wszError);
             return S_OK;
@@ -60,7 +58,7 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(LogDumpMessage)(_In_ const WCHAR* wszMessage) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             CLogging::LogDumpMessage(wszMessage);
             return S_OK;
@@ -68,7 +66,7 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(EnableDiagnosticLogToDebugPort)(_In_ BOOL enable) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             CLogging::SetLogToDebugPort(enable != 0);
             return S_OK;
@@ -76,14 +74,14 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(GetLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             return CLogging::GetLoggingFlags(pLoggingFlags);
         }
 
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override
         {
-            IfUnitializedRet
+            IfNotInitRetUnexpected(m_initialize);
 
             return CLogging::SetLoggingFlags(loggingFlags);
         }

@@ -210,14 +210,14 @@ HRESULT CFileLoggerSink::GetPathAndFlags(_Out_ tstring* ptsPath, _Out_ LoggingFl
 
     WCHAR wszFileLogLevel[MAX_PATH];
     ZeroMemory(wszFileLogLevel, MAX_PATH);
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), wszFileLogLevel, MAX_PATH) > 0)
+    if (GetEnvironmentVariable(LogLevelEnvironmentVariableName, wszFileLogLevel, MAX_PATH) > 0)
     {
         *pFlags = CLoggerService::ExtractLoggingFlags(wszFileLogLevel);
     }
 
     WCHAR wszFileLogPath[MAX_PATH];
     ZeroMemory(wszFileLogPath, MAX_PATH);
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), wszFileLogPath, MAX_PATH) > 0)
+    if (GetEnvironmentVariable(LogPathEnvironmentVariableName, wszFileLogPath, MAX_PATH) > 0)
     {
         *ptsPath = wszFileLogPath;
     }

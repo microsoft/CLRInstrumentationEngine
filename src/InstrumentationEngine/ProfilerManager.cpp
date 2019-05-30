@@ -624,10 +624,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstan
     }
 
     HRESULT hr = S_OK;
-    if (FAILED(hr = pLogging->Initialize()))
-    {
-        return hr;
-    }
+    IfFailRetNoLog(pLogging->Initialize());
 
     *ppLogging = pLogging.Detach();
     return S_OK;

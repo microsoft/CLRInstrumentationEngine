@@ -134,10 +134,7 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
     }
 
     HRESULT hr = S_OK;
-    if (FAILED(hr = pLogging->Initialize()))
-    {
-        return hr;
-    }
+    IfFailRetNoLog(pLogging->Initialize());
 
     *ppLogging = pLogging.Detach();
     return S_OK;

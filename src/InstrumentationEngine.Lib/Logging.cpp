@@ -11,18 +11,24 @@ atomic_size_t CLogging::s_initCount(0);
 // static
 bool CLogging::AllowLogEntry(_In_ LoggingFlags flags)
 {
+    IfNotInitRetFalse(s_initialize);
+
     return s_loggerService.Get()->AllowLogEntry(flags);
 }
 
 // static
 HRESULT CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
+    IfNotInitRetUnexpected(s_initialize);
+
     return s_loggerService.Get()->GetLoggingFlags(pLoggingFlags);
 }
 
 // static
 void CLogging::LogMessage(_In_ const WCHAR* wszMessage, ...)
 {
+    IfNotInitRet(s_initialize);
+
     va_list argptr;
     va_start(argptr, wszMessage);
     s_loggerService.Get()->LogMessage(wszMessage, argptr);
@@ -32,6 +38,8 @@ void CLogging::LogMessage(_In_ const WCHAR* wszMessage, ...)
 // static
 void CLogging::LogError(_In_ const WCHAR* wszError, ...)
 {
+    IfNotInitRet(s_initialize);
+
     va_list argptr;
     va_start(argptr, wszError);
     s_loggerService.Get()->LogError(wszError, argptr);
@@ -41,6 +49,8 @@ void CLogging::LogError(_In_ const WCHAR* wszError, ...)
 // static
 void CLogging::LogDumpMessage(_In_ const WCHAR* wszMessage, ...)
 {
+    IfNotInitRet(s_initialize);
+
     va_list argptr;
     va_start(argptr, wszMessage);
     s_loggerService.Get()->LogDumpMessage(wszMessage, argptr);
@@ -69,32 +79,36 @@ HRESULT CLogging::InitializeCore()
 // static
 void CLogging::SetLogToDebugPort(_In_ bool enable)
 {
+    IfNotInitRet(s_initialize);
+
     s_loggerService.Get()->SetLogToDebugPort(enable);
 }
 
 // static
 HRESULT CLogging::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
+    IfNotInitRetUnexpected(s_initialize);
+
     return s_loggerService.Get()->SetLoggingFlags(loggingFlags);
 }
 
 // static
 HRESULT CLogging::SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost)
 {
+    IfNotInitRetUnexpected(s_initialize);
+
     return s_loggerService.Get()->SetLoggingHost(pLoggingHost);
 }
 
 // static
 HRESULT CLogging::Shutdown()
 {
-    if (!s_initialize.IsSuccessful())
-    {
-        return E_UNEXPECTED;
-    }
+    IfNotInitRetUnexpected(s_initialize);
 
     if (0 == --s_initCount)
     {
-        return s_loggerService.Get()->Shutdown();
+        HRESULT hr = S_OK;
+        IfFailRetNoLog(s_loggerService.Get()->Shutdown());
     }
     return S_OK;
 }
