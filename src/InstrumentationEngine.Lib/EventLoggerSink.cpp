@@ -155,7 +155,7 @@ DWORD WINAPI CEventLoggerSink::LogEventThreadProc(_In_ LPVOID lpParam)
     HRESULT hr;
     if (FAILED(hr = CoInitialize(nullptr)))
     {
-        return hr;
+        return HRESULT_CODE(hr);
     }
 
     bool fShutdown = false;
