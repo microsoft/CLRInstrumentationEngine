@@ -623,6 +623,12 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstan
         return E_OUTOFMEMORY;
     }
 
+    HRESULT hr = S_OK;
+    if (FAILED(hr = pLogging->Initialize()))
+    {
+        return hr;
+    }
+
     *ppLogging = pLogging.Detach();
     return S_OK;
 }
