@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "LoggerService.h"
-#include "Macros.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 
 #ifndef PLATFORM_UNIX
@@ -346,10 +345,12 @@ HRESULT CLoggerService::Shutdown()
     return S_OK;
 }
 
-HRESULT CLoggerService::CreateSinks(std::vector<std::shared_ptr<ILoggerSink>>& sinks)
+HRESULT CLoggerService::CreateSinks(vector<shared_ptr<ILoggerSink>>& sinks)
 {
+#ifndef PLATFORM_UNIX
     sinks.push_back(make_shared<CDebugLoggerSink>());
     sinks.push_back(make_shared<CEventLoggerSink>());
+#endif
     sinks.push_back(make_shared<CFileLoggerSink>());
     sinks.push_back(make_shared<CHostLoggerSink>());
 

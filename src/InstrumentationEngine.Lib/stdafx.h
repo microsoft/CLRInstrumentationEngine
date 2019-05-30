@@ -11,6 +11,8 @@
 #ifdef PLATFORM_UNIX
 #include "unix.h"
 #include <ole.h>
+#include <palrt.h>
+#include <pal.h>
 #endif
 
 #include "targetver.h"
@@ -52,6 +54,12 @@ using namespace ATL;
 
 #ifdef PLATFORM_UNIX
 #include <string>
+#endif
+
+#ifdef PLATFORM_UNIX
+// pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
+// in CMakeFile.txt
+#define wcsstr        PAL_wcsstr
 #endif
 
 #include "tstring.h"

@@ -17,6 +17,7 @@ set(src_files
     ./HostLoggerSink.cpp
     ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
+    ./LoggerService.cpp
     ./Logging.cpp
     ./refcount.cpp
 )
