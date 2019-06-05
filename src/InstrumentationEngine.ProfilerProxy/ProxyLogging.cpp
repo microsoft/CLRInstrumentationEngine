@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include "EventLogger.h"
 #include "ProxyLogging.h"
+#include "EventLogger.h"
+
+#include <atomic>
 
 using namespace MicrosoftInstrumentationEngine;
 

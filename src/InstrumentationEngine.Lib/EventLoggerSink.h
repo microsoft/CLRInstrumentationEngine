@@ -1,8 +1,11 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
 #pragma once
 
-#include "EventLoggingBase.h"
 #include "LoggerService.h"
 #include "LoggerSink.h"
+#include "../Common.Lib/EventLoggingBase.h"
 
 namespace MicrosoftInstrumentationEngine
 {

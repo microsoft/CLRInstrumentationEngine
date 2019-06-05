@@ -5,6 +5,11 @@
 
 #include "stdafx.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
+#include <regex>
+#pragma warning(pop)
+
 namespace MicrosoftInstrumentationEngine
 {
     class InstrumentationEngineVersion

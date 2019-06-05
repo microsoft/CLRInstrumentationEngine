@@ -3,8 +3,6 @@
 
 #pragma once
 
-namespace MicrosoftInstrumentationEngine
-{
 // for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
 #ifndef PLATFORM_UNIX
 #ifdef _WIN64
@@ -106,4 +104,3 @@ namespace MicrosoftInstrumentationEngine
 
     template<typename T, int size>
     int array_length(T(&)[size]){return size;}
-}

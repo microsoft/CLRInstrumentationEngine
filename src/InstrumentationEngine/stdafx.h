@@ -57,18 +57,10 @@ using namespace ATL;
 #define wcsstr        PAL_wcsstr
 #endif
 
-#include "tstring.h"
-
-#include "Macros.h"
-
 #include <vector>
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-
-#include "CriticalSectionHolder.h"
-
-using namespace std;
 
 #include "InstrumentationEngine.h"
 #include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
@@ -77,4 +69,10 @@ using namespace std;
 
 #include "resource.h"
 
-#include "../ExtensionsCommon/banned.h"
+#include "../Common.Lib/tstring.h"
+#include "../Common.Lib/Macros.h"
+#include "../Common.Lib/CriticalSectionHolder.h"
+
+#include "../Common.Lib/banned.h"
+
+using namespace std;

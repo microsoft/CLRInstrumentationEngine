@@ -8,20 +8,12 @@
 
 #pragma once
 
-#include <windows.h>
-#include <combaseapi.h>
-#include <string>
-#include <vector>
-#include <tchar.h>
-#include <regex>
-#include <PathCch.h>
-#include <atlsync.h>
-#include <queue>
+#include "../Common.Lib/tstring.h"
+#include "../Common.Lib/CriticalSectionHolder.h"
+#include "../Common.Lib/InitOnce.h"
+#include "../Common.Lib/Singleton.h"
+#include "../Common.Lib/Macros.h"
+#include "../Common.Lib/EventLoggingBase.h"
+#include "../Common.Lib/SafeFindFileHandle.h"
 
-#include "../InstrumentationEngine.Lib/tstring.h"
-#include "../InstrumentationEngine.Lib/CriticalSectionHolder.h"
-#include "../InstrumentationEngine.Lib/InitOnce.h"
-#include "../InstrumentationEngine.Lib/Singleton.h"
-#include "../InstrumentationEngine.Lib/Macros.h"
-#include "../InstrumentationEngine.Lib/EventLoggingBase.h"
-#include "../ExtensionsHostLib/SafeFindFileHandle.h"
+#include "../Common.Lib/banned.h"

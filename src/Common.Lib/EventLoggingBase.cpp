@@ -1,7 +1,8 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// 
+
 #include "stdafx.h"
 #include "EventLoggingBase.h"
-
-using namespace MicrosoftInstrumentationEngine;
 
 CEventLoggingBase::CEventLoggingBase() :
     // We use a small spin count here for when lock contention occurs.
@@ -85,7 +86,7 @@ DWORD WINAPI CEventLoggingBase::LogEventThreadProc(_In_ LPVOID lpParam)
         }
 
         // Get copy of queued items and check if shutdown requested
-        queue<EventLogItem> eventQueue;
+        std::queue<EventLogItem> eventQueue;
 
         // Block scope used to release critical section before processing queue items.
         {

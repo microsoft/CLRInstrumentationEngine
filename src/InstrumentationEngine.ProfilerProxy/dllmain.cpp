@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
 #include "ProxyLogging.h"
+#include "PathCch.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
