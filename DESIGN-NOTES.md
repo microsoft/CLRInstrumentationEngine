@@ -1,6 +1,23 @@
 # Instrumentation Engine design notes
 
-## Introduction
+1. [Introduction](#introduction)
+2. [Components and Interfaces](#components)
+3. [Profiler Manager](#profiler-manager)
+4. [Profiler Callbacks](#profiler-callbacks)
+5. [Infrastructure Interfaces](#infrastructure)
+6. [Abstractions](#abstractions)
+    * [DataItems](#dataitems)
+    * [Instruction Graph](#instruction-graph)
+    * [Method Info](#method)
+    * [Module Info](#module)
+    * [Assembly Info](#assembly)
+    * [AppDomain Info](#appdomain)
+    * [Local Variables](#local-var)
+7. [Single Ret and Other Automatic Transformations](#transformations)
+8. [Metadata](#metadata)
+9. [Rejit](#rejit)
+
+## <a name="introduction">Introduction</a>
 
 IL Rewriting instrumentation is a fundamental technique used by diagnostic tools for monitoring applications or extracting information out of a process. This allows a diagnostic tool the opportunity to modify or replace the IL (intermediate language) form of a method before it is jit compiled and executed.
 
@@ -17,7 +34,7 @@ One long standing limitation of the profiler approach to diagnostics is the prof
 
 Instrumentation Engine allows multiple profilers co-exist in the same process. It also simplifies some basic scenarios providing higher level interfaces.
 
-## Component and Interface Design Points
+## <a name="components">Component and Interface Design Points</a>
 
 One of the goals of this design is to allow for consumers of the new instrumentation engine to be implemented in separate dlls. This allows them to be implemented by separate teams, and shared between different products. Achieving these goals will require a binary compatibility contract. Instrumentation Engine uses a form of Reg-Free COM that reuses the interface concept including IUnknown but does not bring in com baggage such as apartment threading or marshaling. This nicely matches the existing model of ICorProfiler.
 
@@ -57,7 +74,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationM
     _In_ IInstrumentationMethod* pInstrumentationMethod)
 ```
 
-## Profiler Manager
+## <a name="profiler-manager">Profiler Manager</a>
 
 The idea behind the high level instrumentation engine is to allow instrumentation methods to coexist in an instrumentation scenario while maintaining a higher level api for manipulating IL than the ICorProfiler apis allow. The Profiler manager is a new object that is responsible for loading up the various instrumentation methods, querying them about what profiler flags to set, multiplexing the events to the various instrumentation methods, and managing the IL graph that allows them to coexist.
 
@@ -73,7 +90,7 @@ COR_PROFILER_PATH=<full path of the profiler DLL>\MicrosoftInstrumentationEngine
 
 The host can either set the clsid directly to ProfilerManager, or implement the callback interfaces themselves and forward the calls to an instance of ProfilerManager.
 
-## Profiler Callbacks and Application State
+## <a name="profiler-callbacks">Profiler Callbacks and Application State</a>
 
 Many profiler consumers will need callbacks when interesting events happen in the target process. The list of known callbacks used by our current scenarios are:
 
@@ -106,7 +123,7 @@ Many profiler consumers will need callbacks when interesting events happen in th
 
 Instrumentation Methods implements the ICorProfilerCallback interfaces (2, 3, 4, 5) to receive notifications of these events from the profiler manager. The profiler manager will expose the higher level api to allow the instrumentation methods to co-exist and make writing them easier. For instance, when receiving a jit callback, instrumentation methods can query the ProfilerManager to map MethodId to an instance of IMethodInfo and use that to get the instruction graph, examine metadata etc…
 
-## Infrastructure Interfaces
+## <a name="infrastructure">Infrastructure Interfaces</a>
 
 ### InstrumentationMethod object and IInstrumentationMethod interface
 Apart from implementing the interesting ICorProfilerCallback interfaces, InstrumentationMethods also implement IInstrumentationMethod. This interface contains an InstrumentationMethod specific Initialize call that receives the ProfilerManager instance from which the raw ICorProfilerInfo can be accessed as well as the higher level api.
@@ -120,9 +137,9 @@ Note that the function enter/exit callbacks actually aren’t required as it is 
 
 For scenarios involving IL Rewriting, the Instrumentation Methods will be given the opportunity to rewrite IL using the IL graph at two different callbacks: right before the CLR jits the method the first time, and after a rejit is request and the method is called again.  The instrumentation methods will be called in priority order first, and will perform their il manipulations using the il graph (see interface description below). Once the instrumentation methods have finished, the il, exception ranges, and localvar sigs will be rendered back to a byte stream and given the snapins to manipulate. Finally, the actual il method body will be given to the clr to finish the rewrite.
 
-## Abstractions
+## <a name="abstractions">Abstractions</a>
 
-### Data Items
+### <a name="dataitems">Data Items</a>
 One design point that has proven to be very useful in other diagnostic code base is the concept of data items and data containers. In the Data Container model, most system owned object derives from a hash table base class that implements the IDataContainer interface that holds instances of IDataItem. This allows consumers of the API to extend objects and add data within the object that makes sense.
 For example, If Intellitrace wants to extend the module info object, they can do so by placing an extension object into the data item collection for each module. This allows them to extend the object with Intellitrace specific data without having to create their own collection that maps ModuleInfo to ModuleInfoIntellitraceExtension.
 
@@ -200,52 +217,52 @@ HRESULT MyInstrumentationMethod::OnBeforeJitComplete(IMethodInfo* pMethodInfo)
 }
 ```
 
-### Instruction Graph
+### <a name="instruction-graph">Instruction Graph</a>
 
 The instruction graph is a high level representation of the instructions in a method. It hangs off the MethodInfo object and is the core of how instrumentation happens in the profiler host model. Consumers of the instruction graph can insert, modify and remove instances of ILInstruction and its derived classes into the graph. The exception ranges also hang off the MethodInfo object and can be updated to reflect the new graph. The Cor IL Map is automatically generated from the modified offsets after the instrumentation methods have executed.
 
 IInstructionGraph  interface contains methods to consume and manipulate the graph.
 
 
-### Method Info
+### <a name="method">Method Info</a>
 
 MethodInfo is an abstraction over a method. It contains the profiler runtime method id, the method token, a pointer the module, an instruction graph, a collection of method args that is used to manipulate the local var sig for the method, a representation of the method header (Fat/Tiny) and references to all of the exception regions in a method.  The IL rewriting events, OnBeforeJitComplete and OnRejit, in the high level api receive an instance of this object.
 
 
-### Module Info
+### <a name="module">Module Info</a>
 
 Module info is an abstraction over a loaded managed module in the target process. It references the AssemblyInfo that contains the module, the containing appdomain, raw interface pointers to metadata import and export, and other helpers to make working with modules and metadata more efficient or easier.
 
 ***NOTE:*** Intellitrace’s definition of ModuleInfo has the type system hanging off of it. The purpose of the type system is to allow native code to extract the necessary target application information at each intellitrace instrumentation point in order to store it into the collection plan. My current thoughts on the type system is it is intellitrace specific and should not be exposed in this API.
 
-### Assembly Info
+### <a name="assembly">Assembly Info</a>
 
 AssemblyInfo represents an assembly loaded in an AppDomain which is made up of a collection of modules.
 
-### AppDomain Info
+### <a name="appdomain">AppDomain Info</a>
 
 This object was originally a single object in Intellitrace called AppDomainCollection. I think I would rather have an AppDomainInfo object for each Appdomain with the ability so search the appdomain collection.
 
-### Local Variables
+### <a name="local-var">Local Variables</a>
 
 Local variables in the CLR are described by the LocalVarSig blob which is a compressed description of the local variable slots and their types. The CLR provides helpers to convert from this compressed blob to the corresponding tokens which can use IMetadataImport.
 
 In Intellitrace, Local Variable manipulation is performed using the local variable collection that hangs off of MethodInfo. Unfortunately, it is tightly coupled to the type system which I wasn’t currently planning to carry forward in this api.
 
 
-## Single Ret and Other Automatic Transformations
+## <a name="transformations">Single Ret and Other Automatic Transformations</a>
 
 Almost all instrumentation models perform an il transformation on methods where multiple return points are replaced with a single return everything else jmps to. This is what makes epilog instrumentation possible. If configured to do so, and an instrumentation method returns that it needs to instrument a method, this standard transformation will be made by the ProfilerManager using the instruction graph before any instrumentation methods run. This centralizes one of the more difficult profiler operations while ensuring the transformation is visible in the instruction graph.
 
 Furthermore, almost all instrumented methods are converted to the CLR’s fat header to allow for exception ranges and more code than the tiny header allows for. The ProfilerManager will also perform that transformation before calling the instrumentation methods.
 
-## Metadata
+## <a name="metadata">Metadata</a>
 
 In this proposal, metadata is exposed using the standard public metadata apis: IMetaDataImport and IMetaDataEmit. Instances of these are available off the IModuleInfo interface. However, there are helper methods on ModuleInfo that allow for mapping of runtime ids such as MethodId to metadata tokens and / or structures
 
 Today, metadata can only be modified during the module load callback except for local variable signatures.
 
-## Rejit
+## <a name="rejit">Rejit</a>
 
 Rejit is a feature of the CLR that allows a profiler to request that a previously jitted function needs to be rejitted so its instrumentation can be adjusted or removed.
 ProfilerManager will have an API to allow a profiler to request a rejit on a module and method. After the method is called, the instrumentation methods will each receive the instrumentation callback again. At the beginning of the rejit, the instruction graph reflect the original state of the method.

@@ -1,12 +1,13 @@
 # Getting Started with the CLR Instrumentation Engine
 
+1. [Introduction](#introduction)
+2. [Using CLRIE](#using-clrie)
+
 ## Supported Domains
 
-Issues specific to these domains will be listed in the below links.
+See [CLRIE in Azure](scenarios/azure.md)
 
-* [Azure App Service](scenarios/azureappservice.md) - Shipped as a preinstalled site extension and enabled via [Microsoft Visual Studio Snapshot Debugger](scenarios/snapshotdebugger.md) or [Microsoft Application Insights](scenarios/applicationinsights.md)
-
-## Introduction
+## Introduction <a name="introduction" />
 
 ### What is the CLR?
 
@@ -22,7 +23,7 @@ See the [MSDN Profiling Overview](https://docs.microsoft.com/en-us/dotnet/framew
 
 See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
-## Using the CLR Instrumentation Engine
+## Using the CLR Instrumentation Engine <a name="using-clrie"/>
 
 ### Cooperative Model
 
@@ -51,7 +52,7 @@ Make sure to include this environment variable if you are testing unsigned debug
 
 `MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
 
-See [App Service](scenarios/azureappservice.md) for details on leveraging the Clr InstrumentationEngine preinstalled site extension.
+See [CLRIE in Azure](scenarios/azure.md) for details about leveraging CLRIE on supported Azure platforms and products.
 
 #### Required Dlls
 The Instrumentation Engine supports both x86 and x64 configurations.

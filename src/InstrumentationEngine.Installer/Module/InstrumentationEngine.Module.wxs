@@ -6,7 +6,7 @@
             Version='$(var.Version)'>
         <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
-                 Description='Microsoft ClrInstrumentationEngine $(var.PackageVersion) ($(sys.BUILDARCH)) MergeModule $(var.InstrumentationEngine.Fragment.Configuration)'
+                 Description='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) MergeModule $(var.InstrumentationEngine.Fragment.Configuration)'
                  Comments='Copyright (c) All Rights Reserved.'
                  Manufacturer='Microsoft Corporation'
                  InstallerVersion='200'

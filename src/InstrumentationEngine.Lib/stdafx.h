@@ -66,6 +66,7 @@ using namespace ATL;
 
 #include "Macros.h"
 
+#include <queue>
 #include <vector>
 #include <memory>
 #include <unordered_map>
