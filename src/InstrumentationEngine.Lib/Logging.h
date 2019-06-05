@@ -3,15 +3,11 @@
 
 #pragma once
 
-#include "stdafx.h"
-#include <fstream>
+#include <atomic>
 #include <sstream>
-#ifndef PLATFORM_UNIX
-#include <thread>
-#endif
-#include <queue>
-#include "InstrumentationEngine.h"
-#include "File.h"
+
+#include "../InstrumentationEngine.Api/InstrumentationEngine.h"
+#include "LoggerService.h"
 
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX
@@ -27,9 +23,6 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-    // Currently, this is a static class which makes it easy to log to. However, if we wind up
-    // supporting in-proc sxs, this won't work.
-    // This class has grown big enough that it probably shouldn't be static any more
     class CLogging
     {
     public:
@@ -49,74 +42,33 @@ namespace MicrosoftInstrumentationEngine
         };
 
     private:
-#ifdef PLATFORM_UNIX
-        static constexpr const char* ERROR_PREFIX_FORMAT = "LogError[%H:%M:%S]:";
-        static constexpr const char* MESSAGE_PREFIX_FORMAT = "LogMessage[%H:%M:%S]:";
-#else
-        static constexpr const WCHAR* ERROR_PREFIX_FORMAT = _T("LogError[%H:%M:%S]:");
-        static constexpr const WCHAR* MESSAGE_PREFIX_FORMAT = _T("LogMessage[%H:%M:%S]:");
-#endif
-
-    private:
-        static volatile LoggingFlags s_loggingFlags;
-        static bool s_bEnableDiagnosticLogToDebugPort;
-        static volatile LoggingFlags s_enableLoggingToFile;
-
-        static std::unique_ptr<FILE, FILEDeleter> s_outputFile;
-
-        // critical section which protects the static s_pLoggingHost during startup and shutdown and other state
-        // such as s_loggingFlags
-        // Use GetLoggingHost to make sure this is taken.
-        static CCriticalSection s_loggingCs;
-
-        static ATL::CComPtr<IProfilerManagerLoggingHost> s_pLoggingHost;
-        // critical section which protects the shared buffer for reads/writes
-        static CCriticalSection s_eventLoggingCs;
-
-        static CHandle s_hLogEvent;
-
-        static HANDLE s_hEventSource;
-
-        static std::queue<tstring> s_EventLogMessageQueue;
-        static size_t s_queueLength;
-
-    private:
-        static void OutputLogFilePrefix(_In_ LoggingFlags loggingFlags);
-        static void OutputLogFileLine(_In_ const WCHAR* szLine);
-        static void CloseLogFile();
-
-        static void GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost);
-
-        static LoggingFlags GetCurrentLoggingFlags();
-
-        //LPTHREAD_START_ROUTINE
-        static DWORD WINAPI LogReportEvent(_In_ LPVOID lpParam);
-
-        static HRESULT WriteToSharedBuffer(_In_ LPCWSTR wszEventLog);
-        static HRESULT ReadFromSharedBuffer(_Out_ tstring& wszEventLog);
+        static CInitOnce s_initialize;
+        static CSingleton<CLoggerService> s_loggerService;
+        static std::atomic_size_t s_initCount;
 
     public:
-        static void LogMessage(_In_ const WCHAR* szMessage, ...);
-        static void LogError(_In_ const WCHAR* szError, ...);
-        static void LogDumpMessage(_In_ const WCHAR* szMessage, ...);
-
-        static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
-
-        static void EnableDiagnosticLogToDebugPort(_In_ bool enable);
-        static void EnableLoggingToFile(_In_ LoggingFlags loggingFlags, _In_ const tstring& filePath);
+        // Call this to determine if logging should be allowed for a specific log type.
+        static bool AllowLogEntry(_In_ LoggingFlags flags);
 
         // Allows instrumentation methods and hosts to ask for the current logging flags
         static HRESULT GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
 
+        static void LogMessage(_In_ const WCHAR* szMessage, ...);
+        static void LogError(_In_ const WCHAR* szError, ...);
+        static void LogDumpMessage(_In_ const WCHAR* szMessage, ...);
+
+        static HRESULT Initialize();
+
+        static void SetLogToDebugPort(_In_ bool enable);
+
         // Allows instrumentation methods and hosts to modify the current logging flags
         static HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
 
-        // Call this to determine if logging should be allowed for a specific log type.
-        static bool AllowLogEntry(_In_ LoggingFlags flags);
+        static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
 
-        // Sets up the EventLogging thread
-        static HRESULT InitializeEventLogging();
+        static HRESULT Shutdown();
 
-        static HRESULT TerminateEventLogging();
+    private:
+        static HRESULT InitializeCore();
     };
 }

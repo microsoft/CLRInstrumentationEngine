@@ -28,12 +28,10 @@ namespace MicrosoftInstrumentationEngine
                      public IProfilerManager,
                      public IProfilerManager2,
                      public IProfilerManager3,
+                     public IProfilerManager4,
                      public IProfilerManagerLogging,
                      public ICorProfilerCallback7
     {
-    private:
-        static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-
     private:
         // currently, the profiler manager does not support in-proc sxs.
         // If this is non-null during the initialize call, the profiler attach is rejected.
@@ -210,6 +208,7 @@ namespace MicrosoftInstrumentationEngine
             COM_INTERFACE_ENTRY(IProfilerManager)
             COM_INTERFACE_ENTRY(IProfilerManager2)
             COM_INTERFACE_ENTRY(IProfilerManager3)
+            COM_INTERFACE_ENTRY(IProfilerManager4)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -445,6 +444,10 @@ namespace MicrosoftInstrumentationEngine
     // IProfilerManager3 Methods
     public:
         STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer);
+
+    // IProfilerManager4 Methods
+    public:
+        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
 
     // IProfilerManagerLogging Methods
     public:
@@ -966,7 +969,7 @@ public:
     CSEHTranslatorHolder()
         : released(false)
     {
-        m_oldSehTranslator = _set_se_translator(SehTranslatorFunc);
+        m_oldSehTranslator = _set_se_translator(MicrosoftInstrumentationEngine::SehTranslatorFunc);
     }
 
     void RestoreSEHTranslator()

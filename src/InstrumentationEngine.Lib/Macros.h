@@ -40,6 +40,11 @@ namespace MicrosoftInstrumentationEngine
     do { errno_t ifFailRetErrno_result = EXPR; IfFailRet(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
 #endif
 
+#ifndef IfFailRetNoLog
+#define IfFailRetNoLog(EXPR) \
+    do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
+#endif
+
 // Treats errno 0 as severity=SUCCESS others to severity=ERROR, sets facility to null, and code to 16 least-significant bits of errno.
 #ifndef MAKE_HRESULT_FROM_ERRNO
 #define MAKE_HRESULT_FROM_ERRNO(errnoValue) \
@@ -50,6 +55,11 @@ namespace MicrosoftInstrumentationEngine
 #ifndef IfNullRetPointer
 #define IfNullRetPointer(EXPR) \
     do { if (NULL == (EXPR)) { CLogging::LogError(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_POINTER; } } while (false)
+#endif
+
+#ifndef IfNullRetPointerNoLog
+#define IfNullRetPointerNoLog(EXPR) \
+    do { if (NULL == (EXPR)) { return E_POINTER; } } while (false)
 #endif
 
 #ifndef IfNullRet
@@ -68,6 +78,21 @@ namespace MicrosoftInstrumentationEngine
 
 #ifndef IsFlagClear
     #define IsFlagClear(dwAllFlags, dwFlag) (((dwAllFlags) & (dwFlag)) == 0)
+#endif
+
+#ifndef IfNotInitRet
+#define IfNotInitRet(initOnce) \
+    do { if (!initOnce.IsSuccessful()) { return; } } while (false)
+#endif
+
+#ifndef IfNotInitRetFalse
+#define IfNotInitRetFalse(initOnce) \
+    do { if (!initOnce.IsSuccessful()) { return false; } } while (false)
+#endif
+
+#ifndef IfNotInitRetUnexpected
+#define IfNotInitRetUnexpected(initOnce) \
+    do { if (!initOnce.IsSuccessful()) { return E_UNEXPECTED; } } while (false)
 #endif
 
     template<typename T, int size>

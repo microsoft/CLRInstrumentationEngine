@@ -18,9 +18,6 @@
 #include "RawProfilerHookSettingsReader.h"
 #include "SafeFindFileHandle.h"
 
-#include "../InstrumentationEngine/ImplQueryInterface.h"
-#include "../InstrumentationEngine/refcount.h"
-
 using Agent::Diagnostics::Param;
 
 #endif
