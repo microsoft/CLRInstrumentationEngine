@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0620 
-    protocol : all , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0620 
+    protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -21,11 +21,6 @@
 /* verify that the <rpcndr.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
 #define __REQUIRED_RPCNDR_H_VERSION__ 500
-#endif
-
-/* verify that the <rpcsal.h> version is high enough to compile this file*/
-#ifndef __REQUIRED_RPCSAL_H_VERSION__
-#define __REQUIRED_RPCSAL_H_VERSION__ 100
 #endif
 
 #include "rpc.h"
@@ -829,50 +824,50 @@ EXTERN_C const IID IID_IProfilerManager;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetupProfilingEnvironment( 
-            /* [in] */ __RPC__deref_in_opt BSTR bstrConfigPath[  ],
+            /* [in] */ BSTR bstrConfigPath[  ],
             /* [in] */ UINT numConfigPaths) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddRawProfilerHook( 
-            /* [in] */ __RPC__in_opt IUnknown *pUnkProfilerCallback) = 0;
+            /* [in] */ IUnknown *pUnkProfilerCallback) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveRawProfilerHook( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorProfilerInfo( 
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler) = 0;
+            /* [out] */ IUnknown **ppCorProfiler) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetProfilerHost( 
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost) = 0;
+            /* [out] */ IProfilerManagerHost **ppProfilerManagerHost) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLoggingInstance( 
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging) = 0;
+            /* [out] */ IProfilerManagerLogging **ppLogging) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetLoggingHost( 
-            /* [in] */ __RPC__in_opt IProfilerManagerLoggingHost *pLoggingHost) = 0;
+            /* [in] */ IProfilerManagerLoggingHost *pLoggingHost) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainCollection( 
-            /* [out] */ __RPC__deref_out_opt IAppDomainCollection **ppAppDomainCollection) = 0;
+            /* [out] */ IAppDomainCollection **ppAppDomainCollection) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateSignatureBuilder( 
-            /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignatureBuilder) = 0;
+            /* [out] */ ISignatureBuilder **ppSignatureBuilder) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstrumentationMethod( 
-            /* [in] */ __RPC__in REFGUID cslid,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppUnknown) = 0;
+            /* [in] */ REFGUID cslid,
+            /* [out] */ IUnknown **ppUnknown) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveInstrumentationMethod( 
-            /* [in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod) = 0;
+            /* [in] */ IInstrumentationMethod *pInstrumentationMethod) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddInstrumentationMethod( 
-            /* [in] */ __RPC__in BSTR bstrModulePath,
-            /* [in] */ __RPC__in BSTR bstrName,
-            /* [in] */ __RPC__in BSTR bstrDescription,
-            /* [in] */ __RPC__in BSTR bstrModule,
-            /* [in] */ __RPC__in BSTR bstrClassGuid,
+            /* [in] */ BSTR bstrModulePath,
+            /* [in] */ BSTR bstrName,
+            /* [in] */ BSTR bstrDescription,
+            /* [in] */ BSTR bstrModule,
+            /* [in] */ BSTR bstrClassGuid,
             /* [in] */ DWORD dwPriority,
-            /* [out] */ __RPC__deref_out_opt IInstrumentationMethod **pInstrumentationMethod) = 0;
+            /* [out] */ IInstrumentationMethod **pInstrumentationMethod) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRuntimeType( 
-            /* [out] */ __RPC__out COR_PRF_RUNTIME_TYPE *pRuntimeType) = 0;
+            /* [out] */ COR_PRF_RUNTIME_TYPE *pRuntimeType) = 0;
         
     };
     
@@ -884,75 +879,75 @@ EXTERN_C const IID IID_IProfilerManager;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManager * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManager * This);
+            IProfilerManager * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManager * This);
+            IProfilerManager * This);
         
         HRESULT ( STDMETHODCALLTYPE *SetupProfilingEnvironment )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__deref_in_opt BSTR bstrConfigPath[  ],
+            IProfilerManager * This,
+            /* [in] */ BSTR bstrConfigPath[  ],
             /* [in] */ UINT numConfigPaths);
         
         HRESULT ( STDMETHODCALLTYPE *AddRawProfilerHook )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in_opt IUnknown *pUnkProfilerCallback);
+            IProfilerManager * This,
+            /* [in] */ IUnknown *pUnkProfilerCallback);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveRawProfilerHook )( 
-            __RPC__in IProfilerManager * This);
+            IProfilerManager * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorProfilerInfo )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler);
+            IProfilerManager * This,
+            /* [out] */ IUnknown **ppCorProfiler);
         
         HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost);
+            IProfilerManager * This,
+            /* [out] */ IProfilerManagerHost **ppProfilerManagerHost);
         
         HRESULT ( STDMETHODCALLTYPE *GetLoggingInstance )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging);
+            IProfilerManager * This,
+            /* [out] */ IProfilerManagerLogging **ppLogging);
         
         HRESULT ( STDMETHODCALLTYPE *SetLoggingHost )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in_opt IProfilerManagerLoggingHost *pLoggingHost);
+            IProfilerManager * This,
+            /* [in] */ IProfilerManagerLoggingHost *pLoggingHost);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainCollection )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__deref_out_opt IAppDomainCollection **ppAppDomainCollection);
+            IProfilerManager * This,
+            /* [out] */ IAppDomainCollection **ppAppDomainCollection);
         
         HRESULT ( STDMETHODCALLTYPE *CreateSignatureBuilder )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignatureBuilder);
+            IProfilerManager * This,
+            /* [out] */ ISignatureBuilder **ppSignatureBuilder);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstrumentationMethod )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in REFGUID cslid,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppUnknown);
+            IProfilerManager * This,
+            /* [in] */ REFGUID cslid,
+            /* [out] */ IUnknown **ppUnknown);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveInstrumentationMethod )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod);
+            IProfilerManager * This,
+            /* [in] */ IInstrumentationMethod *pInstrumentationMethod);
         
         HRESULT ( STDMETHODCALLTYPE *AddInstrumentationMethod )( 
-            __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in BSTR bstrModulePath,
-            /* [in] */ __RPC__in BSTR bstrName,
-            /* [in] */ __RPC__in BSTR bstrDescription,
-            /* [in] */ __RPC__in BSTR bstrModule,
-            /* [in] */ __RPC__in BSTR bstrClassGuid,
+            IProfilerManager * This,
+            /* [in] */ BSTR bstrModulePath,
+            /* [in] */ BSTR bstrName,
+            /* [in] */ BSTR bstrDescription,
+            /* [in] */ BSTR bstrModule,
+            /* [in] */ BSTR bstrClassGuid,
             /* [in] */ DWORD dwPriority,
-            /* [out] */ __RPC__deref_out_opt IInstrumentationMethod **pInstrumentationMethod);
+            /* [out] */ IInstrumentationMethod **pInstrumentationMethod);
         
         HRESULT ( STDMETHODCALLTYPE *GetRuntimeType )( 
-            __RPC__in IProfilerManager * This,
-            /* [out] */ __RPC__out COR_PRF_RUNTIME_TYPE *pRuntimeType);
+            IProfilerManager * This,
+            /* [out] */ COR_PRF_RUNTIME_TYPE *pRuntimeType);
         
         END_INTERFACE
     } IProfilerManagerVtbl;
@@ -1043,7 +1038,7 @@ EXTERN_C const IID IID_IProfilerManagerHost;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE Initialize( 
-            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager) = 0;
+            /* [in] */ IProfilerManager *pProfilerManager) = 0;
         
     };
     
@@ -1055,20 +1050,20 @@ EXTERN_C const IID IID_IProfilerManagerHost;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManagerHost * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManagerHost * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManagerHost * This);
+            IProfilerManagerHost * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManagerHost * This);
+            IProfilerManagerHost * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in IProfilerManagerHost * This,
-            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager);
+            IProfilerManagerHost * This,
+            /* [in] */ IProfilerManager *pProfilerManager);
         
         END_INTERFACE
     } IProfilerManagerHostVtbl;
@@ -1123,19 +1118,19 @@ EXTERN_C const IID IID_IProfilerManagerLogging;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE LogMessage( 
-            /* [in] */ __RPC__in const WCHAR *wszMessage) = 0;
+            /* [in] */ const WCHAR *wszMessage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE LogError( 
-            /* [in] */ __RPC__in const WCHAR *wszError) = 0;
+            /* [in] */ const WCHAR *wszError) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE LogDumpMessage( 
-            /* [in] */ __RPC__in const WCHAR *wszMessage) = 0;
+            /* [in] */ const WCHAR *wszMessage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnableDiagnosticLogToDebugPort( 
             /* [in] */ BOOL enable) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLoggingFlags( 
-            /* [out] */ __RPC__out enum LoggingFlags *pLoggingFlags) = 0;
+            /* [out] */ enum LoggingFlags *pLoggingFlags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetLoggingFlags( 
             /* [in] */ enum LoggingFlags loggingFlags) = 0;
@@ -1150,39 +1145,39 @@ EXTERN_C const IID IID_IProfilerManagerLogging;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManagerLogging * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManagerLogging * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManagerLogging * This);
+            IProfilerManagerLogging * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManagerLogging * This);
+            IProfilerManagerLogging * This);
         
         HRESULT ( STDMETHODCALLTYPE *LogMessage )( 
-            __RPC__in IProfilerManagerLogging * This,
-            /* [in] */ __RPC__in const WCHAR *wszMessage);
+            IProfilerManagerLogging * This,
+            /* [in] */ const WCHAR *wszMessage);
         
         HRESULT ( STDMETHODCALLTYPE *LogError )( 
-            __RPC__in IProfilerManagerLogging * This,
-            /* [in] */ __RPC__in const WCHAR *wszError);
+            IProfilerManagerLogging * This,
+            /* [in] */ const WCHAR *wszError);
         
         HRESULT ( STDMETHODCALLTYPE *LogDumpMessage )( 
-            __RPC__in IProfilerManagerLogging * This,
-            /* [in] */ __RPC__in const WCHAR *wszMessage);
+            IProfilerManagerLogging * This,
+            /* [in] */ const WCHAR *wszMessage);
         
         HRESULT ( STDMETHODCALLTYPE *EnableDiagnosticLogToDebugPort )( 
-            __RPC__in IProfilerManagerLogging * This,
+            IProfilerManagerLogging * This,
             /* [in] */ BOOL enable);
         
         HRESULT ( STDMETHODCALLTYPE *GetLoggingFlags )( 
-            __RPC__in IProfilerManagerLogging * This,
-            /* [out] */ __RPC__out enum LoggingFlags *pLoggingFlags);
+            IProfilerManagerLogging * This,
+            /* [out] */ enum LoggingFlags *pLoggingFlags);
         
         HRESULT ( STDMETHODCALLTYPE *SetLoggingFlags )( 
-            __RPC__in IProfilerManagerLogging * This,
+            IProfilerManagerLogging * This,
             /* [in] */ enum LoggingFlags loggingFlags);
         
         END_INTERFACE
@@ -1253,13 +1248,13 @@ EXTERN_C const IID IID_IProfilerManagerLoggingHost;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE LogMessage( 
-            /* [in] */ __RPC__in const WCHAR *wszMessage) = 0;
+            /* [in] */ const WCHAR *wszMessage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE LogError( 
-            /* [in] */ __RPC__in const WCHAR *wszError) = 0;
+            /* [in] */ const WCHAR *wszError) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE LogDumpMessage( 
-            /* [in] */ __RPC__in const WCHAR *wszMessage) = 0;
+            /* [in] */ const WCHAR *wszMessage) = 0;
         
     };
     
@@ -1271,28 +1266,28 @@ EXTERN_C const IID IID_IProfilerManagerLoggingHost;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManagerLoggingHost * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManagerLoggingHost * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManagerLoggingHost * This);
+            IProfilerManagerLoggingHost * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManagerLoggingHost * This);
+            IProfilerManagerLoggingHost * This);
         
         HRESULT ( STDMETHODCALLTYPE *LogMessage )( 
-            __RPC__in IProfilerManagerLoggingHost * This,
-            /* [in] */ __RPC__in const WCHAR *wszMessage);
+            IProfilerManagerLoggingHost * This,
+            /* [in] */ const WCHAR *wszMessage);
         
         HRESULT ( STDMETHODCALLTYPE *LogError )( 
-            __RPC__in IProfilerManagerLoggingHost * This,
-            /* [in] */ __RPC__in const WCHAR *wszError);
+            IProfilerManagerLoggingHost * This,
+            /* [in] */ const WCHAR *wszError);
         
         HRESULT ( STDMETHODCALLTYPE *LogDumpMessage )( 
-            __RPC__in IProfilerManagerLoggingHost * This,
-            /* [in] */ __RPC__in const WCHAR *wszMessage);
+            IProfilerManagerLoggingHost * This,
+            /* [in] */ const WCHAR *wszMessage);
         
         END_INTERFACE
     } IProfilerManagerLoggingHostVtbl;
@@ -1353,49 +1348,49 @@ EXTERN_C const IID IID_IInstrumentationMethod;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE Initialize( 
-            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager) = 0;
+            /* [in] */ IProfilerManager *pProfilerManager) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnAppDomainCreated( 
-            /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo) = 0;
+            /* [in] */ IAppDomainInfo *pAppDomainInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnAppDomainShutdown( 
-            /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo) = 0;
+            /* [in] */ IAppDomainInfo *pAppDomainInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnAssemblyLoaded( 
-            /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo) = 0;
+            /* [in] */ IAssemblyInfo *pAssemblyInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded( 
-            /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo) = 0;
+            /* [in] */ IAssemblyInfo *pAssemblyInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded( 
-            /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo) = 0;
+            /* [in] */ IModuleInfo *pModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnModuleUnloaded( 
-            /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo) = 0;
+            /* [in] */ IModuleInfo *pModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnShutdown( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit,
-            /* [out] */ __RPC__out BOOL *pbInstrument) = 0;
+            /* [out] */ BOOL *pbInstrument) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeforeInstrumentMethod( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE InstrumentMethod( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE OnInstrumentationComplete( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AllowInlineSite( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfoInlinee,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfoCaller,
-            /* [out] */ __RPC__out BOOL *pbAllowInline) = 0;
+            /* [in] */ IMethodInfo *pMethodInfoInlinee,
+            /* [in] */ IMethodInfo *pMethodInfoCaller,
+            /* [out] */ BOOL *pbAllowInline) = 0;
         
     };
     
@@ -1407,74 +1402,74 @@ EXTERN_C const IID IID_IInstrumentationMethod;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstrumentationMethod * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstrumentationMethod * This);
+            IInstrumentationMethod * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstrumentationMethod * This);
+            IInstrumentationMethod * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager);
+            IInstrumentationMethod * This,
+            /* [in] */ IProfilerManager *pProfilerManager);
         
         HRESULT ( STDMETHODCALLTYPE *OnAppDomainCreated )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IAppDomainInfo *pAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnAppDomainShutdown )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IAppDomainInfo *pAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnAssemblyLoaded )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IAssemblyInfo *pAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnAssemblyUnloaded )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IAssemblyInfo *pAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnModuleLoaded )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IModuleInfo *pModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnModuleUnloaded )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo);
+            IInstrumentationMethod * This,
+            /* [in] */ IModuleInfo *pModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *OnShutdown )( 
-            __RPC__in IInstrumentationMethod * This);
+            IInstrumentationMethod * This);
         
         HRESULT ( STDMETHODCALLTYPE *ShouldInstrumentMethod )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            IInstrumentationMethod * This,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit,
-            /* [out] */ __RPC__out BOOL *pbInstrument);
+            /* [out] */ BOOL *pbInstrument);
         
         HRESULT ( STDMETHODCALLTYPE *BeforeInstrumentMethod )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            IInstrumentationMethod * This,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
         HRESULT ( STDMETHODCALLTYPE *InstrumentMethod )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            IInstrumentationMethod * This,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
         HRESULT ( STDMETHODCALLTYPE *OnInstrumentationComplete )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            IInstrumentationMethod * This,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
         HRESULT ( STDMETHODCALLTYPE *AllowInlineSite )( 
-            __RPC__in IInstrumentationMethod * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfoInlinee,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfoCaller,
-            /* [out] */ __RPC__out BOOL *pbAllowInline);
+            IInstrumentationMethod * This,
+            /* [in] */ IMethodInfo *pMethodInfoInlinee,
+            /* [in] */ IMethodInfo *pMethodInfoCaller,
+            /* [out] */ BOOL *pbAllowInline);
         
         END_INTERFACE
     } IInstrumentationMethodVtbl;
@@ -1565,14 +1560,14 @@ EXTERN_C const IID IID_IDataContainer;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetDataItem( 
-            /* [in] */ __RPC__in const GUID *componentId,
-            /* [in] */ __RPC__in const GUID *objectGuid,
-            /* [in] */ __RPC__in_opt IUnknown *pDataItem) = 0;
+            /* [in] */ const GUID *componentId,
+            /* [in] */ const GUID *objectGuid,
+            /* [in] */ IUnknown *pDataItem) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataItem( 
-            /* [in] */ __RPC__in const GUID *componentId,
-            /* [in] */ __RPC__in const GUID *objectGuid,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppDataItem) = 0;
+            /* [in] */ const GUID *componentId,
+            /* [in] */ const GUID *objectGuid,
+            /* [out] */ IUnknown **ppDataItem) = 0;
         
     };
     
@@ -1584,28 +1579,28 @@ EXTERN_C const IID IID_IDataContainer;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IDataContainer * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IDataContainer * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IDataContainer * This);
+            IDataContainer * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IDataContainer * This);
+            IDataContainer * This);
         
         HRESULT ( STDMETHODCALLTYPE *SetDataItem )( 
-            __RPC__in IDataContainer * This,
-            /* [in] */ __RPC__in const GUID *componentId,
-            /* [in] */ __RPC__in const GUID *objectGuid,
-            /* [in] */ __RPC__in_opt IUnknown *pDataItem);
+            IDataContainer * This,
+            /* [in] */ const GUID *componentId,
+            /* [in] */ const GUID *objectGuid,
+            /* [in] */ IUnknown *pDataItem);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataItem )( 
-            __RPC__in IDataContainer * This,
-            /* [in] */ __RPC__in const GUID *componentId,
-            /* [in] */ __RPC__in const GUID *objectGuid,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppDataItem);
+            IDataContainer * This,
+            /* [in] */ const GUID *componentId,
+            /* [in] */ const GUID *objectGuid,
+            /* [out] */ IUnknown **ppDataItem);
         
         END_INTERFACE
     } IDataContainerVtbl;
@@ -1663,70 +1658,70 @@ EXTERN_C const IID IID_IInstruction;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetOffset( 
-            /* [out] */ __RPC__out DWORD *pdwOffset) = 0;
+            /* [out] */ DWORD *pdwOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOriginalOffset( 
-            /* [out] */ __RPC__out DWORD *pdwOffset) = 0;
+            /* [out] */ DWORD *pdwOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOpCodeName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+            /* [out] */ BSTR *pbstrName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOpCode( 
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode) = 0;
+            /* [out] */ enum ILOrdinalOpcode *pOpCode) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAlternateOrdinalOpcode( 
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode) = 0;
+            /* [out] */ enum ILOrdinalOpcode *pOpCode) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionLength( 
-            /* [out] */ __RPC__out DWORD *pdwLength) = 0;
+            /* [out] */ DWORD *pdwLength) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOpcodeFlags( 
-            /* [out] */ __RPC__out enum ILOpcodeFlags *pFlags) = 0;
+            /* [out] */ enum ILOpcodeFlags *pFlags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOpcodeLength( 
-            /* [out] */ __RPC__out DWORD *pdwLength) = 0;
+            /* [out] */ DWORD *pdwLength) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOperandType( 
-            /* [out] */ __RPC__out enum ILOperandType *pType) = 0;
+            /* [out] */ enum ILOperandType *pType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOperandLength( 
-            /* [out] */ __RPC__out DWORD *pdwLength) = 0;
+            /* [out] */ DWORD *pdwLength) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsNew( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsRemoved( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsBranch( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsSwitch( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsCallInstruction( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetTerminationType( 
-            /* [out] */ __RPC__out enum InstructionTerminationType *pTerminationType) = 0;
+            /* [out] */ enum InstructionTerminationType *pTerminationType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsFallThrough( 
-            /* [out] */ __RPC__out BOOL *pbIsFallThrough) = 0;
+            /* [out] */ BOOL *pbIsFallThrough) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetNextInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction) = 0;
+            /* [out] */ IInstruction **ppNextInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPreviousInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction) = 0;
+            /* [out] */ IInstruction **ppPrevInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOriginalNextInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction) = 0;
+            /* [out] */ IInstruction **ppNextInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOriginalPreviousInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction) = 0;
+            /* [out] */ IInstruction **ppPrevInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionGeneration( 
-            /* [out] */ __RPC__out enum InstructionGeneration *pInstructionGeneration) = 0;
+            /* [out] */ enum InstructionGeneration *pInstructionGeneration) = 0;
         
     };
     
@@ -1738,104 +1733,104 @@ EXTERN_C const IID IID_IInstruction;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstruction * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstruction * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstruction * This);
+            IInstruction * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstruction * This);
+            IInstruction * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetOffset )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out DWORD *pdwOffset);
+            IInstruction * This,
+            /* [out] */ DWORD *pdwOffset);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalOffset )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out DWORD *pdwOffset);
+            IInstruction * This,
+            /* [out] */ DWORD *pdwOffset);
         
         HRESULT ( STDMETHODCALLTYPE *GetOpCodeName )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IInstruction * This,
+            /* [out] */ BSTR *pbstrName);
         
         HRESULT ( STDMETHODCALLTYPE *GetOpCode )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
+            IInstruction * This,
+            /* [out] */ enum ILOrdinalOpcode *pOpCode);
         
         HRESULT ( STDMETHODCALLTYPE *GetAlternateOrdinalOpcode )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
+            IInstruction * This,
+            /* [out] */ enum ILOrdinalOpcode *pOpCode);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionLength )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
+            IInstruction * This,
+            /* [out] */ DWORD *pdwLength);
         
         HRESULT ( STDMETHODCALLTYPE *GetOpcodeFlags )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum ILOpcodeFlags *pFlags);
+            IInstruction * This,
+            /* [out] */ enum ILOpcodeFlags *pFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetOpcodeLength )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
+            IInstruction * This,
+            /* [out] */ DWORD *pdwLength);
         
         HRESULT ( STDMETHODCALLTYPE *GetOperandType )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum ILOperandType *pType);
+            IInstruction * This,
+            /* [out] */ enum ILOperandType *pType);
         
         HRESULT ( STDMETHODCALLTYPE *GetOperandLength )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
+            IInstruction * This,
+            /* [out] */ DWORD *pdwLength);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsNew )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsRemoved )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsBranch )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsSwitch )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsCallInstruction )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetTerminationType )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum InstructionTerminationType *pTerminationType);
+            IInstruction * This,
+            /* [out] */ enum InstructionTerminationType *pTerminationType);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsFallThrough )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbIsFallThrough);
+            IInstruction * This,
+            /* [out] */ BOOL *pbIsFallThrough);
         
         HRESULT ( STDMETHODCALLTYPE *GetNextInstruction )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
+            IInstruction * This,
+            /* [out] */ IInstruction **ppNextInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetPreviousInstruction )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
+            IInstruction * This,
+            /* [out] */ IInstruction **ppPrevInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalNextInstruction )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
+            IInstruction * This,
+            /* [out] */ IInstruction **ppNextInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalPreviousInstruction )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
+            IInstruction * This,
+            /* [out] */ IInstruction **ppPrevInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionGeneration )( 
-            __RPC__in IInstruction * This,
-            /* [out] */ __RPC__out enum InstructionGeneration *pInstructionGeneration);
+            IInstruction * This,
+            /* [out] */ enum InstructionGeneration *pInstructionGeneration);
         
         END_INTERFACE
     } IInstructionVtbl;
@@ -1953,28 +1948,28 @@ EXTERN_C const IID IID_IExceptionSection;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetMethodInfo( 
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo) = 0;
+            /* [out] */ IMethodInfo **ppMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetExceptionClauses( 
-            /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppEnumExceptionClauses) = 0;
+            /* [out] */ IEnumExceptionClauses **ppEnumExceptionClauses) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddExceptionClause( 
-            /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause) = 0;
+            /* [in] */ IExceptionClause *pExceptionClause) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveExceptionClause( 
-            /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause) = 0;
+            /* [in] */ IExceptionClause *pExceptionClause) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveAllExceptionClauses( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddNewExceptionClause( 
             /* [in] */ DWORD flags,
-            /* [in] */ __RPC__in_opt IInstruction *pTryFirstInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pTryLastInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pHandlerFirstInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pHandlerLastInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pFilterLastInstruction,
+            /* [in] */ IInstruction *pTryFirstInstruction,
+            /* [in] */ IInstruction *pTryLastInstruction,
+            /* [in] */ IInstruction *pHandlerFirstInstruction,
+            /* [in] */ IInstruction *pHandlerLastInstruction,
+            /* [in] */ IInstruction *pFilterLastInstruction,
             /* [in] */ mdToken handlerTypeToken,
-            /* [out] */ __RPC__deref_out_opt IExceptionClause **ppExceptionClause) = 0;
+            /* [out] */ IExceptionClause **ppExceptionClause) = 0;
         
     };
     
@@ -1986,46 +1981,46 @@ EXTERN_C const IID IID_IExceptionSection;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IExceptionSection * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IExceptionSection * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IExceptionSection * This);
+            IExceptionSection * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IExceptionSection * This);
+            IExceptionSection * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfo )( 
-            __RPC__in IExceptionSection * This,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            IExceptionSection * This,
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetExceptionClauses )( 
-            __RPC__in IExceptionSection * This,
-            /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppEnumExceptionClauses);
+            IExceptionSection * This,
+            /* [out] */ IEnumExceptionClauses **ppEnumExceptionClauses);
         
         HRESULT ( STDMETHODCALLTYPE *AddExceptionClause )( 
-            __RPC__in IExceptionSection * This,
-            /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause);
+            IExceptionSection * This,
+            /* [in] */ IExceptionClause *pExceptionClause);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveExceptionClause )( 
-            __RPC__in IExceptionSection * This,
-            /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause);
+            IExceptionSection * This,
+            /* [in] */ IExceptionClause *pExceptionClause);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveAllExceptionClauses )( 
-            __RPC__in IExceptionSection * This);
+            IExceptionSection * This);
         
         HRESULT ( STDMETHODCALLTYPE *AddNewExceptionClause )( 
-            __RPC__in IExceptionSection * This,
+            IExceptionSection * This,
             /* [in] */ DWORD flags,
-            /* [in] */ __RPC__in_opt IInstruction *pTryFirstInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pTryLastInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pHandlerFirstInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pHandlerLastInstruction,
-            /* [in] */ __RPC__in_opt IInstruction *pFilterLastInstruction,
+            /* [in] */ IInstruction *pTryFirstInstruction,
+            /* [in] */ IInstruction *pTryLastInstruction,
+            /* [in] */ IInstruction *pHandlerFirstInstruction,
+            /* [in] */ IInstruction *pHandlerLastInstruction,
+            /* [in] */ IInstruction *pFilterLastInstruction,
             /* [in] */ mdToken handlerTypeToken,
-            /* [out] */ __RPC__deref_out_opt IExceptionClause **ppExceptionClause);
+            /* [out] */ IExceptionClause **ppExceptionClause);
         
         END_INTERFACE
     } IExceptionSectionVtbl;
@@ -2095,43 +2090,43 @@ EXTERN_C const IID IID_IExceptionClause;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetFlags( 
-            /* [out] */ __RPC__out DWORD *pFlags) = 0;
+            /* [out] */ DWORD *pFlags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetTryFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetTryLastInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetHandlerFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetHandlerLastInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFilterFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetExceptionHandlerType( 
-            /* [out] */ __RPC__out mdToken *pToken) = 0;
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetFlags( 
             /* [in] */ DWORD flags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetTryFirstInstruction( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction) = 0;
+            /* [in] */ IInstruction *pInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetTryLastInstruction( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction) = 0;
+            /* [in] */ IInstruction *pInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetHandlerFirstInstruction( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction) = 0;
+            /* [in] */ IInstruction *pInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetHandlerLastInstruction( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction) = 0;
+            /* [in] */ IInstruction *pInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetFilterFirstInstruction( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction) = 0;
+            /* [in] */ IInstruction *pInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetExceptionHandlerType( 
             /* [in] */ mdToken token) = 0;
@@ -2146,71 +2141,71 @@ EXTERN_C const IID IID_IExceptionClause;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IExceptionClause * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IExceptionClause * This);
+            IExceptionClause * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IExceptionClause * This);
+            IExceptionClause * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetFlags )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__out DWORD *pFlags);
+            IExceptionClause * This,
+            /* [out] */ DWORD *pFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetTryFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IExceptionClause * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetTryLastInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IExceptionClause * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetHandlerFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IExceptionClause * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetHandlerLastInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IExceptionClause * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetFilterFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IExceptionClause * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetExceptionHandlerType )( 
-            __RPC__in IExceptionClause * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            IExceptionClause * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *SetFlags )( 
-            __RPC__in IExceptionClause * This,
+            IExceptionClause * This,
             /* [in] */ DWORD flags);
         
         HRESULT ( STDMETHODCALLTYPE *SetTryFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction);
+            IExceptionClause * This,
+            /* [in] */ IInstruction *pInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *SetTryLastInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction);
+            IExceptionClause * This,
+            /* [in] */ IInstruction *pInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *SetHandlerFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction);
+            IExceptionClause * This,
+            /* [in] */ IInstruction *pInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *SetHandlerLastInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction);
+            IExceptionClause * This,
+            /* [in] */ IInstruction *pInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *SetFilterFirstInstruction )( 
-            __RPC__in IExceptionClause * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstruction);
+            IExceptionClause * This,
+            /* [in] */ IInstruction *pInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *SetExceptionHandlerType )( 
-            __RPC__in IExceptionClause * This,
+            IExceptionClause * This,
             /* [in] */ mdToken token);
         
         END_INTERFACE
@@ -2306,8 +2301,8 @@ EXTERN_C const IID IID_IEnumExceptionClauses;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IExceptionClause **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IExceptionClause **rgelt,
+            /* [in] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -2315,10 +2310,10 @@ EXTERN_C const IID IID_IEnumExceptionClauses;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppenum) = 0;
+            /* [out] */ IEnumExceptionClauses **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -2330,37 +2325,37 @@ EXTERN_C const IID IID_IEnumExceptionClauses;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumExceptionClauses * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumExceptionClauses * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumExceptionClauses * This);
+            IEnumExceptionClauses * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumExceptionClauses * This);
+            IEnumExceptionClauses * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumExceptionClauses * This,
+            IEnumExceptionClauses * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IExceptionClause **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IExceptionClause **rgelt,
+            /* [in] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumExceptionClauses * This,
+            IEnumExceptionClauses * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumExceptionClauses * This);
+            IEnumExceptionClauses * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumExceptionClauses * This,
-            /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppenum);
+            IEnumExceptionClauses * This,
+            /* [out] */ IEnumExceptionClauses **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumExceptionClauses * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumExceptionClauses * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumExceptionClausesVtbl;
@@ -2427,15 +2422,15 @@ EXTERN_C const IID IID_IOperandInstruction;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetOperandType( 
-            /* [out] */ __RPC__out enum ILOperandType *pType) = 0;
+            /* [out] */ enum ILOperandType *pType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOperandValue( 
             /* [in] */ DWORD dwSize,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(dwSize, dwSize) BYTE *pBytes) = 0;
+            /* [length_is][size_is][out] */ BYTE *pBytes) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetOperandValue( 
             /* [in] */ DWORD dwSize,
-            /* [length_is][size_is][in] */ __RPC__in_ecount_part(dwSize, dwSize) BYTE *pBytes) = 0;
+            /* [length_is][size_is][in] */ BYTE *pBytes) = 0;
         
     };
     
@@ -2447,30 +2442,30 @@ EXTERN_C const IID IID_IOperandInstruction;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IOperandInstruction * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IOperandInstruction * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IOperandInstruction * This);
+            IOperandInstruction * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IOperandInstruction * This);
+            IOperandInstruction * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetOperandType )( 
-            __RPC__in IOperandInstruction * This,
-            /* [out] */ __RPC__out enum ILOperandType *pType);
+            IOperandInstruction * This,
+            /* [out] */ enum ILOperandType *pType);
         
         HRESULT ( STDMETHODCALLTYPE *GetOperandValue )( 
-            __RPC__in IOperandInstruction * This,
+            IOperandInstruction * This,
             /* [in] */ DWORD dwSize,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(dwSize, dwSize) BYTE *pBytes);
+            /* [length_is][size_is][out] */ BYTE *pBytes);
         
         HRESULT ( STDMETHODCALLTYPE *SetOperandValue )( 
-            __RPC__in IOperandInstruction * This,
+            IOperandInstruction * This,
             /* [in] */ DWORD dwSize,
-            /* [length_is][size_is][in] */ __RPC__in_ecount_part(dwSize, dwSize) BYTE *pBytes);
+            /* [length_is][size_is][in] */ BYTE *pBytes);
         
         END_INTERFACE
     } IOperandInstructionVtbl;
@@ -2531,18 +2526,18 @@ EXTERN_C const IID IID_IBranchInstruction;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE IsShortBranch( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExpandBranch( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetBranchTarget( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget) = 0;
+            /* [out] */ IInstruction **ppTarget) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetTargetOffset( 
-            /* [out] */ __RPC__out DWORD *pOffset) = 0;
+            /* [out] */ DWORD *pOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetBranchTarget( 
-            /* [in] */ __RPC__in_opt IInstruction *pTarget) = 0;
+            /* [in] */ IInstruction *pTarget) = 0;
         
     };
     
@@ -2554,35 +2549,35 @@ EXTERN_C const IID IID_IBranchInstruction;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IBranchInstruction * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IBranchInstruction * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IBranchInstruction * This);
+            IBranchInstruction * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IBranchInstruction * This);
+            IBranchInstruction * This);
         
         HRESULT ( STDMETHODCALLTYPE *IsShortBranch )( 
-            __RPC__in IBranchInstruction * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IBranchInstruction * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *ExpandBranch )( 
-            __RPC__in IBranchInstruction * This);
+            IBranchInstruction * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetBranchTarget )( 
-            __RPC__in IBranchInstruction * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget);
+            IBranchInstruction * This,
+            /* [out] */ IInstruction **ppTarget);
         
         HRESULT ( STDMETHODCALLTYPE *GetTargetOffset )( 
-            __RPC__in IBranchInstruction * This,
-            /* [out] */ __RPC__out DWORD *pOffset);
+            IBranchInstruction * This,
+            /* [out] */ DWORD *pOffset);
         
         HRESULT ( STDMETHODCALLTYPE *SetBranchTarget )( 
-            __RPC__in IBranchInstruction * This,
-            /* [in] */ __RPC__in_opt IInstruction *pTarget);
+            IBranchInstruction * This,
+            /* [in] */ IInstruction *pTarget);
         
         END_INTERFACE
     } IBranchInstructionVtbl;
@@ -2650,28 +2645,28 @@ EXTERN_C const IID IID_ISwitchInstruction;
     public:
         virtual HRESULT STDMETHODCALLTYPE GetBranchTarget( 
             /* [in] */ DWORD index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget) = 0;
+            /* [out] */ IInstruction **ppTarget) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetBranchTarget( 
             /* [in] */ DWORD index,
-            /* [in] */ __RPC__in_opt IInstruction *pTarget) = 0;
+            /* [in] */ IInstruction *pTarget) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveBranchTargetAt( 
             /* [in] */ DWORD index) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveBranchTarget( 
-            /* [in] */ __RPC__in_opt IInstruction *pTarget) = 0;
+            /* [in] */ IInstruction *pTarget) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReplaceBranchTarget( 
-            /* [in] */ __RPC__in_opt IInstruction *pOriginal,
-            /* [in] */ __RPC__in_opt IInstruction *pNew) = 0;
+            /* [in] */ IInstruction *pOriginal,
+            /* [in] */ IInstruction *pNew) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetBranchCount( 
-            /* [out] */ __RPC__out DWORD *pBranchCount) = 0;
+            /* [out] */ DWORD *pBranchCount) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetBranchOffset( 
             /* [in] */ DWORD index,
-            /* [out] */ __RPC__out DWORD *pdwOffset) = 0;
+            /* [out] */ DWORD *pdwOffset) = 0;
         
     };
     
@@ -2683,48 +2678,48 @@ EXTERN_C const IID IID_ISwitchInstruction;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ISwitchInstruction * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ISwitchInstruction * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ISwitchInstruction * This);
+            ISwitchInstruction * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ISwitchInstruction * This);
+            ISwitchInstruction * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetBranchTarget )( 
-            __RPC__in ISwitchInstruction * This,
+            ISwitchInstruction * This,
             /* [in] */ DWORD index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget);
+            /* [out] */ IInstruction **ppTarget);
         
         HRESULT ( STDMETHODCALLTYPE *SetBranchTarget )( 
-            __RPC__in ISwitchInstruction * This,
+            ISwitchInstruction * This,
             /* [in] */ DWORD index,
-            /* [in] */ __RPC__in_opt IInstruction *pTarget);
+            /* [in] */ IInstruction *pTarget);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveBranchTargetAt )( 
-            __RPC__in ISwitchInstruction * This,
+            ISwitchInstruction * This,
             /* [in] */ DWORD index);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveBranchTarget )( 
-            __RPC__in ISwitchInstruction * This,
-            /* [in] */ __RPC__in_opt IInstruction *pTarget);
+            ISwitchInstruction * This,
+            /* [in] */ IInstruction *pTarget);
         
         HRESULT ( STDMETHODCALLTYPE *ReplaceBranchTarget )( 
-            __RPC__in ISwitchInstruction * This,
-            /* [in] */ __RPC__in_opt IInstruction *pOriginal,
-            /* [in] */ __RPC__in_opt IInstruction *pNew);
+            ISwitchInstruction * This,
+            /* [in] */ IInstruction *pOriginal,
+            /* [in] */ IInstruction *pNew);
         
         HRESULT ( STDMETHODCALLTYPE *GetBranchCount )( 
-            __RPC__in ISwitchInstruction * This,
-            /* [out] */ __RPC__out DWORD *pBranchCount);
+            ISwitchInstruction * This,
+            /* [out] */ DWORD *pBranchCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetBranchOffset )( 
-            __RPC__in ISwitchInstruction * This,
+            ISwitchInstruction * This,
             /* [in] */ DWORD index,
-            /* [out] */ __RPC__out DWORD *pdwOffset);
+            /* [out] */ DWORD *pdwOffset);
         
         END_INTERFACE
     } ISwitchInstructionVtbl;
@@ -2797,69 +2792,69 @@ EXTERN_C const IID IID_IInstructionGraph;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetMethodInfo( 
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo) = 0;
+            /* [out] */ IMethodInfo **ppMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLastInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOriginalFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOriginalLastInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetUninstrumentedFirstInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetUninstrumentedLastInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionAtOffset( 
             /* [in] */ DWORD offset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionAtOriginalOffset( 
             /* [in] */ DWORD offset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionAtUninstrumentedOffset( 
             /* [in] */ DWORD dwOffset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE InsertBefore( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew) = 0;
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE InsertAfter( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew) = 0;
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE InsertBeforeAndRetargetOffsets( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew) = 0;
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Replace( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew) = 0;
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Remove( 
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig) = 0;
+            /* [in] */ IInstruction *pInstructionOrig) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveAll( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateBaseline( 
-            /* [in] */ __RPC__in LPCBYTE pCodeBase,
-            /* [in] */ __RPC__in LPCBYTE pEndOfCode,
+            /* [in] */ LPCBYTE pCodeBase,
+            /* [in] */ LPCBYTE pEndOfCode,
             /* [in] */ DWORD originalToBaselineCorIlMapSize,
-            /* [size_is][in] */ __RPC__in_ecount_full(originalToBaselineCorIlMapSize) COR_IL_MAP originalToBaselineCorIlMap[  ],
+            /* [size_is][in] */ COR_IL_MAP originalToBaselineCorIlMap[  ],
             /* [in] */ DWORD baselineSequencePointSize,
-            /* [size_is][in] */ __RPC__in_ecount_full(baselineSequencePointSize) DWORD baselineSequencePointList[  ]) = 0;
+            /* [size_is][in] */ DWORD baselineSequencePointList[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE HasBaselineBeenSet( 
-            /* [out] */ __RPC__out BOOL *pHasBaselineBeenSet) = 0;
+            /* [out] */ BOOL *pHasBaselineBeenSet) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExpandBranches( void) = 0;
         
@@ -2873,102 +2868,102 @@ EXTERN_C const IID IID_IInstructionGraph;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstructionGraph * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstructionGraph * This);
+            IInstructionGraph * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstructionGraph * This);
+            IInstructionGraph * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfo )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            IInstructionGraph * This,
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetFirstInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetLastInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalFirstInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalLastInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetUninstrumentedFirstInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetUninstrumentedLastInstruction )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            IInstructionGraph * This,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtOffset )( 
-            __RPC__in IInstructionGraph * This,
+            IInstructionGraph * This,
             /* [in] */ DWORD offset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtOriginalOffset )( 
-            __RPC__in IInstructionGraph * This,
+            IInstructionGraph * This,
             /* [in] */ DWORD offset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtUninstrumentedOffset )( 
-            __RPC__in IInstructionGraph * This,
+            IInstructionGraph * This,
             /* [in] */ DWORD dwOffset,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *InsertBefore )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
+            IInstructionGraph * This,
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew);
         
         HRESULT ( STDMETHODCALLTYPE *InsertAfter )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
+            IInstructionGraph * This,
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew);
         
         HRESULT ( STDMETHODCALLTYPE *InsertBeforeAndRetargetOffsets )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
+            IInstructionGraph * This,
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew);
         
         HRESULT ( STDMETHODCALLTYPE *Replace )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
+            IInstructionGraph * This,
+            /* [in] */ IInstruction *pInstructionOrig,
+            /* [in] */ IInstruction *pInstructionNew);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig);
+            IInstructionGraph * This,
+            /* [in] */ IInstruction *pInstructionOrig);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveAll )( 
-            __RPC__in IInstructionGraph * This);
+            IInstructionGraph * This);
         
         HRESULT ( STDMETHODCALLTYPE *CreateBaseline )( 
-            __RPC__in IInstructionGraph * This,
-            /* [in] */ __RPC__in LPCBYTE pCodeBase,
-            /* [in] */ __RPC__in LPCBYTE pEndOfCode,
+            IInstructionGraph * This,
+            /* [in] */ LPCBYTE pCodeBase,
+            /* [in] */ LPCBYTE pEndOfCode,
             /* [in] */ DWORD originalToBaselineCorIlMapSize,
-            /* [size_is][in] */ __RPC__in_ecount_full(originalToBaselineCorIlMapSize) COR_IL_MAP originalToBaselineCorIlMap[  ],
+            /* [size_is][in] */ COR_IL_MAP originalToBaselineCorIlMap[  ],
             /* [in] */ DWORD baselineSequencePointSize,
-            /* [size_is][in] */ __RPC__in_ecount_full(baselineSequencePointSize) DWORD baselineSequencePointList[  ]);
+            /* [size_is][in] */ DWORD baselineSequencePointList[  ]);
         
         HRESULT ( STDMETHODCALLTYPE *HasBaselineBeenSet )( 
-            __RPC__in IInstructionGraph * This,
-            /* [out] */ __RPC__out BOOL *pHasBaselineBeenSet);
+            IInstructionGraph * This,
+            /* [out] */ BOOL *pHasBaselineBeenSet);
         
         HRESULT ( STDMETHODCALLTYPE *ExpandBranches )( 
-            __RPC__in IInstructionGraph * This);
+            IInstructionGraph * This);
         
         END_INTERFACE
     } IInstructionGraphVtbl;
@@ -3077,105 +3072,105 @@ EXTERN_C const IID IID_IMethodInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfo( 
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+            /* [out] */ BSTR *pbstrName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFullName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullName) = 0;
+            /* [out] */ BSTR *pbstrFullName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructions( 
-            /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph) = 0;
+            /* [out] */ IInstructionGraph **ppInstructionGraph) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLocalVariables( 
-            /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables) = 0;
+            /* [out] */ ILocalVariableCollection **ppLocalVariables) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassId( 
-            /* [out] */ __RPC__out ClassID *pClassId) = 0;
+            /* [out] */ ClassID *pClassId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionId( 
-            /* [out] */ __RPC__out FunctionID *pFunctionID) = 0;
+            /* [out] */ FunctionID *pFunctionID) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodToken( 
-            /* [out] */ __RPC__out mdToken *pToken) = 0;
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetGenericParameterCount( 
-            /* [out] */ __RPC__out DWORD *pCount) = 0;
+            /* [out] */ DWORD *pCount) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsStatic( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsPublic( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsPrivate( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsPropertyGetter( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsPropertySetter( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsFinalizer( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsConstructor( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsStaticConstructor( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetParameters( 
-            /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **pMethodArgs) = 0;
+            /* [out] */ IEnumMethodParameters **pMethodArgs) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDeclaringType( 
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetReturnType( 
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorSignature( 
             /* [in] */ DWORD cbBuffer,
-            /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
-            /* [out] */ __RPC__out DWORD *pcbSignature) = 0;
+            /* [size_is][length_is][out] */ BYTE *pCorSignature,
+            /* [out] */ DWORD *pcbSignature) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLocalVarSigToken( 
-            /* [out] */ __RPC__out mdToken *pToken) = 0;
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetLocalVarSigToken( 
             /* [in] */ mdToken token) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAttributes( 
-            /* [out] */ __RPC__out DWORD *pCorMethodAttr) = 0;
+            /* [out] */ DWORD *pCorMethodAttr) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRejitCodeGenFlags( 
-            /* [out] */ __RPC__out DWORD *pRefitFlags) = 0;
+            /* [out] */ DWORD *pRefitFlags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeRva( 
-            /* [out] */ __RPC__out DWORD *pRva) = 0;
+            /* [out] */ DWORD *pRva) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE MethodImplFlags( 
-            /* [out] */ __RPC__out UINT *pCorMethodImpl) = 0;
+            /* [out] */ UINT *pCorMethodImpl) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetRejitCodeGenFlags( 
             /* [in] */ DWORD dwFlags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetExceptionSection( 
-            /* [out] */ __RPC__deref_out_opt IExceptionSection **ppExceptionSection) = 0;
+            /* [out] */ IExceptionSection **ppExceptionSection) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstructionFactory( 
-            /* [out] */ __RPC__deref_out_opt IInstructionFactory **ppInstructionFactory) = 0;
+            /* [out] */ IInstructionFactory **ppInstructionFactory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRejitCount( 
-            /* [out] */ __RPC__out DWORD *pdwRejitCount) = 0;
+            /* [out] */ DWORD *pdwRejitCount) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMaxStack( 
-            /* [out] */ __RPC__out DWORD *pMaxStack) = 0;
+            /* [out] */ DWORD *pMaxStack) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSingleRetDefaultInstrumentation( 
-            /* [out] */ __RPC__deref_out_opt ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation) = 0;
+            /* [out] */ ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation) = 0;
         
     };
     
@@ -3187,150 +3182,150 @@ EXTERN_C const IID IID_IMethodInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodInfo * This);
+            IMethodInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodInfo * This);
+            IMethodInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IMethodInfo * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IMethodInfo * This,
+            /* [out] */ BSTR *pbstrName);
         
         HRESULT ( STDMETHODCALLTYPE *GetFullName )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullName);
+            IMethodInfo * This,
+            /* [out] */ BSTR *pbstrFullName);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructions )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
+            IMethodInfo * This,
+            /* [out] */ IInstructionGraph **ppInstructionGraph);
         
         HRESULT ( STDMETHODCALLTYPE *GetLocalVariables )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
+            IMethodInfo * This,
+            /* [out] */ ILocalVariableCollection **ppLocalVariables);
         
         HRESULT ( STDMETHODCALLTYPE *GetClassId )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out ClassID *pClassId);
+            IMethodInfo * This,
+            /* [out] */ ClassID *pClassId);
         
         HRESULT ( STDMETHODCALLTYPE *GetFunctionId )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out FunctionID *pFunctionID);
+            IMethodInfo * This,
+            /* [out] */ FunctionID *pFunctionID);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            IMethodInfo * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetGenericParameterCount )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pCount);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsStatic )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPublic )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPrivate )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertyGetter )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertySetter )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsFinalizer )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsConstructor )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsStaticConstructor )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetParameters )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **pMethodArgs);
+            IMethodInfo * This,
+            /* [out] */ IEnumMethodParameters **pMethodArgs);
         
         HRESULT ( STDMETHODCALLTYPE *GetDeclaringType )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodInfo * This,
+            /* [out] */ IType **ppType);
         
         HRESULT ( STDMETHODCALLTYPE *GetReturnType )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodInfo * This,
+            /* [out] */ IType **ppType);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
-            __RPC__in IMethodInfo * This,
+            IMethodInfo * This,
             /* [in] */ DWORD cbBuffer,
-            /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
-            /* [out] */ __RPC__out DWORD *pcbSignature);
+            /* [size_is][length_is][out] */ BYTE *pCorSignature,
+            /* [out] */ DWORD *pcbSignature);
         
         HRESULT ( STDMETHODCALLTYPE *GetLocalVarSigToken )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            IMethodInfo * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *SetLocalVarSigToken )( 
-            __RPC__in IMethodInfo * This,
+            IMethodInfo * This,
             /* [in] */ mdToken token);
         
         HRESULT ( STDMETHODCALLTYPE *GetAttributes )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pCorMethodAttr);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pCorMethodAttr);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitCodeGenFlags )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pRefitFlags);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pRefitFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodeRva )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pRva);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pRva);
         
         HRESULT ( STDMETHODCALLTYPE *MethodImplFlags )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out UINT *pCorMethodImpl);
+            IMethodInfo * This,
+            /* [out] */ UINT *pCorMethodImpl);
         
         HRESULT ( STDMETHODCALLTYPE *SetRejitCodeGenFlags )( 
-            __RPC__in IMethodInfo * This,
+            IMethodInfo * This,
             /* [in] */ DWORD dwFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetExceptionSection )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IExceptionSection **ppExceptionSection);
+            IMethodInfo * This,
+            /* [out] */ IExceptionSection **ppExceptionSection);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionFactory )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IInstructionFactory **ppInstructionFactory);
+            IMethodInfo * This,
+            /* [out] */ IInstructionFactory **ppInstructionFactory);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitCount )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pdwRejitCount);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pdwRejitCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetMaxStack )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pMaxStack);
+            IMethodInfo * This,
+            /* [out] */ DWORD *pMaxStack);
         
         HRESULT ( STDMETHODCALLTYPE *GetSingleRetDefaultInstrumentation )( 
-            __RPC__in IMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
+            IMethodInfo * This,
+            /* [out] */ ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
         
         END_INTERFACE
     } IMethodInfoVtbl;
@@ -3481,7 +3476,7 @@ EXTERN_C const IID IID_IMethodInfo2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetOriginalLocalVariables( 
-            /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables) = 0;
+            /* [out] */ ILocalVariableCollection **ppLocalVariables) = 0;
         
     };
     
@@ -3493,154 +3488,154 @@ EXTERN_C const IID IID_IMethodInfo2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodInfo2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodInfo2 * This);
+            IMethodInfo2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodInfo2 * This);
+            IMethodInfo2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IMethodInfo2 * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IMethodInfo2 * This,
+            /* [out] */ BSTR *pbstrName);
         
         HRESULT ( STDMETHODCALLTYPE *GetFullName )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullName);
+            IMethodInfo2 * This,
+            /* [out] */ BSTR *pbstrFullName);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructions )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
+            IMethodInfo2 * This,
+            /* [out] */ IInstructionGraph **ppInstructionGraph);
         
         HRESULT ( STDMETHODCALLTYPE *GetLocalVariables )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
+            IMethodInfo2 * This,
+            /* [out] */ ILocalVariableCollection **ppLocalVariables);
         
         HRESULT ( STDMETHODCALLTYPE *GetClassId )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out ClassID *pClassId);
+            IMethodInfo2 * This,
+            /* [out] */ ClassID *pClassId);
         
         HRESULT ( STDMETHODCALLTYPE *GetFunctionId )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out FunctionID *pFunctionID);
+            IMethodInfo2 * This,
+            /* [out] */ FunctionID *pFunctionID);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            IMethodInfo2 * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetGenericParameterCount )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pCount);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsStatic )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPublic )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPrivate )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertyGetter )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertySetter )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsFinalizer )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsConstructor )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsStaticConstructor )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IMethodInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetParameters )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **pMethodArgs);
+            IMethodInfo2 * This,
+            /* [out] */ IEnumMethodParameters **pMethodArgs);
         
         HRESULT ( STDMETHODCALLTYPE *GetDeclaringType )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodInfo2 * This,
+            /* [out] */ IType **ppType);
         
         HRESULT ( STDMETHODCALLTYPE *GetReturnType )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodInfo2 * This,
+            /* [out] */ IType **ppType);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
-            __RPC__in IMethodInfo2 * This,
+            IMethodInfo2 * This,
             /* [in] */ DWORD cbBuffer,
-            /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
-            /* [out] */ __RPC__out DWORD *pcbSignature);
+            /* [size_is][length_is][out] */ BYTE *pCorSignature,
+            /* [out] */ DWORD *pcbSignature);
         
         HRESULT ( STDMETHODCALLTYPE *GetLocalVarSigToken )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            IMethodInfo2 * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *SetLocalVarSigToken )( 
-            __RPC__in IMethodInfo2 * This,
+            IMethodInfo2 * This,
             /* [in] */ mdToken token);
         
         HRESULT ( STDMETHODCALLTYPE *GetAttributes )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pCorMethodAttr);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pCorMethodAttr);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitCodeGenFlags )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pRefitFlags);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pRefitFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodeRva )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pRva);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pRva);
         
         HRESULT ( STDMETHODCALLTYPE *MethodImplFlags )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out UINT *pCorMethodImpl);
+            IMethodInfo2 * This,
+            /* [out] */ UINT *pCorMethodImpl);
         
         HRESULT ( STDMETHODCALLTYPE *SetRejitCodeGenFlags )( 
-            __RPC__in IMethodInfo2 * This,
+            IMethodInfo2 * This,
             /* [in] */ DWORD dwFlags);
         
         HRESULT ( STDMETHODCALLTYPE *GetExceptionSection )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IExceptionSection **ppExceptionSection);
+            IMethodInfo2 * This,
+            /* [out] */ IExceptionSection **ppExceptionSection);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstructionFactory )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstructionFactory **ppInstructionFactory);
+            IMethodInfo2 * This,
+            /* [out] */ IInstructionFactory **ppInstructionFactory);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitCount )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pdwRejitCount);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pdwRejitCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetMaxStack )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pMaxStack);
+            IMethodInfo2 * This,
+            /* [out] */ DWORD *pMaxStack);
         
         HRESULT ( STDMETHODCALLTYPE *GetSingleRetDefaultInstrumentation )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
+            IMethodInfo2 * This,
+            /* [out] */ ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
         
         HRESULT ( STDMETHODCALLTYPE *GetOriginalLocalVariables )( 
-            __RPC__in IMethodInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
+            IMethodInfo2 * This,
+            /* [out] */ ILocalVariableCollection **ppLocalVariables);
         
         END_INTERFACE
     } IMethodInfo2Vtbl;
@@ -3795,57 +3790,57 @@ EXTERN_C const IID IID_IAssemblyInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainInfo( 
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo) = 0;
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleCount( 
-            /* [out] */ __RPC__out ULONG *pcModuleInfos) = 0;
+            /* [out] */ ULONG *pcModuleInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModules( 
             /* [in] */ ULONG cModuleInfos,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **pModuleInfos) = 0;
+            /* [out] */ IEnumModuleInfo **pModuleInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleById( 
             /* [in] */ ModuleID moduleId,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleByMvid( 
-            /* [in] */ __RPC__in GUID *pMvid,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [in] */ GUID *pMvid,
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModulesByName( 
-            /* [in] */ __RPC__in BSTR pszModuleName,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo) = 0;
+            /* [in] */ BSTR pszModuleName,
+            /* [out] */ IEnumModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleForMethod( 
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleForType( 
-            /* [in] */ __RPC__in BSTR pszTypeName,
+            /* [in] */ BSTR pszTypeName,
             /* [in] */ mdToken tkResolutionScope,
-            /* [out] */ __RPC__out mdToken *pTkTypeDef) = 0;
+            /* [out] */ mdToken *pTkTypeDef) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetManifestModule( 
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPublicKey( 
             /* [in] */ ULONG cbBytes,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbBytes, cbBytes) BYTE *pbBytes) = 0;
+            /* [length_is][size_is][out] */ BYTE *pbBytes) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPublicKeySize( 
-            /* [out] */ __RPC__out ULONG *pcbBytes) = 0;
+            /* [out] */ ULONG *pcbBytes) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPublicKeyToken( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrPublicKeyToken) = 0;
+            /* [out] */ BSTR *pbstrPublicKeyToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetID( 
-            /* [out] */ __RPC__out AssemblyID *pAssemblyId) = 0;
+            /* [out] */ AssemblyID *pAssemblyId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+            /* [out] */ BSTR *pbstrName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetaDataToken( 
-            /* [out] */ __RPC__out DWORD *pdwToken) = 0;
+            /* [out] */ DWORD *pdwToken) = 0;
         
     };
     
@@ -3857,84 +3852,84 @@ EXTERN_C const IID IID_IAssemblyInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IAssemblyInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IAssemblyInfo * This);
+            IAssemblyInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IAssemblyInfo * This);
+            IAssemblyInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
+            IAssemblyInfo * This,
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleCount )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__out ULONG *pcModuleInfos);
+            IAssemblyInfo * This,
+            /* [out] */ ULONG *pcModuleInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetModules )( 
-            __RPC__in IAssemblyInfo * This,
+            IAssemblyInfo * This,
             /* [in] */ ULONG cModuleInfos,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **pModuleInfos);
+            /* [out] */ IEnumModuleInfo **pModuleInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleById )( 
-            __RPC__in IAssemblyInfo * This,
+            IAssemblyInfo * This,
             /* [in] */ ModuleID moduleId,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleByMvid )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [in] */ __RPC__in GUID *pMvid,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IAssemblyInfo * This,
+            /* [in] */ GUID *pMvid,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModulesByName )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [in] */ __RPC__in BSTR pszModuleName,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo);
+            IAssemblyInfo * This,
+            /* [in] */ BSTR pszModuleName,
+            /* [out] */ IEnumModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleForMethod )( 
-            __RPC__in IAssemblyInfo * This,
+            IAssemblyInfo * This,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleForType )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [in] */ __RPC__in BSTR pszTypeName,
+            IAssemblyInfo * This,
+            /* [in] */ BSTR pszTypeName,
             /* [in] */ mdToken tkResolutionScope,
-            /* [out] */ __RPC__out mdToken *pTkTypeDef);
+            /* [out] */ mdToken *pTkTypeDef);
         
         HRESULT ( STDMETHODCALLTYPE *GetManifestModule )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IAssemblyInfo * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetPublicKey )( 
-            __RPC__in IAssemblyInfo * This,
+            IAssemblyInfo * This,
             /* [in] */ ULONG cbBytes,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbBytes, cbBytes) BYTE *pbBytes);
+            /* [length_is][size_is][out] */ BYTE *pbBytes);
         
         HRESULT ( STDMETHODCALLTYPE *GetPublicKeySize )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__out ULONG *pcbBytes);
+            IAssemblyInfo * This,
+            /* [out] */ ULONG *pcbBytes);
         
         HRESULT ( STDMETHODCALLTYPE *GetPublicKeyToken )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrPublicKeyToken);
+            IAssemblyInfo * This,
+            /* [out] */ BSTR *pbstrPublicKeyToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetID )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__out AssemblyID *pAssemblyId);
+            IAssemblyInfo * This,
+            /* [out] */ AssemblyID *pAssemblyId);
         
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IAssemblyInfo * This,
+            /* [out] */ BSTR *pbstrName);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataToken )( 
-            __RPC__in IAssemblyInfo * This,
-            /* [out] */ __RPC__out DWORD *pdwToken);
+            IAssemblyInfo * This,
+            /* [out] */ DWORD *pdwToken);
         
         END_INTERFACE
     } IAssemblyInfoVtbl;
@@ -4032,8 +4027,8 @@ EXTERN_C const IID IID_IEnumAssemblyInfo;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAssemblyInfo **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IAssemblyInfo **rgelt,
+            /* [out] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -4041,10 +4036,10 @@ EXTERN_C const IID IID_IEnumAssemblyInfo;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppenum) = 0;
+            /* [out] */ IEnumAssemblyInfo **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -4056,37 +4051,37 @@ EXTERN_C const IID IID_IEnumAssemblyInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumAssemblyInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumAssemblyInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumAssemblyInfo * This);
+            IEnumAssemblyInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumAssemblyInfo * This);
+            IEnumAssemblyInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumAssemblyInfo * This,
+            IEnumAssemblyInfo * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAssemblyInfo **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IAssemblyInfo **rgelt,
+            /* [out] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumAssemblyInfo * This,
+            IEnumAssemblyInfo * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumAssemblyInfo * This);
+            IEnumAssemblyInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumAssemblyInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppenum);
+            IEnumAssemblyInfo * This,
+            /* [out] */ IEnumAssemblyInfo **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumAssemblyInfo * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumAssemblyInfo * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumAssemblyInfoVtbl;
@@ -4153,84 +4148,84 @@ EXTERN_C const IID IID_IModuleInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetModuleName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName) = 0;
+            /* [out] */ BSTR *pbstrModuleName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFullPath( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath) = 0;
+            /* [out] */ BSTR *pbstrFullPath) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyInfo( 
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo) = 0;
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainInfo( 
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo) = 0;
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetaDataImport( 
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport) = 0;
+            /* [out] */ IUnknown **ppMetaDataImport) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetaDataAssemblyImport( 
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport) = 0;
+            /* [out] */ IUnknown **ppMetaDataAssemblyImport) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetaDataEmit( 
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit) = 0;
+            /* [out] */ IUnknown **ppMetaDataEmit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetaDataAssemblyEmit( 
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit) = 0;
+            /* [out] */ IUnknown **ppMetaDataAssemblyEmit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleID( 
-            /* [out] */ __RPC__out ModuleID *pModuleId) = 0;
+            /* [out] */ ModuleID *pModuleId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMVID( 
-            /* [out] */ __RPC__out GUID *pguidMvid) = 0;
+            /* [out] */ GUID *pguidMvid) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsILOnly( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsMscorlib( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsDynamic( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsNgen( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsWinRT( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIs64bit( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetImageBase( 
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue) = 0;
+            /* [out] */ LPCBYTE *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorHeader( 
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue) = 0;
+            /* [length_is][size_is][out] */ BYTE *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetEntrypointToken( 
-            /* [out] */ __RPC__out DWORD *pdwEntrypointToken) = 0;
+            /* [out] */ DWORD *pdwEntrypointToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleVersion( 
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue) = 0;
+            /* [length_is][size_is][out] */ BYTE *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RequestRejit( 
             /* [in] */ mdToken methodToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateTypeFactory( 
-            /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory) = 0;
+            /* [out] */ ITypeCreator **ppTypeFactory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodInfoById( 
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo) = 0;
+            /* [out] */ IMethodInfo **ppMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodInfoByToken( 
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo) = 0;
+            /* [out] */ IMethodInfo **ppMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ImportModule( 
-            /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
-            /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage) = 0;
+            /* [in] */ IUnknown *pSourceModuleMetadataImport,
+            /* [in] */ LPCBYTE *pSourceImage) = 0;
         
     };
     
@@ -4242,121 +4237,121 @@ EXTERN_C const IID IID_IModuleInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IModuleInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IModuleInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IModuleInfo * This);
+            IModuleInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IModuleInfo * This);
+            IModuleInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
+            IModuleInfo * This,
+            /* [out] */ BSTR *pbstrModuleName);
         
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
+            IModuleInfo * This,
+            /* [out] */ BSTR *pbstrFullPath);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
+            IModuleInfo * This,
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
+            IModuleInfo * This,
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
+            IModuleInfo * This,
+            /* [out] */ IUnknown **ppMetaDataImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
+            IModuleInfo * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
+            IModuleInfo * This,
+            /* [out] */ IUnknown **ppMetaDataEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
+            IModuleInfo * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out ModuleID *pModuleId);
+            IModuleInfo * This,
+            /* [out] */ ModuleID *pModuleId);
         
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out GUID *pguidMvid);
+            IModuleInfo * This,
+            /* [out] */ GUID *pguidMvid);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
+            IModuleInfo * This,
+            /* [out] */ LPCBYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
-            __RPC__in IModuleInfo * This,
+            IModuleInfo * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
+            IModuleInfo * This,
+            /* [out] */ DWORD *pdwEntrypointToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
-            __RPC__in IModuleInfo * This,
+            IModuleInfo * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
-            __RPC__in IModuleInfo * This,
+            IModuleInfo * This,
             /* [in] */ mdToken methodToken);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
-            __RPC__in IModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
+            IModuleInfo * This,
+            /* [out] */ ITypeCreator **ppTypeFactory);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
-            __RPC__in IModuleInfo * This,
+            IModuleInfo * This,
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
-            __RPC__in IModuleInfo * This,
+            IModuleInfo * This,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
-            __RPC__in IModuleInfo * This,
-            /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
-            /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage);
+            IModuleInfo * This,
+            /* [in] */ IUnknown *pSourceModuleMetadataImport,
+            /* [in] */ LPCBYTE *pSourceImage);
         
         END_INTERFACE
     } IModuleInfoVtbl;
@@ -4483,11 +4478,11 @@ EXTERN_C const IID IID_IModuleInfo2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetIsFlatLayout( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ResolveRva( 
             /* [in] */ DWORD rva,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *ppbResolvedAddress) = 0;
+            /* [out] */ LPCBYTE *ppbResolvedAddress) = 0;
         
     };
     
@@ -4499,130 +4494,130 @@ EXTERN_C const IID IID_IModuleInfo2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IModuleInfo2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IModuleInfo2 * This);
+            IModuleInfo2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IModuleInfo2 * This);
+            IModuleInfo2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
+            IModuleInfo2 * This,
+            /* [out] */ BSTR *pbstrModuleName);
         
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
+            IModuleInfo2 * This,
+            /* [out] */ BSTR *pbstrFullPath);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
+            IModuleInfo2 * This,
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
+            IModuleInfo2 * This,
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
+            IModuleInfo2 * This,
+            /* [out] */ IUnknown **ppMetaDataImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
+            IModuleInfo2 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
+            IModuleInfo2 * This,
+            /* [out] */ IUnknown **ppMetaDataEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
+            IModuleInfo2 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out ModuleID *pModuleId);
+            IModuleInfo2 * This,
+            /* [out] */ ModuleID *pModuleId);
         
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out GUID *pguidMvid);
+            IModuleInfo2 * This,
+            /* [out] */ GUID *pguidMvid);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ LPCBYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
+            IModuleInfo2 * This,
+            /* [out] */ DWORD *pdwEntrypointToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ mdToken methodToken);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
+            IModuleInfo2 * This,
+            /* [out] */ ITypeCreator **ppTypeFactory);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
-            /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage);
+            IModuleInfo2 * This,
+            /* [in] */ IUnknown *pSourceModuleMetadataImport,
+            /* [in] */ LPCBYTE *pSourceImage);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsFlatLayout )( 
-            __RPC__in IModuleInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo2 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *ResolveRva )( 
-            __RPC__in IModuleInfo2 * This,
+            IModuleInfo2 * This,
             /* [in] */ DWORD rva,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *ppbResolvedAddress);
+            /* [out] */ LPCBYTE *ppbResolvedAddress);
         
         END_INTERFACE
     } IModuleInfo2Vtbl;
@@ -4756,7 +4751,7 @@ EXTERN_C const IID IID_IModuleInfo3;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetIsLoadedFromDisk( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
     };
     
@@ -4768,134 +4763,134 @@ EXTERN_C const IID IID_IModuleInfo3;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IModuleInfo3 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IModuleInfo3 * This);
+            IModuleInfo3 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IModuleInfo3 * This);
+            IModuleInfo3 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
+            IModuleInfo3 * This,
+            /* [out] */ BSTR *pbstrModuleName);
         
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
+            IModuleInfo3 * This,
+            /* [out] */ BSTR *pbstrFullPath);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
+            IModuleInfo3 * This,
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
+            IModuleInfo3 * This,
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyImport);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
+            IModuleInfo3 * This,
+            /* [out] */ IUnknown **ppMetaDataAssemblyEmit);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out ModuleID *pModuleId);
+            IModuleInfo3 * This,
+            /* [out] */ ModuleID *pModuleId);
         
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out GUID *pguidMvid);
+            IModuleInfo3 * This,
+            /* [out] */ GUID *pguidMvid);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ LPCBYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
+            IModuleInfo3 * This,
+            /* [out] */ DWORD *pdwEntrypointToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ DWORD cbValue,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
+            /* [length_is][size_is][out] */ BYTE *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ mdToken methodToken);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
+            IModuleInfo3 * This,
+            /* [out] */ ITypeCreator **ppTypeFactory);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
-            /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage);
+            IModuleInfo3 * This,
+            /* [in] */ IUnknown *pSourceModuleMetadataImport,
+            /* [in] */ LPCBYTE *pSourceImage);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsFlatLayout )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *ResolveRva )( 
-            __RPC__in IModuleInfo3 * This,
+            IModuleInfo3 * This,
             /* [in] */ DWORD rva,
-            /* [out] */ __RPC__deref_out_opt LPCBYTE *ppbResolvedAddress);
+            /* [out] */ LPCBYTE *ppbResolvedAddress);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsLoadedFromDisk )( 
-            __RPC__in IModuleInfo3 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IModuleInfo3 * This,
+            /* [out] */ BOOL *pbValue);
         
         END_INTERFACE
     } IModuleInfo3Vtbl;
@@ -5034,8 +5029,8 @@ EXTERN_C const IID IID_IEnumModuleInfo;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IModuleInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IModuleInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -5043,10 +5038,10 @@ EXTERN_C const IID IID_IEnumModuleInfo;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppenum) = 0;
+            /* [out] */ IEnumModuleInfo **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -5058,37 +5053,37 @@ EXTERN_C const IID IID_IEnumModuleInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumModuleInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumModuleInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumModuleInfo * This);
+            IEnumModuleInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumModuleInfo * This);
+            IEnumModuleInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumModuleInfo * This,
+            IEnumModuleInfo * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IModuleInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IModuleInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumModuleInfo * This,
+            IEnumModuleInfo * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumModuleInfo * This);
+            IEnumModuleInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumModuleInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppenum);
+            IEnumModuleInfo * This,
+            /* [out] */ IEnumModuleInfo **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumModuleInfo * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumModuleInfo * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumModuleInfoVtbl;
@@ -5155,48 +5150,48 @@ EXTERN_C const IID IID_IAppDomainInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainId( 
-            /* [out] */ __RPC__out AppDomainID *pAppDomainId) = 0;
+            /* [out] */ AppDomainID *pAppDomainId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsSystemDomain( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsSharedDomain( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsDefaultDomain( 
-            /* [out] */ __RPC__out BOOL *pbValue) = 0;
+            /* [out] */ BOOL *pbValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+            /* [out] */ BSTR *pbstrName) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblies( 
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos) = 0;
+            /* [out] */ IEnumAssemblyInfo **ppAssemblyInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModules( 
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfos) = 0;
+            /* [out] */ IEnumModuleInfo **ppModuleInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyInfoById( 
             /* [in] */ AssemblyID assemblyID,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo) = 0;
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyInfosByName( 
-            /* [in] */ __RPC__in BSTR pszAssemblyName,
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos) = 0;
+            /* [in] */ BSTR pszAssemblyName,
+            /* [out] */ IEnumAssemblyInfo **ppAssemblyInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleCount( 
-            /* [out] */ __RPC__out ULONG *pcModuleInfos) = 0;
+            /* [out] */ ULONG *pcModuleInfos) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfoById( 
             /* [in] */ ModuleID moduleId,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfosByMvid( 
             /* [in] */ GUID mvid,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IEnumModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfosByName( 
-            /* [in] */ __RPC__in BSTR pszModuleName,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo) = 0;
+            /* [in] */ BSTR pszModuleName,
+            /* [out] */ IEnumModuleInfo **ppModuleInfo) = 0;
         
     };
     
@@ -5208,73 +5203,73 @@ EXTERN_C const IID IID_IAppDomainInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IAppDomainInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IAppDomainInfo * This);
+            IAppDomainInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IAppDomainInfo * This);
+            IAppDomainInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainId )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__out AppDomainID *pAppDomainId);
+            IAppDomainInfo * This,
+            /* [out] */ AppDomainID *pAppDomainId);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsSystemDomain )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IAppDomainInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsSharedDomain )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IAppDomainInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsDefaultDomain )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
+            IAppDomainInfo * This,
+            /* [out] */ BOOL *pbValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IAppDomainInfo * This,
+            /* [out] */ BSTR *pbstrName);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblies )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos);
+            IAppDomainInfo * This,
+            /* [out] */ IEnumAssemblyInfo **ppAssemblyInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetModules )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfos);
+            IAppDomainInfo * This,
+            /* [out] */ IEnumModuleInfo **ppModuleInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfoById )( 
-            __RPC__in IAppDomainInfo * This,
+            IAppDomainInfo * This,
             /* [in] */ AssemblyID assemblyID,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfosByName )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [in] */ __RPC__in BSTR pszAssemblyName,
-            /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos);
+            IAppDomainInfo * This,
+            /* [in] */ BSTR pszAssemblyName,
+            /* [out] */ IEnumAssemblyInfo **ppAssemblyInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleCount )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [out] */ __RPC__out ULONG *pcModuleInfos);
+            IAppDomainInfo * This,
+            /* [out] */ ULONG *pcModuleInfos);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfoById )( 
-            __RPC__in IAppDomainInfo * This,
+            IAppDomainInfo * This,
             /* [in] */ ModuleID moduleId,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByMvid )( 
-            __RPC__in IAppDomainInfo * This,
+            IAppDomainInfo * This,
             /* [in] */ GUID mvid,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo);
+            /* [out] */ IEnumModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByName )( 
-            __RPC__in IAppDomainInfo * This,
-            /* [in] */ __RPC__in BSTR pszModuleName,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo);
+            IAppDomainInfo * This,
+            /* [in] */ BSTR pszModuleName,
+            /* [out] */ IEnumModuleInfo **ppModuleInfo);
         
         END_INTERFACE
     } IAppDomainInfoVtbl;
@@ -5366,8 +5361,8 @@ EXTERN_C const IID IID_IEnumAppDomainInfo;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAppDomainInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IAppDomainInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -5375,10 +5370,10 @@ EXTERN_C const IID IID_IEnumAppDomainInfo;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppenum) = 0;
+            /* [out] */ IEnumAppDomainInfo **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -5390,37 +5385,37 @@ EXTERN_C const IID IID_IEnumAppDomainInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumAppDomainInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumAppDomainInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumAppDomainInfo * This);
+            IEnumAppDomainInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumAppDomainInfo * This);
+            IEnumAppDomainInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumAppDomainInfo * This,
+            IEnumAppDomainInfo * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAppDomainInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IAppDomainInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumAppDomainInfo * This,
+            IEnumAppDomainInfo * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumAppDomainInfo * This);
+            IEnumAppDomainInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumAppDomainInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppenum);
+            IEnumAppDomainInfo * This,
+            /* [out] */ IEnumAppDomainInfo **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumAppDomainInfo * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumAppDomainInfo * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumAppDomainInfoVtbl;
@@ -5489,17 +5484,17 @@ EXTERN_C const IID IID_ILocalVariableCollection;
         virtual HRESULT STDMETHODCALLTYPE Initialize( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorSignature( 
-            /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignature) = 0;
+            /* [out] */ ISignatureBuilder **ppSignature) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pdwCount) = 0;
+            /* [out] */ DWORD *pdwCount) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddLocal( 
-            /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex) = 0;
+            /* [in] */ IType *pType,
+            /* [optional][out] */ DWORD *pIndex) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReplaceSignature( 
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ DWORD dwSigSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CommitSignature( void) = 0;
@@ -5514,40 +5509,40 @@ EXTERN_C const IID IID_ILocalVariableCollection;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ILocalVariableCollection * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ILocalVariableCollection * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ILocalVariableCollection * This);
+            ILocalVariableCollection * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ILocalVariableCollection * This);
+            ILocalVariableCollection * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in ILocalVariableCollection * This);
+            ILocalVariableCollection * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
-            __RPC__in ILocalVariableCollection * This,
-            /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignature);
+            ILocalVariableCollection * This,
+            /* [out] */ ISignatureBuilder **ppSignature);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in ILocalVariableCollection * This,
-            /* [out] */ __RPC__out DWORD *pdwCount);
+            ILocalVariableCollection * This,
+            /* [out] */ DWORD *pdwCount);
         
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
-            __RPC__in ILocalVariableCollection * This,
-            /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex);
+            ILocalVariableCollection * This,
+            /* [in] */ IType *pType,
+            /* [optional][out] */ DWORD *pIndex);
         
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
-            __RPC__in ILocalVariableCollection * This,
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            ILocalVariableCollection * This,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ DWORD dwSigSize);
         
         HRESULT ( STDMETHODCALLTYPE *CommitSignature )( 
-            __RPC__in ILocalVariableCollection * This);
+            ILocalVariableCollection * This);
         
         END_INTERFACE
     } ILocalVariableCollectionVtbl;
@@ -5617,22 +5612,22 @@ EXTERN_C const IID IID_IType;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE AddToSignature( 
-            /* [in] */ __RPC__in_opt ISignatureBuilder *pSignatureBuilder) = 0;
+            /* [in] */ ISignatureBuilder *pSignatureBuilder) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorElementType( 
-            /* [out] */ __RPC__out CorElementType *pCorType) = 0;
+            /* [out] */ CorElementType *pCorType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE IsPrimitive( 
-            /* [out] */ __RPC__out BOOL *pIsPrimitive) = 0;
+            /* [out] */ BOOL *pIsPrimitive) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE IsArray( 
-            /* [out] */ __RPC__out BOOL *pIsArray) = 0;
+            /* [out] */ BOOL *pIsArray) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE IsClass( 
-            /* [out] */ __RPC__out BOOL *pIsClass) = 0;
+            /* [out] */ BOOL *pIsClass) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetName( 
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+            /* [out] */ BSTR *pbstrName) = 0;
         
     };
     
@@ -5644,40 +5639,40 @@ EXTERN_C const IID IID_IType;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IType * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IType * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IType * This);
+            IType * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IType * This);
+            IType * This);
         
         HRESULT ( STDMETHODCALLTYPE *AddToSignature )( 
-            __RPC__in IType * This,
-            /* [in] */ __RPC__in_opt ISignatureBuilder *pSignatureBuilder);
+            IType * This,
+            /* [in] */ ISignatureBuilder *pSignatureBuilder);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorElementType )( 
-            __RPC__in IType * This,
-            /* [out] */ __RPC__out CorElementType *pCorType);
+            IType * This,
+            /* [out] */ CorElementType *pCorType);
         
         HRESULT ( STDMETHODCALLTYPE *IsPrimitive )( 
-            __RPC__in IType * This,
-            /* [out] */ __RPC__out BOOL *pIsPrimitive);
+            IType * This,
+            /* [out] */ BOOL *pIsPrimitive);
         
         HRESULT ( STDMETHODCALLTYPE *IsArray )( 
-            __RPC__in IType * This,
-            /* [out] */ __RPC__out BOOL *pIsArray);
+            IType * This,
+            /* [out] */ BOOL *pIsArray);
         
         HRESULT ( STDMETHODCALLTYPE *IsClass )( 
-            __RPC__in IType * This,
-            /* [out] */ __RPC__out BOOL *pIsClass);
+            IType * This,
+            /* [out] */ BOOL *pIsClass);
         
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
-            __RPC__in IType * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+            IType * This,
+            /* [out] */ BSTR *pbstrName);
         
         END_INTERFACE
     } ITypeVtbl;
@@ -5747,35 +5742,35 @@ EXTERN_C const IID IID_IAppDomainCollection;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainCount( 
-            /* [out] */ __RPC__out DWORD *pdwCount) = 0;
+            /* [out] */ DWORD *pdwCount) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainById( 
             /* [in] */ AppDomainID appDomainId,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo) = 0;
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainIDs( 
             /* [in] */ DWORD cAppDomains,
-            /* [out] */ __RPC__out DWORD *pcActual,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cAppDomains, cAppDomains) AppDomainID *AppDomainIDs) = 0;
+            /* [out] */ DWORD *pcActual,
+            /* [length_is][size_is][out] */ AppDomainID *AppDomainIDs) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomains( 
-            /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppEnumAppDomains) = 0;
+            /* [out] */ IEnumAppDomainInfo **ppEnumAppDomains) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyInfoById( 
             /* [in] */ AssemblyID assemblyID,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo) = 0;
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfoById( 
             /* [in] */ ModuleID moduleID,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfosByMvid( 
             /* [in] */ GUID mvid,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppEnum) = 0;
+            /* [out] */ IEnumModuleInfo **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodInfoById( 
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo) = 0;
+            /* [out] */ IMethodInfo **ppMethodInfo) = 0;
         
     };
     
@@ -5787,55 +5782,55 @@ EXTERN_C const IID IID_IAppDomainCollection;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IAppDomainCollection * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IAppDomainCollection * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IAppDomainCollection * This);
+            IAppDomainCollection * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IAppDomainCollection * This);
+            IAppDomainCollection * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainCount )( 
-            __RPC__in IAppDomainCollection * This,
-            /* [out] */ __RPC__out DWORD *pdwCount);
+            IAppDomainCollection * This,
+            /* [out] */ DWORD *pdwCount);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainById )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ AppDomainID appDomainId,
-            /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
+            /* [out] */ IAppDomainInfo **ppAppDomainInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainIDs )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ DWORD cAppDomains,
-            /* [out] */ __RPC__out DWORD *pcActual,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(cAppDomains, cAppDomains) AppDomainID *AppDomainIDs);
+            /* [out] */ DWORD *pcActual,
+            /* [length_is][size_is][out] */ AppDomainID *AppDomainIDs);
         
         HRESULT ( STDMETHODCALLTYPE *GetAppDomains )( 
-            __RPC__in IAppDomainCollection * This,
-            /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppEnumAppDomains);
+            IAppDomainCollection * This,
+            /* [out] */ IEnumAppDomainInfo **ppEnumAppDomains);
         
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfoById )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ AssemblyID assemblyID,
-            /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
+            /* [out] */ IAssemblyInfo **ppAssemblyInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfoById )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ ModuleID moduleID,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByMvid )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ GUID mvid,
-            /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppEnum);
+            /* [out] */ IEnumModuleInfo **ppEnum);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
-            __RPC__in IAppDomainCollection * This,
+            IAppDomainCollection * This,
             /* [in] */ FunctionID functionID,
-            /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
+            /* [out] */ IMethodInfo **ppMethodInfo);
         
         END_INTERFACE
     } IAppDomainCollectionVtbl;
@@ -5923,24 +5918,24 @@ EXTERN_C const IID IID_ISignatureBuilder;
             /* [in] */ CorElementType type) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddData( 
-            /* [in] */ __RPC__in const BYTE *pData,
+            /* [in] */ const BYTE *pData,
             /* [in] */ DWORD cbSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddSignature( 
-            /* [in] */ __RPC__in_opt ISignatureBuilder *pSignature) = 0;
+            /* [in] */ ISignatureBuilder *pSignature) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clear( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSize( 
-            /* [out] */ __RPC__out DWORD *pcbSize) = 0;
+            /* [out] */ DWORD *pcbSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorSignature( 
             /* [in] */ DWORD cbBuffer,
-            /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
-            /* [out] */ __RPC__out DWORD *pcbSignature) = 0;
+            /* [size_is][length_is][out] */ BYTE *pCorSignature,
+            /* [out] */ DWORD *pcbSignature) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCorSignaturePtr( 
-            /* [out] */ __RPC__deref_out_opt const BYTE **ppSignature) = 0;
+            /* [out] */ const BYTE **ppSignature) = 0;
         
     };
     
@@ -5952,58 +5947,58 @@ EXTERN_C const IID IID_ISignatureBuilder;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ISignatureBuilder * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ISignatureBuilder * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ISignatureBuilder * This);
+            ISignatureBuilder * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ISignatureBuilder * This);
+            ISignatureBuilder * This);
         
         HRESULT ( STDMETHODCALLTYPE *Add )( 
-            __RPC__in ISignatureBuilder * This,
+            ISignatureBuilder * This,
             /* [in] */ DWORD value);
         
         HRESULT ( STDMETHODCALLTYPE *AddSignedInt )( 
-            __RPC__in ISignatureBuilder * This,
+            ISignatureBuilder * This,
             /* [in] */ LONG value);
         
         HRESULT ( STDMETHODCALLTYPE *AddToken )( 
-            __RPC__in ISignatureBuilder * This,
+            ISignatureBuilder * This,
             /* [in] */ mdToken token);
         
         HRESULT ( STDMETHODCALLTYPE *AddElementType )( 
-            __RPC__in ISignatureBuilder * This,
+            ISignatureBuilder * This,
             /* [in] */ CorElementType type);
         
         HRESULT ( STDMETHODCALLTYPE *AddData )( 
-            __RPC__in ISignatureBuilder * This,
-            /* [in] */ __RPC__in const BYTE *pData,
+            ISignatureBuilder * This,
+            /* [in] */ const BYTE *pData,
             /* [in] */ DWORD cbSize);
         
         HRESULT ( STDMETHODCALLTYPE *AddSignature )( 
-            __RPC__in ISignatureBuilder * This,
-            /* [in] */ __RPC__in_opt ISignatureBuilder *pSignature);
+            ISignatureBuilder * This,
+            /* [in] */ ISignatureBuilder *pSignature);
         
         HRESULT ( STDMETHODCALLTYPE *Clear )( 
-            __RPC__in ISignatureBuilder * This);
+            ISignatureBuilder * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetSize )( 
-            __RPC__in ISignatureBuilder * This,
-            /* [out] */ __RPC__out DWORD *pcbSize);
+            ISignatureBuilder * This,
+            /* [out] */ DWORD *pcbSize);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
-            __RPC__in ISignatureBuilder * This,
+            ISignatureBuilder * This,
             /* [in] */ DWORD cbBuffer,
-            /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
-            /* [out] */ __RPC__out DWORD *pcbSignature);
+            /* [size_is][length_is][out] */ BYTE *pCorSignature,
+            /* [out] */ DWORD *pcbSignature);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignaturePtr )( 
-            __RPC__in ISignatureBuilder * This,
-            /* [out] */ __RPC__deref_out_opt const BYTE **ppSignature);
+            ISignatureBuilder * This,
+            /* [out] */ const BYTE **ppSignature);
         
         END_INTERFACE
     } ISignatureBuilderVtbl;
@@ -6086,18 +6081,18 @@ EXTERN_C const IID IID_ITypeCreator;
     public:
         virtual HRESULT STDMETHODCALLTYPE FromSignature( 
             /* [in] */ DWORD cbBuffer,
-            /* [in] */ __RPC__in const BYTE *pCorSignature,
-            /* [out] */ __RPC__deref_out_opt IType **ppType,
-            /* [optional][out] */ __RPC__out DWORD *pdwSigSize) = 0;
+            /* [in] */ const BYTE *pCorSignature,
+            /* [out] */ IType **ppType,
+            /* [optional][out] */ DWORD *pdwSigSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE FromCorElement( 
             /* [in] */ CorElementType type,
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE FromToken( 
             /* [in] */ CorElementType type,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
     };
     
@@ -6109,34 +6104,34 @@ EXTERN_C const IID IID_ITypeCreator;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ITypeCreator * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ITypeCreator * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ITypeCreator * This);
+            ITypeCreator * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ITypeCreator * This);
+            ITypeCreator * This);
         
         HRESULT ( STDMETHODCALLTYPE *FromSignature )( 
-            __RPC__in ITypeCreator * This,
+            ITypeCreator * This,
             /* [in] */ DWORD cbBuffer,
-            /* [in] */ __RPC__in const BYTE *pCorSignature,
-            /* [out] */ __RPC__deref_out_opt IType **ppType,
-            /* [optional][out] */ __RPC__out DWORD *pdwSigSize);
+            /* [in] */ const BYTE *pCorSignature,
+            /* [out] */ IType **ppType,
+            /* [optional][out] */ DWORD *pdwSigSize);
         
         HRESULT ( STDMETHODCALLTYPE *FromCorElement )( 
-            __RPC__in ITypeCreator * This,
+            ITypeCreator * This,
             /* [in] */ CorElementType type,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            /* [out] */ IType **ppType);
         
         HRESULT ( STDMETHODCALLTYPE *FromToken )( 
-            __RPC__in ITypeCreator * This,
+            ITypeCreator * This,
             /* [in] */ CorElementType type,
             /* [in] */ mdToken token,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            /* [out] */ IType **ppType);
         
         END_INTERFACE
     } ITypeCreatorVtbl;
@@ -6197,7 +6192,7 @@ EXTERN_C const IID IID_IMethodLocal;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetType( 
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
     };
     
@@ -6209,20 +6204,20 @@ EXTERN_C const IID IID_IMethodLocal;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodLocal * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodLocal * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodLocal * This);
+            IMethodLocal * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodLocal * This);
+            IMethodLocal * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetType )( 
-            __RPC__in IMethodLocal * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodLocal * This,
+            /* [out] */ IType **ppType);
         
         END_INTERFACE
     } IMethodLocalVtbl;
@@ -6277,7 +6272,7 @@ EXTERN_C const IID IID_IMethodParameter;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetType( 
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
     };
     
@@ -6289,20 +6284,20 @@ EXTERN_C const IID IID_IMethodParameter;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodParameter * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodParameter * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodParameter * This);
+            IMethodParameter * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodParameter * This);
+            IMethodParameter * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetType )( 
-            __RPC__in IMethodParameter * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            IMethodParameter * This,
+            /* [out] */ IType **ppType);
         
         END_INTERFACE
     } IMethodParameterVtbl;
@@ -6358,8 +6353,8 @@ EXTERN_C const IID IID_IEnumMethodLocals;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodLocal **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IMethodLocal **rgelt,
+            /* [out] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -6367,10 +6362,10 @@ EXTERN_C const IID IID_IEnumMethodLocals;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppenum) = 0;
+            /* [out] */ IEnumMethodLocals **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -6382,37 +6377,37 @@ EXTERN_C const IID IID_IEnumMethodLocals;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumMethodLocals * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumMethodLocals * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumMethodLocals * This);
+            IEnumMethodLocals * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumMethodLocals * This);
+            IEnumMethodLocals * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumMethodLocals * This,
+            IEnumMethodLocals * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodLocal **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IMethodLocal **rgelt,
+            /* [out] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumMethodLocals * This,
+            IEnumMethodLocals * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumMethodLocals * This);
+            IEnumMethodLocals * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumMethodLocals * This,
-            /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppenum);
+            IEnumMethodLocals * This,
+            /* [out] */ IEnumMethodLocals **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumMethodLocals * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumMethodLocals * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumMethodLocalsVtbl;
@@ -6480,8 +6475,8 @@ EXTERN_C const IID IID_IEnumMethodParameters;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodParameter **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IMethodParameter **rgelt,
+            /* [out] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -6489,10 +6484,10 @@ EXTERN_C const IID IID_IEnumMethodParameters;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **ppenum) = 0;
+            /* [out] */ IEnumMethodParameters **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -6504,37 +6499,37 @@ EXTERN_C const IID IID_IEnumMethodParameters;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumMethodParameters * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumMethodParameters * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumMethodParameters * This);
+            IEnumMethodParameters * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumMethodParameters * This);
+            IEnumMethodParameters * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumMethodParameters * This,
+            IEnumMethodParameters * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodParameter **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IMethodParameter **rgelt,
+            /* [out] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumMethodParameters * This,
+            IEnumMethodParameters * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumMethodParameters * This);
+            IEnumMethodParameters * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumMethodParameters * This,
-            /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **ppenum);
+            IEnumMethodParameters * This,
+            /* [out] */ IEnumMethodParameters **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumMethodParameters * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumMethodParameters * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumMethodParametersVtbl;
@@ -6601,7 +6596,7 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE Initialize( 
-            /* [in] */ __RPC__in_opt IInstructionGraph *pInstructionGraph) = 0;
+            /* [in] */ IInstructionGraph *pInstructionGraph) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ApplySingleRetDefaultInstrumentation( void) = 0;
         
@@ -6615,23 +6610,23 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ISingleRetDefaultInstrumentation * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ISingleRetDefaultInstrumentation * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ISingleRetDefaultInstrumentation * This);
+            ISingleRetDefaultInstrumentation * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ISingleRetDefaultInstrumentation * This);
+            ISingleRetDefaultInstrumentation * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in ISingleRetDefaultInstrumentation * This,
-            /* [in] */ __RPC__in_opt IInstructionGraph *pInstructionGraph);
+            ISingleRetDefaultInstrumentation * This,
+            /* [in] */ IInstructionGraph *pInstructionGraph);
         
         HRESULT ( STDMETHODCALLTYPE *ApplySingleRetDefaultInstrumentation )( 
-            __RPC__in ISingleRetDefaultInstrumentation * This);
+            ISingleRetDefaultInstrumentation * This);
         
         END_INTERFACE
     } ISingleRetDefaultInstrumentationVtbl;
@@ -6691,7 +6686,7 @@ EXTERN_C const IID IID_IProfilerManager2;
         virtual HRESULT STDMETHODCALLTYPE DisableProfiling( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ApplyMetadata( 
-            /* [in] */ __RPC__in_opt IModuleInfo *pMethodInfo) = 0;
+            /* [in] */ IModuleInfo *pMethodInfo) = 0;
         
     };
     
@@ -6703,23 +6698,23 @@ EXTERN_C const IID IID_IProfilerManager2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManager2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManager2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManager2 * This);
+            IProfilerManager2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManager2 * This);
+            IProfilerManager2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *DisableProfiling )( 
-            __RPC__in IProfilerManager2 * This);
+            IProfilerManager2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *ApplyMetadata )( 
-            __RPC__in IProfilerManager2 * This,
-            /* [in] */ __RPC__in_opt IModuleInfo *pMethodInfo);
+            IProfilerManager2 * This,
+            /* [in] */ IModuleInfo *pMethodInfo);
         
         END_INTERFACE
     } IProfilerManager2Vtbl;
@@ -6777,7 +6772,7 @@ EXTERN_C const IID IID_IProfilerManager3;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetApiVersion( 
-            /* [out] */ __RPC__out DWORD *pApiVer) = 0;
+            /* [out] */ DWORD *pApiVer) = 0;
         
     };
     
@@ -6789,20 +6784,20 @@ EXTERN_C const IID IID_IProfilerManager3;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManager3 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManager3 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManager3 * This);
+            IProfilerManager3 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManager3 * This);
+            IProfilerManager3 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetApiVersion )( 
-            __RPC__in IProfilerManager3 * This,
-            /* [out] */ __RPC__out DWORD *pApiVer);
+            IProfilerManager3 * This,
+            /* [out] */ DWORD *pApiVer);
         
         END_INTERFACE
     } IProfilerManager3Vtbl;
@@ -6857,7 +6852,7 @@ EXTERN_C const IID IID_IProfilerManager4;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetGlobalLoggingInstance( 
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging) = 0;
+            /* [out] */ IProfilerManagerLogging **ppLogging) = 0;
         
     };
     
@@ -6869,20 +6864,20 @@ EXTERN_C const IID IID_IProfilerManager4;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IProfilerManager4 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IProfilerManager4 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IProfilerManager4 * This);
+            IProfilerManager4 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IProfilerManager4 * This);
+            IProfilerManager4 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetGlobalLoggingInstance )( 
-            __RPC__in IProfilerManager4 * This,
-            /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging);
+            IProfilerManager4 * This,
+            /* [out] */ IProfilerManagerLogging **ppLogging);
         
         END_INTERFACE
     } IProfilerManager4Vtbl;
@@ -6937,21 +6932,21 @@ EXTERN_C const IID IID_IInstrumentationMethodExceptionEvents;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherEnter( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ UINT_PTR objectId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherLeave( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionSearchCatcherFound( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo) = 0;
+            /* [in] */ IMethodInfo *pMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterEnter( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo) = 0;
+            /* [in] */ IMethodInfo *pMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterLeave( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionEnter( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo) = 0;
+            /* [in] */ IMethodInfo *pMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionLeave( void) = 0;
         
@@ -6959,12 +6954,12 @@ EXTERN_C const IID IID_IInstrumentationMethodExceptionEvents;
             /* [in] */ UINT_PTR thrownObjectId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyEnter( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo) = 0;
+            /* [in] */ IMethodInfo *pMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyLeave( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionEnter( 
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo) = 0;
+            /* [in] */ IMethodInfo *pMethodInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionLeave( void) = 0;
         
@@ -6978,60 +6973,60 @@ EXTERN_C const IID IID_IInstrumentationMethodExceptionEvents;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionCatcherEnter )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo,
             /* [in] */ UINT_PTR objectId);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionCatcherLeave )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchCatcherFound )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFilterEnter )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFilterLeave )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFunctionEnter )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFunctionLeave )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionThrown )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
+            IInstrumentationMethodExceptionEvents * This,
             /* [in] */ UINT_PTR thrownObjectId);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFinallyEnter )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFinallyLeave )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFunctionEnter )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This,
-            /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
+            IInstrumentationMethodExceptionEvents * This,
+            /* [in] */ IMethodInfo *pMethodInfo);
         
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFunctionLeave )( 
-            __RPC__in IInstrumentationMethodExceptionEvents * This);
+            IInstrumentationMethodExceptionEvents * This);
         
         END_INTERFACE
     } IInstrumentationMethodExceptionEventsVtbl;
@@ -7120,8 +7115,8 @@ EXTERN_C const IID IID_IEnumInstructions;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstruction **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IInstruction **rgelt,
+            /* [in] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -7129,10 +7124,10 @@ EXTERN_C const IID IID_IEnumInstructions;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumInstructions **ppenum) = 0;
+            /* [out] */ IEnumInstructions **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -7144,37 +7139,37 @@ EXTERN_C const IID IID_IEnumInstructions;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumInstructions * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumInstructions * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumInstructions * This);
+            IEnumInstructions * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumInstructions * This);
+            IEnumInstructions * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumInstructions * This,
+            IEnumInstructions * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstruction **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IInstruction **rgelt,
+            /* [in] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumInstructions * This,
+            IEnumInstructions * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumInstructions * This);
+            IEnumInstructions * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumInstructions * This,
-            /* [out] */ __RPC__deref_out_opt IEnumInstructions **ppenum);
+            IEnumInstructions * This,
+            /* [out] */ IEnumInstructions **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumInstructions * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumInstructions * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumInstructionsVtbl;
@@ -7242,82 +7237,82 @@ EXTERN_C const IID IID_IInstructionFactory;
     public:
         virtual HRESULT STDMETHODCALLTYPE CreateInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateByteOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ BYTE operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateUShortOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ USHORT operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateIntOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT32 operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLongOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT64 operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateFloatOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ float operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateDoubleOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ double operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateTokenOperandInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ mdToken operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateBranchInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
-            /* [in] */ __RPC__in_opt IInstruction *pBranchTarget,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [in] */ IInstruction *pBranchTarget,
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateSwitchInstruction( 
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ DWORD cBranchTargets,
-            /* [length_is][size_is][in] */ __RPC__in_ecount_part(cBranchTargets, cBranchTargets) IInstruction **ppBranchTargets,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [length_is][size_is][in] */ IInstruction **ppBranchTargets,
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLoadConstInstruction( 
             /* [in] */ int value,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLoadLocalInstruction( 
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLoadLocalAddressInstruction( 
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateStoreLocalInstruction( 
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLoadArgInstruction( 
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateLoadArgAddressInstruction( 
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction) = 0;
+            /* [out] */ IInstruction **ppInstruction) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE DecodeInstructionByteStream( 
             /* [in] */ DWORD cbMethod,
-            /* [in] */ __RPC__in LPCBYTE instructionBytes,
-            /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph) = 0;
+            /* [in] */ LPCBYTE instructionBytes,
+            /* [out] */ IInstructionGraph **ppInstructionGraph) = 0;
         
     };
     
@@ -7329,112 +7324,112 @@ EXTERN_C const IID IID_IInstructionFactory;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstructionFactory * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstructionFactory * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstructionFactory * This);
+            IInstructionFactory * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstructionFactory * This);
+            IInstructionFactory * This);
         
         HRESULT ( STDMETHODCALLTYPE *CreateInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateByteOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ BYTE operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateUShortOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ USHORT operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateIntOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT32 operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLongOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT64 operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateFloatOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ float operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateDoubleOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ double operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTokenOperandInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ mdToken operand,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateBranchInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
-            /* [in] */ __RPC__in_opt IInstruction *pBranchTarget,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [in] */ IInstruction *pBranchTarget,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateSwitchInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ DWORD cBranchTargets,
-            /* [length_is][size_is][in] */ __RPC__in_ecount_part(cBranchTargets, cBranchTargets) IInstruction **ppBranchTargets,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [length_is][size_is][in] */ IInstruction **ppBranchTargets,
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLoadConstInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ int value,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLoadLocalInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLoadLocalAddressInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateStoreLocalInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLoadArgInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *CreateLoadArgAddressInstruction )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ USHORT index,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
+            /* [out] */ IInstruction **ppInstruction);
         
         HRESULT ( STDMETHODCALLTYPE *DecodeInstructionByteStream )( 
-            __RPC__in IInstructionFactory * This,
+            IInstructionFactory * This,
             /* [in] */ DWORD cbMethod,
-            /* [in] */ __RPC__in LPCBYTE instructionBytes,
-            /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
+            /* [in] */ LPCBYTE instructionBytes,
+            /* [out] */ IInstructionGraph **ppInstructionGraph);
         
         END_INTERFACE
     } IInstructionFactoryVtbl;
@@ -7538,8 +7533,8 @@ EXTERN_C const IID IID_IEnumAppMethodInfo;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IEnumAppMethodInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IEnumAppMethodInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -7547,10 +7542,10 @@ EXTERN_C const IID IID_IEnumAppMethodInfo;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumAppMethodInfo **ppenum) = 0;
+            /* [out] */ IEnumAppMethodInfo **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -7562,37 +7557,37 @@ EXTERN_C const IID IID_IEnumAppMethodInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumAppMethodInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumAppMethodInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumAppMethodInfo * This);
+            IEnumAppMethodInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumAppMethodInfo * This);
+            IEnumAppMethodInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumAppMethodInfo * This,
+            IEnumAppMethodInfo * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IEnumAppMethodInfo **rgelt,
-            /* [in] */ __RPC__in ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IEnumAppMethodInfo **rgelt,
+            /* [in] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumAppMethodInfo * This,
+            IEnumAppMethodInfo * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumAppMethodInfo * This);
+            IEnumAppMethodInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumAppMethodInfo * This,
-            /* [out] */ __RPC__deref_out_opt IEnumAppMethodInfo **ppenum);
+            IEnumAppMethodInfo * This,
+            /* [out] */ IEnumAppMethodInfo **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumAppMethodInfo * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumAppMethodInfo * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumAppMethodInfoVtbl;
@@ -7659,7 +7654,7 @@ EXTERN_C const IID IID_ILocalVariableCollection2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetEnum( 
-            /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppEnumMethodLocals) = 0;
+            /* [out] */ IEnumMethodLocals **ppEnumMethodLocals) = 0;
         
     };
     
@@ -7671,44 +7666,44 @@ EXTERN_C const IID IID_ILocalVariableCollection2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ILocalVariableCollection2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ILocalVariableCollection2 * This);
+            ILocalVariableCollection2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ILocalVariableCollection2 * This);
+            ILocalVariableCollection2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in ILocalVariableCollection2 * This);
+            ILocalVariableCollection2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignature);
+            ILocalVariableCollection2 * This,
+            /* [out] */ ISignatureBuilder **ppSignature);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [out] */ __RPC__out DWORD *pdwCount);
+            ILocalVariableCollection2 * This,
+            /* [out] */ DWORD *pdwCount);
         
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex);
+            ILocalVariableCollection2 * This,
+            /* [in] */ IType *pType,
+            /* [optional][out] */ DWORD *pIndex);
         
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            ILocalVariableCollection2 * This,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ DWORD dwSigSize);
         
         HRESULT ( STDMETHODCALLTYPE *CommitSignature )( 
-            __RPC__in ILocalVariableCollection2 * This);
+            ILocalVariableCollection2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetEnum )( 
-            __RPC__in ILocalVariableCollection2 * This,
-            /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppEnumMethodLocals);
+            ILocalVariableCollection2 * This,
+            /* [out] */ IEnumMethodLocals **ppEnumMethodLocals);
         
         END_INTERFACE
     } ILocalVariableCollection2Vtbl;
@@ -7783,8 +7778,8 @@ EXTERN_C const IID IID_IEnumTypes;
     public:
         virtual HRESULT STDMETHODCALLTYPE Next( 
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IType **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched) = 0;
+            /* [length_is][size_is][out] */ IType **rgelt,
+            /* [out] */ ULONG *pceltFetched) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Skip( 
             /* [in] */ ULONG celt) = 0;
@@ -7792,10 +7787,10 @@ EXTERN_C const IID IID_IEnumTypes;
         virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Clone( 
-            /* [out] */ __RPC__deref_out_opt IEnumTypes **ppenum) = 0;
+            /* [out] */ IEnumTypes **ppenum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCount( 
-            /* [out] */ __RPC__out DWORD *pLength) = 0;
+            /* [out] */ DWORD *pLength) = 0;
         
     };
     
@@ -7807,37 +7802,37 @@ EXTERN_C const IID IID_IEnumTypes;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IEnumTypes * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IEnumTypes * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IEnumTypes * This);
+            IEnumTypes * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IEnumTypes * This);
+            IEnumTypes * This);
         
         HRESULT ( STDMETHODCALLTYPE *Next )( 
-            __RPC__in IEnumTypes * This,
+            IEnumTypes * This,
             /* [in] */ ULONG celt,
-            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IType **rgelt,
-            /* [out] */ __RPC__out ULONG *pceltFetched);
+            /* [length_is][size_is][out] */ IType **rgelt,
+            /* [out] */ ULONG *pceltFetched);
         
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
-            __RPC__in IEnumTypes * This,
+            IEnumTypes * This,
             /* [in] */ ULONG celt);
         
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
-            __RPC__in IEnumTypes * This);
+            IEnumTypes * This);
         
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
-            __RPC__in IEnumTypes * This,
-            /* [out] */ __RPC__deref_out_opt IEnumTypes **ppenum);
+            IEnumTypes * This,
+            /* [out] */ IEnumTypes **ppenum);
         
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
-            __RPC__in IEnumTypes * This,
-            /* [out] */ __RPC__out DWORD *pLength);
+            IEnumTypes * This,
+            /* [out] */ DWORD *pLength);
         
         END_INTERFACE
     } IEnumTypesVtbl;
@@ -7904,27 +7899,27 @@ EXTERN_C const IID IID_ISignatureParser;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE ParseMethodSignature( 
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IType **ppReturnType,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumParameterTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcGenericTypeParameters,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][out] */ ULONG *pCallingConvention,
+            /* [optional][out] */ IType **ppReturnType,
+            /* [optional][out] */ IEnumTypes **ppEnumParameterTypes,
+            /* [optional][out] */ ULONG *pcGenericTypeParameters,
+            /* [optional][out] */ ULONG *pcbRead) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ParseLocalVarSignature( 
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][out] */ ULONG *pCallingConvention,
+            /* [optional][out] */ IEnumTypes **ppEnumTypes,
+            /* [optional][out] */ ULONG *pcbRead) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ParseTypeSequence( 
-            /* [in] */ __RPC__in const BYTE *pBuffer,
+            /* [in] */ const BYTE *pBuffer,
             /* [in] */ ULONG cbBuffer,
             /* [in] */ ULONG cTypes,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][out] */ IEnumTypes **ppEnumTypes,
+            /* [optional][out] */ ULONG *pcbRead) = 0;
         
     };
     
@@ -7936,42 +7931,42 @@ EXTERN_C const IID IID_ISignatureParser;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ISignatureParser * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ISignatureParser * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ISignatureParser * This);
+            ISignatureParser * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ISignatureParser * This);
+            ISignatureParser * This);
         
         HRESULT ( STDMETHODCALLTYPE *ParseMethodSignature )( 
-            __RPC__in ISignatureParser * This,
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            ISignatureParser * This,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IType **ppReturnType,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumParameterTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcGenericTypeParameters,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][out] */ ULONG *pCallingConvention,
+            /* [optional][out] */ IType **ppReturnType,
+            /* [optional][out] */ IEnumTypes **ppEnumParameterTypes,
+            /* [optional][out] */ ULONG *pcGenericTypeParameters,
+            /* [optional][out] */ ULONG *pcbRead);
         
         HRESULT ( STDMETHODCALLTYPE *ParseLocalVarSignature )( 
-            __RPC__in ISignatureParser * This,
-            /* [in] */ __RPC__in const BYTE *pSignature,
+            ISignatureParser * This,
+            /* [in] */ const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][out] */ ULONG *pCallingConvention,
+            /* [optional][out] */ IEnumTypes **ppEnumTypes,
+            /* [optional][out] */ ULONG *pcbRead);
         
         HRESULT ( STDMETHODCALLTYPE *ParseTypeSequence )( 
-            __RPC__in ISignatureParser * This,
-            /* [in] */ __RPC__in const BYTE *pBuffer,
+            ISignatureParser * This,
+            /* [in] */ const BYTE *pBuffer,
             /* [in] */ ULONG cbBuffer,
             /* [in] */ ULONG cTypes,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][out] */ IEnumTypes **ppEnumTypes,
+            /* [optional][out] */ ULONG *pcbRead);
         
         END_INTERFACE
     } ISignatureParserVtbl;
@@ -8032,10 +8027,10 @@ EXTERN_C const IID IID_ITokenType;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetToken( 
-            /* [out] */ __RPC__out mdToken *pToken) = 0;
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetOwningModule( 
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
     };
     
@@ -8047,24 +8042,24 @@ EXTERN_C const IID IID_ITokenType;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ITokenType * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ITokenType * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ITokenType * This);
+            ITokenType * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ITokenType * This);
+            ITokenType * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetToken )( 
-            __RPC__in ITokenType * This,
-            /* [out] */ __RPC__out mdToken *pToken);
+            ITokenType * This,
+            /* [out] */ mdToken *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetOwningModule )( 
-            __RPC__in ITokenType * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            ITokenType * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         END_INTERFACE
     } ITokenTypeVtbl;
@@ -8122,7 +8117,7 @@ EXTERN_C const IID IID_ICompositeType;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetRelatedType( 
-            /* [out] */ __RPC__deref_out_opt IType **ppType) = 0;
+            /* [out] */ IType **ppType) = 0;
         
     };
     
@@ -8134,20 +8129,20 @@ EXTERN_C const IID IID_ICompositeType;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ICompositeType * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ICompositeType * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ICompositeType * This);
+            ICompositeType * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ICompositeType * This);
+            ICompositeType * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetRelatedType )( 
-            __RPC__in ICompositeType * This,
-            /* [out] */ __RPC__deref_out_opt IType **ppType);
+            ICompositeType * This,
+            /* [out] */ IType **ppType);
         
         END_INTERFACE
     } ICompositeTypeVtbl;
@@ -8202,7 +8197,7 @@ EXTERN_C const IID IID_IGenericParameterType;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetPosition( 
-            /* [out] */ __RPC__out ULONG *pPosition) = 0;
+            /* [out] */ ULONG *pPosition) = 0;
         
     };
     
@@ -8214,20 +8209,20 @@ EXTERN_C const IID IID_IGenericParameterType;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IGenericParameterType * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IGenericParameterType * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IGenericParameterType * This);
+            IGenericParameterType * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IGenericParameterType * This);
+            IGenericParameterType * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetPosition )( 
-            __RPC__in IGenericParameterType * This,
-            /* [out] */ __RPC__out ULONG *pPosition);
+            IGenericParameterType * This,
+            /* [out] */ ULONG *pPosition);
         
         END_INTERFACE
     } IGenericParameterTypeVtbl;
@@ -8282,7 +8277,7 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetBranchTargetInstruction( 
-            /* [out] */ __RPC__deref_out_opt IInstruction **pInstruction) = 0;
+            /* [out] */ IInstruction **pInstruction) = 0;
         
     };
     
@@ -8294,27 +8289,27 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            ISingleRetDefaultInstrumentation2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This);
+            ISingleRetDefaultInstrumentation2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This);
+            ISingleRetDefaultInstrumentation2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This,
-            /* [in] */ __RPC__in_opt IInstructionGraph *pInstructionGraph);
+            ISingleRetDefaultInstrumentation2 * This,
+            /* [in] */ IInstructionGraph *pInstructionGraph);
         
         HRESULT ( STDMETHODCALLTYPE *ApplySingleRetDefaultInstrumentation )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This);
+            ISingleRetDefaultInstrumentation2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetBranchTargetInstruction )( 
-            __RPC__in ISingleRetDefaultInstrumentation2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **pInstruction);
+            ISingleRetDefaultInstrumentation2 * This,
+            /* [out] */ IInstruction **pInstruction);
         
         END_INTERFACE
     } ISingleRetDefaultInstrumentation2Vtbl;
@@ -8394,24 +8389,24 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstrumentationMethodJitEvents * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstrumentationMethodJitEvents * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstrumentationMethodJitEvents * This);
+            IInstrumentationMethodJitEvents * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstrumentationMethodJitEvents * This);
+            IInstrumentationMethodJitEvents * This);
         
         HRESULT ( STDMETHODCALLTYPE *JitStarted )( 
-            __RPC__in IInstrumentationMethodJitEvents * This,
+            IInstrumentationMethodJitEvents * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit);
         
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
-            __RPC__in IInstrumentationMethodJitEvents * This,
+            IInstrumentationMethodJitEvents * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit,
             /* [in] */ HRESULT jitResult);
@@ -8472,22 +8467,22 @@ EXTERN_C const IID IID_IMethodJitInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetFunctionID( 
-            /* [out] */ __RPC__out FunctionID *pFunctionId) = 0;
+            /* [out] */ FunctionID *pFunctionId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetIsRejit( 
-            /* [out] */ __RPC__out BOOL *pIsRejit) = 0;
+            /* [out] */ BOOL *pIsRejit) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRejitId( 
-            /* [out] */ __RPC__out ReJITID *pRejitId) = 0;
+            /* [out] */ ReJITID *pRejitId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetJitHR( 
-            /* [out] */ __RPC__out HRESULT *pHResult) = 0;
+            /* [out] */ HRESULT *pHResult) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILTransformationStatus( 
-            /* [out] */ __RPC__out BOOL *pIsTranformed) = 0;
+            /* [out] */ BOOL *pIsTranformed) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfo( 
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo) = 0;
+            /* [out] */ IModuleInfo **ppModuleInfo) = 0;
         
     };
     
@@ -8499,40 +8494,40 @@ EXTERN_C const IID IID_IMethodJitInfo;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodJitInfo * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodJitInfo * This);
+            IMethodJitInfo * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodJitInfo * This);
+            IMethodJitInfo * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__out FunctionID *pFunctionId);
+            IMethodJitInfo * This,
+            /* [out] */ FunctionID *pFunctionId);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__out BOOL *pIsRejit);
+            IMethodJitInfo * This,
+            /* [out] */ BOOL *pIsRejit);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__out ReJITID *pRejitId);
+            IMethodJitInfo * This,
+            /* [out] */ ReJITID *pRejitId);
         
         HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__out HRESULT *pHResult);
+            IMethodJitInfo * This,
+            /* [out] */ HRESULT *pHResult);
         
         HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__out BOOL *pIsTranformed);
+            IMethodJitInfo * This,
+            /* [out] */ BOOL *pIsTranformed);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
-            __RPC__in IMethodJitInfo * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IMethodJitInfo * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         END_INTERFACE
     } IMethodJitInfoVtbl;
@@ -8603,19 +8598,19 @@ EXTERN_C const IID IID_IMethodJitInfo2;
     public:
         virtual HRESULT STDMETHODCALLTYPE GetILNativeMapping( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
-            /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
+            /* [out] */ COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILInstrumentationMap( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
-            /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
+            /* [out] */ COR_IL_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodToken( 
-            /* [out] */ __RPC__out mdMethodDef *pToken) = 0;
+            /* [out] */ mdMethodDef *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetNativeCodeAddress( 
-            /* [out] */ __RPC__out UINT_PTR *pCodeAddress) = 0;
+            /* [out] */ UINT_PTR *pCodeAddress) = 0;
         
     };
     
@@ -8627,60 +8622,60 @@ EXTERN_C const IID IID_IMethodJitInfo2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IMethodJitInfo2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IMethodJitInfo2 * This);
+            IMethodJitInfo2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IMethodJitInfo2 * This);
+            IMethodJitInfo2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out FunctionID *pFunctionId);
+            IMethodJitInfo2 * This,
+            /* [out] */ FunctionID *pFunctionId);
         
         HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pIsRejit);
+            IMethodJitInfo2 * This,
+            /* [out] */ BOOL *pIsRejit);
         
         HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out ReJITID *pRejitId);
+            IMethodJitInfo2 * This,
+            /* [out] */ ReJITID *pRejitId);
         
         HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out HRESULT *pHResult);
+            IMethodJitInfo2 * This,
+            /* [out] */ HRESULT *pHResult);
         
         HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out BOOL *pIsTranformed);
+            IMethodJitInfo2 * This,
+            /* [out] */ BOOL *pIsTranformed);
         
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
+            IMethodJitInfo2 * This,
+            /* [out] */ IModuleInfo **ppModuleInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetILNativeMapping )( 
-            __RPC__in IMethodJitInfo2 * This,
+            IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
-            /* [out] */ __RPC__out ULONG32 *pcNeeded);
+            /* [out] */ COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetILInstrumentationMap )( 
-            __RPC__in IMethodJitInfo2 * This,
+            IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
-            /* [out] */ __RPC__out ULONG32 *pcNeeded);
+            /* [out] */ COR_IL_MAP *pMap,
+            /* [out] */ ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out mdMethodDef *pToken);
+            IMethodJitInfo2 * This,
+            /* [out] */ mdMethodDef *pToken);
         
         HRESULT ( STDMETHODCALLTYPE *GetNativeCodeAddress )( 
-            __RPC__in IMethodJitInfo2 * This,
-            /* [out] */ __RPC__out UINT_PTR *pCodeAddress);
+            IMethodJitInfo2 * This,
+            /* [out] */ UINT_PTR *pCodeAddress);
         
         END_INTERFACE
     } IMethodJitInfo2Vtbl;
@@ -8763,7 +8758,7 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE JitComplete( 
-            /* [in] */ __RPC__in_opt IMethodJitInfo *pJitInfo) = 0;
+            /* [in] */ IMethodJitInfo *pJitInfo) = 0;
         
     };
     
@@ -8775,31 +8770,31 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents2;
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ __RPC__in REFIID riid,
+            IInstrumentationMethodJitEvents2 * This,
+            /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This);
+            IInstrumentationMethodJitEvents2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This);
+            IInstrumentationMethodJitEvents2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *JitStarted )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This,
+            IInstrumentationMethodJitEvents2 * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit);
         
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This,
+            IInstrumentationMethodJitEvents2 * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit,
             /* [in] */ HRESULT jitResult);
         
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
-            __RPC__in IInstrumentationMethodJitEvents2 * This,
-            /* [in] */ __RPC__in_opt IMethodJitInfo *pJitInfo);
+            IInstrumentationMethodJitEvents2 * This,
+            /* [in] */ IMethodJitInfo *pJitInfo);
         
         END_INTERFACE
     } IInstrumentationMethodJitEvents2Vtbl;

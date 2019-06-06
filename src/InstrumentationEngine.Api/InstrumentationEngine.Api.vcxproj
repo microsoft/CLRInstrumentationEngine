@@ -67,14 +67,13 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">X86;__cplusplus;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderFile />
-      <PrecompiledHeaderOutputFile />
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
       <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
       <RunCodeAnalysis>true</RunCodeAnalysis>
     </ClCompile>
-    <Midl>
-      <AdditionalOptions>/sal</AdditionalOptions>
-    </Midl>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <LinkIncremental>false</LinkIncremental>
@@ -92,16 +91,15 @@
       <SDLCheck>true</SDLCheck>
       <EnablePREfast>true</EnablePREfast>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PrecompiledHeaderFile />
-      <PrecompiledHeaderOutputFile />
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <Midl>
-      <AdditionalOptions>/sal</AdditionalOptions>
-    </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Midl Include="InstrumentationEngine.idl">

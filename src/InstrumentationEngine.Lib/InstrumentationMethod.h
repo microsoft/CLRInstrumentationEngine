@@ -17,7 +17,7 @@ namespace MicrosoftInstrumentationEngine
         CComBSTR m_bstrName;
         CComBSTR m_bstrDescription;
         CComBSTR m_bstrModuleFolder;
-        CComBSTR m_bstrModule;
+		CComBSTR m_bstrModule;
         DWORD m_dwPriority;
 
         GUID m_guidClassId;
