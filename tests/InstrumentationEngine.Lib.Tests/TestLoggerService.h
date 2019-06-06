@@ -31,12 +31,12 @@ namespace InstrumentationEngineLibTests
         }
 
     protected:
-        void LogEvent(const EventLogItem& tsEntry) override
+        void LogEvent(const tstring& tsEntry) override
         {
             // Sleep some arbitrary amount of time.
             Sleep(m_entries.size() % 25); // ms
 
-            m_entries.push_back(tsEntry.tsEventLog);
+            m_entries.push_back(tsEntry);
         }
     };
 

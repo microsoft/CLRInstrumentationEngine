@@ -1,10 +1,5 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
 #pragma once
-
 #include "EventLogger.h"
-#include <atomic>
 
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX

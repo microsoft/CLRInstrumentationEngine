@@ -61,8 +61,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegacyDependencies", "src\D
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.ProfilerProxy", "src\InstrumentationEngine.ProfilerProxy\InstrumentationEngine.ProfilerProxy.vcxproj", "{78F69D10-7F29-4645-AD77-91A2D06FF7F4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common.Lib", "src\Common.Lib\Common.Lib.vcxproj", "{A0585FAB-548F-44B3-BCBE-9242CBC26A19}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{c1aaa703-5e32-45c0-a69d-f46d1c659ae4}*SharedItemsImports = 13
@@ -278,16 +276,6 @@ Global
 		{78F69D10-7F29-4645-AD77-91A2D06FF7F4}.Release|x64.Build.0 = Release|x64
 		{78F69D10-7F29-4645-AD77-91A2D06FF7F4}.Release|x86.ActiveCfg = Release|Win32
 		{78F69D10-7F29-4645-AD77-91A2D06FF7F4}.Release|x86.Build.0 = Release|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Debug|x64.ActiveCfg = Debug|x64
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Debug|x64.Build.0 = Debug|x64
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Debug|x86.ActiveCfg = Debug|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Debug|x86.Build.0 = Debug|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Release|Any CPU.ActiveCfg = Release|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Release|x64.ActiveCfg = Release|x64
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Release|x64.Build.0 = Release|x64
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Release|x86.ActiveCfg = Release|Win32
-		{A0585FAB-548F-44B3-BCBE-9242CBC26A19}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

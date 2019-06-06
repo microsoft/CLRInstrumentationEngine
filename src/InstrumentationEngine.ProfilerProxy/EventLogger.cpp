@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
 #include "stdafx.h"
 #include "EventLogger.h"
 
@@ -34,17 +31,17 @@ void CEventLogger::FormatAndAppendToQueue(_In_ WORD wType, _In_ LPCWSTR wszMessa
     AppendToQueue(wType, wszLogEntry);
 }
 
-void CEventLogger::LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr)
+void CEventLogger::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
 {
     FormatAndAppendToQueue(EVENTLOG_INFORMATION_TYPE, wszMessage, argptr);
 }
 
-void CEventLogger::LogWarning(_In_ LPCWSTR wszWarning, _In_ va_list argptr)
+void CEventLogger::LogWarning(_In_ LPCWSTR wszWarning, va_list argptr)
 {
     FormatAndAppendToQueue(EVENTLOG_WARNING_TYPE, wszWarning, argptr);
 }
 
-void CEventLogger::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
+void CEventLogger::LogError(_In_ LPCWSTR wszError, va_list argptr)
 {
     FormatAndAppendToQueue(EVENTLOG_ERROR_TYPE, wszError, argptr);
 

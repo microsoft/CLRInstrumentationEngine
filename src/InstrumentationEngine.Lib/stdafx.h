@@ -62,6 +62,10 @@ using namespace ATL;
 #define wcsstr        PAL_wcsstr
 #endif
 
+#include "tstring.h"
+
+#include "Macros.h"
+
 #include <queue>
 #include <vector>
 #include <memory>
@@ -76,6 +80,15 @@ using namespace ATL;
 #define fwprintf      PAL_fwprintf
 #endif
 
+#include "CriticalSectionHolder.h"
+#include "InitOnce.h"
+#include "Singleton.h"
+#include "Logging.h"
+#include "SharedArray.h"
+
+using namespace std;
+using namespace MicrosoftInstrumentationEngine;
+
 #include <time.h>
 #include <iomanip>
 #include <wchar.h>
@@ -83,16 +96,4 @@ using namespace ATL;
 #include <ctime>
 #endif
 
-#include "Logging.h"
-#include "SharedArray.h"
-
-#include "../Common.Lib/tstring.h"
-#include "../Common.Lib/Macros.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
-#include "../Common.Lib/InitOnce.h"
-#include "../Common.Lib/Singleton.h"
-
-#include "../Common.Lib/banned.h"
-
-using namespace std;
-using namespace MicrosoftInstrumentationEngine;
+#include "../ExtensionsCommon/banned.h"

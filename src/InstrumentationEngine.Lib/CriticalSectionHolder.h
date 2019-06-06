@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "stdafx.h"
-
 class CCriticalSectionHolder
 {
     LPCRITICAL_SECTION m_pLock;

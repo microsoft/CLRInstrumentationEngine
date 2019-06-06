@@ -60,7 +60,7 @@
 #include <thread>
 #include <future>
 
-#include "../Common.Lib/banned.h"
+#include "banned.h"
 
 // Microsoft Instrumentation Engine encludes
 #include "InstrumentationEngineDefs.h"

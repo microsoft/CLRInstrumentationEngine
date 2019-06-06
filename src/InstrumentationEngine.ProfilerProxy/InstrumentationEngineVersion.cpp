@@ -4,11 +4,6 @@
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
 
-#pragma warning(push)
-#pragma warning(disable: 4995) // disable so that memcpy can be used
-#include <regex>
-#pragma warning(pop)
-
 using namespace MicrosoftInstrumentationEngine;
 
 // This versionRegex produces the following match result :

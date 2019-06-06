@@ -88,7 +88,6 @@
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
     </Link>
@@ -102,7 +101,6 @@
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -125,8 +123,11 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">
-      <Project>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</Project>
+    <ProjectReference Include="..\InstrumentationEngine.Lib\InstrumentationEngine.Lib.vcxproj">
+      <Project>{7507e5dd-d4d8-4617-9124-a76341004aab}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ExtensionsHostLib\ExtensionsHostLib.vcxproj">
+      <Project>{80ECB05A-B90E-41E8-B9DD-5AFB14981891}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

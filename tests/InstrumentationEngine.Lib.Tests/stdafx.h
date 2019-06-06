@@ -39,13 +39,14 @@
 
 #include <msxml6.h>
 
+#include "Macros.h"
+
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "Logging.h"
 
-#include "../Common.Lib/Macros.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
+#include "CriticalSectionHolder.h"
+#include "Logging.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;
