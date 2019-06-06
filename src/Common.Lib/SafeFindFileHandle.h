@@ -3,7 +3,10 @@
 
 #pragma once
 
+#include "stdafx.h"
+#ifndef PLATFORM_UNIX
 #include <Windows.h>
+#endif
 
 class SafeFindFileHandle
 {

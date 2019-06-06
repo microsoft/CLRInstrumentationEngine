@@ -94,10 +94,6 @@ namespace MicrosoftInstrumentationEngine
             {
                 CProxyLogging::LogMessage(_T("dllmain::IsWow64 - Process is running in WoW64"));
             }
-            else
-            {
-                CProxyLogging::LogMessage(_T("dllmain::IsWow64 - Process is not running in WoW64"));
-            }
         }
 
         return S_OK;
@@ -311,7 +307,7 @@ namespace MicrosoftInstrumentationEngine
 
     /*
      * The proxy searches for the latest [VERSION] folder in order to pick up the
-    *  InstrumentationEngine profiler dll and forwards the DllGetClassObject call.
+     * InstrumentationEngine profiler dll and forwards the DllGetClassObject call.
      * The 32-bit proxy searches 32-bit paths only. Similarly for 64-bit proxy.
      *
      * %ProgramFiles|(x86)%
@@ -334,40 +330,20 @@ namespace MicrosoftInstrumentationEngine
                 Sleep(100);
             }
         }
-
-        //
-        // Determine "Program Files" folder
-        //
-
-
-        // WoW64 = Windows (32bit) on Windows 64bit
 #endif
 
         CProxyLogging::Initialize();
 
         DWORD pid = GetCurrentProcessId();
-        //
-        // Determine CIE folder
-        //
         CProxyLogging::LogMessage(_T("dllmain::DllGetClassObject - Loading Proxy from Process: %u"), pid);
 
         // Guard against g_hProfiler if it's currently being loaded.
-        //
-        // Determine Version folder
-        //
         CCriticalSectionHolder lock(&g_criticalSection);
 
         if (g_hProfiler == nullptr)
         {
             hr = LoadProfiler();
         }
-
-
-        //
-        // Determine and load Profiler
-        //
-
-
 
         if (g_hProfiler != nullptr)
         {
