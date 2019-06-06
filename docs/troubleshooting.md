@@ -1,12 +1,8 @@
 # Troubleshooting
 
-## Supported Scenarios
+## Azure
 
-Issues specific to these domains will be listed in the below links.
-
-* [Azure App Service](scenarios/azureappservice.md)
-  * Shipped as part of the [Microsoft Application Insights Private Site Extension](scenarios/applicationinsights.md)
-  * Shipped as a preinstalled site extension and enabled via [Microsoft Visual Studio Snapshot Debugger](scenarios/snapshotdebugger.md)
+See [CLRIE in Azure](scenarios/azure.md).
 
 ## Diagnosing Issues
 

@@ -20,6 +20,7 @@
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
 #include <Softpub.h>
 #include <wincrypt.h>
 #include <wintrust.h>
+
 #include "SignatureValidator.h"
 #include "Logging.h"
 

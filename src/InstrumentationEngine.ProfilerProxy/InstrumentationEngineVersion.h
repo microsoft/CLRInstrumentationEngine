@@ -5,29 +5,18 @@
 
 #include "stdafx.h"
 
-namespace ProfilerProxy
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
+#include <regex>
+#pragma warning(pop)
+
+namespace MicrosoftInstrumentationEngine
 {
     class InstrumentationEngineVersion
     {
     public:
-        static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion& validVersion)
-        {
-            HRESULT hr = S_OK;
+        static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion** ppVersion);
 
-            std::wsmatch versionMatch;
-            validVersion = InstrumentationEngineVersion();
-            if (std::regex_match(versionStr, versionMatch, versionRegex))
-            {
-                validVersion.m_versionStr = versionStr;
-                validVersion.m_semanticVersionStr = versionMatch[1];
-                validVersion.m_isPreview = versionMatch[2].matched;
-                validVersion.m_isDebug = versionMatch[3].matched;
-
-                return S_OK;
-            }
-
-            return E_FAIL;
-        }
 
         const std::wstring& GetSemanticVersionString() const;
 
@@ -35,18 +24,26 @@ namespace ProfilerProxy
 
         BOOL IsDebug() const;
 
-        const std::wstring& ToString() const;
+        // Allows conversion to wstring()
+        operator std::wstring() const { return m_versionStr; }
 
-        LPCWSTR c_str() const;
 
         int Compare(_In_ const InstrumentationEngineVersion& right) const noexcept;
 
+    private:
         static const std::wregex versionRegex;
 
-    private:
+        InstrumentationEngineVersion()
+        {
+            m_isDebug = false;
+            m_isPreview = false;
+        }
+
+        ~InstrumentationEngineVersion() { }
+
         std::wstring m_versionStr;
         std::wstring m_semanticVersionStr;
-        BOOL m_isPreview;
-        BOOL m_isDebug;
+        bool m_isPreview;
+        bool m_isDebug;
     };
 }

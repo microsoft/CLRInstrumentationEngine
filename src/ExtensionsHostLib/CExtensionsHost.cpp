@@ -16,7 +16,7 @@
 
 #include "RawProfilerHookLoader.h"
 #include "RawProfilerHookSettingsReader.h"
-#include "SafeFindFileHandle.h"
+#include "../Common.Lib/SafeFindFileHandle.h"
 
 using Agent::Diagnostics::Param;
 
