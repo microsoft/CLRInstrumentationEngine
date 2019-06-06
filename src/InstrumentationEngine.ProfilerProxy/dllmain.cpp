@@ -322,7 +322,7 @@ namespace ProfilerProxy
                 if (hr == S_OK)
                 {
                     ::FreeLibrary(g_hProfiler);
-                    hProfiler = nullptr;
+                    g_hProfiler = nullptr;
                 }
             }
         }
