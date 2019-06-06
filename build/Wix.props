@@ -33,6 +33,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- These values are parsed by candle.exe as preprocessor variables and can be accessed via $(var.VariableName) -->
+    <DefineConstants>$(DefineConstants);MajorVersion=$(SemanticVersionMajor)</DefineConstants>
     <DefineConstants>$(DefineConstants);GuidGenSeed=$(GuidGenSeed)</DefineConstants>
     <DefineConstants>$(DefineConstants);Version=$(ReleaseVersion)</DefineConstants>
     <DefineConstants>$(DefineConstants);PackageVersion=$(PackageVersion)</DefineConstants>

@@ -24,23 +24,40 @@ See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instr
 
 ## Using the CLR Instrumentation Engine
 
+### Cooperative Model
+
+Since the CLR Instrumentation Engine is meant to be shared, it is available as an x86 & x64 MSI/MSM installer on Windows desktop. The installer sets up Instrumentation Engine with the following folder structure:
+
+```
+%ProgramFiles%|%ProgramFiles(x86)%
+    Microsoft Instrumentation Engine
+        <CLRIE Version>
+            Instrumentation64|32
+                <dlls>
+        Proxy
+            <Proxy Version>
+                proxy.dll
+```
+
+We recommend setting the COR_PROFILER variables to the profiler proxy whenever applicable.
+
 ### How do I enable the CLR Instrumentation Engine?
 
 When a managed process starts execution, it must first load the CLR. Once the CLR is initialized, it then checks environment variables to see if a Profiler should be loaded.
+
+See [Environment Variables](environment_variables.md) for more details on configuring your environment.
+
+Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
+
+`MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
+
+See [App Service](scenarios/azureappservice.md) for details on leveraging the Clr InstrumentationEngine preinstalled site extension.
 
 #### Required Dlls
 The Instrumentation Engine supports both x86 and x64 configurations.
 
 * MicrosoftInstrumentationEngine_x86.dll
 * MicrosoftInstrumentationEngine_x64.dll
-
-See [Environment Variables](environment_variables.md) for more details on configuring your environment.
-
-See [App Service](scenarios/azureappservice.md) for details on leveraging the Clr InstrumentationEngine preinstalled site extension.
-
-Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
-
-`MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
 
 ### How do I write an Instrumentation Method?
 

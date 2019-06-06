@@ -29,6 +29,11 @@ namespace MicrosoftInstrumentationEngine
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
 
+#ifndef IfFailRetNoLog
+#define IfFailRetNoLog(EXPR) \
+    do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
+#endif
+
 // Wrap errno_t result of EXPR in HRESULT and then IfFailRet.
 #ifndef IfFailRetErrno
 #define IfFailRetErrno(EXPR) \

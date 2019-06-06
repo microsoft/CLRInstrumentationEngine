@@ -14,8 +14,9 @@ For more information about our current and future project scope and to track our
 
 ## Getting Started
 
-The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process. Please see [Getting Started](docs/getting_started.md) for more details.
+The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process.
 
+* [Getting Started](docs/getting_started.md) for details on how use the CLR Instrumentation Engine.
 * [Environment Variables](docs/environment_variables.md)
 * [Configure Instrumentation Methods](docs/configuration.md)
 

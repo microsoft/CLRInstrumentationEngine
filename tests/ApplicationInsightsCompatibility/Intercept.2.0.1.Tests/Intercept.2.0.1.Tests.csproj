@@ -21,7 +21,7 @@
     <ProjectGuid>{EAD25B2C-E362-4660-A2FD-AD82B7C1FD77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Intercept.2.0.1.Tests</RootNamespace>
+    <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
     <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

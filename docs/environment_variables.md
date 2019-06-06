@@ -10,8 +10,8 @@ These are the environment variables and values that are required to enable the C
 |-|-|-|
 COR_ENABLE_PROFILING|1|The CLR will only connect to a profiler if this is set to 1 (true).|
 COR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CLR will search for the CLSID or ProgID specified.|
-COR_PROFILER_PATH_32|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
-COR_PROFILER_PATH_64|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+COR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
+COR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
 
 Alternatively, for CoreCLR:
 
@@ -19,8 +19,10 @@ Alternatively, for CoreCLR:
 |-|-|-|
 CORECLR_ENABLE_PROFILING|1|The CoreCLR will only connect to a profiler if this is set to 1 (true).
 CORECLR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CoreCLR will search for the CLSID or ProgID specified.
-CORECLR_PROFILER_PATH_32|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
-CORECLR_PROFILER_PATH_64|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+CORECLR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
+CORECLR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+
+> Please see [Profiler Proxy](profilerproxy.md) for details on using the Profiler Proxy dll. We recommend setting the COR_PROFILER variables to the proxy whenever applicable since it redirects to the latest CLRIE installed on every process re/start.
 
 Additional variables needed to make the CLR Instrumentation Engine work:
 

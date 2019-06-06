@@ -11,6 +11,7 @@ Please format the changes as follows:
 + New:
   + Added generating MSI and MSM packages
   + Added yaml builds
+  + Added ProfilerProxy
   + Added export for global logger with no association with any IProfilerManager instances.
   + Added global logger support to IProfilerManager via new IProfilerManager4 API.
 + BugFixes:

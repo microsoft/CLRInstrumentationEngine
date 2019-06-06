@@ -88,12 +88,14 @@ public:
 };
 
 #ifndef PLATFORM_UNIX
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllCanUnloadNow, 0)(void)
 {
     return _AtlModule.DllCanUnloadNow();
 }
 #endif
 
+_Check_return_
 STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
 {
     CComPtr<IClassFactory> pClassFactory;
@@ -108,11 +110,13 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
 }
 
 #ifndef PLATFORM_UNIX
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
 
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
