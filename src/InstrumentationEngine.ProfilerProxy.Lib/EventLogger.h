@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include "stdafx.h"
+#include "../Common.Lib/EventLoggingBase.h"
+
 namespace MicrosoftInstrumentationEngine
 {
     class CEventLogger :

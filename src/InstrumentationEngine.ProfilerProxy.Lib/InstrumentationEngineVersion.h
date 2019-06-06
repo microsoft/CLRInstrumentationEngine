@@ -17,6 +17,7 @@ namespace MicrosoftInstrumentationEngine
     public:
         static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion** ppVersion);
 
+        const std::wstring& GetVersionString() const;
 
         const std::wstring& GetSemanticVersionString() const;
 
@@ -24,20 +25,16 @@ namespace MicrosoftInstrumentationEngine
 
         BOOL IsDebug() const;
 
-        // Allows conversion to wstring()
-        operator std::wstring() const { return m_versionStr; }
-
-
         int Compare(_In_ const InstrumentationEngineVersion& right) const noexcept;
 
     private:
         static const std::wregex versionRegex;
 
-        InstrumentationEngineVersion()
-        {
-            m_isDebug = false;
-            m_isPreview = false;
-        }
+        InstrumentationEngineVersion(
+            _In_ std::wstring versionStr,
+            _In_ std::wstring semanticVersionStr,
+            _In_ bool isPreview,
+            _In_ bool isDebug);
 
         ~InstrumentationEngineVersion() { }
 

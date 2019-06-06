@@ -181,19 +181,19 @@ namespace MicrosoftInstrumentationEngine
             if (pFolderVersion->IsDebug() != useDebug ||
                 (!usePreview && pFolderVersion->IsPreview()))
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s' due to configuration flags"), static_cast<std::wstring>(*pFolderVersion).c_str());
+                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s' due to configuration flags"), pFolderVersion->GetVersionString().c_str());
                 continue;
             }
 
             // Skip any folders without profiler
             BOOL hasProfiler;
-            if (FAILED(HasProfilerDll(wszProfilerPath, static_cast<std::wstring>(*pFolderVersion).c_str(), &hasProfiler)) || !hasProfiler)
+            if (FAILED(HasProfilerDll(wszProfilerPath, pFolderVersion->GetVersionString().c_str(), &hasProfiler)) || !hasProfiler)
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s', does not contain profiler"), static_cast<std::wstring>(*pFolderVersion).c_str());
+                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s', does not contain profiler"), pFolderVersion->GetVersionString().c_str());
                 continue;
             }
 
-            CProxyLogging::LogMessage(_T("dllmain::GetLatestVersionFolder - Found valid version folder '%s'"), static_cast<std::wstring>(*pFolderVersion).c_str());
+            CProxyLogging::LogMessage(_T("dllmain::GetLatestVersionFolder - Found valid version folder '%s'"), pFolderVersion->GetVersionString().c_str());
 
             if (pLatestVersionFolder == nullptr ||
                 pLatestVersionFolder->Compare(*pFolderVersion) < 0)
@@ -216,7 +216,7 @@ namespace MicrosoftInstrumentationEngine
             return HRESULT_FROM_WIN32(dError);
         }
 
-        versionFolder = static_cast<std::wstring>(*pLatestVersionFolder);
+        versionFolder = pLatestVersionFolder->GetVersionString();
 
         return S_OK;
     }

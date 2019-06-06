@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "EventLogger.h"
+#include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
 #include <atomic>
 
 // CLogging uses *wprintf* methods for formatting strings.

@@ -90,14 +90,12 @@
         <ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
         <ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
-        <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
-        <RelativeOutputPathBase>$(MSBuildProjectDirectory.Substring($(EnlistmentRoot.Length)))</RelativeOutputPathBase>
-
         <!-- Obj -->
+        <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
         <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
         <BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(ArchitectureFolderName)</IntermediateOutputPath>
         <IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(IntermediateOutputPath)\$(SubComponent)</IntermediateOutputPath>
         <IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 

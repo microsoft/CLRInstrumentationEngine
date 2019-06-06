@@ -22,9 +22,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</ProjectGuid>
+    <ProjectGuid>{dab53f24-d55a-4759-b100-5b7fefbf6d08}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CommonLib</RootNamespace>
+    <RootNamespace>InstrumentationEngineProfilerProxyLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -92,21 +92,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="banned.h" />
-    <ClInclude Include="CriticalSectionHolder.h" />
-    <ClInclude Include="EventLoggingBase.h" />
-    <ClInclude Include="InitOnce.h" />
-    <ClInclude Include="Macros.h" />
-    <ClInclude Include="SafeFindFileHandle.h" />
-    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="EventLogger.h" />
+    <ClInclude Include="InstrumentationEngineVersion.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="tstring.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EventLoggingBase.cpp" />
+    <ClCompile Include="EventLogger.cpp" />
+    <ClCompile Include="InstrumentationEngineVersion.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">
+      <Project>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

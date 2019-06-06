@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "ProxyLogging.h"
-#include "EventLogger.h"
+#include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
 
 #include <atomic>
 

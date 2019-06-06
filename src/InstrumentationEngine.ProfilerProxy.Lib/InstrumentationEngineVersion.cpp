@@ -19,23 +19,31 @@ using namespace MicrosoftInstrumentationEngine;
 const std::wregex InstrumentationEngineVersion::versionRegex(_T("^(\\d+\\.\\d+\\.\\d+)(-build\\d+)?(_Debug)?$"));
 
 // static
-HRESULT InstrumentationEngineVersion::Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion** ppVersion)
+HRESULT InstrumentationEngineVersion::Create(
+    _In_ const std::wstring& versionStr,
+    _Out_ InstrumentationEngineVersion** ppVersion)
 {
     HRESULT hr = S_OK;
 
+    *ppVersion = nullptr;
     std::wsmatch versionMatch;
     if (std::regex_match(versionStr, versionMatch, versionRegex))
     {
-        *ppVersion = new InstrumentationEngineVersion();
-        (*ppVersion)->m_versionStr = versionStr;
-        (*ppVersion)->m_semanticVersionStr = versionMatch[1];
-        (*ppVersion)->m_isPreview = versionMatch[2].matched;
-        (*ppVersion)->m_isDebug = versionMatch[3].matched;
+        *ppVersion = new InstrumentationEngineVersion(
+            versionStr,
+            versionMatch[1],
+            versionMatch[2].matched,
+            versionMatch[3].matched);
 
         return S_OK;
     }
 
     return E_INVALIDARG;
+}
+
+const std::wstring& InstrumentationEngineVersion::GetVersionString() const
+{
+    return m_versionStr;
 }
 
 const std::wstring& InstrumentationEngineVersion::GetSemanticVersionString() const
@@ -53,8 +61,6 @@ BOOL InstrumentationEngineVersion::IsDebug() const
     return m_isDebug;
 }
 
-
-
 int InstrumentationEngineVersion::Compare(_In_ const InstrumentationEngineVersion& right) const noexcept
 {
     // We want to reverse the default string compare behavior so that
@@ -63,9 +69,21 @@ int InstrumentationEngineVersion::Compare(_In_ const InstrumentationEngineVersio
     if (m_semanticVersionStr.compare(right.GetSemanticVersionString()) == 0 &&
         IsPreview() != right.IsPreview())
     {
-        return (static_cast<std::wstring>(right)).compare(m_versionStr);
+        return right.GetVersionString().compare(m_versionStr);
     }
 
     // The default string compare behavior works fine for all other cases.
-    return m_versionStr.compare(static_cast<std::wstring>(right));
+    return m_versionStr.compare(right.GetVersionString());
+}
+
+InstrumentationEngineVersion::InstrumentationEngineVersion(
+    _In_ std::wstring versionStr,
+    _In_ std::wstring semanticVersionStr,
+    _In_ bool isPreview,
+    _In_ bool isDebug)
+{
+    m_versionStr = versionStr;
+    m_semanticVersionStr = semanticVersionStr;
+    m_isDebug = isDebug;
+    m_isPreview = isPreview;
 }
