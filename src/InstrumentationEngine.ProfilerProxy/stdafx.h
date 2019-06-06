@@ -15,13 +15,6 @@
 #include <tchar.h>
 #include <regex>
 #include <PathCch.h>
-#include <atlsync.h>
-#include <queue>
 
-#include "../InstrumentationEngine.Lib/tstring.h"
-#include "../InstrumentationEngine.Lib/CriticalSectionHolder.h"
-#include "../InstrumentationEngine.Lib/InitOnce.h"
-#include "../InstrumentationEngine.Lib/Singleton.h"
 #include "../InstrumentationEngine.Lib/Macros.h"
-#include "../InstrumentationEngine.Lib/EventLoggingBase.h"
 #include "../ExtensionsHostLib/SafeFindFileHandle.h"

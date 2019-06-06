@@ -76,7 +76,16 @@ else
     $configuration = "Debug"
 }
 
-$BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
+# Instead of using the generated value in version.props, calculate the value upfront so the value is static for all builds invoked in this script
+$versionPropsFilePath = "$PSScriptRoot\build\Version.Props"
+if (!(Test-Path $versionPropsFilePath))
+{
+    Write-Error "Unable to find version.props. Verify $versionPropsFilePath exists."
+}
+
+[xml] $versionPropsXml = Get-Content $versionPropsFilePath
+$SemanticVersionDate = [DateTime]::Parse($versionPropsXml.Project.PropertyGroup.SemanticVersionDate)
+$BuildVersion = ([DateTime]::Now.Subtract($SemanticVersionDate).TotalMinutes / 5 % [UINT16]::MaxValue).ToString('F0')
 
 $SignType = 'None' # Used for internal testing of signing.
 

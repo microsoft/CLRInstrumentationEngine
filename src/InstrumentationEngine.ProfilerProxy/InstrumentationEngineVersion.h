@@ -5,13 +5,29 @@
 
 #include "stdafx.h"
 
-namespace MicrosoftInstrumentationEngine
+namespace ProfilerProxy
 {
     class InstrumentationEngineVersion
     {
     public:
-        static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion** ppVersion);
+        static HRESULT Create(_In_ const std::wstring& versionStr, _Out_ InstrumentationEngineVersion& validVersion)
+        {
+            HRESULT hr = S_OK;
 
+            std::wsmatch versionMatch;
+            validVersion = InstrumentationEngineVersion();
+            if (std::regex_match(versionStr, versionMatch, versionRegex))
+            {
+                validVersion.m_versionStr = versionStr;
+                validVersion.m_semanticVersionStr = versionMatch[1];
+                validVersion.m_isPreview = versionMatch[2].matched;
+                validVersion.m_isDebug = versionMatch[3].matched;
+
+                return S_OK;
+            }
+
+            return E_FAIL;
+        }
 
         const std::wstring& GetSemanticVersionString() const;
 
@@ -19,26 +35,18 @@ namespace MicrosoftInstrumentationEngine
 
         BOOL IsDebug() const;
 
-        // Allows conversion to wstring()
-        operator std::wstring() const { return m_versionStr; }
+        const std::wstring& ToString() const;
 
+        LPCWSTR c_str() const;
 
         int Compare(_In_ const InstrumentationEngineVersion& right) const noexcept;
 
-    private:
         static const std::wregex versionRegex;
 
-        InstrumentationEngineVersion()
-        {
-            m_isDebug = false;
-            m_isPreview = false;
-        }
-
-        ~InstrumentationEngineVersion() { }
-
+    private:
         std::wstring m_versionStr;
         std::wstring m_semanticVersionStr;
-        bool m_isPreview;
-        bool m_isDebug;
+        BOOL m_isPreview;
+        BOOL m_isDebug;
     };
 }

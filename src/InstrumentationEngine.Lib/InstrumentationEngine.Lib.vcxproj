@@ -91,7 +91,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="EventLoggingBase.h" />
     <ClInclude Include="LoggerSink.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="ConfigurationLoader.h" />
@@ -119,7 +118,6 @@
     <ClCompile Include="DebugLoggerSink.cpp" />
     <ClCompile Include="EventLoggerSink.cpp" />
     <ClCompile Include="ConfigurationLoader.cpp" />
-    <ClCompile Include="EventLoggingBase.cpp" />
     <ClCompile Include="ImplQueryInterface.cpp" />
     <ClCompile Include="FileLoggerSink.cpp" />
     <ClCompile Include="InstrumentationMethod.cpp" />

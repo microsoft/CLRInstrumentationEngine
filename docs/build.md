@@ -2,14 +2,6 @@
 
 CI/CD Builds for the CLR Instrumentation Engine are defined with yaml files (see build/yaml/ folder) which are leveraged by Azure DevOps pipeline builds.
 
-## Azure DevOps Build
-
-Azure DevOps (previously known as Visual Studio Team Services or "VSTS") is the suite of tools and services for the end-to-end lifecycle of software development. It provides repos to host source code, boards for task tracking, test suites and build pipelines for compiling code, and artifact management to retain packages such as nuget feeds.
-
-Although the CLRIE repo is hosted in GitHub, it originally was hosted privately by Microsoft and leveraged Azure DevOps pipelines to build and release packages for internal consumption. In the spirit of Open-Source, these processes are slowly being rolled out publicly to expand and share ownership with external partners and users.
-
-Although the build agents and tasks are internal, the build definitions are declared in the repo in the form of yaml files.
-
 ### Yaml
 
 [Yaml Schema Reference](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema)

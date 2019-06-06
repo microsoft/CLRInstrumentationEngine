@@ -1,6 +1,6 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) $(var.Configuration)'
+    <Product Name='Microsoft ClrInstrumentationEngine $(var.PackageVersion) ($(sys.BUILDARCH)) $(var.Configuration)'
              Manufacturer='Microsoft Corporation'
              Id='$(var.ProductGuid)'
              UpgradeCode='$(var.UpgradeGuid)'
@@ -9,7 +9,7 @@
              Version='$(var.Version)'>
         <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
-                 Description='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) Installer $(var.InstrumentationEngine.Module.Configuration)'
+                 Description='Microsoft ClrInstrumentationEngine $(var.PackageVersion) ($(sys.BUILDARCH)) Installer $(var.InstrumentationEngine.Module.Configuration)'
                  Comments='Copyright (c) All Rights Reserved.'
                  Manufacturer='Microsoft Corporation'
                  InstallerVersion='200'
