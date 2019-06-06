@@ -7,7 +7,11 @@
 
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
+
+#ifndef PLATFORM_UNIX
 #include <Windows.h>
+#endif
+
 #include <string>
 #pragma warning(pop)
 
