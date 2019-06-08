@@ -89,13 +89,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventLoggerTests.cpp" />
     <ClCompile Include="InstrumentationEngineVersionTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestEventLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngine.ProfilerProxy.Lib.vcxproj">
