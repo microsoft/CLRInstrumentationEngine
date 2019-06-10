@@ -16,9 +16,9 @@
 
 struct EventLogItem
 {
-    EventLogItem(WORD wEventType, tstring tsEventLog) {
-        this->wEventType = wEventType;
-        this->tsEventLog = tsEventLog;
+    EventLogItem(WORD wType, tstring tsLog)
+        : wEventType(wType), tsEventLog(tsLog)
+    {
     }
 
     WORD wEventType;
@@ -27,7 +27,7 @@ struct EventLogItem
 
 class CEventLoggingBase
 {
-protected:
+private:
     // critical section which protects the shared buffer for reads/writes
     CCriticalSection m_cs;
     std::queue<EventLogItem> m_eventQueue;

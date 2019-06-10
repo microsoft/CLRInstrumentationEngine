@@ -75,6 +75,7 @@ HRESULT CProxyLogging::Shutdown()
     {
         HRESULT hr = S_OK;
         IfFailRetNoLog(s_eventLogger.Get()->Shutdown());
+        s_initialize.Reset();
     }
     return S_OK;
 }

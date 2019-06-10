@@ -62,5 +62,8 @@ HRESULT CEventLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFla
 
 HRESULT CEventLoggerSink::Shutdown()
 {
-    return TerminateEventSource();
+    HRESULT hr = TerminateEventSource();
+    m_initEventSource.Reset();
+
+    return hr;
 }

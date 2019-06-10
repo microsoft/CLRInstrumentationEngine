@@ -347,6 +347,8 @@ HRESULT CLoggerService::Shutdown()
 
     m_pLoggingHost.Release();
 
+    m_initialize.Reset();
+
     return S_OK;
 }
 

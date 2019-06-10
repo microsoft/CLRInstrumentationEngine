@@ -165,7 +165,6 @@ namespace MicrosoftInstrumentationEngine
             // Skip any files; we only want directories
             if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s', not a directory"), findFileData.cFileName);
                 continue;
             }
 
@@ -173,7 +172,6 @@ namespace MicrosoftInstrumentationEngine
             InstrumentationEngineVersion* pFolderVersion = nullptr;
             if (FAILED(InstrumentationEngineVersion::Create(findFileData.cFileName, &pFolderVersion)))
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s', invalid format"), findFileData.cFileName);
                 continue;
             }
 
@@ -181,7 +179,6 @@ namespace MicrosoftInstrumentationEngine
             if (pFolderVersion->IsDebug() != useDebug ||
                 (!usePreview && pFolderVersion->IsPreview()))
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s' due to configuration flags"), pFolderVersion->GetVersionString().c_str());
                 continue;
             }
 
@@ -189,7 +186,6 @@ namespace MicrosoftInstrumentationEngine
             BOOL hasProfiler;
             if (FAILED(HasProfilerDll(wszProfilerPath, pFolderVersion->GetVersionString().c_str(), &hasProfiler)) || !hasProfiler)
             {
-                CProxyLogging::LogWarning(_T("dllmain::GetLatestVersionFolder - Skipping '%s', does not contain profiler"), pFolderVersion->GetVersionString().c_str());
                 continue;
             }
 
@@ -207,7 +203,7 @@ namespace MicrosoftInstrumentationEngine
         DWORD dError = GetLastError();
         if (pLatestVersionFolder == nullptr)
         {
-            CProxyLogging::LogError(_T("dllmain::GetLatestVersionFolder - Unable to find usable version folder"));
+            CProxyLogging::LogError(_T("dllmain::GetLatestVersionFolder - Unable to find a valid versioned folder with profiler"));
             return E_UNEXPECTED;
         }
         else if(dError > 0 && dError != ERROR_NO_MORE_FILES)
@@ -332,6 +328,7 @@ namespace MicrosoftInstrumentationEngine
         }
 #endif
 
+        // initializes CProxyLogging only once; shutdown only occurs on DllCanUnloadNow()
         CProxyLogging::Initialize();
 
         DWORD pid = GetCurrentProcessId();
@@ -358,8 +355,6 @@ namespace MicrosoftInstrumentationEngine
             }
         }
 
-        CProxyLogging::Shutdown();
-
         return hr;
     }
 
@@ -380,6 +375,8 @@ namespace MicrosoftInstrumentationEngine
                 {
                     ::FreeLibrary(g_hProfiler);
                     g_hProfiler = nullptr;
+
+                    CProxyLogging::Shutdown();
                 }
             }
         }

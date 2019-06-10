@@ -44,4 +44,19 @@ public:
     {
         return m_isCreated.load(std::memory_order_relaxed) && SUCCEEDED(m_result);
     }
+
+    HRESULT Reset()
+    {
+        if (m_isCreated.load(std::memory_order_acquire))
+        {
+            CCriticalSectionHolder holder(&m_cs);
+            if (m_isCreated.load(std::memory_order_relaxed))
+            {
+                m_result = S_OK;
+                m_isCreated.store(false, std::memory_order_release);
+            }
+        }
+
+        return m_result;
+    }
 };

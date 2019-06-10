@@ -27,11 +27,6 @@
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
 
-#ifndef IfFailRet_Proxy
-#define IfFailRet_Proxy(EXPR) \
-    do { if (FAILED(hr = (EXPR))) { CProxyLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
-#endif
-
 #ifndef IfFailRetNoLog
 #define IfFailRetNoLog(EXPR) \
     do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
@@ -41,11 +36,6 @@
 #ifndef IfFailRetErrno
 #define IfFailRetErrno(EXPR) \
     do { errno_t ifFailRetErrno_result = EXPR; IfFailRet(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
-#endif
-
-#ifndef IfFailRetErrno_Proxy
-#define IfFailRetErrno_Proxy(EXPR) \
-    do { errno_t ifFailRetErrno_result = EXPR; IfFailRet_Proxy(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
 #endif
 
 #ifndef IfFailRetNoLog

@@ -25,8 +25,6 @@ void CEventLogger::FormatAndAppendToQueue(_In_ WORD wType, _In_ LPCWSTR wszMessa
 {
     IfNotInitRet(m_initEventSource);
 
-    CCriticalSectionHolder holder(&m_cs);
-
     // Format and truncate the message
     WCHAR wszLogEntry[LogEntryMaxSize];
     _vsnwprintf_s(wszLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
@@ -63,5 +61,8 @@ void CEventLogger::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
 
 HRESULT CEventLogger::Shutdown()
 {
-    return TerminateEventSource();
+    HRESULT hr = TerminateEventSource();
+    m_initEventSource.Reset();
+
+    return hr;
 }
