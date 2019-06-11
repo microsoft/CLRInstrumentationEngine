@@ -2712,6 +2712,54 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::InitializeForAttach(
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::InitializeForAttach, pCorProfilerInfoUnk, pvClientData, cbClientData));
 
+    this->Initialize(pCorProfilerInfoUnk);
+
+    ICorProfilerModuleEnum *pModEnum;
+    CComPtr<ICorProfilerInfo3> pRealProfilerInfo3;
+    if (FAILED(m_pRealProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo3), (void**)&pRealProfilerInfo3)) ||
+        pRealProfilerInfo3 == nullptr ||
+        FAILED(pRealProfilerInfo3->EnumModules(&pModEnum)))
+    {
+        return hr;
+    }
+
+    ULONG cMods;
+    hr = pModEnum->GetCount(&cMods);
+    if (FAILED(hr))
+    {
+        return hr;
+    }
+
+    ULONG cFetchedTotal = 0;
+    BOOL fDone = FALSE;
+    while (!fDone)
+    {
+        ModuleID rgModuleIDs[100];
+        ULONG cFetchedCur;
+        hr = pModEnum->Next(100, rgModuleIDs, &cFetchedCur);
+        if (FAILED(hr))
+        {
+            return hr;
+        }
+
+        // S_FALSE means the enumeration gave us less than we asked for, so we're done
+        fDone = (hr == S_FALSE);
+        hr = (hr == S_FALSE ? S_OK : hr);
+
+        cFetchedTotal += cFetchedCur;
+        for (ULONG i = 0; i < cFetchedCur; i++)
+        {
+            CComPtr<IModuleInfo> pModuleInfo;
+            // NOTE: it is expected that ConstructModuleInfo will fail for resource only modules.
+            hr = ConstructModuleInfo(rgModuleIDs[i], &pModuleInfo);
+            if (SUCCEEDED(hr))
+            {
+                // Send event to instrumentation methods
+                IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnModuleLoaded, (IModuleInfo*)(pModuleInfo)));
+            }
+        }
+    }
+
     PROF_CALLBACK_END
 
     return S_OK;
