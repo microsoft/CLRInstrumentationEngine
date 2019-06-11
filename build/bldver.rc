@@ -10,7 +10,7 @@
 //     #define RC_VERSION_ORIGINAL_FILE_NAME "Test.DLL\0"
 
 //
-// See https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource
+// See https://docs.microsoft.com/windows/desktop/menurc/versioninfo-resource
 //
 
 #include <winver.h>
@@ -35,11 +35,11 @@ FILEFLAGSMASK 0x3fL
 #endif
 
 #ifndef RC_VERSION_PRODUCT_NAME
-    #define RC_VERSION_PRODUCT_NAME "Microsoft® Visual Studio®\0"
+    #define RC_VERSION_PRODUCT_NAME "Microsoftï¿½ Visual Studioï¿½\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_COPYRIGHT
-    #define RC_VERSION_LEGAL_COPYRIGHT "© Microsoft Corporation. All rights reserved.\0"
+    #define RC_VERSION_LEGAL_COPYRIGHT "ï¿½ Microsoft Corporation. All rights reserved.\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_TRADEMARKS

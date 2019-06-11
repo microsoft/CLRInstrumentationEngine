@@ -2,7 +2,7 @@
 // Copyright (C) Microsoft.  All rights reserved.
 // Example of verifying the embedded signature of a PE file by using
 // the WinVerifyTrust function.
-// This code is copied from https://msdn.microsoft.com/en-us/library/aa382384
+// This code is copied from https://msdn.microsoft.com/library/aa382384
 #include "stdafx.h"
 
 #include <tchar.h>

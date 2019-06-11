@@ -7,6 +7,8 @@
     <!--
       Semantic Version. See http://semver.org for full details.
       Update for every public release.
+
+      NOTE: If the SemanticMajorVersion changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
@@ -23,6 +25,8 @@
 
         The Proxy major version should always correspond to the CLRIE major version.
         Be sure to update the ProxyFileVersion minor/patch only if new changes are added to the Proxy.
+
+        NOTE: If the ProxyFileVersionMajor changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
      -->
     <ProxyFileVersionMajor>$(SemanticVersionMajor)</ProxyFileVersionMajor>
     <ProxyFileVersionMinor>0</ProxyFileVersionMinor>

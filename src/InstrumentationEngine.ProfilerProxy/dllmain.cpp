@@ -355,7 +355,13 @@ namespace MicrosoftInstrumentationEngine
             }
         }
 
-        return hr;
+        if (FAILED(hr))
+        {
+            // Log error but do not fail since proxy shouldn't impact the process.
+            CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
+        }
+
+        return S_OK;
     }
 
     __control_entrypoint(DllExport)

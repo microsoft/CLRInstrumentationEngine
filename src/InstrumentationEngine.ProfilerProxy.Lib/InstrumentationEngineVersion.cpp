@@ -16,7 +16,8 @@ using namespace MicrosoftInstrumentationEngine;
 //      [1]: SemanticVersion (eg. 1.0.0)
 //      [2]: Preview tag if exists (eg. -build12345)
 //      [3]: Debug tag if exists (eg. _Debug)
-const std::wregex InstrumentationEngineVersion::versionRegex(_T("^(\\d+\\.\\d+\\.\\d+)(-build\\d+)?(_Debug)?$"));
+// This version regex only matches against Major version 1
+const std::wregex InstrumentationEngineVersion::versionRegex(_T("^(1\\.\\d+\\.\\d+)(-build\\d+)?(_Debug)?$"));
 
 // static
 HRESULT InstrumentationEngineVersion::Create(

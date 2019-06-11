@@ -1,18 +1,23 @@
 ﻿# Building the CLR Instrumentation Engine
 
-CI/CD Builds for the CLR Instrumentation Engine are defined with yaml files (see build/yaml/ folder) which are leveraged by Azure DevOps pipeline builds.
+CI/CD Builds for the CLR Instrumentation Engine are defined with yaml files (see build/yaml/ folder) which are leveraged by Azure DevOps
+pipeline builds.
 
 ## Azure DevOps Build
 
-Azure DevOps (previously known as Visual Studio Team Services or "VSTS") is the suite of tools and services for the end-to-end lifecycle of software development. It provides repos to host source code, boards for task tracking, test suites and build pipelines for compiling code, and artifact management to retain packages such as nuget feeds.
+Azure DevOps (previously known as Visual Studio Team Services or "VSTS") is the suite of tools and services for the end-to-end lifecycle of
+software development. It provides repos to host source code, boards for task tracking, test suites and build pipelines for compiling code, and
+artifact management to retain packages such as nuget feeds.
 
-Although the CLRIE repo is hosted in GitHub, it originally was hosted privately by Microsoft and leveraged Azure DevOps pipelines to build and release packages for internal consumption. In the spirit of Open-Source, these processes are slowly being rolled out publicly to expand and share ownership with external partners and users.
+Although the CLRIE repo is hosted in GitHub, it originally was hosted privately by Microsoft and leveraged Azure DevOps pipelines to build and
+release packages for internal consumption. In the spirit of Open-Source, these processes are slowly being rolled out publicly to expand and
+share ownership with external partners and users.
 
 Although the build agents and tasks are internal, the build definitions are declared in the repo in the form of yaml files.
 
 ### Yaml
 
-[Yaml Schema Reference](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema)
+[Yaml Schema Reference](https://docs.microsoft.com/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema)
 
 The yaml files are located in the $RepoRoot$/build/yaml folder. The code is structured in the following manner:
 * Pipelines – The top level yaml file that is queued for a given Azure DevOps build. A pipeline defines the jobs to run.
@@ -24,9 +29,11 @@ The yaml files are located in the $RepoRoot$/build/yaml folder. The code is stru
   * Jobs/Binaries.yaml and Jobs/Packages.yaml reference the corresponding files in the Windows and Linux folders for parallelization
 * Steps – The task to run (eg. Nuget restore, msbuild solution, copy files).
 
-We restrict access to running the above builds as it requires internal processes such as signing and security checks. If you require modifications or changes to the build, you are free to update the yaml files.
+We restrict access to running the above builds as it requires internal processes such as signing and security checks. If you require
+modifications or changes to the build, you are free to update the yaml files.
 
-Please contact clrieowners@microsoft.com regarding questions or requesting the release of a new version. This process involves regression testing with both our internal Microsoft products as well as the products of external partners.
+Please contact clrieowners@microsoft.com regarding questions or requesting the release of a new version. This process involves regression
+testing with both our internal Microsoft products as well as the products of external partners.
 
 ## Building locally
 
@@ -40,7 +47,8 @@ On Windows we use MSBuild, with `.vcxproj` files to build native binaries and `.
     - **[Component]** Visual C++ ATL for x86 and x64
     - **[Component]** VC++ 2017 version 15.8 v14.15 Libs for Spectre (x86 and x64)
 2. Open `InstrumentationEngine.sln` and `src/InstrumentationEngine.Packages.sln` in Visual Studio 2017
-3. Either run "Build Solution" for a single configuration, or "Build > Batch Build..." to build all configurations (Debug|Release with x86|x64|AnyCPU).
+3. Either run "Build Solution" for a single configuration, or "Build > Batch Build..." to build all configurations
+(Debug|Release with x86|x64|AnyCPU).
 
 Alternatively, you may run the script `[CLRInstrumentationEngine repo]\build.ps1` in PowerShell which conducts a local build.
 |Flag|Description|
@@ -61,7 +69,8 @@ Please clean the solution or delete the bin folder and then try building again.
 
 Currently we are not ready for external partners to build for Linux.
 
-On Linux we use CMake, with CMakeLists.txt files in each native component's root folder. Build using the script `/src/Build.sh`. Note that we have some limitations for now:
+On Linux we use CMake, with CMakeLists.txt files in each native component's root folder. Build using the script `/src/Build.sh`. Note that we
+have some limitations for now:
 * Cannot generate InstrumentationEngine.h yet, therefore...
 * It is necessary to build your corresponding flavor/architecture in Windows first so that InstrumentationEngine.h is generated by midl and placed on the expected path.
 * We only support compiling for 64bit Linux and only support specific versions of Alpine, Ubuntu, and Debian.

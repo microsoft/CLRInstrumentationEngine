@@ -100,7 +100,7 @@
         <IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 
         <!-- Bin -->
-        <!-- See https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops for predefined Azure DevOps build variables-->
+        <!-- See https://docs.microsoft.com/azure/devops/pipelines/build/variables?view=azure-devops for predefined Azure DevOps build variables-->
         <BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
         <BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
         <BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>
