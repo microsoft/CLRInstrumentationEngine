@@ -5,18 +5,20 @@
 
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
+#include "ProxyLogging.h"
+#include "PathCch.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
 namespace ProfilerProxy
 {
     // Handle to profiler module.
-    HMODULE g_hProfiler = nullptr;
+    static HMODULE g_hProfiler = nullptr;
 
     // Critical section object which provides synchronization when accessing hProfiler.
-    CRITICAL_SECTION g_criticalSection;
+    static CCriticalSection g_criticalSection;
 
-    LPFN_ISWOW64PROCESS fnIsWow64Process;
+    static LPFN_ISWOW64PROCESS fnIsWow64Process;
 
     static constexpr const WCHAR* instrumentationEngineFolder = _T("Microsoft CLR Instrumentation Engine");
     static constexpr const WCHAR* useDebugVar = _T("InstrumentationEngineProxy_UseDebug");
@@ -43,7 +45,6 @@ namespace ProfilerProxy
         case DLL_PROCESS_ATTACH:
             // Initialize once for each new process.
             // Return FALSE to fail DLL load.
-            InitializeCriticalSection(&g_criticalSection);
             break;
         case DLL_THREAD_ATTACH:
             // Do thread-specific initialization.
@@ -53,69 +54,72 @@ namespace ProfilerProxy
             break;
         case DLL_PROCESS_DETACH:
             // Perform any necessary cleanup.
-            DeleteCriticalSection(&g_criticalSection);
             break;
         }
         return TRUE;
     }
 
+#ifndef _WIN64
     /*
      * This function returns whether the current process is running under Wow64
      */
-    static HRESULT IsWow64(_Out_ BOOL* bIsWow64)
+    static HRESULT IsWow64(_Out_ BOOL* pIsWow64)
     {
-        *bIsWow64 = FALSE;
+        *pIsWow64 = FALSE;
 
         // IsWow64Process is not available on all supported versions of Windows.
         // Use GetModuleHandle to get a handle to the DLL that contains the function.
         // and GetProcAddress to get a pointer to the function if available.
-        fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
-            GetModuleHandle(_T("kernel32")), "IsWow64Process");
+        HMODULE hModKernel32 = GetModuleHandle(_T("kernel32"));
+        if (nullptr != hModKernel32)
+        {
+            fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+                hModKernel32, "IsWow64Process");
+        }
+        else
+        {
+            CProxyLogging::LogError(_T("dllmain::IsWow64 - Unable to obtain kernel32 handle"));
+            return E_UNEXPECTED;
+        }
 
         if (NULL != fnIsWow64Process)
         {
-            if (!fnIsWow64Process(GetCurrentProcess(), bIsWow64))
+            if (!fnIsWow64Process(GetCurrentProcess(), pIsWow64))
             {
                 // handle error
                 return HRESULT_FROM_WIN32(GetLastError());
+            }
+
+            if (*pIsWow64)
+            {
+                CProxyLogging::LogMessage(_T("dllmain::IsWow64 - Process is running in WoW64"));
             }
         }
 
         return S_OK;
     }
+#endif
 
     /*
      * This function returns whether the profiler dll exists.
      */
-    static HRESULT HasProfilerDll(_In_ LPCWSTR wszProfilerPath, _In_ LPCWSTR wszVersionFolder, _Out_ BOOL* hasProfiler)
+    static HRESULT HasProfilerDll(_In_ LPCWSTR wszProfilerPath, _In_ LPCWSTR wszVersionFolder, _Out_ BOOL* pHasProfiler)
     {
         HRESULT hr = S_OK;
-        *hasProfiler = FALSE;
+
+        *pHasProfiler = FALSE;
 
         WCHAR wszEngineFullPath[MAX_PATH];
-        errno_t error = wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath);
-        if (error != 0)
-        {
-            return MAKE_HRESULT_FROM_ERRNO(error);
-        }
+        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
 
-        IfFailRetNoLog(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
-        IfFailRetNoLog(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
+        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
+        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
 
-        FILE* file;
-        error = _wfopen_s(&file, wszEngineFullPath, _T("r"));
-        if (file != nullptr)
-        {
-            fclose(file);
-        }
+        DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
+        *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
+                       !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
 
-        if (error == 0)
-        {
-            *hasProfiler = TRUE;
-            return S_OK;
-        }
-
-        return E_FAIL;
+        return S_OK;
     }
 
     /*
@@ -125,7 +129,7 @@ namespace ProfilerProxy
     {
         HRESULT hr = S_OK;
 
-        //
+        // 
         // Check configuration flags
         //
 
@@ -145,16 +149,18 @@ namespace ProfilerProxy
         WIN32_FIND_DATA findFileData;
         std::wstring profilerPathFilter = std::wstring(wszProfilerPath);
 
-        // FilePattern
+        // FilePattern is required for FindFirstFile to search
+        // the wszProfilerPath directory rather than its parent.
         profilerPathFilter += _T("\\*");
 
         SafeFindFileHandle hSearchHandle = FindFirstFile(profilerPathFilter.c_str(), &findFileData);
         if (hSearchHandle == INVALID_HANDLE_VALUE)
         {
+            CProxyLogging::LogError(_T("dllmain::GetLatestVersionFolder - No files or folders found"));
             return HRESULT_FROM_WIN32(GetLastError());
         }
 
-        InstrumentationEngineVersion latestVersionFolder;
+        InstrumentationEngineVersion* pLatestVersionFolder = nullptr;
         do {
             // Skip any files; we only want directories
             if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
@@ -163,49 +169,141 @@ namespace ProfilerProxy
             }
 
             // Skip any invalid folder formats
-            InstrumentationEngineVersion folderVersion;
-            if (FAILED(InstrumentationEngineVersion::Create(findFileData.cFileName, folderVersion)))
+            InstrumentationEngineVersion* pFolderVersion = nullptr;
+            if (FAILED(InstrumentationEngineVersion::Create(findFileData.cFileName, &pFolderVersion)))
             {
                 continue;
             }
 
             // Skip any versions that are filtered by configuration flags
-            if (folderVersion.IsDebug() != useDebug ||
-                (!usePreview && folderVersion.IsPreview()))
+            if (pFolderVersion->IsDebug() != useDebug ||
+                (!usePreview && pFolderVersion->IsPreview()))
             {
                 continue;
             }
 
             // Skip any folders without profiler
             BOOL hasProfiler;
-            if (FAILED(HasProfilerDll(wszProfilerPath, folderVersion.c_str(), &hasProfiler)) || !hasProfiler)
+            if (FAILED(HasProfilerDll(wszProfilerPath, pFolderVersion->GetVersionString().c_str(), &hasProfiler)) || !hasProfiler)
             {
                 continue;
             }
 
-            if (latestVersionFolder.Compare(folderVersion) < 0)
+            CProxyLogging::LogMessage(_T("dllmain::GetLatestVersionFolder - Found valid version folder '%s'"), pFolderVersion->GetVersionString().c_str());
+
+            if (pLatestVersionFolder == nullptr ||
+                pLatestVersionFolder->Compare(*pFolderVersion) < 0)
             {
-                latestVersionFolder = folderVersion;
+                pLatestVersionFolder = pFolderVersion;
             }
 
         } while (FindNextFile(hSearchHandle, &findFileData));
 
         // Only return if no VersionFolder found
         DWORD dError = GetLastError();
-        if (latestVersionFolder.ToString().empty() ||
-            dError > 0 && dError != ERROR_NO_MORE_FILES)
+        if (pLatestVersionFolder == nullptr)
+        {
+            CProxyLogging::LogError(_T("dllmain::GetLatestVersionFolder - Unable to find a valid versioned folder with profiler"));
+            return E_UNEXPECTED;
+        }
+        else if(dError > 0 && dError != ERROR_NO_MORE_FILES)
         {
             versionFolder.clear();
             return HRESULT_FROM_WIN32(dError);
         }
 
-        versionFolder = latestVersionFolder.ToString();
+        versionFolder = pLatestVersionFolder->GetVersionString();
+
+        return S_OK;
+    }
+
+    /*
+     * This function determines the latest profiler's path for LoadLibrary() call.
+     */
+    static HRESULT LoadProfiler()
+    {
+        HRESULT hr = S_OK;
+
+        //
+        // Determine "Program Files" folder
+        //
+
+        LPCWSTR programFilesVar = _T("ProgramFiles");
+
+#ifndef _WIN64
+        // WoW64 = Windows (32bit) on Windows 64bit
+        BOOL bIsWow64 = FALSE;
+        IfFailRet_Proxy(IsWow64(&bIsWow64));
+        if (bIsWow64)
+        {
+            programFilesVar = _T("ProgramFiles(x86)");
+        }
+#endif
+
+        WCHAR wszProfilerPath[MAX_PATH];
+        ZeroMemory(wszProfilerPath, MAX_PATH);
+        if (!GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH))
+        {
+            CProxyLogging::LogError(_T("dllmain::LoadProfiler - Unable to resolve environment variable: %s"), programFilesVar);
+            return E_UNEXPECTED;
+        }
+
+        //
+        // Set CIE folder
+        //
+
+        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
+
+        //
+        // Determine Version folder
+        //
+
+        WCHAR wszSpecificVersion[MAX_PATH];
+        bool useSpecificVersion = GetEnvironmentVariable(useSpecificVersionVar, wszSpecificVersion, 1) > 0;
+
+        // We provide the option to use a specific version of the proxy in cases of debugging/testing scenarios.
+        // This bypasses the proxy's default find-and-use-latest behavior.
+        std::wstring versionFolder;
+        if (useSpecificVersion)
+        {
+            CProxyLogging::LogMessage(_T("dllmain::LoadProfiler - Resolving specific version: %s"), wszSpecificVersion);
+            versionFolder = wszSpecificVersion;
+            BOOL hasProfiler = FALSE;
+            if (FAILED(HasProfilerDll(wszProfilerPath, wszSpecificVersion, &hasProfiler)) || !hasProfiler)
+            {
+                CProxyLogging::LogError(_T("dllmain::LoadProfiler - Unable to find folder version: %s"), wszSpecificVersion);
+                return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+            }
+        }
+        else
+        {
+            IfFailRet_Proxy(GetLatestVersionFolder(wszProfilerPath, versionFolder));
+        }
+
+        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
+
+        //
+        // Determine and Load Profiler
+        //
+
+        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
+
+        CProxyLogging::LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
+
+        g_hProfiler = ::LoadLibrary(wszProfilerPath);
+
+        if (nullptr == g_hProfiler)
+        {
+            CProxyLogging::LogError(_T("dllmain::LoadProfiler - Unable to load profiler: '%s'"), wszProfilerPath);
+            return E_FAIL;
+        }
+
         return S_OK;
     }
 
     /*
      * The proxy searches for the latest [VERSION] folder in order to pick up the
-    *  InstrumentationEngine profiler dll and forwards the DllGetClassObject call.
+     * InstrumentationEngine profiler dll and forwards the DllGetClassObject call.
      * The 32-bit proxy searches 32-bit paths only. Similarly for 64-bit proxy.
      *
      * %ProgramFiles|(x86)%
@@ -218,6 +316,8 @@ namespace ProfilerProxy
     STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ PVOID* ppObj)
     {
         HRESULT hr = S_OK;
+
+#ifdef DEBUG
         WCHAR wszEnvVar[MAX_PATH];
         if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0)
         {
@@ -226,64 +326,22 @@ namespace ProfilerProxy
                 Sleep(100);
             }
         }
-
-        //
-        // Determine "Program Files" folder
-        //
-
-        LPCWSTR programFilesVar = _T("ProgramFiles");
-
-#ifndef _WIN64
-        // WoW64 = Windows (32bit) on Windows 64bit
-        BOOL bIsWow64 = FALSE;
-        IfFailRetNoLog(IsWow64(&bIsWow64));
-        if (bIsWow64)
-        {
-            programFilesVar = _T("ProgramFiles(x86)");
-        }
 #endif
 
-        WCHAR wszProfilerPath[MAX_PATH];
-        ZeroMemory(wszProfilerPath, MAX_PATH);
-        if (!GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH))
+        // initializes CProxyLogging only once; shutdown only occurs on DllCanUnloadNow()
+        CProxyLogging::Initialize();
+
+        DWORD pid = GetCurrentProcessId();
+        CProxyLogging::LogMessage(_T("dllmain::DllGetClassObject - Loading Proxy from Process: %u"), pid);
+
+        // Guard against g_hProfiler if it's currently being loaded.
+        CCriticalSectionHolder lock(&g_criticalSection);
+
+        if (g_hProfiler == nullptr)
         {
-            return E_UNEXPECTED;
+            hr = LoadProfiler();
         }
 
-        //
-        // Determine CIE folder
-        //
-
-        IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
-
-        //
-        // Determine Version folder
-        //
-
-        WCHAR specificVersionStr[MAX_PATH];
-        BOOL useSpecificVersion = GetEnvironmentVariable(useSpecificVersionVar, specificVersionStr, 1) > 0;
-
-        std::wstring versionFolder;
-        if (useSpecificVersion)
-        {
-            versionFolder = specificVersionStr;
-        }
-        else
-        {
-            IfFailRetNoLog(GetLatestVersionFolder(wszProfilerPath, versionFolder));
-        }
-
-        IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
-
-        //
-        // Determine and load Profiler
-        //
-
-        IfFailRetNoLog(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
-
-        ::EnterCriticalSection(&g_criticalSection);
-
-        g_hProfiler = ::LoadLibrary(wszProfilerPath);
         if (g_hProfiler != nullptr)
         {
             LPFNGETCLASSOBJECT dllGetClassObj = (LPFNGETCLASSOBJECT)::GetProcAddress(g_hProfiler, "DllGetClassObject");
@@ -296,12 +354,12 @@ namespace ProfilerProxy
                 hr = HRESULT_FROM_WIN32(GetLastError());
             }
         }
-        else
-        {
-            hr = HRESULT_FROM_WIN32(GetLastError());
-        }
 
-        ::LeaveCriticalSection(&g_criticalSection);
+        if (FAILED(hr))
+        {
+            // Log error but do not fail since proxy shouldn't impact the process.
+            CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
+        }
 
         return S_OK;
     }
@@ -311,7 +369,7 @@ namespace ProfilerProxy
     {
         HRESULT hr = S_OK;
 
-        ::EnterCriticalSection(&g_criticalSection);
+        CCriticalSectionHolder lock(&g_criticalSection);
 
         if (g_hProfiler != nullptr)
         {
@@ -323,11 +381,11 @@ namespace ProfilerProxy
                 {
                     ::FreeLibrary(g_hProfiler);
                     g_hProfiler = nullptr;
+
+                    CProxyLogging::Shutdown();
                 }
             }
         }
-
-        ::LeaveCriticalSection(&g_criticalSection);
 
         return hr;
     }

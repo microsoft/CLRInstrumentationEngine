@@ -1,32 +1,41 @@
 # Getting Started with the CLR Instrumentation Engine
 
+1. [Introduction](#introduction)
+2. [Using CLRIE](#using-clrie)
+
 ## Supported Domains
 
-Issues specific to these domains will be listed in the below links.
+See [CLRIE in Azure](scenarios/azure.md)
 
-* [Azure App Service](scenarios/azureappservice.md) - Shipped as a preinstalled site extension and enabled via [Microsoft Visual Studio Snapshot Debugger](scenarios/snapshotdebugger.md) or [Microsoft Application Insights](scenarios/applicationinsights.md)
-
-## Introduction
+## Introduction <a name="introduction" />
 
 ### What is the CLR?
 
-The CLR stands for the Common Language Runtime. It is the runtime for Microsoft's .NET framework and provides execution support for programs written in managed .NET languages such as C#, C++ CLI, F#, and VB.Net. Compiling code written in a managed language results in bytecode called the Common Intermediate Language (CIL). The CIL is platform and processor independent and it is up to the CLR to Just-In-Time (JIT) compile the CIL into machine code in order to be executed. The CIL and the CLR together make up the Common Language Infrastructure (CLI).
+The CLR stands for the Common Language Runtime. It is the runtime for Microsoft's .NET framework and provides execution support for programs
+written in managed .NET languages such as C#, C++ CLI, F#, and VB.Net. Compiling code written in a managed language results in bytecode called
+the Common Intermediate Language (CIL). The CIL is platform and processor independent and it is up to the CLR to Just-In-Time (JIT) compile the
+CIL into machine code in order to be executed. The CIL and the CLR together make up the Common Language Infrastructure (CLI).
 
 In addition to the CLR which supports the full .NET Framework, Microsoft has also released CoreCLR to support .NET Core libraries.
 
 ### What is the CLR Instrumentation Engine?
 
-The CLR exposes a profiling API which reports events and messages of what is happening to during the execution of a managed process or application (such as what methods are JIT compiled or if a class is loaded). The problem is that only one profiler can interact with the CLR Profiler APIs at a time. The CLR Instrumentation Engine was written to address this by acting as a host and inverse multiplexes the APIs for multiple profiler clients.
+The CLR exposes a profiling API which reports events and messages of what is happening to during the execution of a managed process or
+application (such as what methods are JIT compiled or if a class is loaded). The problem is that only one profiler can interact with the CLR
+Profiler APIs at a time. The CLR Instrumentation Engine was written to address this by acting as a host and inverse multiplexes the APIs for
+multiple profiler clients.
 
-See the [MSDN Profiling Overview](https://docs.microsoft.com/en-us/dotnet/framework/unmanaged-api/profiling/profiling-overview) for more details about profilers in general.
+See the [MSDN Profiling Overview](https://docs.microsoft.com/dotnet/framework/unmanaged-api/profiling/profiling-overview) for more details
+about profilers in general.
 
 See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
-## Using the CLR Instrumentation Engine
+## Using the CLR Instrumentation Engine <a name="using-clrie"/>
 
 ### Cooperative Model
 
-Since the CLR Instrumentation Engine is meant to be shared, it is available as an x86 & x64 MSI/MSM installer on Windows desktop. The installer sets up Instrumentation Engine with the following folder structure:
+Since the CLR Instrumentation Engine is meant to be shared, it is available as an x86 & x64 MSI/MSM installer on Windows desktop. The installer
+sets up Instrumentation Engine with the following folder structure:
 
 ```
 %ProgramFiles%|%ProgramFiles(x86)%
@@ -43,15 +52,18 @@ We recommend setting the COR_PROFILER variables to the profiler proxy whenever a
 
 ### How do I enable the CLR Instrumentation Engine?
 
-When a managed process starts execution, it must first load the CLR. Once the CLR is initialized, it then checks environment variables to see if a Profiler should be loaded.
+When a managed process starts execution, it must first load the CLR. Once the CLR is initialized, it then checks environment variables to see
+if a Profiler should be loaded.
 
 See [Environment Variables](environment_variables.md) for more details on configuring your environment.
 
-Make sure to include this environment variable if you are testing unsigned debug builds of your Instrumentation Method.
+#### Required Dlls
+The Instrumentation Engine supports both x86 and x64 configurations.
 
-`MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1`
+* MicrosoftInstrumentationEngine_x86.dll
+* MicrosoftInstrumentationEngine_x64.dll
 
-See [App Service](scenarios/azureappservice.md) for details on leveraging the Clr InstrumentationEngine preinstalled site extension.
+See [CLRIE in Azure](scenarios/azure.md) for details about leveraging CLRIE on supported Azure platforms and products.
 
 #### Required Dlls
 The Instrumentation Engine supports both x86 and x64 configurations.
@@ -61,7 +73,8 @@ The Instrumentation Engine supports both x86 and x64 configurations.
 
 ### How do I write an Instrumentation Method?
 
-A simple example of an InstrumentationMethod can be found in [NaglerInstrumentationMethod.cpp](../tests/InstrEngineTests/NaglerInstrumentationMethod/NaglerInstrumentationMethod.cpp).
+A simple example of an InstrumentationMethod can be found in
+[NaglerInstrumentationMethod.cpp](../tests/InstrEngineTests/NaglerInstrumentationMethod/NaglerInstrumentationMethod.cpp).
 
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 

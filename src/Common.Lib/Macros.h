@@ -3,8 +3,6 @@
 
 #pragma once
 
-namespace MicrosoftInstrumentationEngine
-{
 // for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
 #ifndef PLATFORM_UNIX
 #ifdef _WIN64
@@ -51,7 +49,6 @@ namespace MicrosoftInstrumentationEngine
     (MAKE_HRESULT(errnoValue == 0 ? SEVERITY_SUCCESS : SEVERITY_ERROR, FACILITY_NULL, HRESULT_CODE(errnoValue)))
 #endif
 
-
 #ifndef IfNullRetPointer
 #define IfNullRetPointer(EXPR) \
     do { if (NULL == (EXPR)) { CLogging::LogError(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_POINTER; } } while (false)
@@ -97,4 +94,3 @@ namespace MicrosoftInstrumentationEngine
 
     template<typename T, int size>
     int array_length(T(&)[size]){return size;}
-}

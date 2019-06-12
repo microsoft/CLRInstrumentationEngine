@@ -18,7 +18,8 @@ There are two ways to run the CLR Instrumentation Engine unit tests - Visual Stu
 
 #### Via Script
 
-Run the script `[CLRInstrumentationEngine repo]\build.ps1` with IncludeTests. This will invoke the unit tests for x86, x64, and AnyCPU against either `Debug` or `Release` configuration post-build.
+Run the script `[CLRInstrumentationEngine repo]\build.ps1` with IncludeTests. This will invoke the unit tests for x86, x64, and AnyCPU against
+either `Debug` or `Release` configuration post-build.
 |Flag|Description|
 |-|-|
 IncludeTests|Runs unit tests after build.
@@ -28,4 +29,5 @@ Verbose|Sets msbuild verbosity to `normal`. By default, verbosity is set to `Err
 
 ### Linux
 
-Currently there are no unit tests support for Linux. However, Linux builds will run via PR validations. Please contact clrieowners@microsoft.com for more details.
+Currently there are no unit tests support for Linux. However, Linux builds will run via PR validations. Please contact
+clrieowners@microsoft.com for more details.

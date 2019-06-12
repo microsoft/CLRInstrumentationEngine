@@ -8,13 +8,8 @@
 
 #pragma once
 
-#include <windows.h>
-#include <combaseapi.h>
-#include <string>
-#include <vector>
-#include <tchar.h>
-#include <regex>
-#include <PathCch.h>
+#include "../Common.Lib/InitOnce.h"
+#include "../Common.Lib/Singleton.h"
+#include "../Common.Lib/Macros.h"
 
-#include "../InstrumentationEngine.Lib/Macros.h"
-#include "../ExtensionsHostLib/SafeFindFileHandle.h"
+#include "../Common.Lib/banned.h"

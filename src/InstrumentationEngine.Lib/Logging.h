@@ -9,6 +9,10 @@
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "LoggerService.h"
 
+#include "../Common.Lib/tstring.h"
+#include "../Common.Lib/InitOnce.h"
+#include "../Common.Lib/Singleton.h"
+
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX
 // Use %S for WCHAR* on Linux (which is char16_t*) since *wprintf* expects strings to be wchar_t*.
@@ -20,6 +24,8 @@
 // The lowercase s specifier is appropriate since WCHAR* on Windows matches *wprintf* width expectation.
 #define WCHAR_SPEC _T("%s")
 #endif
+
+using namespace CommonLib;
 
 namespace MicrosoftInstrumentationEngine
 {

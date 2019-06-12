@@ -7,6 +7,8 @@
     <!--
       Semantic Version. See http://semver.org for full details.
       Update for every public release.
+
+      NOTE: If the SemanticMajorVersion changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
@@ -23,6 +25,8 @@
 
         The Proxy major version should always correspond to the CLRIE major version.
         Be sure to update the ProxyFileVersion minor/patch only if new changes are added to the Proxy.
+
+        NOTE: If the ProxyFileVersionMajor changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
      -->
     <ProxyFileVersionMajor>$(SemanticVersionMajor)</ProxyFileVersionMajor>
     <ProxyFileVersionMinor>0</ProxyFileVersionMinor>
@@ -37,15 +41,12 @@
 
     <!--
       Build version is used to distinguish internally built NuGet packages.
-      Build version (if not set by msbuild):
-          Minutes since semantic version was set,
-          divided by 5 (to buffer 5 minutes, there's a small window where the value changes when building multiple projects),
-          mod by 65536 (restrict to UINT16, since version digits are restricted to 16-bits)
+      Build version (if not set by msbuild): yyyyMMdd
       Pull the first number out of BUILD_BUILDNUMBER string before parsing as int since microbuild features
       can append non-numeric characters on there.
     -->
-    <BuildVersion Condition="$(BUILD_BUILDNUMBER) != ''">$([MSBuild]::Modulo($([System.Int32]::Parse($([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), `\d*`).ToString()))), $([System.Uint16]::MaxValue)))</BuildVersion>
-    <BuildVersion Condition="$(BuildVersion) == ''">$([MSBuild]::Modulo($([MSBuild]::Divide($([System.DateTime]::Now.Subtract($([System.DateTime]::Parse($(SemanticVersionDate)))).TotalMinutes), 5)), $([System.UInt16]::MaxValue)).ToString('F0'))</BuildVersion>
+    <BuildVersion Condition="$(BUILD_BUILDNUMBER) != ''">$([System.Int32]::Parse($([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), `\d*`).ToString())))</BuildVersion>
+    <BuildVersion Condition="$(BUILD_BUILDNUMBER) == ''">$([System.DateTime]::Now.ToString('yyyyMMdd'))01</BuildVersion>
 
     <PackageAuthors>Microsoft</PackageAuthors>
     <PackageOwners>Microsoft</PackageOwners>
@@ -58,7 +59,7 @@
   <PropertyGroup>
     <ReleaseVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</ReleaseVersion>
     <PackageVersion>$(ReleaseVersion)</PackageVersion>
-    <PackageVersion Condition="'$(PublicRelease)' != 'True'">$([System.String]::Format('$(PackageVersion)-build{0:D5}', $([System.Int32]::Parse($(BuildVersion)))))</PackageVersion>
+    <PackageVersion Condition="'$(PublicRelease)' != 'True'">$(PackageVersion)-build$(BuildVersion)</PackageVersion>
     <PackageAuthors>Microsoft</PackageAuthors>
     <PackageAuthors Condition="'$(PublicRelease)' != 'True'">Microsoft</PackageAuthors>
   </PropertyGroup>
