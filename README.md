@@ -60,7 +60,7 @@ the [Security TechCenter](https://technet.microsoft.com/security/default).
 
 ## License
 
-Usage governance of the Instrumentation Engine is detailed in the [End User License Agreement](Instrumentation%20Engine%20SDK%20EULA.rtf) and [License](LICENSE).
+Usage governance of the Instrumentation Engine is detailed in the [License](LICENSE).
 
 ## Code of Conduct
 
