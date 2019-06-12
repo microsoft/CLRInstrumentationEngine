@@ -9,7 +9,7 @@
 #include <regex>
 #pragma warning(pop)
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
 
 // This versionRegex produces the following match result :
 //      [0]: Entire Version String

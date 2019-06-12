@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace InstrumentationEngineProfilerProxyTests

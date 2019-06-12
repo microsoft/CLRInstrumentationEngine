@@ -5,8 +5,11 @@
 
 #include "stdafx.h"
 #include "../Common.Lib/EventLoggingBase.h"
+#include "../Common.Lib/InitOnce.h"
 
-namespace MicrosoftInstrumentationEngine
+using namespace CommonLib;
+
+namespace ProfilerProxy
 {
     class CEventLogger :
         public CEventLoggingBase

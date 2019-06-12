@@ -5,7 +5,7 @@
 #include "InstrumentationEngineVersion.h"
 #include "TestEventLogger.h"
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace InstrumentationEngineProfilerProxyTests

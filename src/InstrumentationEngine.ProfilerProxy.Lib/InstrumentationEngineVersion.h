@@ -10,7 +10,7 @@
 #include <regex>
 #pragma warning(pop)
 
-namespace MicrosoftInstrumentationEngine
+namespace ProfilerProxy
 {
     class InstrumentationEngineVersion
     {

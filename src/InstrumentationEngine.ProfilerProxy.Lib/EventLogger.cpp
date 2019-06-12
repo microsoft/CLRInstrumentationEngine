@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "EventLogger.h"
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
 
 CEventLogger::CEventLogger() :
     m_initEventSource([=]() { return InitializeEventSource(_T("Instrumentation Engine Profiler Proxy")); })

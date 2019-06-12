@@ -14,26 +14,29 @@
 
 #include "CriticalSectionHolder.h"
 
-template<typename T>
-class CSingleton
+namespace CommonLib
 {
-private:
-    std::atomic_bool m_isCreated;
-    CCriticalSection m_cs;
-    std::unique_ptr<T> m_pValue;
-
-public:
-    T* const Get()
+    template<typename T>
+    class CSingleton
     {
-        if (!m_isCreated.load(std::memory_order::memory_order_acquire))
+    private:
+        std::atomic_bool m_isCreated;
+        CCriticalSection m_cs;
+        std::unique_ptr<T> m_pValue;
+
+    public:
+        T* const Get()
         {
-            CCriticalSectionHolder holder(&m_cs);
-            if (!m_isCreated.load(std::memory_order::memory_order_relaxed))
+            if (!m_isCreated.load(std::memory_order::memory_order_acquire))
             {
-                m_pValue = std::make_unique<T>();
-                m_isCreated.store(true, std::memory_order::memory_order_release);
+                CCriticalSectionHolder holder(&m_cs);
+                if (!m_isCreated.load(std::memory_order::memory_order_relaxed))
+                {
+                    m_pValue = std::make_unique<T>();
+                    m_isCreated.store(true, std::memory_order::memory_order_release);
+                }
             }
+            return m_pValue.get();
         }
-        return m_pValue.get();
-    }
-};
+    };
+}

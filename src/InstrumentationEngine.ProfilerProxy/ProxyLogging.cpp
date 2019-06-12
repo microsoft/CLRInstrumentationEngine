@@ -7,7 +7,8 @@
 
 #include <atomic>
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
+using namespace CommonLib;
 
 CInitOnce CProxyLogging::s_initialize([]() { return InitializeCore(); });
 CSingleton<CEventLogger> CProxyLogging::s_eventLogger;

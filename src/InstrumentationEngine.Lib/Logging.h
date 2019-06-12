@@ -25,6 +25,8 @@
 #define WCHAR_SPEC _T("%s")
 #endif
 
+using namespace CommonLib;
+
 namespace MicrosoftInstrumentationEngine
 {
     class CLogging

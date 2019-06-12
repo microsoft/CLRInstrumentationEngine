@@ -10,7 +10,7 @@
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
-namespace MicrosoftInstrumentationEngine
+namespace ProfilerProxy
 {
     // Handle to profiler module.
     static HMODULE g_hProfiler = nullptr;

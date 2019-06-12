@@ -8,24 +8,27 @@
 #include <Windows.h>
 #endif
 
-class SafeFindFileHandle
+namespace CommonLib
 {
-public:
-    SafeFindFileHandle(_In_ HANDLE fileHandle)
+    class SafeFindFileHandle
     {
-        m_handle = fileHandle;
-    }
+    public:
+        SafeFindFileHandle(_In_ HANDLE fileHandle)
+        {
+            m_handle = fileHandle;
+        }
 
-    operator HANDLE() const
-    {
-        return m_handle;
-    }
+        operator HANDLE() const
+        {
+            return m_handle;
+        }
 
-    ~SafeFindFileHandle()
-    {
-        FindClose(m_handle);
-    }
+        ~SafeFindFileHandle()
+        {
+            FindClose(m_handle);
+        }
 
-private:
-    HANDLE m_handle;
-};
+    private:
+        HANDLE m_handle;
+    };
+}

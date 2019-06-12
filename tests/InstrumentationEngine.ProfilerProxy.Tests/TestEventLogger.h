@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "EventLogger.h"
 
-using namespace MicrosoftInstrumentationEngine;
+using namespace ProfilerProxy;
 
 namespace InstrumentationEngineProfilerProxyTests
 {

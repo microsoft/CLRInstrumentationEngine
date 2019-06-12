@@ -19,6 +19,8 @@
 
 #include "../Common.Lib/InitOnce.h"
 
+using namespace CommonLib;
+
 namespace MicrosoftInstrumentationEngine
 {
     class CLoggerService

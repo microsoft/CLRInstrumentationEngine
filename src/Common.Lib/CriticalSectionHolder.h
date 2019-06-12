@@ -5,60 +5,63 @@
 
 #include "stdafx.h"
 
-class CCriticalSectionHolder
+namespace CommonLib
 {
-    LPCRITICAL_SECTION m_pLock;
-    bool m_bHoldsLock;
-
-public:
-    explicit CCriticalSectionHolder(_In_ LPCRITICAL_SECTION pLock)
+    class CCriticalSectionHolder
     {
-        m_pLock = pLock;
-        ::EnterCriticalSection(pLock);
+        LPCRITICAL_SECTION m_pLock;
+        bool m_bHoldsLock;
 
-        m_bHoldsLock = true;
-    }
-
-    ~CCriticalSectionHolder()
-    {
-        ReleaseLock();
-    }
-
-    void ReleaseLock()
-    {
-        if (m_bHoldsLock)
+    public:
+        explicit CCriticalSectionHolder(_In_ LPCRITICAL_SECTION pLock)
         {
-            ::LeaveCriticalSection(m_pLock);
-            m_bHoldsLock = false;
+            m_pLock = pLock;
+            ::EnterCriticalSection(pLock);
+
+            m_bHoldsLock = true;
         }
-    }
 
-    void RetakeLock()
-    {
-        //VSASSERT(!m_bHoldsLock, L"Already holds lock");
-        ::EnterCriticalSection(m_pLock);
-        m_bHoldsLock = true;
-    }
-};
+        ~CCriticalSectionHolder()
+        {
+            ReleaseLock();
+        }
 
-/*++
+        void ReleaseLock()
+        {
+            if (m_bHoldsLock)
+            {
+                ::LeaveCriticalSection(m_pLock);
+                m_bHoldsLock = false;
+            }
+        }
 
-Routine Description:
+        void RetakeLock()
+        {
+            //VSASSERT(!m_bHoldsLock, L"Already holds lock");
+            ::EnterCriticalSection(m_pLock);
+            m_bHoldsLock = true;
+        }
+    };
 
- This function checks if a critical section is owned or not.
+    /*++
 
---*/
-inline BOOL IsCriticalSectionOwned(
-    _In_ CRITICAL_SECTION* lpCriticalSection
+    Routine Description:
+
+     This function checks if a critical section is owned or not.
+
+    --*/
+    inline BOOL IsCriticalSectionOwned(
+        _In_ CRITICAL_SECTION* lpCriticalSection
     )
-{
-    BOOL fOwned = FALSE;
-    DWORD threadId = GetCurrentThreadId();
+    {
+        BOOL fOwned = FALSE;
+        DWORD threadId = GetCurrentThreadId();
 
-    //
-    // this is actually thread safe
-    //
-    fOwned = (DWORD_PTR) lpCriticalSection->OwningThread == threadId;
+        //
+        // this is actually thread safe
+        //
+        fOwned = (DWORD_PTR)lpCriticalSection->OwningThread == threadId;
 
-    return fOwned;
+        return fOwned;
+    }
 }

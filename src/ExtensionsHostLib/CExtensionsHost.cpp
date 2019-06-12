@@ -24,6 +24,8 @@ using Agent::Diagnostics::Param;
 
 #include "CExtensionsHost.h"
 
+using namespace CommonLib;
+
 std::wstring configFilePattern = L"*.config";
 
 // CExtensionsHost

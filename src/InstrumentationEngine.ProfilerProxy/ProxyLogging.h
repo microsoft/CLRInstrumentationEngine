@@ -5,6 +5,7 @@
 
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
 #include <atomic>
+#include "../Common.Lib/InitOnce.h"
 
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX
@@ -18,7 +19,7 @@
 #define WCHAR_SPEC _T("%s")
 #endif
 
-namespace MicrosoftInstrumentationEngine
+namespace ProfilerProxy
 {
     class CProxyLogging
     {

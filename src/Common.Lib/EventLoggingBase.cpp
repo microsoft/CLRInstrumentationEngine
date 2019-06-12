@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "EventLoggingBase.h"
 
+using namespace CommonLib;
+
 CEventLoggingBase::CEventLoggingBase() :
     // We use a small spin count here for when lock contention occurs.
     // Since this lock guards reads and writes to the buffer, contention is short.
