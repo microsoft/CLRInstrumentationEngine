@@ -62,6 +62,7 @@ namespace InstrumentationEngineProfilerProxyTests
                 L"1.0.0_debug"          // case sensitivity
                 L"1.0.0-build"          // missing preview version
                 L"1.0.0_Debug-build123" // out of order
+                L"2.0.0"                // current proxy only supports major version 1
             };
 
             InstrumentationEngineVersion* pActualVersion = nullptr;
@@ -83,7 +84,7 @@ namespace InstrumentationEngineProfilerProxyTests
             InstrumentationEngineVersion* pBasePreviewVersion1 = CreateInstrumentationEngineVersion(L"1.0.0-build1");
             InstrumentationEngineVersion* pBasePreviewVersion10 = CreateInstrumentationEngineVersion(L"1.0.0-build10");
             InstrumentationEngineVersion* pBasePreviewVersion01 = CreateInstrumentationEngineVersion(L"1.0.0-build01");
-            InstrumentationEngineVersion* pHigherPreviewVersion1 = CreateInstrumentationEngineVersion(L"2.0.0-build1");
+            InstrumentationEngineVersion* pHigherPreviewVersion1 = CreateInstrumentationEngineVersion(L"1.1.0-build1");
 
             // Normal string compare:
             // * if one str is substring of the other, the shorter one is "before",
