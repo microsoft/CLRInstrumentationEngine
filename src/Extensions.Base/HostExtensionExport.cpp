@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // HostExtension.cpp : Implementation of DLL Exports.
 

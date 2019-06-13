@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+
 #pragma once
 typedef BYTE PROPVAR_PAD1;
 typedef BYTE PROPVAR_PAD2;
@@ -14,11 +17,11 @@ typedef struct tagPROPVARIANT PROPVARIANT;
 typedef struct tagPROPSPEC
     {
     ULONG ulKind;
-    /* [switch_is] */ /* [switch_type] */ union 
+    /* [switch_is] */ /* [switch_type] */ union
         {
         /* [case()] */ PROPID propid;
         /* [case()] */ LPOLESTR lpwstr;
-        /* [default] */  /* Empty union arm */ 
+        /* [default] */  /* Empty union arm */
         } 	DUMMYUNIONNAME;
     } 	PROPSPEC;
 
@@ -171,9 +174,9 @@ struct tag_inner_PROPVARIANT
     PROPVAR_PAD1 wReserved1;
     PROPVAR_PAD2 wReserved2;
     PROPVAR_PAD3 wReserved3;
-    /* [switch_is] */ /* [switch_type] */ union 
+    /* [switch_is] */ /* [switch_type] */ union
         {
-        /* [case()] */  /* Empty union arm */ 
+        /* [case()] */  /* Empty union arm */
         /* [case()] */ CHAR cVal;
         /* [case()] */ UCHAR bVal;
         /* [case()] */ SHORT iVal;
@@ -260,20 +263,20 @@ MIDL_INTERFACE("00000139-0000-0000-C000-000000000046")
 IEnumSTATPROPSTG : public IUnknown
 {
 public:
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next(
         /* [in] */ ULONG celt,
-        /* [annotation][length_is][size_is][out] */ 
+        /* [annotation][length_is][size_is][out] */
         _Out_writes_to_(celt, *pceltFetched)  STATPROPSTG *rgelt,
-        /* [annotation][out] */ 
+        /* [annotation][out] */
         _Out_opt_ _Deref_out_range_(0, celt)  ULONG *pceltFetched) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Skip( 
+
+    virtual HRESULT STDMETHODCALLTYPE Skip(
         /* [in] */ ULONG celt) = 0;
-    
+
     virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Clone( 
+
+    virtual HRESULT STDMETHODCALLTYPE Clone(
         /* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum) = 0;
-    
+
 };
 

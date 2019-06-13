@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 # Usage:
 #   .\DockerLocalBuild.ps1 D:\ClrInstrumentationEngine musl Debug
 #   Will create an alpine docker container and build ClrInstrumentationEngine repo with Debug configuration in the container.

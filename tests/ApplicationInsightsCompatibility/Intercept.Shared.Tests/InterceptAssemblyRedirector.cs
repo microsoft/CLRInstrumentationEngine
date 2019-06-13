@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.Diagnostics.Instrumentation.Extensions.Intercept;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

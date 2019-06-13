@@ -129,7 +129,7 @@ namespace ProfilerProxy
     {
         HRESULT hr = S_OK;
 
-        // 
+        //
         // Check configuration flags
         //
 

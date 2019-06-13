@@ -1,4 +1,0 @@
-Forked from https://devdiv.visualstudio.com/Defaultcollection/DevDiv/_git/VS/src/edev/diagnostics/intellitrace/InstrumentationEngine
-tag: drop/master/official.24911.00
-commit: c0c70623eed40c9b845ee7843dc414d92c43f86d
-Date: January 11, 2016

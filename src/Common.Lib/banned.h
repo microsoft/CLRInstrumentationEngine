@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 /***
 * banned.h - list of Microsoft Security Development Lifecycle (SDL) banned APIs

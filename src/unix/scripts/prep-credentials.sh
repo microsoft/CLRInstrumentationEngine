@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 script_dir=$(dirname "$BASH_SOURCE")
 
 # This script is used to place a PAT in a nuget.config to be used in linux environments to get private packages.

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.

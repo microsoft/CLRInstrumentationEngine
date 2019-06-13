@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 # Build Pipeline: Signed build
 # Validates:
 # - binaries can be built for all platforms and Release configuration
