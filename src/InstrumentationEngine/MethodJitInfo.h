@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -18,14 +18,14 @@ namespace MicrosoftInstrumentationEngine
         BOOL m_isRejit;
         ReJITID m_rejitId;
         CComPtr<CProfilerManager> m_pProfilerManager;
-        
+
         BOOL m_isTransformed = false;
         CComPtr<CModuleInfo> m_pModuleInfo;
         mdMethodDef m_methodToken = mdTokenNil;
         HRESULT m_initializeResult = S_OK;
         UINT_PTR m_codeAddress = 0;
         bool m_isAddressQueried = false;
-        
+
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CMethodJitInfo);
@@ -42,10 +42,10 @@ namespace MicrosoftInstrumentationEngine
         }
 
     public:
-        CMethodJitInfo(FunctionID functionId, HRESULT hresult, BOOL isRejit, ReJITID rejitId, CProfilerManager* pProfilerManager) : 
+        CMethodJitInfo(FunctionID functionId, HRESULT hresult, BOOL isRejit, ReJITID rejitId, CProfilerManager* pProfilerManager) :
             m_functionId(functionId),
-            m_hresult(hresult), 
-            m_isRejit(isRejit), 
+            m_hresult(hresult),
+            m_isRejit(isRejit),
             m_rejitId(rejitId),
             m_pProfilerManager(pProfilerManager) {}
         virtual ~CMethodJitInfo() = default;

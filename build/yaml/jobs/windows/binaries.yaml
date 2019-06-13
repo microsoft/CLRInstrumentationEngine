@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 # Job Template: Build Windows Binaries
 
 parameters:

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+
+using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Reflection.Emit;

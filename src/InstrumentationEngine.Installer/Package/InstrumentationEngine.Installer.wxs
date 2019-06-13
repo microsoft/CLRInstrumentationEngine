@@ -1,4 +1,6 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Product Name='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) $(var.Configuration)'
              Manufacturer='Microsoft Corporation'

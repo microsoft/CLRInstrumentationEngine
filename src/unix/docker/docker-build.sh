@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 script_dir=$(dirname "$BASH_SOURCE")
 
 print_install_instructions()
@@ -101,7 +104,7 @@ invoke_build()
 
     build_cmd="bash /root/ClrInstrumentationEngine/src/build.sh $__BuildArch $__BuildType clean $__UnprocessedBuildArgs"
     docker_run_args="$docker_run_args --net=host $__DockerImage $build_cmd"
-    
+
     echo "executing: docker run $docker_run_args"
     docker run $docker_run_args
     local buildExitCode=$?
@@ -126,7 +129,7 @@ invoke_build()
     fi
 
     docker rm clrie-build > /dev/null
-    
+
     if [ $buildExitCode -ne 0 ]; then
         echo "docker build failed with exit code $buildExitCode"
         exit $buildExitCode
@@ -170,7 +173,7 @@ shift
 for i in "$@"
 do
     lowerI="$(echo $i | awk '{print tolower($0)}')"
-    case $lowerI in 
+    case $lowerI in
     -?|-h|--help)
         usage
         exit 1

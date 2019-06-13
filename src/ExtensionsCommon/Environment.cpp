@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 
@@ -72,7 +72,7 @@ namespace Settings
             if (0 == wcsncmp(wszVariable, s_wszConfigurationPathEnvironmentVariablePrefix, cchConfigurationPathEnvironmentVariablePrefix))
             {
                 LPCWSTR wszVariableValue = wcsstr(wszVariable, s_wszEnvironmentVariableNameValueSeparator) + 1;
-                
+
                 if (wszVariableValue != nullptr)
                 {
                     // The value found after the first '=' character is the variable value; get the configuration paths from the value

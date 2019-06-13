@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // ProfilerHost.cpp : Implementation of DLL Exports.
 

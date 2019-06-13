@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 # This is the base image that coreclr uses to build its alpine/linux-musl release
 # REFERENCE: https://github.com/dotnet/coreclr/blob/v2.1.0-preview2-26406-04/buildpipeline/pipelines.json
 FROM microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
@@ -27,7 +30,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && apk del .build-deps
 
 # Enable correct mode for dotnet watch (only mode supported in a container)
-ENV DOTNET_USE_POLLING_FILE_WATCHER=true \ 
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true \
     # Skip extraction of XML docs - generally not useful within an image/container - helps performance
     NUGET_XMLDOC_MODE=skip
 

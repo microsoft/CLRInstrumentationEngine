@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +11,6 @@ namespace InstrEngineTests
 {
     internal class TestConstants
     {
-        public const int TestTimeout = 60000; //Int32.MaxValue; 
+        public const int TestTimeout = 60000; //Int32.MaxValue;
     }
 }

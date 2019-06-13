@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 script_dir=$(dirname "$BASH_SOURCE")
 
 # This script is used to delete the nuget.config file that was created by prep-credentials.sh

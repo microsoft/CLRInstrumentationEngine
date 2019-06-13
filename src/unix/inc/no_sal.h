@@ -1,15 +1,18 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+
 #pragma once
 
 
 #define _In_
 #define __RPC_unique_pointer
-#define __RPC__out_xcount_part(size, length) 
+#define __RPC__out_xcount_part(size, length)
 #define __RPC__in_xcount_full(size)
 #define __RPC__deref_opt_inout_opt
 #define __RPC__out_ecount_full(size)
 #define __RPC__out_ecount_part(size, length)
 #define __RPC__in_range(min,max)
-#define __RPC__in 
+#define __RPC__in
 #define __RPC__inout_ecount_part(size, length)
 #define __RPC__inout_ecount_part_opt(size, length)
 #define __RPC__deref_in_opt

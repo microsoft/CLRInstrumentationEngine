@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "LoadArgumentsHelper.h"
@@ -9,7 +9,7 @@
 #include "WellKnownInstrumentationDefs.h"
 
 CLoadArgumentsHelper::CLoadArgumentsHelper()
-    : m_typeMap 
+    : m_typeMap
     {
         {ELEMENT_TYPE_BOOLEAN, std::make_shared<Agent::Reflection::CWellKnownTypeInfo>(L"mscorlib", L"mscorlib.dll", L"System.Boolean")},
         {ELEMENT_TYPE_CHAR,    std::make_shared<Agent::Reflection::CWellKnownTypeInfo>(L"mscorlib", L"mscorlib.dll", L"System.Char")},

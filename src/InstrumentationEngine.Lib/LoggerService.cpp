@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "LoggerService.h"
@@ -159,7 +159,7 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
 }
 
 void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, ...)
-{    
+{
     va_list argptr;
     va_start (argptr, wszMessage);
     LogMessage(wszMessage, argptr);
