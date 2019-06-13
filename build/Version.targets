@@ -6,17 +6,21 @@
         <IncludePath>$(IncludePath);$(IntermediateOutputPath)\Include</IncludePath>
     </PropertyGroup>
 
-<PropertyGroup>
+    <PropertyGroup>
         <GeneratedFileName Condition=" '$(GeneratedFileName)' == '' ">bldver.h</GeneratedFileName>
         <GeneratedFilePath>$(IntermediateOutputPath)\Include</GeneratedFilePath>
         <RC_VERSION_INTERNAL_NAME Condition=" '$(RC_VERSION_INTERNAL_NAME)' == '' ">$(TargetName)</RC_VERSION_INTERNAL_NAME>
         <RC_VERSION_ORIGINAL_FILE_NAME Condition=" '$(RC_VERSION_ORIGINAL_FILE_NAME)' == '' ">$(TargetFileName)</RC_VERSION_ORIGINAL_FILE_NAME>
-  <CommonBuildPropsLocation>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\Build</CommonBuildPropsLocation>
+        <CommonBuildPropsLocation>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\Build</CommonBuildPropsLocation>
+        <FileVersion Condition="$(FileVersion) == ''">$(FileVersionMajor),$(FileVersionMinor),$(FileVersionPatch),$(BuildVersion)</FileVersion>
+        <FileVersionStr Condition="$(FileVersionStr) == ''">$(AssemblyFileVersion)</FileVersionStr>
+        <ProductVersion Condition="$(ProductVersion) == ''">$(FileVersion)</ProductVersion>
+        <ProductVersionStr Condition="$(ProductVersionStr) == ''">$(FileVersionStr)</ProductVersionStr>
     </PropertyGroup>
 
     <Target Name="WriteGeneratedFile"
-                    BeforeTargets="ClCompile"
-                    DependsOnTargets="PrepareForBuild;GetReferenceAssemblyPaths">
+            BeforeTargets="ClCompile"
+            DependsOnTargets="PrepareForBuild;GetReferenceAssemblyPaths">
 
         <Message Importance="high" Text="Generate version file: $(GeneratedFilePath)"/>
 
@@ -25,19 +29,20 @@
         <ItemGroup>
           <GeneratedFileLine Include="#ifndef _BLDVER_H_"/>
           <GeneratedFileLine Include="#define _BLDVER_H_"/>
-          <GeneratedFileLine Include="#define RC_VERSION_INTERNAL_NAME %22$(RC_VERSION_INTERNAL_NAME)\0%22" />
+          <GeneratedFileLine Include="#define RC_VERSION_INTERNAL_NAME      %22$(RC_VERSION_INTERNAL_NAME)\0%22" />
           <GeneratedFileLine Include="#define RC_VERSION_ORIGINAL_FILE_NAME %22$(RC_VERSION_ORIGINAL_FILE_NAME)\0%22" />
-          <GeneratedFileLine Include="#define RC_VERSION_FILE_DESCRIPTION %22$(RC_VERSION_FILE_DESCRIPTION)\0%22" />
-          <GeneratedFileLine Include="#define INET_VERSION            %22$(AssemblyFileVersion)%22"/>
-          <GeneratedFileLine Include="#define INET_VER            $(FileVersionMajor),$(FileVersionMinor),$(FileVersionPatch),$(PreReleaseVersion)"/>
+          <GeneratedFileLine Include="#define RC_VERSION_FILE_DESCRIPTION   %22$(RC_VERSION_FILE_DESCRIPTION)\0%22" />
+          <GeneratedFileLine Include="#define VER_FILEVERSION               $(FileVersion)"/>
+          <GeneratedFileLine Include="#define VER_PRODUCTVERSION            $(ProductVersion)"/>
+          <GeneratedFileLine Include="#define VER_FILEVERSION_STR           %22$(FileVersionStr)\0%22"/>
+          <GeneratedFileLine Include="#define VER_PRODUCTVERSION_STR        %22$(ProductVersionStr)\0%22"/>
           <GeneratedFileLine Include="#endif"/>
         </ItemGroup>
 
         <WriteLinesToFile File="$(GeneratedFilePath)\$(GeneratedFileName)" Lines="@(GeneratedFileLine)" Overwrite="true" />
 
-    <ItemGroup>
-        <ResourceCompile Include="$(CommonBuildPropsLocation)\bldver.rc" />
-    </ItemGroup>
+        <ItemGroup>
+            <ResourceCompile Include="$(CommonBuildPropsLocation)\bldver.rc" />
+        </ItemGroup>
     </Target>
-
 </Project>

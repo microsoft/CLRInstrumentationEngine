@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
+
 #include "stdafx.h"
 #include "InstrumentationEngine.h"
 #include "ModuleInfo.h"
@@ -114,7 +115,7 @@ namespace MicrosoftInstrumentationEngine
         if (m_pModuleInfo == nullptr)
         {
             // A lambda is used here so that we can use IfFailRet inside this function
-            // to cache the initialization result without having to add another function to 
+            // to cache the initialization result without having to add another function to
             // the class interface.
             auto initialize = [this]() -> HRESULT
             {
@@ -133,7 +134,7 @@ namespace MicrosoftInstrumentationEngine
                 IfFailRet(pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo));
 
                 m_pModuleInfo = static_cast<CModuleInfo*>(pModuleInfo.p);
-                
+
                 m_isTransformed = m_pModuleInfo->GetIsMethodInstrumented(m_methodToken);
 
                 return S_OK;

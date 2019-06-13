@@ -1,0 +1,60 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Job Template: Build Windows Binaries
+
+parameters:
+  IndexSources: false
+  SignType: None
+  MatrixStrategy: {}
+  CopyFilters: |
+    **
+
+jobs:
+- job: Windows
+  displayName: Windows
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
+
+  pool:
+    name: VSEng-MicroBuildVS2017
+    demands:
+    - msbuild
+    - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/microbuild/signing.yaml
+    parameters:
+      SignType: ${{ parameters.SignType }}
+
+  - template: ../../steps/windows/binaries.yaml
+
+  - ${{ if eq('true', parameters.IndexSources) }}:
+    - template: ../../steps/azuredevops/publishsymbols.yaml
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+      Contents: ${{ parameters.CopyFilters }}
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+      CleanTargetFolder: true
+      OverWrite: true
+
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+      ArtifactName: 'binaries-windows-$(Configuration)'
+
+  - template: ../../steps/microbuild/cleanup.yaml
+
+  - template: ../../steps/azuredevops/componentgovernance.yaml
+

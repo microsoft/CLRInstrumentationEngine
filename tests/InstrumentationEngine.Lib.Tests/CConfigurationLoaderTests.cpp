@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "ConfigurationLoader.h"
 #include "CppUnitTest.h"
+#include <fstream>
 #include <sstream>
 #include <filesystem>
 namespace fs = std::experimental::filesystem;

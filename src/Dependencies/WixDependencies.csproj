@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project>
+  <PropertyGroup>
+    <ProjectGuid>{F11B4D26-CADD-4F9C-9F69-D2737F8122F7}</ProjectGuid>
+    <ShouldSign>false</ShouldSign>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <SubComponent>$(TargetFramework)</SubComponent>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <!--
+      By uniquley defining the intermediate output path, we avoid a race condiction
+      where multiple dotnet core projects override each other's project.assets.json file,
+      which defines the package depdencies of that project.
+     -->
+    <BaseIntermediateOutputPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\obj\LegacyDependencies</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <!-- This must be a relative or absolute path, not computed, so that dotnet restore on Linux finds this correctly. -->
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Wix" Version="$(WixVersion)" />
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+</Project>

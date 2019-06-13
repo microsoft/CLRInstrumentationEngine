@@ -1,0 +1,18 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Step Template: Azure DevOps Publish Build Artifacts
+
+parameters:
+  PathToPublish: ''
+  ArtifactName: ''
+
+steps:
+# publish Artifacts
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
+  inputs:
+    PathToPublish: ${{ parameters.PathToPublish }}
+    ArtifactName: ${{ parameters.ArtifactName }}
+  continueOnError: true
+  condition: succeededOrFailed()

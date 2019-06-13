@@ -1,0 +1,41 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Job Template: Test Windows Binaries
+
+parameters:
+  MatrixStrategy: {}
+
+jobs:
+- job: Test_Windows_Binaries
+  displayName: Windows Tests
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
+
+  pool:
+    name: VSEng-MicroBuildVS2017
+    demands:
+    - msbuild
+    - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-windows-$(Configuration)
+
+  - template: ../../steps/windows/tests.yaml
+    parameters:
+      WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
+      Platform: $(Platform)
+
+  - template: ../../steps/microbuild/cleanup.yaml
+
+  - template: ../../steps/azuredevops/componentgovernance.yaml

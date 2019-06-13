@@ -1,0 +1,22 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Step Template: Test Windows Binaries
+
+parameters:
+  WindowsBinRoot: ''
+  Platform: ''
+
+steps:
+- task: VSTest@2
+  displayName: 'Test Assemblies $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\**\$(Platform)\**\*Tests*.dll'
+  inputs:
+    testAssemblyVer2: |
+     **\$(Platform)\**\*Tests*.dll
+     !**\*TestAdapter.dll
+     !**\obj\**
+    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)'
+    vsTestVersion: 15.0
+    runInParallel: false
+    codeCoverageEnabled: false
+    runSettingsFile: tests/TestSettings/$(RunSettingsFile)

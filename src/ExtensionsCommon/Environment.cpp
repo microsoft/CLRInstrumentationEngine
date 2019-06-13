@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 
@@ -72,7 +72,7 @@ namespace Settings
             if (0 == wcsncmp(wszVariable, s_wszConfigurationPathEnvironmentVariablePrefix, cchConfigurationPathEnvironmentVariablePrefix))
             {
                 LPCWSTR wszVariableValue = wcsstr(wszVariable, s_wszEnvironmentVariableNameValueSeparator) + 1;
-                
+
                 if (wszVariableValue != nullptr)
                 {
                     // The value found after the first '=' character is the variable value; get the configuration paths from the value
@@ -90,7 +90,7 @@ namespace Settings
         _In_ const IProfilerManagerLoggingSptr &logger
         )
     {
-        const size_t cchExpandedValueWithNull = ExpandEnvironmentStrings(wszPath, nullptr, 0);
+        const DWORD cchExpandedValueWithNull = ExpandEnvironmentStrings(wszPath, nullptr, 0);
         if (0 == cchExpandedValueWithNull)
         {
             TraceMsgTo(logger, _T("CEnvironment::GetConfigurationPaths - ExpandEnvironmentStrings(szVariableValue, nullptr, 0) failed: 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));

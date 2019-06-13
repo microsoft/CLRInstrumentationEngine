@@ -1,0 +1,44 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) $(var.Configuration)'
+             Manufacturer='Microsoft Corporation'
+             Id='$(var.ProductGuid)'
+             UpgradeCode='$(var.UpgradeGuid)'
+             Language='0'
+             Codepage='1252'
+             Version='$(var.Version)'>
+        <Package Id='$(var.PackageGuid)'
+                 Keywords='Installer'
+                 Description='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) Installer $(var.InstrumentationEngine.Module.Configuration)'
+                 Comments='Copyright (c) All Rights Reserved.'
+                 Manufacturer='Microsoft Corporation'
+                 InstallerVersion='200'
+                 InstallPrivileges='elevated'
+                 InstallScope='perMachine'
+                 Platform='$(sys.BUILDARCH)'
+                 Languages='0'
+                 Compressed='yes'
+                 SummaryCodepage='1252' />
+        <Media Id='1'
+               Cabinet='InstrumentationEngine_$(sys.BUILDARCH).$(var.Version).cab'
+               EmbedCab='yes' />
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+<?if $(var.Configuration) = Debug?>
+            <Merge Id="ClrInstrumentationEngine"
+                   Language="0"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_$(sys.BUILDARCH).$(var.PackageVersion)_$(var.Configuration).msm"
+                   DiskId="1" />
+<?else?>
+            <Merge Id="ClrInstrumentationEngine"
+                   Language="0"
+                   SourceFile="$(var.OutputPath)InstrumentationEngine.Module_$(sys.BUILDARCH).$(var.PackageVersion).msm"
+                   DiskId="1" />
+<?endif?>
+        </Directory>
+        <Feature Id="ClrInstrumentationEngineFeature">
+            <MergeRef Id="ClrInstrumentationEngine" />
+        </Feature>
+    </Product>
+</Wix>

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
 invoke_remove()
 {
     docker inspect $ContainerName &>/dev/null

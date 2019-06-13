@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.CodeDom.Compiler;

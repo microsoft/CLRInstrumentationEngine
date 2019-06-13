@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
 #include "MethodInfo.h"
+#include "../ExtensionsHostLib/CExtensionsHost.h"
 
 using namespace ATL;
 
@@ -27,12 +28,10 @@ namespace MicrosoftInstrumentationEngine
                      public IProfilerManager,
                      public IProfilerManager2,
                      public IProfilerManager3,
+                     public IProfilerManager4,
                      public IProfilerManagerLogging,
                      public ICorProfilerCallback7
     {
-    private:
-        static const LoggingFlags LoggingFlags_All = (LoggingFlags)(LoggingFlags_Errors | LoggingFlags_Trace | LoggingFlags_InstrumentationResults);
-
     private:
         // currently, the profiler manager does not support in-proc sxs.
         // If this is non-null during the initialize call, the profiler attach is rejected.
@@ -61,17 +60,8 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<IMarshal> m_pFTM;
 #endif
 
-        // Path to the profiler host dll
-        tstring m_profilerHostDllPath;
-
-        // Guid of the profiler host object to be created within the host dll
-        GUID m_guidProfilerHost;
-
         // Pointer to the single profiler host instance
         CComPtr<IProfilerManagerHost> m_profilerManagerHost;
-
-        // hmodule for the profiler host dll
-        HMODULE m_profilerHostModule;
 
         // Pointer to the real ICorProfilerInfo from the clr
         CComPtr<ICorProfilerInfo> m_pRealProfilerInfo;
@@ -218,6 +208,7 @@ namespace MicrosoftInstrumentationEngine
             COM_INTERFACE_ENTRY(IProfilerManager)
             COM_INTERFACE_ENTRY(IProfilerManager2)
             COM_INTERFACE_ENTRY(IProfilerManager3)
+            COM_INTERFACE_ENTRY(IProfilerManager4)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -233,12 +224,6 @@ namespace MicrosoftInstrumentationEngine
 
         // Private Helpers
     private:
-        HRESULT LoadProfilerManagerHost();
-
-        HRESULT GetProfilerManagerHostPathEnvVar();
-        HRESULT GetProfilerManagerHostGuid();
-        HRESULT GetProfilerManagerHostPathFromCLSID();
-
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
@@ -261,30 +246,48 @@ namespace MicrosoftInstrumentationEngine
         // Set the default event mask. This is union'd with the event mask from instrumentation methods and the host.
         static DWORD GetDefaultEventMask();
 
+        //Template method to either QI or simple copy the InstrumentionMethod ComPtr. These methods support CopyInstrumentationMethods.
+        template<typename TInterfaceType>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, TInterfaceType** pInterface)
+        {
+            return pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (void**)pInterface);
+        }
+
+        template<>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, IInstrumentationMethod** pInterface)
+        {
+            return pRawInstrumentationMethod.CopyTo(pInterface);
+        }
+
+        template<typename TInterfaceType>
+        HRESULT CopyInstrumentationMethods(std::vector<CComPtr<TInterfaceType>>& callbackVector)
+        {
+            CCriticalSectionHolder lock(&m_cs);
+            HRESULT hr;
+            // Holding the lock during the callback functions is dangerous since rentrant
+            // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+            for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
+            {
+                CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
+                IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
+
+                CComPtr<TInterfaceType> pInterface;
+                if (SUCCEEDED(GetInterfaceType(pRawInstrumentationMethod, &pInterface)))
+                {
+                    callbackVector.push_back(pInterface);
+                }
+            }
+
+            return S_OK;
+        }
+
         template<typename TInterfaceType, typename TReturnType, typename... TParameters>
         HRESULT SendEventToInstrumentationMethods(TReturnType(__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
         {
             HRESULT hr = S_OK;
 
             vector<CComPtr<TInterfaceType>> callbackVector;
-
-            {
-                CCriticalSectionHolder lock(&m_cs);
-
-                // Holding the lock during the callback functions is dangerous since rentrant
-                // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-                for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
-                {
-                    CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-                    IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-
-                    CComPtr<TInterfaceType> pInterface;
-                    if (SUCCEEDED(pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (LPVOID*)&pInterface)))
-                    {
-                        callbackVector.push_back(pInterface);
-                    }
-                }
-            }
+            IfFailRet(CopyInstrumentationMethods(callbackVector));
 
             // Send event to instrumentation methods
             for (CComPtr<TInterfaceType> pInstrumentationMethod : callbackVector)
@@ -305,18 +308,7 @@ namespace MicrosoftInstrumentationEngine
             HRESULT hr = S_OK;
             vector<CComPtr<IInstrumentationMethod>> callbackVector;
 
-            {
-                CCriticalSectionHolder lock(&m_cs);
-
-                // Holding the lock during the callback functions is dangerous since rentrant
-                // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-                for (auto pCurrInstrumentationMethod : m_instrumentationMethods)
-                {
-                    CComPtr<IInstrumentationMethod> pRawInstrumentationMethod;
-                    IfFailRet(pCurrInstrumentationMethod.first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
-                    callbackVector.push_back(pRawInstrumentationMethod);
-                }
-            }
+            IfFailRet(CopyInstrumentationMethods(callbackVector));
 
             for (auto pInstrumentationMethod : callbackVector)
             {
@@ -452,6 +444,10 @@ namespace MicrosoftInstrumentationEngine
     // IProfilerManager3 Methods
     public:
         STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer);
+
+    // IProfilerManager4 Methods
+    public:
+        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
 
     // IProfilerManagerLogging Methods
     public:
@@ -973,7 +969,7 @@ public:
     CSEHTranslatorHolder()
         : released(false)
     {
-        m_oldSehTranslator = _set_se_translator(SehTranslatorFunc);
+        m_oldSehTranslator = _set_se_translator(MicrosoftInstrumentationEngine::SehTranslatorFunc);
     }
 
     void RestoreSEHTranslator()

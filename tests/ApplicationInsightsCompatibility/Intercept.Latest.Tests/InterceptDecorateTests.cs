@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 namespace InstrEngineTests
 {
@@ -47,8 +47,6 @@ namespace InstrEngineTests
 
         [TestMethod]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostModuleName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]

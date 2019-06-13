@@ -21,7 +21,7 @@
     <ProjectGuid>{EAD25B2C-E362-4660-A2FD-AD82B7C1FD77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Intercept.2.0.1.Tests</RootNamespace>
+    <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
     <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,23 +47,24 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dependencies\LegacyDependencies.csproj">
+    <ProjectReference Include="..\..\..\src\Dependencies\LegacyDependencies.csproj">
       <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+      <Name>..\Dependencies\LegacyDependencies.csproj</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AI.Agent.Intercept">
-      <HintPath>$(PackagesDir)\packages\Microsoft.ApplicationInsights.Agent.Intercept\$(LegacyApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <HintPath>$(PackagesDir)\Microsoft.ApplicationInsights.Agent.Intercept\$(LegacyApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RemoteUnitTestExecutor">
-      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
+      <HintPath>$(PackagesDir)\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RemoteUnitTestExecutor.Host_x86">
-      <HintPath>$(PackagesDir)\packages\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
+      <HintPath>$(PackagesDir)\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

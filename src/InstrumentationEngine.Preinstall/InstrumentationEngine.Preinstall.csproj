@@ -46,27 +46,27 @@
         <Destination>$(PackageVersion)</Destination>
       </ZipItem>
       <!-- Instrumentationx86Files -->
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**"
-               Exclude="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*.pdb;$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*.config;$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*base*">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\InstrumentationEngine\**"
+               Exclude="$(InputBinCfgRoot)\x86\InstrumentationEngine\**\*.pdb;$(InputBinCfgRoot)\x86\InstrumentationEngine\**\*.config;$(InputBinCfgRoot)\x86\InstrumentationEngine\**\*base*">
         <Destination>$(PackageVersion)\Instrumentation32</Destination>
       </ZipItem>
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*base*"
-               Exclude="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\*.pdb">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\InstrumentationEngine\**\*base*"
+               Exclude="$(InputBinCfgRoot)\x86\InstrumentationEngine\**\*.pdb">
         <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x86\InstrumentationEngine\**\Microsoft.InstrumentationEngine.Extensions.config">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\InstrumentationEngine\**\Microsoft.InstrumentationEngine.Extensions.config">
         <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
       </ZipItem>
       <!-- Instrumentationx64Files -->
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**"
-               Exclude="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*.pdb;$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*.config;$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*base*">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\InstrumentationEngine\**"
+               Exclude="$(InputBinCfgRoot)\x64\InstrumentationEngine\**\*.pdb;$(InputBinCfgRoot)\x64\InstrumentationEngine\**\*.config;$(InputBinCfgRoot)\x64\InstrumentationEngine\**\*base*">
         <Destination>$(PackageVersion)\Instrumentation64</Destination>
       </ZipItem>
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*base*"
-               Exclude="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\*.pdb">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\InstrumentationEngine\**\*base*"
+               Exclude="$(InputBinCfgRoot)\x64\InstrumentationEngine\**\*.pdb">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine\**\Microsoft.InstrumentationEngine.Extensions.config">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\InstrumentationEngine\**\Microsoft.InstrumentationEngine.Extensions.config">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
     </ItemGroup>

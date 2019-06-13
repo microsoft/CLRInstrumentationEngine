@@ -75,7 +75,7 @@
         <EnlistmentRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))</EnlistmentRoot>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(EnlistmentRoot)\</SolutionDir>
 
-        <PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\</PackagesDir>
+        <PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\packages</PackagesDir>
         <PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
 
         <BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
@@ -90,19 +90,17 @@
         <ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
         <ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
 
-        <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
-        <RelativeOutputPathBase>$(MSBuildProjectDirectory.Substring($(EnlistmentRoot.Length)))</RelativeOutputPathBase>
-
         <!-- Obj -->
+        <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
         <BaseIntermediateOutputPath Condition="$(BaseIntermediateOutputPath) == '' Or $(BaseIntermediateOutputPath) == '*Undefined*'">$(EnlistmentRoot)\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
         <BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(BaseIntermediateOutputPath) ))</BaseIntermediateOutputPath>
 
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(ArchitectureFolderName)\$(RelativeOutputPathBase)</IntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(ArchitectureFolderName)</IntermediateOutputPath>
         <IntermediateOutputPath Condition=" $(SubComponent) != '' ">$(IntermediateOutputPath)\$(SubComponent)</IntermediateOutputPath>
         <IntermediateOutputPath>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntermediateOutputPath>
 
         <!-- Bin -->
-        <!-- See https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops for predefined Azure DevOps build variables-->
+        <!-- See https://docs.microsoft.com/azure/devops/pipelines/build/variables?view=azure-devops for predefined Azure DevOps build variables-->
         <BinRoot Condition="('$(BinRoot)' == '' Or '$(BinRoot)' == '*Undefined*') And '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != ''">$(BUILD_ARTIFACTSTAGINGDIRECTORY)\bin</BinRoot>
         <BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
         <BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>

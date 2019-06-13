@@ -19,9 +19,11 @@
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CExtensionsHost.cpp" />
     <ClCompile Include="RawProfilerHookLoader.cpp" />
     <ClCompile Include="RawProfilerHookSettingsReader.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -34,9 +36,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="./Platform/CExtensionsHostWindows.h" />
+    <ClInclude Include="CExtensionsHost.h" />
     <ClInclude Include="RawProfilerHookLoader.h" />
     <ClInclude Include="RawProfilerHookSettingsReader.h" />
-    <ClInclude Include="SafeFindFileHandle.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />

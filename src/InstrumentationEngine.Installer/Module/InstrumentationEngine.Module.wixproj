@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+      -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputType>Module</OutputType>
+    <TargetExt>.msm</TargetExt>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>1224c7a6-57c8-4758-8fe8-c8af4a3da2ad</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>InstrumentationEngine.Module_$(Platform).$(PackageVersion)</OutputName>
+    <OutputName Condition=" '$(Configuration)' == 'Debug' ">$(OutputName)_$(Configuration)</OutputName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="InstrumentationEngine.Module.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WixLibrary\InstrumentationEngine.Fragment.wixproj">
+      <Name>InstrumentationEngine.Fragment</Name>
+      <Project>{2f7e3158-2868-4f83-b44b-908d92121574}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" />
+</Project>

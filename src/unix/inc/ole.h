@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+//
+
 #pragma once
 
 
@@ -33,9 +36,9 @@ MIDL_INTERFACE("0000010c-0000-0000-C000-000000000046")
 IPersist : public IUnknown
 {
 public:
-    virtual HRESULT STDMETHODCALLTYPE GetClassID( 
+    virtual HRESULT STDMETHODCALLTYPE GetClassID(
         /* [out] */ __RPC__out CLSID *pClassID) = 0;
-    
+
 };
 typedef IStream *LPSTREAM;
 
@@ -44,17 +47,17 @@ IPersistStream : public IPersist
 {
 public:
     virtual HRESULT STDMETHODCALLTYPE IsDirty( void) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Load( 
+
+    virtual HRESULT STDMETHODCALLTYPE Load(
         /* [unique][in] */ __RPC__in_opt IStream *pStm) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Save( 
+
+    virtual HRESULT STDMETHODCALLTYPE Save(
         /* [unique][in] */ __RPC__in_opt IStream *pStm,
         /* [in] */ BOOL fClearDirty) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE GetSizeMax( 
+
+    virtual HRESULT STDMETHODCALLTYPE GetSizeMax(
         /* [out] */ __RPC__out ULARGE_INTEGER *pcbSize) = 0;
-    
+
 };
 typedef IPersistStream *LPPERSISTSTREAM;
 
@@ -63,17 +66,17 @@ IPersistStreamInit : public IPersist
 {
 public:
     virtual HRESULT STDMETHODCALLTYPE IsDirty( void) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Load( 
+
+    virtual HRESULT STDMETHODCALLTYPE Load(
         /* [in] */ __RPC__in_opt LPSTREAM pStm) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Save( 
+
+    virtual HRESULT STDMETHODCALLTYPE Save(
         /* [in] */ __RPC__in_opt LPSTREAM pStm,
         /* [in] */ BOOL fClearDirty) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE GetSizeMax( 
+
+    virtual HRESULT STDMETHODCALLTYPE GetSizeMax(
         /* [out] */ __RPC__out ULARGE_INTEGER *pCbSize) = 0;
-    
+
     virtual HRESULT STDMETHODCALLTYPE InitNew( void) = 0;
 };
 
@@ -81,139 +84,139 @@ MIDL_INTERFACE("618736e0-3c3d-11cf-810c-00aa00389b71")
 IAccessible : public IDispatch
 {
 public:
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accParent( 
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accParent(
         /* [retval][out] */ __RPC__deref_out_opt IDispatch **ppdispParent) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accChildCount( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accChildCount(
         /* [retval][out] */ __RPC__out long *pcountChildren) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accChild( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accChild(
         /* [in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt IDispatch **ppdispChild) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accName( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accName(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszName) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accValue( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accValue(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszValue) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accDescription( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accDescription(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszDescription) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accRole( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accRole(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__out VARIANT *pvarRole) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accState( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accState(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__out VARIANT *pvarState) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accHelp( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accHelp(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszHelp) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accHelpTopic( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accHelpTopic(
         /* [out] */ __RPC__deref_out_opt BSTR *pszHelpFile,
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__out long *pidTopic) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accKeyboardShortcut( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accKeyboardShortcut(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszKeyboardShortcut) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accFocus( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accFocus(
         /* [retval][out] */ __RPC__out VARIANT *pvarChild) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accSelection( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accSelection(
         /* [retval][out] */ __RPC__out VARIANT *pvarChildren) = 0;
-    
-    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accDefaultAction( 
+
+    virtual /* [id][propget][hidden] */ HRESULT STDMETHODCALLTYPE get_accDefaultAction(
         /* [optional][in] */ VARIANT varChild,
         /* [retval][out] */ __RPC__deref_out_opt BSTR *pszDefaultAction) = 0;
-    
-    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accSelect( 
+
+    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accSelect(
         /* [in] */ long flagsSelect,
         /* [optional][in] */ VARIANT varChild) = 0;
-    
-    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accLocation( 
+
+    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accLocation(
         /* [out] */ __RPC__out long *pxLeft,
         /* [out] */ __RPC__out long *pyTop,
         /* [out] */ __RPC__out long *pcxWidth,
         /* [out] */ __RPC__out long *pcyHeight,
         /* [optional][in] */ VARIANT varChild) = 0;
-    
-    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accNavigate( 
+
+    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accNavigate(
         /* [in] */ long navDir,
         /* [optional][in] */ VARIANT varStart,
         /* [retval][out] */ __RPC__out VARIANT *pvarEndUpAt) = 0;
-    
-    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accHitTest( 
+
+    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accHitTest(
         /* [in] */ long xLeft,
         /* [in] */ long yTop,
         /* [retval][out] */ __RPC__out VARIANT *pvarChild) = 0;
-    
-    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accDoDefaultAction( 
+
+    virtual /* [id][hidden] */ HRESULT STDMETHODCALLTYPE accDoDefaultAction(
         /* [optional][in] */ VARIANT varChild) = 0;
-    
-    virtual /* [id][propput][hidden] */ HRESULT STDMETHODCALLTYPE put_accName( 
+
+    virtual /* [id][propput][hidden] */ HRESULT STDMETHODCALLTYPE put_accName(
         /* [optional][in] */ VARIANT varChild,
         /* [in] */ __RPC__in BSTR szName) = 0;
-    
-    virtual /* [id][propput][hidden] */ HRESULT STDMETHODCALLTYPE put_accValue( 
+
+    virtual /* [id][propput][hidden] */ HRESULT STDMETHODCALLTYPE put_accValue(
         /* [optional][in] */ VARIANT varChild,
         /* [in] */ __RPC__in BSTR szValue) = 0;
-    
+
 };
 
 MIDL_INTERFACE("00020404-0000-0000-C000-000000000046")
 IEnumVARIANT : public IUnknown
 {
 public:
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next(
         /* [in] */ ULONG celt,
         /* [length_is][size_is][out] */ VARIANT *rgVar,
         /* [out] */ ULONG *pCeltFetched) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Skip( 
+
+    virtual HRESULT STDMETHODCALLTYPE Skip(
         /* [in] */ ULONG celt) = 0;
-    
+
     virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Clone( 
+
+    virtual HRESULT STDMETHODCALLTYPE Clone(
         /* [out] */ __RPC__deref_out_opt IEnumVARIANT **ppEnum) = 0;
-    
+
 };
 
 MIDL_INTERFACE("00000146-0000-0000-C000-000000000046")
 IGlobalInterfaceTable : public IUnknown
 {
 public:
-    virtual HRESULT STDMETHODCALLTYPE RegisterInterfaceInGlobal( 
-        /* [annotation][in] */ 
+    virtual HRESULT STDMETHODCALLTYPE RegisterInterfaceInGlobal(
+        /* [annotation][in] */
         _In_  IUnknown *pUnk,
-        /* [annotation][in] */ 
+        /* [annotation][in] */
         _In_  REFIID riid,
-        /* [annotation][out] */ 
+        /* [annotation][out] */
         _Out_  DWORD *pdwCookie) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE RevokeInterfaceFromGlobal( 
-        /* [annotation][in] */ 
+
+    virtual HRESULT STDMETHODCALLTYPE RevokeInterfaceFromGlobal(
+        /* [annotation][in] */
         _In_  DWORD dwCookie) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE GetInterfaceFromGlobal( 
-        /* [annotation][in] */ 
+
+    virtual HRESULT STDMETHODCALLTYPE GetInterfaceFromGlobal(
+        /* [annotation][in] */
         _In_  DWORD dwCookie,
-        /* [annotation][in] */ 
+        /* [annotation][in] */
         _In_  REFIID riid,
-        /* [annotation][iid_is][out] */ 
+        /* [annotation][iid_is][out] */
         _Outptr_  void **ppv) = 0;
-    
+
 };
 
-typedef enum tagCOWAIT_FLAGS { 
+typedef enum tagCOWAIT_FLAGS {
   COWAIT_WAITALL                   = 1,
   COWAIT_ALERTABLE                 = 2,
   COWAIT_INPUTAVAILABLE            = 4,

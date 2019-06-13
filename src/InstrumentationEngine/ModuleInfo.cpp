@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 
@@ -1092,14 +1092,15 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetILInstrumentationMap(_In
     {
         CSharedArray<COR_IL_MAP> map = (*it).second;
 
-        *pcNeeded = map.Count();
+        // This is a safe cast since the underlying CLR APIs only use a ULONG32 anyway.
+        *pcNeeded = (ULONG32)map.Count();
         if (cMap == 0 || pMap == NULL)
         {
             return S_OK;
         }
         size_t mapCount = map.Count();
         size_t cCount = ((size_t)cMap <= mapCount) ? (size_t)cMap : mapCount;
-        memcpy(pMap, map.Get(), cCount * sizeof(COR_IL_MAP));
+        IfFailRetErrno(memcpy_s(pMap, mapCount * sizeof(COR_IL_MAP), map.Get(), cCount * sizeof(COR_IL_MAP)));
     }
 
     return S_OK;
