@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "MethodInfo.h"
 #include "CachedILMethodBody.h"
 #include "InlineSiteMap.h"
+#include "../InstrumentationEngine.Lib/SharedArray.h"
 
 using namespace ATL;
 

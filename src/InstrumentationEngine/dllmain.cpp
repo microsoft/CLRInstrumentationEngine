@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 
 #include "ProfilerManager.h"
+#include "LoggingWrapper.h"
+
 #ifndef PLATFORM_UNIX
 
 #include "AtlModule.h"
-#include "refcount.h"
 
 extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
 
@@ -87,11 +88,14 @@ public:
 };
 
 #ifndef PLATFORM_UNIX
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllCanUnloadNow, 0)(void)
 {
     return _AtlModule.DllCanUnloadNow();
 }
+#endif
 
+_Check_return_
 STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
 {
     CComPtr<IClassFactory> pClassFactory;
@@ -105,26 +109,37 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
     return E_NOINTERFACE;
 }
 
+#ifndef PLATFORM_UNIX
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
 
+__control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
-#else
-extern "C" HRESULT __attribute__((visibility("default"))) DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
-{
-    CComPtr<IClassFactory> pClassFactory;
-    pClassFactory.Attach(new CCrossPlatClassFactory);
+#endif
 
-    if (pClassFactory != nullptr)
+STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLogging** ppLogging)
+{
+    if (nullptr == ppLogging)
     {
-        return pClassFactory->QueryInterface(riid, ppv);
+        return E_POINTER;
     }
 
-    return E_NOINTERFACE;
+    CComPtr<CLoggingWrapper> pLogging;
+    pLogging.Attach(new (std::nothrow) CLoggingWrapper());
+    if (nullptr == pLogging)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    HRESULT hr = S_OK;
+    IfFailRetNoLog(pLogging->Initialize());
+
+    *ppLogging = pLogging.Detach();
+    return S_OK;
 }
-#endif

@@ -15,17 +15,17 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <EnablePREfast Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EnablePREfast>
+      <EnablePREfast>true</EnablePREfast>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <AdditionalIncludeDirectories>$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AgentTls.h" />
     <ClInclude Include="AgentTrace.h" />
     <ClInclude Include="AgentValidation.h" />
-    <ClInclude Include="banned.h" />
     <ClInclude Include="DataItemContainer.h" />
     <ClInclude Include="DecorationCallbackInfo.h" />
     <ClInclude Include="DecorationCallbackRefInfo.h" />

@@ -3,6 +3,7 @@
 //
 // Copyright Microsoft Corporation.  All Rights Reserved.
 //
+//
 //---------------------------------------------------------------
 #ifndef _CVCONST_H_
 #define _CVCONST_H_
@@ -202,7 +203,7 @@ typedef enum CV_modifier_e {
     CV_MOD_CONST                        = 0x0001,
     CV_MOD_VOLATILE                     = 0x0002,
     CV_MOD_UNALIGNED                    = 0x0003,
-    
+
     // 0x0200 - 0x03ff - HLSL modifiers.
 
     CV_MOD_HLSL_UNIFORM                 = 0x0200,
@@ -222,7 +223,7 @@ typedef enum CV_modifier_e {
     CV_MOD_HLSL_UAV_GLOBALLY_COHERENT   = 0x020e,
 
     // 0x0400 - 0xffff - Unused.
-    
+
 } CV_modifier_e;
 
 
@@ -233,7 +234,7 @@ typedef enum CV_builtin_e {
 
     // 0x0000 - 0x01ff - Reserved.
     CV_BI_INVALID                       = 0x0000,
-    
+
     // 0x0200 - 0x03ff - HLSL types.
 
     CV_BI_HLSL_INTERFACE_POINTER        = 0x0200,
@@ -275,7 +276,7 @@ typedef enum CV_builtin_e {
     CV_BI_HLSL_CONSTANT_BUFFER          = 0x0224,
 
     // 0x0400 - 0xffff - Unused.
-    
+
 } CV_builtin_e;
 
 
@@ -649,7 +650,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_REG_YMM7I1     =    297,
     CV_REG_YMM7I2     =    298,
     CV_REG_YMM7I3     =    299,
-        
+
     CV_REG_YMM0F0    =  300,     // AVX floating-point single precise registers
     CV_REG_YMM0F1    =  301,
     CV_REG_YMM0F2    =  302,
@@ -714,7 +715,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_REG_YMM7F5    =  361,
     CV_REG_YMM7F6    =  362,
     CV_REG_YMM7F7    =  363,
-    
+
     CV_REG_YMM0D0     =    364,    // AVX floating-point double precise registers
     CV_REG_YMM0D1     =    365,
     CV_REG_YMM0D2     =    366,
@@ -747,7 +748,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_REG_YMM7D1     =    393,
     CV_REG_YMM7D2     =    394,
     CV_REG_YMM7D3     =    395,
-    
+
     CV_REG_BND0       =    396,    // x86 MPX bounds registers
     CV_REG_BND1       =    397,
     CV_REG_BND2       =    398,
@@ -1356,10 +1357,10 @@ typedef enum CV_HREG_e : unsigned int {
     //
     // Registers for ARM VFP10 support
     //
-    
+
     CV_ARM_FPSCR    =   40,
     CV_ARM_FPEXC    =   41,
-    
+
     CV_ARM_FS0      =   50,
     CV_ARM_FS1      =   51,
     CV_ARM_FS2      =   52,
@@ -1396,7 +1397,7 @@ typedef enum CV_HREG_e : unsigned int {
     //
     // ARM VFP Floating Point Extra control registers
     //
-    
+
     CV_ARM_FPEXTRA0 =   90,
     CV_ARM_FPEXTRA1 =   91,
     CV_ARM_FPEXTRA2 =   92,
@@ -1407,23 +1408,23 @@ typedef enum CV_HREG_e : unsigned int {
     CV_ARM_FPEXTRA7 =   97,
 
     // XSCALE Concan co-processor registers
-    CV_ARM_WR0      =   128, 
-    CV_ARM_WR1      =   129, 
-    CV_ARM_WR2      =   130, 
-    CV_ARM_WR3      =   131, 
-    CV_ARM_WR4      =   132, 
-    CV_ARM_WR5      =   133, 
-    CV_ARM_WR6      =   134, 
-    CV_ARM_WR7      =   135, 
-    CV_ARM_WR8      =   136, 
-    CV_ARM_WR9      =   137, 
-    CV_ARM_WR10     =   138, 
-    CV_ARM_WR11     =   139, 
-    CV_ARM_WR12     =   140, 
-    CV_ARM_WR13     =   141, 
-    CV_ARM_WR14     =   142, 
-    CV_ARM_WR15     =   143, 
-    
+    CV_ARM_WR0      =   128,
+    CV_ARM_WR1      =   129,
+    CV_ARM_WR2      =   130,
+    CV_ARM_WR3      =   131,
+    CV_ARM_WR4      =   132,
+    CV_ARM_WR5      =   133,
+    CV_ARM_WR6      =   134,
+    CV_ARM_WR7      =   135,
+    CV_ARM_WR8      =   136,
+    CV_ARM_WR9      =   137,
+    CV_ARM_WR10     =   138,
+    CV_ARM_WR11     =   139,
+    CV_ARM_WR12     =   140,
+    CV_ARM_WR13     =   141,
+    CV_ARM_WR14     =   142,
+    CV_ARM_WR15     =   143,
+
     // XSCALE Concan co-processor control registers
     CV_ARM_WCID     =   144,
     CV_ARM_WCON     =   145,
@@ -1445,7 +1446,7 @@ typedef enum CV_HREG_e : unsigned int {
     //
     // ARM VFPv3/Neon extended floating Point
     //
-    
+
     CV_ARM_FS32     =   200,
     CV_ARM_FS33     =   201,
     CV_ARM_FS34     =   202,
@@ -1481,57 +1482,57 @@ typedef enum CV_HREG_e : unsigned int {
 
     // ARM double-precision floating point
 
-    CV_ARM_ND0 = 300, 
-    CV_ARM_ND1 = 301, 
-    CV_ARM_ND2 = 302, 
-    CV_ARM_ND3 = 303, 
-    CV_ARM_ND4 = 304, 
+    CV_ARM_ND0 = 300,
+    CV_ARM_ND1 = 301,
+    CV_ARM_ND2 = 302,
+    CV_ARM_ND3 = 303,
+    CV_ARM_ND4 = 304,
     CV_ARM_ND5 = 305,
-    CV_ARM_ND6 = 306, 
-    CV_ARM_ND7 = 307, 
-    CV_ARM_ND8 = 308, 
-    CV_ARM_ND9 = 309, 
-    CV_ARM_ND10 = 310, 
+    CV_ARM_ND6 = 306,
+    CV_ARM_ND7 = 307,
+    CV_ARM_ND8 = 308,
+    CV_ARM_ND9 = 309,
+    CV_ARM_ND10 = 310,
     CV_ARM_ND11 = 311,
-    CV_ARM_ND12 = 312, 
-    CV_ARM_ND13 = 313, 
-    CV_ARM_ND14 = 314, 
-    CV_ARM_ND15 = 315, 
+    CV_ARM_ND12 = 312,
+    CV_ARM_ND13 = 313,
+    CV_ARM_ND14 = 314,
+    CV_ARM_ND15 = 315,
     CV_ARM_ND16 = 316,
-    CV_ARM_ND17 = 317, 
-    CV_ARM_ND18 = 318, 
-    CV_ARM_ND19 = 319, 
-    CV_ARM_ND20 = 320, 
+    CV_ARM_ND17 = 317,
+    CV_ARM_ND18 = 318,
+    CV_ARM_ND19 = 319,
+    CV_ARM_ND20 = 320,
     CV_ARM_ND21 = 321,
-    CV_ARM_ND22 = 322, 
-    CV_ARM_ND23 = 323, 
-    CV_ARM_ND24 = 324, 
-    CV_ARM_ND25 = 325, 
+    CV_ARM_ND22 = 322,
+    CV_ARM_ND23 = 323,
+    CV_ARM_ND24 = 324,
+    CV_ARM_ND25 = 325,
     CV_ARM_ND26 = 326,
-    CV_ARM_ND27 = 327, 
-    CV_ARM_ND28 = 328, 
-    CV_ARM_ND29 = 329, 
-    CV_ARM_ND30 = 330, 
+    CV_ARM_ND27 = 327,
+    CV_ARM_ND28 = 328,
+    CV_ARM_ND29 = 329,
+    CV_ARM_ND30 = 330,
     CV_ARM_ND31 = 331,
 
     // ARM extended precision floating point
 
-    CV_ARM_NQ0 = 400, 
-    CV_ARM_NQ1 = 401, 
-    CV_ARM_NQ2 = 402, 
-    CV_ARM_NQ3 = 403, 
-    CV_ARM_NQ4 = 404, 
+    CV_ARM_NQ0 = 400,
+    CV_ARM_NQ1 = 401,
+    CV_ARM_NQ2 = 402,
+    CV_ARM_NQ3 = 403,
+    CV_ARM_NQ4 = 404,
     CV_ARM_NQ5 = 405,
-    CV_ARM_NQ6 = 406, 
-    CV_ARM_NQ7 = 407, 
-    CV_ARM_NQ8 = 408, 
-    CV_ARM_NQ9 = 409, 
-    CV_ARM_NQ10 = 410, 
+    CV_ARM_NQ6 = 406,
+    CV_ARM_NQ7 = 407,
+    CV_ARM_NQ8 = 408,
+    CV_ARM_NQ9 = 409,
+    CV_ARM_NQ10 = 410,
     CV_ARM_NQ11 = 411,
-    CV_ARM_NQ12 = 412, 
-    CV_ARM_NQ13 = 413, 
-    CV_ARM_NQ14 = 414, 
-    CV_ARM_NQ15 = 415, 
+    CV_ARM_NQ12 = 412,
+    CV_ARM_NQ13 = 413,
+    CV_ARM_NQ14 = 414,
+    CV_ARM_NQ15 = 415,
 
     //
     // Register set for ARM64
@@ -1725,7 +1726,7 @@ typedef enum CV_HREG_e : unsigned int {
 
     CV_ARM64_FPSR   =  220,
     CV_ARM64_FPCR   =  221,
-    
+
     // 32-bit floating point registers
 
     CV_ARM64_B0     =  230,
@@ -2858,7 +2859,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_SHMEDIA_R61     =   71,
     CV_SHMEDIA_R62     =   72,
     CV_SHMEDIA_R63     =   73,
-    
+
     // Target Registers - 32 bit
     CV_SHMEDIA_TR0     =   74,
     CV_SHMEDIA_TR1     =   75,
@@ -3420,7 +3421,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_AMD64_YMM5     =  373,
     CV_AMD64_YMM6     =  374,
     CV_AMD64_YMM7     =  375,
-    CV_AMD64_YMM8     =  376, 
+    CV_AMD64_YMM8     =  376,
     CV_AMD64_YMM9     =  377,
     CV_AMD64_YMM10    =  378,
     CV_AMD64_YMM11    =  379,
@@ -3438,7 +3439,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_AMD64_YMM5H    =  389,
     CV_AMD64_YMM6H    =  390,
     CV_AMD64_YMM7H    =  391,
-    CV_AMD64_YMM8H    =  392, 
+    CV_AMD64_YMM8H    =  392,
     CV_AMD64_YMM9H    =  393,
     CV_AMD64_YMM10H   =  394,
     CV_AMD64_YMM11H   =  395,
@@ -3677,7 +3678,7 @@ typedef enum CV_HREG_e : unsigned int {
     CV_AMD64_YMM15F5    =  621,
     CV_AMD64_YMM15F6    =  622,
     CV_AMD64_YMM15F7    =  623,
-    
+
     CV_AMD64_YMM0D0    =  624,        // AVX floating-point double precise registers
     CV_AMD64_YMM0D1    =  625,
     CV_AMD64_YMM0D2    =  626,
@@ -3849,47 +3850,47 @@ typedef enum CV_HREG_e : unsigned int {
 } CV_HREG_e;
 
 typedef enum CV_HLSLREG_e {
-    CV_HLSLREG_TEMP                                = 0,  
-    CV_HLSLREG_INPUT                               = 1,  
-    CV_HLSLREG_OUTPUT                              = 2,  
-    CV_HLSLREG_INDEXABLE_TEMP                      = 3,  
-    CV_HLSLREG_IMMEDIATE32                         = 4,  
-    CV_HLSLREG_IMMEDIATE64                         = 5,  
-    CV_HLSLREG_SAMPLER                             = 6,  
-    CV_HLSLREG_RESOURCE                            = 7,  
-    CV_HLSLREG_CONSTANT_BUFFER                     = 8,  
-    CV_HLSLREG_IMMEDIATE_CONSTANT_BUFFER           = 9,  
-    CV_HLSLREG_LABEL                               = 10, 
-    CV_HLSLREG_INPUT_PRIMITIVEID                   = 11, 
-    CV_HLSLREG_OUTPUT_DEPTH                        = 12, 
-    CV_HLSLREG_NULL                                = 13, 
-    CV_HLSLREG_RASTERIZER                          = 14, 
-    CV_HLSLREG_OUTPUT_COVERAGE_MASK                = 15, 
-    CV_HLSLREG_STREAM                              = 16, 
-    CV_HLSLREG_FUNCTION_BODY                       = 17, 
-    CV_HLSLREG_FUNCTION_TABLE                      = 18, 
-    CV_HLSLREG_INTERFACE                           = 19, 
-    CV_HLSLREG_FUNCTION_INPUT                      = 20, 
-    CV_HLSLREG_FUNCTION_OUTPUT                     = 21, 
-    CV_HLSLREG_OUTPUT_CONTROL_POINT_ID             = 22, 
-    CV_HLSLREG_INPUT_FORK_INSTANCE_ID              = 23, 
-    CV_HLSLREG_INPUT_JOIN_INSTANCE_ID              = 24, 
-    CV_HLSLREG_INPUT_CONTROL_POINT                 = 25, 
-    CV_HLSLREG_OUTPUT_CONTROL_POINT                = 26, 
-    CV_HLSLREG_INPUT_PATCH_CONSTANT                = 27, 
-    CV_HLSLREG_INPUT_DOMAIN_POINT                  = 28, 
-    CV_HLSLREG_THIS_POINTER                        = 29, 
-    CV_HLSLREG_UNORDERED_ACCESS_VIEW               = 30, 
-    CV_HLSLREG_THREAD_GROUP_SHARED_MEMORY          = 31, 
-    CV_HLSLREG_INPUT_THREAD_ID                     = 32, 
-    CV_HLSLREG_INPUT_THREAD_GROUP_ID               = 33, 
-    CV_HLSLREG_INPUT_THREAD_ID_IN_GROUP            = 34, 
-    CV_HLSLREG_INPUT_COVERAGE_MASK                 = 35, 
+    CV_HLSLREG_TEMP                                = 0,
+    CV_HLSLREG_INPUT                               = 1,
+    CV_HLSLREG_OUTPUT                              = 2,
+    CV_HLSLREG_INDEXABLE_TEMP                      = 3,
+    CV_HLSLREG_IMMEDIATE32                         = 4,
+    CV_HLSLREG_IMMEDIATE64                         = 5,
+    CV_HLSLREG_SAMPLER                             = 6,
+    CV_HLSLREG_RESOURCE                            = 7,
+    CV_HLSLREG_CONSTANT_BUFFER                     = 8,
+    CV_HLSLREG_IMMEDIATE_CONSTANT_BUFFER           = 9,
+    CV_HLSLREG_LABEL                               = 10,
+    CV_HLSLREG_INPUT_PRIMITIVEID                   = 11,
+    CV_HLSLREG_OUTPUT_DEPTH                        = 12,
+    CV_HLSLREG_NULL                                = 13,
+    CV_HLSLREG_RASTERIZER                          = 14,
+    CV_HLSLREG_OUTPUT_COVERAGE_MASK                = 15,
+    CV_HLSLREG_STREAM                              = 16,
+    CV_HLSLREG_FUNCTION_BODY                       = 17,
+    CV_HLSLREG_FUNCTION_TABLE                      = 18,
+    CV_HLSLREG_INTERFACE                           = 19,
+    CV_HLSLREG_FUNCTION_INPUT                      = 20,
+    CV_HLSLREG_FUNCTION_OUTPUT                     = 21,
+    CV_HLSLREG_OUTPUT_CONTROL_POINT_ID             = 22,
+    CV_HLSLREG_INPUT_FORK_INSTANCE_ID              = 23,
+    CV_HLSLREG_INPUT_JOIN_INSTANCE_ID              = 24,
+    CV_HLSLREG_INPUT_CONTROL_POINT                 = 25,
+    CV_HLSLREG_OUTPUT_CONTROL_POINT                = 26,
+    CV_HLSLREG_INPUT_PATCH_CONSTANT                = 27,
+    CV_HLSLREG_INPUT_DOMAIN_POINT                  = 28,
+    CV_HLSLREG_THIS_POINTER                        = 29,
+    CV_HLSLREG_UNORDERED_ACCESS_VIEW               = 30,
+    CV_HLSLREG_THREAD_GROUP_SHARED_MEMORY          = 31,
+    CV_HLSLREG_INPUT_THREAD_ID                     = 32,
+    CV_HLSLREG_INPUT_THREAD_GROUP_ID               = 33,
+    CV_HLSLREG_INPUT_THREAD_ID_IN_GROUP            = 34,
+    CV_HLSLREG_INPUT_COVERAGE_MASK                 = 35,
     CV_HLSLREG_INPUT_THREAD_ID_IN_GROUP_FLATTENED  = 36,
-    CV_HLSLREG_INPUT_GS_INSTANCE_ID                = 37, 
-    CV_HLSLREG_OUTPUT_DEPTH_GREATER_EQUAL          = 38, 
-    CV_HLSLREG_OUTPUT_DEPTH_LESS_EQUAL             = 39, 
-    CV_HLSLREG_CYCLE_COUNTER                       = 40, 
+    CV_HLSLREG_INPUT_GS_INSTANCE_ID                = 37,
+    CV_HLSLREG_OUTPUT_DEPTH_GREATER_EQUAL          = 38,
+    CV_HLSLREG_OUTPUT_DEPTH_LESS_EQUAL             = 39,
+    CV_HLSLREG_CYCLE_COUNTER                       = 40,
 } CV_HLSLREG_e;
 
 enum StackFrameTypeEnum

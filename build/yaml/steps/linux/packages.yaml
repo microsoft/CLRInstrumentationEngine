@@ -1,0 +1,24 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Step Template: Build Linux Packages
+
+steps:
+# download binaries
+- template: ../azuredevops/downloadbuildartifacts.yaml
+  parameters:
+    ArtifactName: binaries-linux-$(Distro)-$(Configuration)
+
+# nuget restore InstrumentationEngine.Nuget.csproj
+- template: ../windows/nugetrestore.yaml
+  parameters:
+    Solution: 'src/InstrumentationEngine.NuGet/InstrumentationEngine.Nuget.csproj'
+
+# msbuild InstrumentationEngine.Nuget.csproj
+- task: MSBuild@1
+  displayName: 'Build solution InstrumentationEngine.Nuget.csproj'
+  inputs:
+    solution: src/InstrumentationEngine.NuGet/InstrumentationEngine.Nuget.csproj
+    platform: x64
+    configuration: $(Configuration)
+    msbuildArguments: '/p:PlatformOS="Linux" /p:LinuxDistro="$(Distro)" /p:NugetBinInput="$(Build.ArtifactStagingDirectory)\binaries-linux-$(Distro)-$(Configuration)\ClrInstrumentationEngine"'

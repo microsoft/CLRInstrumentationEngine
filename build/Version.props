@@ -7,14 +7,31 @@
     <!--
       Semantic Version. See http://semver.org for full details.
       Update for every public release.
+
+      NOTE: If the SemanticMajorVersion changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
-    <SemanticVersionPatch>21</SemanticVersionPatch>
+    <SemanticVersionPatch>22</SemanticVersionPatch>
 
     <FileVersionMajor>15</FileVersionMajor>
     <FileVersionMinor>1</FileVersionMinor>
     <FileVersionPatch>0</FileVersionPatch>
+
+     <!--
+        The Profiler Proxy dll is used by the MSI. During MSI install, component refcounts update but files
+        follow versioning rules where file versions greater than existing will replace, and files are not
+        downgraded to previous file versions if the MSI that introduces a newer file gets uninstalled.
+
+        The Proxy major version should always correspond to the CLRIE major version.
+        Be sure to update the ProxyFileVersion minor/patch only if new changes are added to the Proxy.
+
+        NOTE: If the ProxyFileVersionMajor changes, please make the corresponding change to [CLRIE Repo]\src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngineVersion.cpp
+     -->
+    <ProxyFileVersionMajor>$(SemanticVersionMajor)</ProxyFileVersionMajor>
+    <ProxyFileVersionMinor>0</ProxyFileVersionMinor>
+    <ProxyFileVersionPatch>0</ProxyFileVersionPatch>
+    <ProxyFileVersion>$(ProxyFileVersionMajor).$(ProxyFileVersionMinor).$(ProxyFileVersionPatch)</ProxyFileVersion>
 
     <!--
       Date when Semantic Version was changed.
@@ -23,25 +40,26 @@
     <SemanticVersionDate>2019-5-16</SemanticVersionDate>
 
     <!--
-      Pre-release version is used to distinguish internally built NuGet packages.
-      Pre-release version = Minutes since semantic version was set, divided by 5 (to make it fit in a UInt16).
+      Build version is used to distinguish internally built NuGet packages.
+      Build version (if not set by msbuild): yyyyMMdd
       Pull the first number out of BUILD_BUILDNUMBER string before parsing as int since microbuild features
       can append non-numeric characters on there.
     -->
-    <PreReleaseVersion Condition="$(BUILD_BUILDNUMBER) != ''">$([MSBuild]::Modulo($([System.Int32]::Parse($([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), `\d*`).ToString()))), $([System.Uint16]::MaxValue)))</PreReleaseVersion>
-    <PreReleaseVersion Condition="$(BUILD_BUILDNUMBER) == ''">$([MSBuild]::Divide($([System.DateTime]::Now.Subtract($([System.DateTime]::Parse($(SemanticVersionDate)))).TotalMinutes), 5).ToString('F0'))</PreReleaseVersion>
+    <BuildVersion Condition="$(BUILD_BUILDNUMBER) != ''">$([System.Int32]::Parse($([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), `\d*`).ToString())))</BuildVersion>
+    <BuildVersion Condition="$(BUILD_BUILDNUMBER) == ''">$([System.DateTime]::Now.ToString('yyyyMMdd'))01</BuildVersion>
 
     <PackageAuthors>Microsoft</PackageAuthors>
-    <PackageOwners>microsoft,snapshotdebugger</PackageOwners> <!-- TODO: add AppInsights -->
+    <PackageOwners>Microsoft</PackageOwners>
 
     <!-- Turn on dynamic assembly attribute generation -->
     <AssemblyAttributesPath>$(IntermediateOutputPath)\AssemblyInfo.g.cs</AssemblyAttributesPath>
     <GenerateAdditionalSources>true</GenerateAdditionalSources>
-    <AssemblyFileVersion>$(FileVersionMajor).$(FileVersionMinor).$(FileVersionPatch).$(PreReleaseVersion)</AssemblyFileVersion>
+    <AssemblyFileVersion>$(FileVersionMajor).$(FileVersionMinor).$(FileVersionPatch).$(BuildVersion)</AssemblyFileVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</PackageVersion>
-    <PackageVersion Condition="'$(PublicRelease)' != 'True'">$([System.String]::Format('$(PackageVersion)-build{0:D5}', $([System.Int32]::Parse($(PreReleaseVersion)))))</PackageVersion>
+    <ReleaseVersion>$(SemanticVersionMajor).$(SemanticVersionMinor).$(SemanticVersionPatch)</ReleaseVersion>
+    <PackageVersion>$(ReleaseVersion)</PackageVersion>
+    <PackageVersion Condition="'$(PublicRelease)' != 'True'">$(PackageVersion)-build$(BuildVersion)</PackageVersion>
     <PackageAuthors>Microsoft</PackageAuthors>
     <PackageAuthors Condition="'$(PublicRelease)' != 'True'">Microsoft</PackageAuthors>
   </PropertyGroup>

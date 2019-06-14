@@ -1,6 +1,10 @@
 # Configuring the CLR Instrumentation Engine
 
-The CLR Instrumentation Engine follows a declarative model where profiler extension owners declare their existence through environment variables. These environment variables tell the Engine the paths to *.config, which provide the metadata and relative path to your Instrumentation Method implementation (dll).
+See [Environment Variables](environment_variables.md) for details on how to enable the Instrumentation Engine.
+
+The CLR Instrumentation Engine follows a declarative model where profiler extension owners declare their existence through environment
+variables. These environment variables tell the Engine the paths to *.config, which provide the metadata and relative path to your
+Instrumentation Method implementation (dll).
 
 ### Config File
 

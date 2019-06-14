@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // stdafx.h : include file for standard system include files,
 // or project specific include files that are used frequently, but
@@ -11,6 +11,8 @@
 #ifdef PLATFORM_UNIX
 #include "unix.h"
 #include <ole.h>
+#include <palrt.h>
+#include <pal.h>
 #endif
 
 #include "targetver.h"
@@ -54,10 +56,13 @@ using namespace ATL;
 #include <string>
 #endif
 
-#include "tstring.h"
+#ifdef PLATFORM_UNIX
+// pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
+// in CMakeFile.txt
+#define wcsstr        PAL_wcsstr
+#endif
 
-#include "Macros.h"
-
+#include <queue>
 #include <vector>
 #include <memory>
 #include <unordered_map>
@@ -71,9 +76,23 @@ using namespace ATL;
 #define fwprintf      PAL_fwprintf
 #endif
 
-#include "CriticalSectionHolder.h"
+#include <time.h>
+#include <iomanip>
+#include <wchar.h>
+#ifdef PLATFORM_UNIX
+#include <ctime>
+#endif
+
 #include "Logging.h"
 #include "SharedArray.h"
+
+#include "../Common.Lib/tstring.h"
+#include "../Common.Lib/Macros.h"
+#include "../Common.Lib/CriticalSectionHolder.h"
+#include "../Common.Lib/InitOnce.h"
+#include "../Common.Lib/Singleton.h"
+
+#include "../Common.Lib/banned.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;

@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 # Require at least version 2.8.12 of CMake
 cmake_minimum_required(VERSION 2.8.12)
@@ -13,8 +13,13 @@ build_init(CPP InstrumentationEngine.Lib)
 set(src_files
     ./stdafx.cpp
     ./ConfigurationLoader.cpp
+    ./FileLoggerSink.cpp
+    ./HostLoggerSink.cpp
+    ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
+    ./LoggerService.cpp
     ./Logging.cpp
+    ./refcount.cpp
 )
 
 add_lib(${PROJECT_NAME}

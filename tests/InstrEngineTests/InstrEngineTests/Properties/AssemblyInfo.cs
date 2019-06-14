@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using System.Reflection;
 using System.Runtime.CompilerServices;

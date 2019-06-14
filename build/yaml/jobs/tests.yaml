@@ -1,0 +1,30 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Job Template: Test binaries
+# Test binaries
+
+parameters:
+  Configuration: Both
+
+jobs:
+# Test Windows Binaries
+- template: windows/tests.yaml
+  parameters:
+    MatrixStrategy:
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
+        Debug_x86:
+          Configuration: 'Debug'
+          Platform: 'x86'
+          RunSettingsFile: 'x86.runsettings'
+        Debug_x64:
+          Configuration: 'Debug'
+          Platform: 'x64'
+          RunSettingsFile: 'x64.runsettings'
+        Debug_AnyCPU:
+          Configuration: 'Debug'
+          Platform: 'AnyCPU'
+          RunSettingsFile: 'x86.runsettings'
+
+# Linux Binaries (TBD)
+#- template: linux/tests.yaml

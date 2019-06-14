@@ -1,0 +1,11 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+
+# Step Template: MicroBuild Cleanup
+
+steps:
+# MicroBuild Cleanup
+- task: MicroBuildCleanup@1
+  displayName: MicroBuild Cleanup
+  continueOnError: true
+  condition: succeededOrFailed()

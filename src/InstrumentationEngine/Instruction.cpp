@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "Instruction.h"
@@ -276,7 +276,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_ BYTE* pILBuffe
         int nextOffset = m_offset + 1 + operandSize;
 
         int relativeBranchOffset = targetOffset - nextOffset;
-        memcpy (pILBuffer + curpos, &relativeBranchOffset, operandSize);
+        IfFailRetErrno(memcpy_s(pILBuffer + curpos, operandSize, &relativeBranchOffset, operandSize));
     }
     else if (bIsSwitch)
     {

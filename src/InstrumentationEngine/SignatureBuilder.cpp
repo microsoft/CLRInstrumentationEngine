@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 #include "stdafx.h"
 #include "SignatureBuilder.h"
@@ -63,7 +63,7 @@ namespace MicrosoftInstrumentationEngine
         if (cbSize)
         {
             IfFailRet(EnsureCapacity(m_used + cbSize));
-            memcpy(m_memory + m_used, memory, cbSize);
+            IfFailRetErrno(memcpy_s(m_memory + m_used, cbSize, memory, cbSize));
             m_used += cbSize;
         }
         return hr;
@@ -99,6 +99,7 @@ namespace MicrosoftInstrumentationEngine
 
     HRESULT CSignatureBuilder::GetCorSignature(_In_ DWORD cbBuffer, _Inout_opt_ BYTE* pCorSignature, _Out_opt_ DWORD* pcbSignature)
     {
+        HRESULT hr = S_OK;
         if (pCorSignature == nullptr)
         {
             if (pcbSignature != nullptr)
@@ -113,7 +114,7 @@ namespace MicrosoftInstrumentationEngine
         }
         if (m_memory != nullptr)
         {
-            memcpy(pCorSignature, m_memory, m_used);
+            IfFailRetErrno(memcpy_s(pCorSignature, cbBuffer, m_memory, m_used));
         }
 
         if (pcbSignature != nullptr)
@@ -156,7 +157,7 @@ namespace MicrosoftInstrumentationEngine
 
             if (m_memory != nullptr)
             {
-                memcpy(newMemory, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity);
+                IfFailRetErrno(memcpy_s(newMemory, newCapacity, m_memory, newCapacity < m_capacity ? newCapacity : m_capacity));
                 delete[] m_memory;
             }
             m_memory = newMemory;

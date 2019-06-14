@@ -1,20 +1,21 @@
  /********************************************************
  *                                                       *
  *   Copyright (C) Microsoft. All rights reserved.       *
+ *                        *
  *                                                       *
  ********************************************************/
 //-----------------------------------------------------------------------------
 // File:			OledbErr.mc
 //
-// Contents: 		
+// Contents:
 //
-// Comments: 		
+// Comments:
 //
 //
 //-----------------------------------------------------------------------------
 #ifndef _MSADERR_H_
 #define _MSADERR_H_
-#ifndef FACILITY_WINDOWS				  	
+#ifndef FACILITY_WINDOWS
 //
 //  Values are 32 bit values laid out as follows:
 //
@@ -82,11 +83,11 @@
 // Free codes are:
 //
 //		Error:
-//						
+//
 //
 //		Success:
 //			0x0eea
-//			
+//
 //
 
 
@@ -442,7 +443,7 @@
 //
 // MessageText:
 //
-// Non-NULL controlling IUnknown was specified, and either the requested interface was not 
+// Non-NULL controlling IUnknown was specified, and either the requested interface was not
 // IUnknown, or the provider does not support COM aggregation.
 //
 #define DB_E_NOAGGREGATION               ((HRESULT)0x80040E22L)
@@ -1099,7 +1100,7 @@
 //
 // MessageText:
 //
-// Session cannot be created because maximum number of active sessions was already reached. Consumer must release one or more sessions before creating a new session object. 
+// Session cannot be created because maximum number of active sessions was already reached. Consumer must release one or more sessions before creating a new session object.
 //
 #define DB_E_OBJECTCREATIONLIMITREACHED  ((HRESULT)0x80040E69L)
 
@@ -1320,7 +1321,7 @@
 //
 // MessageText:
 //
-// Client requested an object type that is valid only for a collection. 
+// Client requested an object type that is valid only for a collection.
 //
 #define DB_E_NOTCOLLECTION               ((HRESULT)0x80040E93L)
 
@@ -1429,7 +1430,7 @@
 //
 // MessageText:
 //
-// The specified statistic does not exist in the current data source or did not apply to the specified table or it does not support a histogram. 
+// The specified statistic does not exist in the current data source or did not apply to the specified table or it does not support a histogram.
 //
 #define DB_E_NOSTATISTIC                 ((HRESULT)0x80040E9CL)
 
@@ -1544,7 +1545,7 @@
 //
 // MessageText:
 //
-// Operation succeeded, but status array or string buffer could not be allocated. 
+// Operation succeeded, but status array or string buffer could not be allocated.
 //
 #define DB_S_BUFFERFULL                  ((HRESULT)0x00040EC8L)
 
@@ -1587,7 +1588,7 @@
 //
 // MessageText:
 //
-// Consumer does not want to receive further notification calls for this operation. 
+// Consumer does not want to receive further notification calls for this operation.
 //
 #define DB_S_UNWANTEDOPERATION           ((HRESULT)0x00040ECCL)
 

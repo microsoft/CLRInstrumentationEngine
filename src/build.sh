@@ -11,7 +11,7 @@ print_install_instructions()
         echo ""case
         echo "To prepare a machine for building ClrInstrumentationEngine. Install the following:"
         echo "  # Install dotnet"
-        echo "  Follow the instructions here: https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x"
+        echo "  Follow the instructions here: https://docs.microsoft.com/dotnet/core/linux-prerequisites?tabs=netcore2x"
         echo ""
         echo "  # Install required packages"
         echo "  sudo apt-get install cmake clang-3.5 libunwind8 libunwind8-dev uuid-dev"

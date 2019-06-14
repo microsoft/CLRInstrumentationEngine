@@ -1,20 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
-////////////////////////////////////////////////////
-// File:	CorHeaders.cpp
-// Author:  Alex Mikunov
-// Date:    8/02/2002
 //
-// Description: common helpers
-//
-// Comments:
-//
-// Version:	0.003
-//
-// Revisions:	3/27/2007
-//			Jean-François Peyroux
-////////////////////////////////////////////////////
 
 #include "stdafx.h"
 
@@ -22,6 +7,7 @@
 #define VSASSERT(EXPR, text)
 #define ASSERT(EXPR) VSASSERT(EXPR, L"");
 
+using namespace MicrosoftInstrumentationEngine;
 
 //*****************************************************************************
 //
@@ -151,6 +137,7 @@ unsigned __stdcall SectEH_Emit(unsigned size, unsigned ehCount,
                   BOOL moreSections, __inout_ecount_opt(size) BYTE* outBuff,
                   __out_ecount(ehCount) ULONG* ehTypeOffsets)
 {
+    HRESULT hr = S_OK;
     if (size == 0 || outBuff == nullptr)
         return 0;
 
@@ -216,7 +203,7 @@ unsigned __stdcall SectEH_Emit(unsigned size, unsigned ehCount,
     if (moreSections)
         EHSect->Kind |= CorILMethod_Sect_MoreSects;
     EHSect->DataSize = EHSect->Size(ehCount);
-    memcpy(EHSect->Clauses, clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT));
+    IfFailRetErrno(memcpy_s(EHSect->Clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT), clauses, ehCount * sizeof(IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT)));
     outBuff = (BYTE*) &EHSect->Clauses[ehCount];
     ASSERT (&origBuff[size] == outBuff);
     // Set the offsets for the exception type tokens.

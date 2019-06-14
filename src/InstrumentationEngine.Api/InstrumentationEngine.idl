@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // Header files for the instrumentation engine
 // This is used to generate header files
@@ -56,10 +56,10 @@ library MicrosoftInstrumentationEngine
     interface ISingleRetDefaultInstrumentation;
 
     // Api version level. This must be updated every time any change is made in any API definition.
-    // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number, 
+    // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number,
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 3;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 4;
 
     [
         object,
@@ -144,17 +144,29 @@ library MicrosoftInstrumentationEngine
     ]
     interface IProfilerManager3 : IUnknown
     {
-        // Sets the value of pSupported to true if and only if this version of IProfilerManager 
+        // Sets the value of pSupported to true if and only if this version of IProfilerManager
         // will supports the interface with the given iid. Used to ensure that the linked version
         // of the api is at least as new as the one that the client compiled against.
         HRESULT GetApiVersion([out] DWORD* pApiVer);
     };
 
-    // The profiler manager host is loaded and created by the profiler manager during the call to initialize after the clr
-    // The instance is selected using the MicrosoftInstrumentationEngine_HostPath and MicrosoftInstrumentationEngine_Host
-    // environment variables which point to a full path to a dll and a guid to cocreate via DllGetClassObject.
+    [
+        object,
+        uuid(24100BD8-58F2-483A-948A-5B0B8186E451),
+        pointer_default(unique)
+    ]
+    interface IProfilerManager4 : IUnknown
+    {
+        // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
+        // to log to the logging service independently of the profiler manager. This instance is
+        // guaranteed to not depend on the lifetime of the profiler manager from which it is acquired.
+        HRESULT GetGlobalLoggingInstance([out] IProfilerManagerLogging** ppLogging);
+    };
+
+    // The profiler manager host is created by the profiler manager during the call to initialize after the clr
     // The profiler manager host should call SetupProfilingEnvironment to enable registered instrumentation methods and
     // call AddRawProfilerHook to get access to the raw ICorProfiler events.
+    // InstrumentationEngine solely uses a default ExtensionsHost implementation
     [
         object,
         uuid(BA9193B4-287F-4BF4-8E1B-00FCE33862EB),
@@ -889,7 +901,7 @@ library MicrosoftInstrumentationEngine
         HRESULT GetIs64bit([out] BOOL* pbValue);
 
         // Returns the image base for the loaded module. Note, if this module represents a dynamic module,
-        // then the image base will be 0. 
+        // then the image base will be 0.
         HRESULT GetImageBase([out] LPCBYTE* pbValue);
 
         // Return the IMAGE_COR20_HEADER structure
@@ -1415,7 +1427,7 @@ library MicrosoftInstrumentationEngine
         // only. Clients can reconstruct information like method names, module ids,
         // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
         // by the IProfilerManager interface. Clients should not attempt to use the
-        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
+        // ICorProfilerInfo instance to modify IL or metadata during this callback.
         // Doing so may result in undefined behavior.
         HRESULT JitStarted([in] FunctionID functionID, [in] BOOL isRejit);
 
@@ -1426,7 +1438,7 @@ library MicrosoftInstrumentationEngine
         // Clients can reconstruct information like method names, module ids,
         // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
         // by the IProfilerManager interface. Clients should not attempt to use the
-        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
+        // ICorProfilerInfo instance to modify IL or metadata during this callback.
         // Doing so may result in undefined behavior. This callback should be
         // symmetrical will the JitStarted callback. That is, for each JitSTarted call, there
         // should be one JitComplete call.
@@ -1518,7 +1530,7 @@ library MicrosoftInstrumentationEngine
         // Clients can reconstruct information like method names, module ids,
         // tokens, etc., using the callbacks available from the ICorProfilerInfo supplied
         // by the IProfilerManager interface. Clients should not attempt to use the
-        // ICorProfilerInfo instance to modify IL or metadata during this callback. 
+        // ICorProfilerInfo instance to modify IL or metadata during this callback.
         // Doing so may result in undefined behavior. This callback should be
         // symmetrical will the JitStarted callback. That is, for each JitSTarted call, there
         // should be one JitComplete call. If the client implements IInstrumentationMethodJitEvents2,

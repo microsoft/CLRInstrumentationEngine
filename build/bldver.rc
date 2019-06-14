@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 // BLDVER.RC - Standard version resource for CoreXT applications.
 
@@ -10,17 +10,15 @@
 //     #define RC_VERSION_ORIGINAL_FILE_NAME "Test.DLL\0"
 
 //
-// if you want to use a private version file and customize this, see
-// file://samsndrop02/CoreXT-Latest/docs/corext/corext/version.htm
+// See https://docs.microsoft.com/windows/desktop/menurc/versioninfo-resource
 //
 
 #include <winver.h>
 #include <bldver.h>
 
 VS_VERSION_INFO VERSIONINFO
-
-FILEVERSION INET_VER
-PRODUCTVERSION INET_VER
+FILEVERSION VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
 
 FILEFLAGSMASK 0x3fL
 #ifdef DEBUG
@@ -37,11 +35,11 @@ FILEFLAGSMASK 0x3fL
 #endif
 
 #ifndef RC_VERSION_PRODUCT_NAME
-    #define RC_VERSION_PRODUCT_NAME "Microsoft® Visual Studio®\0"
+    #define RC_VERSION_PRODUCT_NAME "Microsoftï¿½ Visual Studioï¿½\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_COPYRIGHT
-    #define RC_VERSION_LEGAL_COPYRIGHT "© Microsoft Corporation. All rights reserved.\0"
+    #define RC_VERSION_LEGAL_COPYRIGHT "ï¿½ Microsoft Corporation. All rights reserved.\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_TRADEMARKS
@@ -63,8 +61,8 @@ BEGIN
             VALUE "LegalTrademarks", RC_VERSION_LEGAL_TRADEMARKS
             VALUE "OriginalFilename", RC_VERSION_ORIGINAL_FILE_NAME
             VALUE "ProductName", RC_VERSION_PRODUCT_NAME
-            VALUE "FileVersion", INET_VERSION
-            VALUE "ProductVersion", INET_VERSION
+            VALUE "FileVersion", VER_FILEVERSION_STR
+            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
 #ifdef OLEREGISTER
             VALUE "OLESelfRegister","\0"
 #endif

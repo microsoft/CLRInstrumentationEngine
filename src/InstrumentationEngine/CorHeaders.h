@@ -1,20 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
-
-////////////////////////////////////////////////////
-// File:	CorHeaders.hpp
-// Author:  Alex Mikunov
-// Date:    8/02/2002
 //
-// Description: common helpers
-//
-// Comments:
-//
-// Version:	0.002
-//
-// Revisions:	3/27/2007
-//			Jean-François Peyroux
-////////////////////////////////////////////////////
 
 #pragma once
 

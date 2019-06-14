@@ -1,5 +1,5 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+//
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -12,16 +12,9 @@ namespace InstrEngineTests
 
         public static void Initialize(TestContext context)
         {
-            object disableMethodSignatureValidationParameter =
-                context.Properties["DisableMethodSignatureValidation"];
-
-            bool disableMethodSignatureValidation = false;
-            if (null != disableMethodSignatureValidationParameter &&
-                Boolean.TryParse(disableMethodSignatureValidationParameter.ToString(),
-                    out disableMethodSignatureValidation))
-            {
-                DisableMethodSignatureValidation = disableMethodSignatureValidation;
-            }
+            // InstrumentationEngine uses a built-in default ExtensionsHost
+            // which requires code sign verification. For tests, we disable verification.
+            DisableMethodSignatureValidation = true;
         }
 
         #endregion

@@ -1,5 +1,5 @@
 ﻿# Copyright (c) Microsoft Corporation. All rights reserved.
-# 
+#
 
 param($installPath, $toolsPath, $package, $project)
 
