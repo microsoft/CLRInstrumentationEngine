@@ -35,11 +35,11 @@ FILEFLAGSMASK 0x3fL
 #endif
 
 #ifndef RC_VERSION_PRODUCT_NAME
-    #define RC_VERSION_PRODUCT_NAME "Microsoft� Visual Studio�\0"
+    #define RC_VERSION_PRODUCT_NAME "Microsoft® Visual Studio®\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_COPYRIGHT
-    #define RC_VERSION_LEGAL_COPYRIGHT "� Microsoft Corporation. All rights reserved.\0"
+    #define RC_VERSION_LEGAL_COPYRIGHT "© Microsoft Corporation. All rights reserved.\0"
 #endif
 
 #ifndef RC_VERSION_LEGAL_TRADEMARKS
