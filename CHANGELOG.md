@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.23
+
 # 1.0.22
 + New:
   + Added generating MSI and MSM packages
