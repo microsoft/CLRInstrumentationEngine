@@ -139,12 +139,15 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetupProfilingEnvironm
     // to co create a free threaded version of msxml on a thread that it owns to avoid this.
     CHandle hConfigThread(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
 
-#ifndef Debug
-    DWORD retVal = WaitForSingleObject(hConfigThread, 60 * 1000); // Wait 1 minute for loading instrumentation methods
-#else
-    DWORD retVal = WaitForSingleObject(hConfigThread, INFINITE); // Debug
+    DWORD waitTime = 60 * 1000; // Wait 1 minute for loading instrumentation methods
+#ifdef Debug
+    if (IsDebuggerAttached())
+    {
+        waitTime = INFINITE;
+    }
 #endif
 
+    DWORD retVal = WaitForSingleObject(hConfigThread, waitTime);
     if (retVal == WAIT_TIMEOUT)
     {
         CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration timeout exceeded"));
