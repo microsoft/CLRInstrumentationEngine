@@ -8,7 +8,7 @@ steps:
 - task: Docker@1
   displayName: Docker Login
   inputs:
-    azureSubscriptionEndpoint: VS Diagnostics Dev (400d8be0-b9fe-4e86-a733-74e1938f890a)
+    azureSubscriptionEndpoint: VS Diagnostics Dev (ProdDiag-Infrastructure)
     azureContainerRegistry: proddiagbuild.azurecr.io
     command: login
 
