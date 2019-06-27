@@ -638,6 +638,23 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstan
     return S_OK;
 }
 
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::IsInstrumentationMethodRegistered(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered)
+{
+    IfNullRet(pfRegistered);
+
+    CCriticalSectionHolder lock(&m_cs);
+
+    *pfRegistered = FALSE;
+
+    std::vector<GUID>::iterator it = std::find(m_instrumentationMethodGuids.begin(), m_instrumentationMethodGuids.end(), clsid);
+    if (it != m_instrumentationMethodGuids.end())
+    {
+        *pfRegistered = TRUE;
+    }
+
+    return S_OK;
+}
+
 // ICorProfilerCallback methods
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     _In_ IUnknown *pICorProfilerInfoUnk)
