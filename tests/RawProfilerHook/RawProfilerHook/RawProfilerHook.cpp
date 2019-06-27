@@ -12,6 +12,7 @@
 using namespace ATL;
 
 // Used to determine whether the DLL can be unloaded by OLE.
+__control_entrypoint(DllExport)
 STDAPI DllCanUnloadNow(void)
 {
 			return _AtlModule.DllCanUnloadNow();
@@ -25,6 +26,7 @@ STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID
 }
 
 // DllRegisterServer - Adds entries to the system registry.
+__control_entrypoint(DllExport)
 STDAPI DllRegisterServer(void)
 {
 	// registers object, typelib and all interfaces in typelib
@@ -33,6 +35,7 @@ STDAPI DllRegisterServer(void)
 }
 
 // DllUnregisterServer - Removes entries from the system registry.
+__control_entrypoint(DllExport)
 STDAPI DllUnregisterServer(void)
 {
 	HRESULT hr = _AtlModule.DllUnregisterServer();
