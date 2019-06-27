@@ -304,6 +304,13 @@ typedef interface IProfilerManager4 IProfilerManager4;
 #endif 	/* __IProfilerManager4_FWD_DEFINED__ */
 
 
+#ifndef __IProfilerManager5_FWD_DEFINED__
+#define __IProfilerManager5_FWD_DEFINED__
+typedef interface IProfilerManager5 IProfilerManager5;
+
+#endif 	/* __IProfilerManager5_FWD_DEFINED__ */
+
+
 #ifndef __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 typedef interface IInstrumentationMethodExceptionEvents IInstrumentationMethodExceptionEvents;
@@ -462,7 +469,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 4 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 5 )
 
 
 enum LoggingFlags
@@ -6919,6 +6926,88 @@ EXTERN_C const IID IID_IProfilerManager4;
 
 
 #endif 	/* __IProfilerManager4_INTERFACE_DEFINED__ */
+
+
+#ifndef __IProfilerManager5_INTERFACE_DEFINED__
+#define __IProfilerManager5_INTERFACE_DEFINED__
+
+/* interface IProfilerManager5 */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IProfilerManager5;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("AF78C11D-385A-47B1-A4FB-8D6BA7FE9B2D")
+    IProfilerManager5 : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE IsInstrumentationMethodRegistered( 
+            /* [in] */ __RPC__in REFGUID cslid,
+            /* [out] */ __RPC__out BOOL *pfRegistered) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IProfilerManager5Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IProfilerManager5 * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IProfilerManager5 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IProfilerManager5 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *IsInstrumentationMethodRegistered )( 
+            __RPC__in IProfilerManager5 * This,
+            /* [in] */ __RPC__in REFGUID cslid,
+            /* [out] */ __RPC__out BOOL *pfRegistered);
+        
+        END_INTERFACE
+    } IProfilerManager5Vtbl;
+
+    interface IProfilerManager5
+    {
+        CONST_VTBL struct IProfilerManager5Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IProfilerManager5_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IProfilerManager5_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IProfilerManager5_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IProfilerManager5_IsInstrumentationMethodRegistered(This,cslid,pfRegistered)	\
+    ( (This)->lpVtbl -> IsInstrumentationMethodRegistered(This,cslid,pfRegistered) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IProfilerManager5_INTERFACE_DEFINED__ */
 
 
 #ifndef __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__
