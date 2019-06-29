@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 // Example of verifying the embedded signature of a PE file by using
 // the WinVerifyTrust function.
