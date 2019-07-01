@@ -1,8 +1,5 @@
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-//
-
 
 /***
 *       no_sal2.h - renders the SAL annotations for documenting APIs harmless.

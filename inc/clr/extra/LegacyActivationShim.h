@@ -1,10 +1,6 @@
-// ==++==
-//
-//   Copyright (c) Microsoft Corporation.  All rights reserved.
-//   Licensed under the MIT License.
-//
-// ==--==
-//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 // LegacyActivationShim.h
 //
 // This file allows simple migration from .NET Runtime v2 Host Activation APIs
