@@ -13,7 +13,11 @@ CEventLoggingBase::CEventLoggingBase() :
     // released quickly and we avoid context switching.
     m_cs(10),
     m_eventQueueLength(0),
-    m_hEventQueueEvent(FALSE, FALSE), // auto-reset, initially unsignaled
+    // Event used to tell the processing thread to process the current items
+    // on the queue.
+    m_hEventQueueProcessEvent(FALSE, FALSE), // auto-reset, initially unsignaled
+    // Event used to determine when thread is finished processing items
+    m_hEventQueueFinishedEvent(TRUE, FALSE), // manual-reset, initially unsignaled
     m_hEventSource(nullptr),
     m_isShutdown(false)
 {
@@ -79,7 +83,7 @@ DWORD WINAPI CEventLoggingBase::LogEventThreadProc(_In_ LPVOID lpParam)
     {
         // Wait to be signaled
         DWORD dwWaitResult = WaitForSingleObject(
-            pThis->m_hEventQueueEvent,
+            pThis->m_hEventQueueProcessEvent,
             INFINITE);
 
         if (dwWaitResult != WAIT_OBJECT_0)
@@ -110,18 +114,26 @@ DWORD WINAPI CEventLoggingBase::LogEventThreadProc(_In_ LPVOID lpParam)
         {
             EventLogItem& logItem = eventQueue.front();
 
-            if (logItem.tsEventLog.empty())
+            // Ignore empty items
+            if (!logItem.tsEventLog.empty())
             {
-                continue; // ignore empty strings
+                pThis->LogEvent(logItem);
             }
-
-            pThis->LogEvent(logItem);
 
             eventQueue.pop();
         }
     }
 
-    CoUninitialize();
+    // Signal that items are finished processing and event source is finished
+    if (!SetEvent(pThis->m_hEventQueueFinishedEvent))
+    {
+        return GetLastError();
+    }
+
+    // TODO: Investigate why call to CoUninitialize deadlocks the thread
+    // The thread is going to deadlock on calling CoUnitialize itself but
+    // lets not call it ourselves for now.
+    //CoUninitialize();
 
     return 0;
 }
@@ -136,15 +148,23 @@ HRESULT CEventLoggingBase::TerminateEventSource()
         // Signal shutdown first
         m_isShutdown = true;
 
-        // Signal thread to proceed
-        if (!SetEvent(m_hEventQueueEvent))
+        // Signal thread to process items
+        if (!SetEvent(m_hEventQueueProcessEvent))
         {
             return HRESULT_FROM_WIN32(GetLastError());
         }
     }
 
-    // Allow thread to drain the queue
-    WaitForSingleObject(m_hEventQueueThread, INFINITE);
+    // Allow thread to drain the queue. Normally, we'd just wait for the thread
+    // to finish (wait on the thread) but the thread is deadlocking on CoUninitialize.
+    // As a workaround, use a seperate event that the thread will signal when it is
+    // finished processing items and no longer using the event source.
+    // Only wait on the handle if the thread was created. This avoids situations where
+    // event logging was not initialized but TerminateEventSource was still called.
+    if (m_hEventQueueThread)
+    {
+        WaitForSingleObject(m_hEventQueueFinishedEvent, INFINITE);
+    }
 
     // Block scope used to release critical section before end of method.
     {
@@ -208,7 +228,7 @@ HRESULT CEventLoggingBase::AppendToQueue(_In_ WORD wEventType, _In_ tstring tsEv
             m_eventQueue.push(logItem);
             m_eventQueueLength += tsEventLog.length();
 
-            if (!SetEvent(m_hEventQueueEvent))
+            if (!SetEvent(m_hEventQueueProcessEvent))
             {
                 return HRESULT_FROM_WIN32(GetLastError());
             }
