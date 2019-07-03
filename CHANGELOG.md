@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.24
++ BugFixes:
+  + Avoid deadlock within CEventLoggingBase when terminating logging.
+
 # 1.0.23
 + New:
   + Added instrumentation method registration query method via new IProfilerManager5 API.

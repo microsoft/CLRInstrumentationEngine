@@ -34,7 +34,8 @@ namespace CommonLib
         CCriticalSection m_cs;
         std::queue<EventLogItem> m_eventQueue;
         size_t m_eventQueueLength;
-        CEvent m_hEventQueueEvent;
+        CEvent m_hEventQueueFinishedEvent; // Used to signal when thread is done processing items and no longer using event source.
+        CEvent m_hEventQueueProcessEvent;
         CHandle m_hEventQueueThread;
         HANDLE m_hEventSource; // Not relying on RAII; this handle should be closed by DeregisterEventSource call.
         bool m_isShutdown;
