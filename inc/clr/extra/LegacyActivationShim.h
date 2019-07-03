@@ -1,9 +1,6 @@
-// ==++==
-// 
-//   Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
-// ==--==
-//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 // LegacyActivationShim.h
 //
 // This file allows simple migration from .NET Runtime v2 Host Activation APIs
@@ -15,8 +12,8 @@
 #pragma warning(push)
 #pragma warning(disable:4127) // warning C4127: conditional expression is constant
                               // caused by IfHrFailRet's while(0) code.
-#pragma warning(disable:4917) // a GUID can only be associated with a class, interface or namespace 
-#pragma warning(disable:4191) // 'reinterpret_cast' : unsafe conversion from 'FARPROC' to 'XXX' 
+#pragma warning(disable:4917) // a GUID can only be associated with a class, interface or namespace
+#pragma warning(disable:4191) // 'reinterpret_cast' : unsafe conversion from 'FARPROC' to 'XXX'
 
 #ifdef _MANAGED
 // We are compiling Managed C++, switch to native code then (and store current managed/native status on the stack)
@@ -112,8 +109,8 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT GetCORSystemDirectory(
-        __out_ecount(cchBuffer) LPWSTR pBuffer, 
-        __in  DWORD  cchBuffer, 
+        __out_ecount(cchBuffer) LPWSTR pBuffer,
+        __in  DWORD  cchBuffer,
         __out DWORD *pdwLength)
     {
         HRESULT hr = S_OK;
@@ -132,8 +129,8 @@ namespace LegacyActivationShim
         else
         {
             CALL_LEGACY_API(GetCORSystemDirectory,
-                            (LPWSTR pBuffer, 
-                             DWORD  cchBuffer, 
+                            (LPWSTR pBuffer,
+                             DWORD  cchBuffer,
                              DWORD *pdwLength),
                             (pBuffer,
                              cchBuffer,
@@ -146,8 +143,8 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT GetCORVersion(
-        __out_ecount(cchBuffer) LPWSTR pbBuffer, 
-        __in  DWORD  cchBuffer, 
+        __out_ecount(cchBuffer) LPWSTR pbBuffer,
+        __in  DWORD  cchBuffer,
         __out DWORD *pdwLength)
     {
         HRESULT hr = S_OK;
@@ -172,7 +169,7 @@ namespace LegacyActivationShim
                             (pbBuffer,
                              cchBuffer,
                              pdwLength));
-                            
+
         }
 
         return hr;
@@ -181,9 +178,9 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT GetFileVersion(
-        __in  LPCWSTR szFileName, 
-        __out_ecount(cchBuffer) LPWSTR  szBuffer, 
-        __in  DWORD   cchBuffer, 
+        __in  LPCWSTR szFileName,
+        __out_ecount(cchBuffer) LPWSTR  szBuffer,
+        __in  DWORD   cchBuffer,
         __out DWORD  *pdwLength)
     {
         HRESULT hr = S_OK;
@@ -202,9 +199,9 @@ namespace LegacyActivationShim
         else
         {
             CALL_LEGACY_API(GetFileVersion,
-                            (LPCWSTR szFileName, 
-                             LPWSTR  szBuffer, 
-                             DWORD   cchBuffer, 
+                            (LPCWSTR szFileName,
+                             LPWSTR  szBuffer,
+                             DWORD   cchBuffer,
                              DWORD  *pdwLength),
                             (szFileName,
                              szBuffer,
@@ -218,8 +215,8 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT GetCORRequiredVersion(
-        __out_ecount(cchBuffer) LPWSTR pBuffer, 
-        __in  DWORD  cchBuffer, 
+        __out_ecount(cchBuffer) LPWSTR pBuffer,
+        __in  DWORD  cchBuffer,
         __out DWORD *pdwLength)
     {
         HRESULT hr = S_OK;
@@ -237,8 +234,8 @@ namespace LegacyActivationShim
         else
         {
             CALL_LEGACY_API(GetCORRequiredVersion,
-                            (LPWSTR pBuffer, 
-                             DWORD  cchBuffer, 
+                            (LPWSTR pBuffer,
+                             DWORD  cchBuffer,
                              DWORD *pdwLength),
                             (pBuffer,
                              cchBuffer,
@@ -262,7 +259,7 @@ namespace LegacyActivationShim
         __in  DWORD runtimeInfoFlags,
         __out_ecount(dwDirectory) LPWSTR pDirectory,
         __in  DWORD dwDirectory,
-        __out DWORD  *pdwDirectoryLength, 
+        __out DWORD  *pdwDirectoryLength,
         __out_ecount(cchBuffer) LPWSTR pVersion,
         __in  DWORD cchBuffer,
         __out DWORD  *pdwLength)
@@ -270,16 +267,16 @@ namespace LegacyActivationShim
         HRESULT hr = S_OK;
 
         CALL_LEGACY_API(GetRequestedRuntimeInfo,
-                        (LPCWSTR  pExe, 
-                         LPCWSTR  pwszVersion, 
-                         LPCWSTR  pConfigurationFile, 
-                         DWORD    startupFlags, 
-                         DWORD    runtimeInfoFlags, 
-                         LPWSTR   pDirectory, 
-                         DWORD    dwDirectory, 
-                         DWORD   *pdwDirectoryLength, 
-                         LPWSTR   pVersion, 
-                         DWORD    cchBuffer, 
+                        (LPCWSTR  pExe,
+                         LPCWSTR  pwszVersion,
+                         LPCWSTR  pConfigurationFile,
+                         DWORD    startupFlags,
+                         DWORD    runtimeInfoFlags,
+                         LPWSTR   pDirectory,
+                         DWORD    dwDirectory,
+                         DWORD   *pdwDirectoryLength,
+                         LPWSTR   pVersion,
+                         DWORD    cchBuffer,
                          DWORD   *pdwLength),
                         (pExe,
                          pwszVersion,
@@ -288,7 +285,7 @@ namespace LegacyActivationShim
                          runtimeInfoFlags,
                          pDirectory,
                          dwDirectory,
-                         pdwDirectoryLength, 
+                         pdwDirectoryLength,
                          pVersion,
                          cchBuffer,
                          pdwLength));
@@ -321,7 +318,7 @@ namespace LegacyActivationShim
                 pExe,
                 NULL, // config stream
                 pVersion,
-                pdwLength, 
+                pdwLength,
                 NULL, // image version str
                 NULL, // image version len
                 NULL,
@@ -712,12 +709,12 @@ namespace LegacyActivationShim
 
             // NOTE: Legacy CallFunctionShim does not release HMODULE, leak to maintain compat
             // Util::HMODULEHolder hModHolder(hMod);
-            
+
             // Find function.
             pfn = (HRESULT (__stdcall *)(LPVOID,LPVOID))GetProcAddress(hMod, szFunctionName);
             if (pfn == NULL)
                 return HRESULT_FROM_WIN32(GetLastError());
-            
+
             // Call it.
             return pfn(lpvArgument1, lpvArgument2);
         }
@@ -744,7 +741,7 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT GetRealProcAddress(
-        LPCSTR pwszProcName, 
+        LPCSTR pwszProcName,
         VOID **ppv)
     {
         HRESULT hr = S_OK;
@@ -757,7 +754,7 @@ namespace LegacyActivationShim
         else
         {
             CALL_LEGACY_API(GetRealProcAddress,
-                            (LPCSTR pwszProcName, 
+                            (LPCSTR pwszProcName,
                              VOID **ppv),
                             (pwszProcName,
                              ppv));
@@ -790,9 +787,9 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT LoadStringRC(
-        UINT   nResourceID, 
+        UINT   nResourceID,
         __out_ecount(nMax) LPWSTR szBuffer,
-        int    nMax, 
+        int    nMax,
         int    fQuiet)
     {
         HRESULT hr = S_OK;
@@ -806,9 +803,9 @@ namespace LegacyActivationShim
         else
         {
             CALL_LEGACY_API(LoadStringRC,
-                            (UINT   nResourceID, 
+                            (UINT   nResourceID,
                              LPWSTR szBuffer,
-                             int    nMax, 
+                             int    nMax,
                              int    fQuiet),
                             (nResourceID,
                              szBuffer,
@@ -826,10 +823,10 @@ namespace LegacyActivationShim
     inline
     HRESULT LoadStringRCEx(
         LCID lcid,
-        UINT   nResourceID, 
+        UINT   nResourceID,
         __out_ecount(nMax) LPWSTR szBuffer,
-        int    nMax, 
-        int    fQuiet, 
+        int    nMax,
+        int    fQuiet,
         int *pcwchUsed)
     {
         HRESULT hr = S_OK;
@@ -845,10 +842,10 @@ namespace LegacyActivationShim
         {
             CALL_LEGACY_API(LoadStringRCEx,
                             (LCID lcid,
-                             UINT   nResourceID, 
+                             UINT   nResourceID,
                              LPWSTR szBuffer,
-                             int    nMax, 
-                             int    fQuiet, 
+                             int    nMax,
+                             int    fQuiet,
                              int *pcwchUsed),
                             (lcid,
                              nResourceID,
@@ -885,14 +882,14 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
     inline
     HRESULT CreateDebuggingInterfaceFromVersion(
-        int        nDebuggerVersion, 
+        int        nDebuggerVersion,
         LPCWSTR szDebuggeeVersion,
         IUnknown ** ppCordb)
     {
         HRESULT hr = S_OK;
 
         CALL_LEGACY_API(CreateDebuggingInterfaceFromVersion,
-                        (int        nDebuggerVersion, 
+                        (int        nDebuggerVersion,
                          LPCWSTR szDebuggeeVersion,
                          IUnknown ** ppCordb),
                         (nDebuggerVersion,
@@ -928,11 +925,11 @@ namespace LegacyActivationShim
     // --------------------------------------------------------------------------------------------
 // CoInitializeEE is declared in cor.h, define it only if explicitly requested
 #ifdef LEGACY_ACTIVATION_SHIM_DEFINE_CoInitializeEE
-    inline 
+    inline
     HRESULT CoInitializeEE(DWORD flags)
     {
         HRESULT hr = S_OK;
-        
+
         if (Util::HasNewActivationAPIs())
         {
             GET_CLRINFO(pInfo);
@@ -946,11 +943,11 @@ namespace LegacyActivationShim
                             (DWORD flags),
                             (flags));
         }
-        
+
         return hr;
     }
 
-    inline 
+    inline
     VOID CoUninitializeEE(BOOL flags)
     {
         if (Util::HasNewActivationAPIs())
@@ -973,11 +970,11 @@ namespace LegacyActivationShim
         }
     }
 
-    inline 
+    inline
     HRESULT CoInitializeCor(DWORD flags)
     {
         HRESULT hr = S_OK;
-        
+
         if (Util::HasNewActivationAPIs())
         {
             GET_CLRINFO(pInfo);
@@ -991,11 +988,11 @@ namespace LegacyActivationShim
                             (DWORD flags),
                             (flags));
         }
-        
+
         return hr;
     }
 
-    inline 
+    inline
     VOID CoUninitializeCor()
     {
         if (Util::HasNewActivationAPIs())
@@ -1019,11 +1016,11 @@ namespace LegacyActivationShim
     }
 
 #endif //LEGACY_ACTIVATION_SHIM_DEFINE_CoInitializeEE
-    
+
     // --------------------------------------------------------------------------------------------
 // CoEEShutDownCOM is declared in cor.h, define it only if explicitly requested
 #ifdef LEGACY_ACTIVATION_SHIM_DEFINE_CoEEShutDownCOM
-    inline 
+    inline
     void CoEEShutDownCOM()
     {
         if (Util::HasNewActivationAPIs())
@@ -1036,15 +1033,15 @@ namespace LegacyActivationShim
         }
         else
         {
-            CALL_LEGACY_API_VOIDRET(CoEEShutDownCOM, 
-                            (), 
+            CALL_LEGACY_API_VOIDRET(CoEEShutDownCOM,
+                            (),
                             ());
         }
-        
+
         return;
     }
 #endif //LEGACY_ACTIVATION_SHIM_DEFINE_CoEEShutDownCOM
-    
+
     // ---StrongName Function Helpers--------------------------------------------------------------
 #if !defined(LEGACY_ACTIVATION_SHIM_DELAY_LOAD) && defined(__STRONG_NAME_H)
 #define LEGACY_STRONGNAME_API_PASS_THROUGH(_name, _ret_type, _ret_value, _sig, _args)   \
@@ -1058,7 +1055,7 @@ namespace LegacyActivationShim
     LEGACY_API_PASS_THROUGH_DELAYLOAD_VOIDRET(_name, _sig, _args)
 #endif //defined(LEGACY_ACTIVATION_SHIM_DELAY_LOAD) || !defined(__STRONG_NAME_H)
 
-// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that 
+// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that
 // return HRESULT.
 #define PASS_THROUGH_IMPL_HRESULT(_name, _signature, _args)     \
     inline                                                      \
@@ -1080,7 +1077,7 @@ namespace LegacyActivationShim
         return hr;                                              \
     }
 
-// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that 
+// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that
 // return BOOL.
 #define PASS_THROUGH_IMPL_BOOLEAN(_name, _signature, _args)     \
     inline                                                      \
@@ -1104,7 +1101,7 @@ namespace LegacyActivationShim
         }                                                       \
     }
 
-// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that 
+// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that
 // return VOID.
 #define PASS_THROUGH_IMPL_VOID(_name, _signature, _args)        \
     inline                                                      \
@@ -1233,7 +1230,7 @@ PASS_THROUGH_IMPL_BOOLEAN(StrongNameTokenFromPublicKey,
 #undef PASS_THROUGH_IMPL_BOOLEAN
 #undef PASS_THROUGH_IMPL_VOID
 
-// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that 
+// Defines a method that just delegates a call to the right runtime, this one is for SN APIs that
 // return BOOLEAN.
 #define WRAP_HRESULT_IMPL_BOOLEAN(_WrapperName, _name, _signature, _args)               \
     inline                                                                              \
@@ -1270,44 +1267,44 @@ PASS_THROUGH_IMPL_BOOLEAN(StrongNameTokenFromPublicKey,
         }                                                                               \
     }
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameHashSize_HRESULT, 
-                          StrongNameHashSize, 
-                          (ULONG ulHashAlg, DWORD *pcbSize), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameHashSize_HRESULT,
+                          StrongNameHashSize,
+                          (ULONG ulHashAlg, DWORD *pcbSize),
                           (ulHashAlg, pcbSize));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameTokenFromPublicKey_HRESULT, 
-                          StrongNameTokenFromPublicKey, 
-                          (BYTE *pbPublicKeyBlob, ULONG cbPublicKeyBlob, BYTE **ppbStrongNameToken, ULONG *pcbStrongNameToken), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameTokenFromPublicKey_HRESULT,
+                          StrongNameTokenFromPublicKey,
+                          (BYTE *pbPublicKeyBlob, ULONG cbPublicKeyBlob, BYTE **ppbStrongNameToken, ULONG *pcbStrongNameToken),
                           (pbPublicKeyBlob, cbPublicKeyBlob, ppbStrongNameToken, pcbStrongNameToken));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameSignatureSize_HRESULT, 
-                          StrongNameSignatureSize, 
-                          (BYTE *pbPublicKeyBlob, ULONG cbPublicKeyBlob, DWORD *pcbSize), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameSignatureSize_HRESULT,
+                          StrongNameSignatureSize,
+                          (BYTE *pbPublicKeyBlob, ULONG cbPublicKeyBlob, DWORD *pcbSize),
                           (pbPublicKeyBlob, cbPublicKeyBlob, pcbSize));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameGetPublicKey_HRESULT, 
-                          StrongNameGetPublicKey, 
-                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbPublicKeyBlob, ULONG *pcbPublicKeyBlob), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameGetPublicKey_HRESULT,
+                          StrongNameGetPublicKey,
+                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbPublicKeyBlob, ULONG *pcbPublicKeyBlob),
                           (pwzKeyContainer, pbKeyBlob, cbKeyBlob, ppbPublicKeyBlob, pcbPublicKeyBlob));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameKeyInstall_HRESULT, 
-                          StrongNameKeyInstall, 
-                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameKeyInstall_HRESULT,
+                          StrongNameKeyInstall,
+                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob),
                           (pwzKeyContainer, pbKeyBlob, cbKeyBlob));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameSignatureGeneration_HRESULT, 
-                          StrongNameSignatureGeneration, 
-                          (LPCWSTR pwzFilePath, LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbSignatureBlob, ULONG *pcbSignatureBlob), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameSignatureGeneration_HRESULT,
+                          StrongNameSignatureGeneration,
+                          (LPCWSTR pwzFilePath, LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbSignatureBlob, ULONG *pcbSignatureBlob),
                           (pwzFilePath, pwzKeyContainer, pbKeyBlob, cbKeyBlob, ppbSignatureBlob, pcbSignatureBlob));
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameKeyGen_HRESULT, 
-                          StrongNameKeyGen, 
-                          (LPCWSTR pwzKeyContainer, DWORD dwFlags, BYTE **ppbKeyBlob, ULONG *pcbKeyBlob), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameKeyGen_HRESULT,
+                          StrongNameKeyGen,
+                          (LPCWSTR pwzKeyContainer, DWORD dwFlags, BYTE **ppbKeyBlob, ULONG *pcbKeyBlob),
                           (pwzKeyContainer, dwFlags, ppbKeyBlob, pcbKeyBlob));
 
 #undef WRAP_HRESULT_IMPL_BOOLEAN
 
-// Defines a method that just delegates a call to the right runtime, this one is for ICLRStrongName2 
+// Defines a method that just delegates a call to the right runtime, this one is for ICLRStrongName2
 // APIs that return BOOLEAN.
 #define WRAP_HRESULT_IMPL_BOOLEAN(_WrapperName, _name, _signature, _args)               \
     inline                                                                              \
@@ -1327,9 +1324,9 @@ WRAP_HRESULT_IMPL_BOOLEAN(StrongNameKeyGen_HRESULT,
     }
 
 
-WRAP_HRESULT_IMPL_BOOLEAN(StrongNameGetPublicKeyEx_HRESULT, 
-                          StrongNameGetPublicKeyEx, 
-                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbPublicKeyBlob, ULONG *pcbPublicKeyBlob, ULONG uHashAlgId, ULONG uReserved), 
+WRAP_HRESULT_IMPL_BOOLEAN(StrongNameGetPublicKeyEx_HRESULT,
+                          StrongNameGetPublicKeyEx,
+                          (LPCWSTR pwzKeyContainer, BYTE *pbKeyBlob, ULONG cbKeyBlob, BYTE **ppbPublicKeyBlob, ULONG *pcbPublicKeyBlob, ULONG uHashAlgId, ULONG uReserved),
                           (pwzKeyContainer, pbKeyBlob, cbKeyBlob, ppbPublicKeyBlob, pcbPublicKeyBlob, uHashAlgId, uReserved));
 
 #undef WRAP_HRESULT_IMPL_BOOLEAN

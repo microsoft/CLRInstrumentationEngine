@@ -1,8 +1,5 @@
-// ==++==
-// 
-//   Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
-// ==--==
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // LegacyActivationShim.h
 //
@@ -462,10 +459,10 @@ namespace LegacyActivationShim
         };
 
         // ---CALLCLRCREATEINSTANCE------------------------------------------------------------------
-        inline 
+        inline
         HRESULT CallCLRCreateInstance(
-            REFCLSID clsid, 
-            REFIID   riid, 
+            REFCLSID clsid,
+            REFIID   riid,
             LPVOID  *ppInterface)
         {
             HRESULT hr = S_OK;
@@ -473,8 +470,8 @@ namespace LegacyActivationShim
             IfHrFailRet(GetMSCOREE(&hMscoree));
 
             typedef HRESULT (__stdcall *CLRCreateInstance_pfn) (
-                REFCLSID clsid, 
-                REFIID   riid, 
+                REFCLSID clsid,
+                REFIID   riid,
                 LPVOID  *ppInterface);
 
             CLRCreateInstance_pfn pfnCLRCreateInstance =
@@ -484,8 +481,8 @@ namespace LegacyActivationShim
                 return HRESULT_FROM_WIN32(GetLastError());
 
             return (*pfnCLRCreateInstance)(
-                clsid, 
-                riid, 
+                clsid,
+                riid,
                 ppInterface);
         }
 
@@ -721,7 +718,7 @@ namespace LegacyActivationShim
                 DWORD cchDir_ = countof(szDir_);
                 WCHAR szVersion_[_MAX_PATH];
                 DWORD cchVersion_ = countof(szVersion_);
-                DWORD dwInfoFlags_ = RUNTIME_INFO_UPGRADE_VERSION 
+                DWORD dwInfoFlags_ = RUNTIME_INFO_UPGRADE_VERSION
                                    | RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG;
 
                 IfHrFailRet(GetRequestedRuntimeInfoFN()(
@@ -798,7 +795,7 @@ namespace LegacyActivationShim
                         pcchVersion,
                         g_runtimeInfo.m_wszImageVersion,
                         &g_runtimeInfo.m_cchImageVersion));
-                        
+
                     //
                     // Initialized - now publish.
                     //
@@ -863,7 +860,7 @@ namespace LegacyActivationShim
                     g_hRuntimeInfo.ClearUnsafe();
                     g_hRuntimeInfo.Assign(&g_runtimeInfo);
                     g_runtimeInfoIsInitialized = TRUE;
-                    
+
                     hr = S_OK;
                 }
             }
@@ -937,7 +934,7 @@ namespace LegacyActivationShim
                 IfHrFailRet(GetCLRRuntimeInfo(&pInfo));
 
                 ICLRStrongName *pStrongName;
-                
+
                 IfHrFailRet(pInfo->GetInterface(
                     CLSID_CLRStrongName,
                     IID_ICLRStrongName,
@@ -987,7 +984,7 @@ namespace LegacyActivationShim
                 IfHrFailRet(GetCLRRuntimeInfo(&pInfo));
 
                 ICLRStrongName2 *pStrongName;
-                
+
                 IfHrFailRet(pInfo->GetInterface(
                     CLSID_CLRStrongName,
                     IID_ICLRStrongName2,
@@ -1040,7 +1037,7 @@ namespace LegacyActivationShim
 
             DWORD dwEffectiveStartupFlags = 0;
             IfHrFailRet(pInfo->GetDefaultStartupFlags(&dwEffectiveStartupFlags, NULL, NULL));
-            
+
             // Startup flags at this point are either default (i.e. STARTUP_CONCURRENT_GC)
             // or have been set based on a config file. We want to clear the concurrent
             // GC flag because we are supplying non-defaults, and combine them with the

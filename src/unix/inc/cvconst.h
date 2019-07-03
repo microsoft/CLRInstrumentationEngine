@@ -1,10 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 // cvconst.h - codeview constant definitions
-//-----------------------------------------------------------------
-//
-// Copyright Microsoft Corporation.  All Rights Reserved.
-//
-//
-//---------------------------------------------------------------
+
 #ifndef _CVCONST_H_
 #define _CVCONST_H_
 
