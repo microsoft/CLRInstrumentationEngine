@@ -20,7 +20,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);scriptdir=$(MSBuildProjectDirectory)</NuspecProperties>

@@ -11,6 +11,7 @@ Please format the changes as follows:
 + Bugfixes:
   + Build header nupkg for AnyCPU
   + Fix unicode character in bldver.rc
+  + Remove nobuild property for package projects to unblock dotnet core 3
 + Updates:
   + Change EULA to MIT license for OSS
 
