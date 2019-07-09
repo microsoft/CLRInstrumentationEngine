@@ -7,6 +7,13 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.25
++ Bugfixes:
+  + Build header nupkg for AnyCPU
+  + Fix unicode character in bldver.rc
++ Updates:
+  + Change EULA to MIT license for OSS
+
 # 1.0.24
 + BugFixes:
   + Avoid deadlock within CEventLoggingBase when terminating logging.
