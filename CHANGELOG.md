@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.26
++ New:
+  + Added support for ICorProfilerInfo10
+
 # 1.0.25
 + Bugfixes:
   + Build header nupkg for AnyCPU
