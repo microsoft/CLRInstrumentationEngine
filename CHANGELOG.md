@@ -7,15 +7,12 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
-# 1.0.26
-+ New:
-  + Added support for ICorProfilerInfo10
-
 # 1.0.25
 + Bugfixes:
   + Build header nupkg for AnyCPU
   + Fix unicode character in bldver.rc
   + Remove nobuild property for package projects to unblock dotnet core 3
+  + Added support for ICorProfilerInfo10
 + Updates:
   + Change EULA to MIT license for OSS
 
