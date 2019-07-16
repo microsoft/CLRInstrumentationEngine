@@ -11,6 +11,7 @@
       <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
     </ParameterGroup>
     <Task>
+      <Reference Include="System.Core" />
       <Reference Include="System.IO.Compression" />
       <Code Type="Class" Source="$(MSBuildThisFileDirectory)ZipArchiveTask.cs" />
     </Task>
