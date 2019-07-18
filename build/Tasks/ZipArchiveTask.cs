@@ -41,6 +41,12 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                     foreach (ITaskItem fileItem in Files)
                     {
                         string destinationFileName = new FileInfo(fileItem.ItemSpec).Name;
+                        string destinationFolder = fileItem.GetMetadata("Destination");
+                        string type = fileItem.GetMetadata("Type");
+                        if (!string.IsNullOrEmpty(destinationFolder))
+                        {
+                            destinationFileName  = Path.Combine(destinationFolder, destinationFileName);
+                        }
 
                         // Prevent duplicate files from getting zipped.
                         if (uniqueFiles.Contains(destinationFileName))
@@ -49,12 +55,6 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                         }
 
                         uniqueFiles.Add(destinationFileName);
-                        string destinationFolder = fileItem.GetMetadata("Destination");
-                        string type = fileItem.GetMetadata("Type");
-                        if (!string.IsNullOrEmpty(destinationFolder))
-                        {
-                            destinationFileName  = Path.Combine(destinationFolder, destinationFileName);
-                        }
 
                         // Create directories
                         if (!string.IsNullOrEmpty(type) && type.Equals("Directory"))
