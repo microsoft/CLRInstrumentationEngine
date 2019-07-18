@@ -25,12 +25,6 @@ CEventLoggingBase::CEventLoggingBase() :
 
 CEventLoggingBase::~CEventLoggingBase()
 {
-    CCriticalSectionHolder holder(&m_cs);
-
-    if (m_hEventSource)
-    {
-        TerminateEventSource();
-    }
 }
 
 HRESULT CEventLoggingBase::InitializeEventSource(_In_ LPCWSTR wszEventSourceName)
