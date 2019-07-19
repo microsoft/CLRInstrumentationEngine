@@ -957,6 +957,8 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()
     // to leak the reference.
     m_profilerManagerHost.Detach();
 
+    CLogging::Shutdown();
+
     PROF_CALLBACK_END
 
     return S_OK;
