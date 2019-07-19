@@ -94,6 +94,7 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
 MicrosoftInstrumentationEngine::CProfilerManager::~CProfilerManager()
 {
     DeleteCriticalSection(&m_cs);
+    CLogging::Shutdown();
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
@@ -955,8 +956,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()
     // of their cleanup during the Shutdown event. Detach the pointer and allow it
     // to leak the reference.
     m_profilerManagerHost.Detach();
-
-    CLogging::Shutdown();
 
     PROF_CALLBACK_END
 

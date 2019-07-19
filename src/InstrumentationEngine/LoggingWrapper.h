@@ -22,6 +22,10 @@ namespace MicrosoftInstrumentationEngine
 
         ~CLoggingWrapper()
         {
+            if (m_initialize.IsSuccessful())
+            {
+                CLogging::Shutdown();
+            }
         }
 
         // IUnknown Members
