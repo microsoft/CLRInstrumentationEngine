@@ -30,12 +30,13 @@ void CFileLoggerSink::LogMessage(_In_ LPCWSTR wszMessage)
 
 void CFileLoggerSink::LogError(_In_ LPCWSTR wszMessage)
 {
-    WritePrefix(LoggingFlags_Trace);
+    WritePrefix(LoggingFlags_Errors);
     WriteLine(wszMessage);
 }
 
 void CFileLoggerSink::LogDumpMessage(_In_ LPCWSTR wszMessage)
 {
+    WritePrefix(LoggingFlags_InstrumentationResults);
     WriteLine(wszMessage);
 }
 

@@ -22,7 +22,7 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(InitializeWithBadPathReturnsNotFound)
         {
-            MicrosoftInstrumentationEngine::CInstrumentationMethod method(L"c:\\temp", L"instrumentaiton method", L"test method description", L"instrumentaitonMethod.dll", GUID(), 0);
+            MicrosoftInstrumentationEngine::CInstrumentationMethod method(L"c:\\temp", L"instrumentation method", L"test method description", L"instrumentationMethod.dll", GUID(), 0);
             Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND), method.Initialize(nullptr, false));
         }
 
@@ -37,7 +37,7 @@ namespace InstrumentationEngineLibTests
             std::wstring modulePath = std::wstring(szPath, 0, fullName.size() - fileName.size());
 
 
-            MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentaiton method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
+            MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentation method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
             Assert::AreEqual(E_FAIL, method.Initialize(nullptr, true));
         }
 
@@ -52,7 +52,7 @@ namespace InstrumentationEngineLibTests
             std::wstring modulePath = std::wstring(szPath, 0, fullName.size() - fileName.size());
 
 
-            MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentaiton method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
+            MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentation method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
             Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND), method.Initialize(nullptr, false));
         }
 
