@@ -139,7 +139,10 @@ HRESULT CEventLoggingBase::TerminateEventSource()
     }
 
     // Allow thread to drain the queue
-    WaitForSingleObject(m_hEventQueueThread, INFINITE);
+    if (m_hEventQueueThread)
+    {
+        WaitForSingleObject(m_hEventQueueThread, INFINITE);
+    }
 
     // Block scope used to release critical section before end of method.
     {
