@@ -25,7 +25,6 @@ CLoggerService::CLoggerService() :
 
 CLoggerService::~CLoggerService()
 {
-    Shutdown();
 }
 
 HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost)

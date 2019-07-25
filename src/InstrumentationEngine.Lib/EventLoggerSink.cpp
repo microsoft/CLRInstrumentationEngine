@@ -13,7 +13,6 @@ CEventLoggerSink::CEventLoggerSink() :
 
 CEventLoggerSink::~CEventLoggerSink()
 {
-    Shutdown();
 }
 
 HRESULT CEventLoggerSink::Initialize(_In_ CLoggerService* pLogging)

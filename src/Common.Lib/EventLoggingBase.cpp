@@ -16,8 +16,6 @@ CEventLoggingBase::CEventLoggingBase() :
     // Event used to tell the processing thread to process the current items
     // on the queue.
     m_hEventQueueProcessEvent(FALSE, FALSE), // auto-reset, initially unsignaled
-    // Event used to determine when thread is finished processing items
-    m_hEventQueueFinishedEvent(TRUE, FALSE), // manual-reset, initially unsignaled
     m_hEventSource(nullptr),
     m_isShutdown(false)
 {
@@ -25,12 +23,6 @@ CEventLoggingBase::CEventLoggingBase() :
 
 CEventLoggingBase::~CEventLoggingBase()
 {
-    CCriticalSectionHolder holder(&m_cs);
-
-    if (m_hEventSource)
-    {
-        TerminateEventSource();
-    }
 }
 
 HRESULT CEventLoggingBase::InitializeEventSource(_In_ LPCWSTR wszEventSourceName)
@@ -124,16 +116,7 @@ DWORD WINAPI CEventLoggingBase::LogEventThreadProc(_In_ LPVOID lpParam)
         }
     }
 
-    // Signal that items are finished processing and event source is finished
-    if (!SetEvent(pThis->m_hEventQueueFinishedEvent))
-    {
-        return GetLastError();
-    }
-
-    // TODO: Investigate why call to CoUninitialize deadlocks the thread
-    // The thread is going to deadlock on calling CoUnitialize itself but
-    // lets not call it ourselves for now.
-    //CoUninitialize();
+    CoUninitialize();
 
     return 0;
 }
@@ -155,15 +138,10 @@ HRESULT CEventLoggingBase::TerminateEventSource()
         }
     }
 
-    // Allow thread to drain the queue. Normally, we'd just wait for the thread
-    // to finish (wait on the thread) but the thread is deadlocking on CoUninitialize.
-    // As a workaround, use a seperate event that the thread will signal when it is
-    // finished processing items and no longer using the event source.
-    // Only wait on the handle if the thread was created. This avoids situations where
-    // event logging was not initialized but TerminateEventSource was still called.
+    // Allow thread to drain the queue
     if (m_hEventQueueThread)
     {
-        WaitForSingleObject(m_hEventQueueFinishedEvent, INFINITE);
+        WaitForSingleObject(m_hEventQueueThread, INFINITE);
     }
 
     // Block scope used to release critical section before end of method.
