@@ -205,7 +205,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
 {
     HRESULT hr = S_OK;
 
-    if (m_bstrMethodFullName != nullptr && m_bstrMethodFullName.Length() != 0)
+    if (m_bstrMethodFullName.Length() != 0)
     {
         return S_OK;
     }
@@ -254,14 +254,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
         }
     }
 
-    if (m_bstrMethodName != nullptr)
-    {
-        nameBuilder << (LPWSTR)m_bstrMethodName;
-    }
-    else
-    {
-        nameBuilder << _T("");
-    }
+    nameBuilder << (LPWSTR)m_bstrMethodName;
 
     m_bstrMethodFullName = nameBuilder.str().c_str();
     return S_OK;
@@ -349,7 +342,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeCorAttributes(_In
         IfFailRet(pMetaDataImport->GetMethodProps(m_tkFunction, nullptr, nullptr, 0, &cbMethodName, nullptr, nullptr, nullptr, nullptr, nullptr));
         std::vector<WCHAR> nameBuilder(cbMethodName);
         IfFailRet(pMetaDataImport->GetMethodProps(tkFunction, &m_tkTypeDef, nameBuilder.data(), cbMethodName, &cbMethodName, (DWORD *)&m_methodAttr, (PCCOR_SIGNATURE*)&m_pSig, &m_cbSigBlob, &m_rva, (DWORD *)&m_implFlags));
-        m_bstrMethodName = nameBuilder.data();
+        m_bstrMethodName = nameBuilder.data(); // may be null
     }
     else if (TypeFromToken(m_tkFunction) == mdtMemberRef)
     {
@@ -357,7 +350,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeCorAttributes(_In
         IfFailRet(pMetaDataImport->GetMemberRefProps(m_tkFunction, nullptr, nullptr, 0, &cbMethodName, nullptr, nullptr));
         std::vector<WCHAR> nameBuilder(cbMethodName);
         IfFailRet(pMetaDataImport->GetMemberRefProps(tkFunction, &m_tkTypeDef, nameBuilder.data(), cbMethodName, &cbMethodName, (PCCOR_SIGNATURE*)&m_pSig, &m_cbSigBlob));
-        m_bstrMethodName = nameBuilder.data();
+        m_bstrMethodName = nameBuilder.data(); // may be null
     }
     else
     {
@@ -365,6 +358,11 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeCorAttributes(_In
         IfFailRet(pMetaDataImport->GetMethodSpecProps(tkFunction, &tkMethodDef, nullptr, nullptr));
         // Get the method def name
         IfFailRet(InitializeCorAttributes(tkMethodDef));
+    }
+
+    if (m_bstrMethodName == nullptr)
+    {
+        m_bstrMethodName = _T("");
     }
 
     m_bCorAttributesInitialized = true;
