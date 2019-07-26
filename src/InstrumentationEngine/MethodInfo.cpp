@@ -205,7 +205,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
 {
     HRESULT hr = S_OK;
 
-    if (m_bstrMethodFullName.Length() != 0)
+    if (m_bstrMethodFullName != nullptr && m_bstrMethodFullName.Length() != 0)
     {
         return S_OK;
     }
@@ -246,14 +246,24 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
     if (m_pDeclaringType)
     {
         CComBSTR declaringTypeName;
-        if (SUCCEEDED(m_pDeclaringType->GetName(&declaringTypeName)) && declaringTypeName.Length() > 0)
+        if (SUCCEEDED(m_pDeclaringType->GetName(&declaringTypeName)) &&
+            declaringTypeName != nullptr &&
+            declaringTypeName.Length() > 0)
         {
             nameBuilder << (LPWSTR)declaringTypeName << _T(".");
         }
     }
-    nameBuilder << (LPWSTR)m_bstrMethodName;
-    m_bstrMethodFullName = nameBuilder.str().c_str();
 
+    if (m_bstrMethodName != nullptr)
+    {
+        nameBuilder << (LPWSTR)m_bstrMethodName;
+    }
+    else
+    {
+        nameBuilder << _T("");
+    }
+
+    m_bstrMethodFullName = nameBuilder.str().c_str();
     return S_OK;
 }
 
