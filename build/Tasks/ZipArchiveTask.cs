@@ -56,6 +56,14 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                             destinationFileName  = Path.Combine(destinationFolder, destinationFileName);
                         }
 
+                        // Prevent duplicate files from getting zipped.
+                        if (uniqueFiles.Contains(destinationFileName))
+                        {
+                            continue;
+                        }
+
+                        uniqueFiles.Add(destinationFileName);
+
                         // Create directories
                         if (!string.IsNullOrEmpty(type) && type.Equals("Directory"))
                         {
