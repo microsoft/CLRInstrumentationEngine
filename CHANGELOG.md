@@ -13,6 +13,7 @@ Please format the changes as follows:
   + Fix unicode character in bldver.rc
   + Remove nobuild property for package projects to unblock dotnet core 3
   + Added support for ICorProfilerInfo10
+  + Handle null methodNames from dll obfuscation
 + Updates:
   + Change EULA to MIT license for OSS
 
