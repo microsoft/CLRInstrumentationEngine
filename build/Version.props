@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-      -->
+     Licensed under the MIT License. -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Generate AssemblyFileVersion and AssemblyVersion attributes. -->
   <PropertyGroup>
@@ -12,7 +12,7 @@
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
-    <SemanticVersionPatch>24</SemanticVersionPatch>
+    <SemanticVersionPatch>25</SemanticVersionPatch>
 
     <FileVersionMajor>15</FileVersionMajor>
     <FileVersionMinor>1</FileVersionMinor>
@@ -37,7 +37,7 @@
       Date when Semantic Version was changed.
       Update for every public release.
     -->
-    <SemanticVersionDate>2019-7-2</SemanticVersionDate>
+    <SemanticVersionDate>2019-7-9</SemanticVersionDate>
 
     <!--
       Build version is used to distinguish internally built NuGet packages.

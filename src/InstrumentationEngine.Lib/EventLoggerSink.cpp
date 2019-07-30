@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "EventLoggerSink.h"
@@ -13,7 +13,6 @@ CEventLoggerSink::CEventLoggerSink() :
 
 CEventLoggerSink::~CEventLoggerSink()
 {
-    Shutdown();
 }
 
 HRESULT CEventLoggerSink::Initialize(_In_ CLoggerService* pLogging)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-      -->
+     Licensed under the MIT License. -->
 <Project>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
@@ -9,7 +9,6 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <Title>InstrumentationEngine</Title>
     <Authors>$(PackageAuthors)</Authors>

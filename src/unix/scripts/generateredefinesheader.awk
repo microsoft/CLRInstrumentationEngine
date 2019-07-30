@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-#
+# Licensed under the MIT License.
 
 BEGIN {
     print "#ifndef __PAL_REDEFINES_H__";

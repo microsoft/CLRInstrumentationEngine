@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
@@ -139,15 +139,23 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetupProfilingEnvironm
     // to co create a free threaded version of msxml on a thread that it owns to avoid this.
     CHandle hConfigThread(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
 
-    DWORD retVal = WaitForSingleObject(hConfigThread, 15000);
-    if (retVal == WAIT_ABANDONED)
+    DWORD waitTime = 60 * 1000; // Wait 1 minute for loading instrumentation methods
+#ifdef Debug
+    if (IsDebuggerAttached())
+    {
+        waitTime = INFINITE;
+    }
+#endif
+
+    DWORD retVal = WaitForSingleObject(hConfigThread, waitTime);
+    if (retVal == WAIT_TIMEOUT)
     {
         CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration timeout exceeded"));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
-    else if (retVal == WAIT_FAILED)
+    if (retVal != WAIT_OBJECT_0)
     {
-        CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration failed"));
+        CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration failed with error 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
@@ -535,7 +543,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
 
         if (!bInserted)
         {
-            m_instrumentationMethods.push_back(TInstrumentationMethodsCollection::value_type(std::shared_ptr<CInstrumentationMethod>(pInstrumentationMethod), 0));
+            m_instrumentationMethods.push_back(TInstrumentationMethodsCollection::value_type(std::shared_ptr<CInstrumentationMethod>(pInstrumentationMethod), dwFlags));
         }
 
     }
@@ -793,7 +801,6 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetInitializingInstrumen
     return m_dwInstrumentationMethodFlags;
 }
 
-
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetEventMask(_Out_ DWORD* dwEventMask)
 {
     HRESULT hr = S_OK;
@@ -949,6 +956,8 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()
     // of their cleanup during the Shutdown event. Detach the pointer and allow it
     // to leak the reference.
     m_profilerManagerHost.Detach();
+
+    CLogging::Shutdown();
 
     PROF_CALLBACK_END
 

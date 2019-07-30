@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "LoggerService.h"
@@ -25,7 +25,6 @@ CLoggerService::CLoggerService() :
 
 CLoggerService::~CLoggerService()
 {
-    Shutdown();
 }
 
 HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost)
