@@ -79,3 +79,9 @@ A simple example of an InstrumentationMethod can be found in
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 
 See [Configuration](configuration.md) for more details
+
+### How do I use the Raw Profiler Hook?
+
+The Raw Profiler Hook is the
+
+TODO willxie

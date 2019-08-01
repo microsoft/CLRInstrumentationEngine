@@ -12,8 +12,13 @@ namespace Agent
 {
 namespace Host
 {
-    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook";
-    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath";
+#ifdef X86
+    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook_32";
+    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
+#else
+    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook_64";
+    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
+#endif
 
     CRawProfilerHookSettingsReader::CRawProfilerHookSettingsReader() noexcept
     {

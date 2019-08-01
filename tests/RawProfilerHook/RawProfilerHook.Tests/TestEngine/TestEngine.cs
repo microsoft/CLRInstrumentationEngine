@@ -21,8 +21,12 @@ namespace RawProfilerHook.Tests
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
         private const bool IsX86 = false;
+        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_64";
+        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
+        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_32";
+        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
         private const bool IsX86 = true;
@@ -89,11 +93,12 @@ namespace RawProfilerHook.Tests
             };
 
             hostEnvironment.Add(
-                "MicrosoftInstrumentationEngine_RawProfilerHook",
+                RawProfilerHookEnvVar,
                 RawProfilerHookComponentId);
 
             hostEnvironment.Add(
-                "MicrosoftInstrumentationEngine_RawProfilerHookPath", GetFullPath(RawProfilerHookModuleName));
+                RawProfilerHookPathEnvVar,
+                GetFullPath(RawProfilerHookModuleName));
 
             foreach (var variable in hostEnvironment)
             {
