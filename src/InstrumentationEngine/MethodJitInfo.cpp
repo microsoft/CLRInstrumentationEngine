@@ -79,7 +79,16 @@ namespace MicrosoftInstrumentationEngine
         {
             // Note, this will return E_NOTIMPL before framework 4.8, so we don't
             // assert on failure.
-            IfFailRet(pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap));
+            if (FAILED(hr = (pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap))))
+            {
+                if (hr != E_NOTIMPL)
+                {
+                    LogErrorFor(pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap));
+                }
+
+                return hr;
+            }
+
             return S_OK;
         }
 
