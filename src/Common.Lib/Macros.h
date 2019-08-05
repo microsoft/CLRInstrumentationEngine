@@ -22,11 +22,6 @@
 #define __FUNCTIONT__
 #endif
 
-#ifndef LogErrorFor
-#define LogErrorFor(EXPR) \
-    do { CLogging::LogError(_T("LogErrorFor(") _T(#EXPR) _T(") in function ") __FUNCTIONT__); } while (false)
-#endif
-
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)

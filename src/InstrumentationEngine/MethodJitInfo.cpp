@@ -83,7 +83,7 @@ namespace MicrosoftInstrumentationEngine
             {
                 if (hr != E_NOTIMPL)
                 {
-                    LogErrorFor(pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap));
+                    CLogging::LogError(_T("pProfilerInfo4->GetILToNativeMapping2 failed in MicrosoftInstrumentationEngine::CMethodJitInfo::GetILNativeMapping with error 0x%08X"), hr);
                 }
 
                 return hr;
