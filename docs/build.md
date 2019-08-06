@@ -51,6 +51,7 @@ On Windows we use MSBuild, with `.vcxproj` files to build native binaries and `.
 (Debug|Release with x86|x64|AnyCPU).
 
 Alternatively, you may run the script `[CLRInstrumentationEngine repo]\build.ps1` in PowerShell which conducts a local build.
+
 |Flag|Description|
 |-|-|
 IncludeTests|Runs unit tests after build.
