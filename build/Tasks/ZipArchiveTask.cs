@@ -41,14 +41,6 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                     foreach (ITaskItem fileItem in Files)
                     {
                         string destinationFileName = new FileInfo(fileItem.ItemSpec).Name;
-
-                        // Prevent duplicate files from getting zipped.
-                        if (uniqueFiles.Contains(destinationFileName))
-                        {
-                            continue;
-                        }
-
-                        uniqueFiles.Add(destinationFileName);
                         string destinationFolder = fileItem.GetMetadata("Destination");
                         string type = fileItem.GetMetadata("Type");
                         if (!string.IsNullOrEmpty(destinationFolder))
