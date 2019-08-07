@@ -7,7 +7,11 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.26
+Same functionality as 1.0.25.
+
 # 1.0.25
+This version did not get published due to issues encountered in App Service. Mitigation was taken by repackaging the previously released version (1.0.21) as 1.0.25.
 + Bugfixes:
   + Build header nupkg for AnyCPU
   + Fix unicode character in bldver.rc
