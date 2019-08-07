@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.27
+
 # 1.0.26
 Same functionality as 1.0.25.
 
