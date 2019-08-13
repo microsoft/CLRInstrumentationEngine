@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.27
++ New:
+  + Added support for ICorProfilerInfo10
 
 # 1.0.26
 Same functionality as 1.0.25.
@@ -18,7 +20,6 @@ This version did not get published due to issues encountered in App Service. Mit
   + Build header nupkg for AnyCPU
   + Fix unicode character in bldver.rc
   + Remove nobuild property for package projects to unblock dotnet core 3
-  + Added support for ICorProfilerInfo10
   + Handle null methodNames from dll obfuscation
 + Updates:
   + Change EULA to MIT license for OSS
