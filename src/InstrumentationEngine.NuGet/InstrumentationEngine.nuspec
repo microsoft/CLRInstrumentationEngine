@@ -8,7 +8,7 @@
     <title>Microsoft Instrumentation Engine</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <projectUrl>https://dotnet.microsoft.com</projectUrl>
+    <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
     <license type="file">$licenseFile$</license>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
