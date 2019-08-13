@@ -1,4 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Module Id='ClrInstrumentationEngine_$(sys.BUILDARCH).$(var.Version)'
             Language='0'
@@ -6,7 +8,7 @@
             Version='$(var.Version)'>
         <Package Id='$(var.PackageGuid)'
                  Keywords='Installer'
-                 Description='Microsoft ClrInstrumentationEngine $(var.PackageVersion) ($(sys.BUILDARCH)) MergeModule $(var.InstrumentationEngine.Fragment.Configuration)'
+                 Description='Microsoft CLR Instrumentation Engine $(var.PackageVersion) ($(sys.BUILDARCH)) MergeModule $(var.InstrumentationEngine.Fragment.Configuration)'
                  Comments='Copyright (c) All Rights Reserved.'
                  Manufacturer='Microsoft Corporation'
                  InstallerVersion='200'
@@ -16,11 +18,13 @@
         <DirectoryRef Id="INSTALLDIR" />
 <?if $(sys.BUILDARCH) = x64?>
         <ComponentRef Id="DiagnosticsExtensionsBase64.$(var.Version)" />
+        <ComponentRef Id='InstrumentationEngineProxy64.$(var.MajorVersion)' />
         <ComponentRef Id="ExtensionsBase64.$(var.Version)" />
         <ComponentRef Id="Config64.$(var.Version)" />
         <ComponentRef Id="InstrumentationEngine64.$(var.Version)" />
 <?endif?>
         <ComponentRef Id="DiagnosticsExtensionsBase32.$(var.Version)" />
+        <ComponentRef Id='InstrumentationEngineProxy32.$(var.MajorVersion)' />
         <ComponentRef Id="ExtensionsBase32.$(var.Version)" />
         <ComponentRef Id="Config32.$(var.Version)" />
         <ComponentRef Id="InstrumentationEngine32.$(var.Version)" />

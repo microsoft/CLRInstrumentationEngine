@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-      -->
+     Licensed under the MIT License. -->
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
   <ItemGroup Label="ProjectConfigurations">
@@ -66,6 +66,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
       <RunCodeAnalysis>true</RunCodeAnalysis>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -84,6 +85,7 @@
       <SDLCheck>true</SDLCheck>
       <EnablePREfast>true</EnablePREfast>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -94,24 +96,19 @@
     <ClInclude Include="LoggerSink.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="ConfigurationLoader.h" />
-    <ClInclude Include="CriticalSectionHolder.h" />
     <ClInclude Include="DebugLoggerSink.h" />
     <ClInclude Include="EventLoggerSink.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="ImplQueryInterface.h" />
     <ClInclude Include="FileLoggerSink.h" />
-    <ClInclude Include="InitOnce.h" />
     <ClInclude Include="InstrumentationMethod.h" />
     <ClInclude Include="LoggerService.h" />
     <ClInclude Include="HostLoggerSink.h" />
-    <ClInclude Include="Macros.h" />
     <ClInclude Include="refcount.h" />
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
-    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="tstring.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +126,11 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">
+      <Project>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

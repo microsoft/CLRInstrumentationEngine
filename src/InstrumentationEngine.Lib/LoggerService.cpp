@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "LoggerService.h"
@@ -25,7 +25,6 @@ CLoggerService::CLoggerService() :
 
 CLoggerService::~CLoggerService()
 {
-    Shutdown();
 }
 
 HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost)
@@ -159,7 +158,7 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
 }
 
 void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, ...)
-{    
+{
     va_list argptr;
     va_start (argptr, wszMessage);
     LogMessage(wszMessage, argptr);
@@ -346,6 +345,8 @@ HRESULT CLoggerService::Shutdown()
     m_messageSinks.clear();
 
     m_pLoggingHost.Release();
+
+    m_initialize.Reset();
 
     return S_OK;
 }

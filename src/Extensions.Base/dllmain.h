@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 // dllmain.h : Declaration of module class.
 

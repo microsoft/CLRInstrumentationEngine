@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #pragma once
 
 // This file is a workaround: vsassert has __in macros that conflicts in C++.
@@ -21,7 +24,7 @@
                 DebugBreak();                                            \
         }                                                                \
   } while (false)                                                        \
-  
+
 #define VSFAIL(szMsg) VSASSERT(0, #szMsg)
 #define ASSERT(x) VSASSERT(x, "")
 #define ASSERT_MSG(x, msg) VSASSERT(x, msg)
@@ -40,7 +43,7 @@ extern int  g_TraceIndent;
 #define VSFAIL(szMsg)
 #define ASSERT(x)
 #define ASSERT_MSG(x, msg)
-#define TRACE 
+#define TRACE
 
 #endif // DEBUG
 

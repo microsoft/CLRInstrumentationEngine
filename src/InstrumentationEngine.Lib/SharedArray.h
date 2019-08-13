@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
+
 #pragma once
 
 #include <type_traits>
@@ -16,7 +17,7 @@ namespace MicrosoftInstrumentationEngine
     {
     private:
 
-        // Internal shared data. 
+        // Internal shared data.
         class CSharedData
         {
         public:

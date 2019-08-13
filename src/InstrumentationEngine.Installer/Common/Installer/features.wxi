@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <Include>
     <Fragment>
         <Feature Id="ClrInstrumentationEngineFeature64" Level="1">
             <ComponentRef Id='Config64.$(var.Version)' />
+            <ComponentRef Id='InstrumentationEngineProxy64.$(var.MajorVersion)' />
             <ComponentRef Id='DiagnosticsExtensionsBase64.$(var.Version)' />
             <ComponentRef Id='ExtensionsBase64.$(var.Version)' />
             <ComponentRef Id='InstrumentationEngine64.$(var.Version)' />
@@ -11,6 +14,7 @@
     <Fragment>
         <Feature Id="ClrInstrumentationEngineFeature32" Level="1">
             <ComponentRef Id='Config32.$(var.Version)' />
+            <ComponentRef Id='InstrumentationEngineProxy32.$(var.MajorVersion)' />
             <ComponentRef Id='DiagnosticsExtensionsBase32.$(var.Version)' />
             <ComponentRef Id='ExtensionsBase32.$(var.Version)' />
             <ComponentRef Id='InstrumentationEngine32.$(var.Version)' />

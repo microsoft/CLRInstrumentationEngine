@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 // CExtensionsHost.cpp : Implementation of CExtensionsHost
 
@@ -16,13 +16,15 @@
 
 #include "RawProfilerHookLoader.h"
 #include "RawProfilerHookSettingsReader.h"
-#include "SafeFindFileHandle.h"
+#include "../Common.Lib/SafeFindFileHandle.h"
 
 using Agent::Diagnostics::Param;
 
 #endif
 
 #include "CExtensionsHost.h"
+
+using namespace CommonLib;
 
 std::wstring configFilePattern = L"*.config";
 

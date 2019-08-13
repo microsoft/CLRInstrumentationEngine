@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
 # This image is based on the public Ubuntu 16.04 LTS image
 FROM ubuntu:16.04
 

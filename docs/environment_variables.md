@@ -10,8 +10,8 @@ These are the environment variables and values that are required to enable the C
 |-|-|-|
 COR_ENABLE_PROFILING|1|The CLR will only connect to a profiler if this is set to 1 (true).|
 COR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CLR will search for the CLSID or ProgID specified.|
-COR_PROFILER_PATH_32|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
-COR_PROFILER_PATH_64|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+COR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
+COR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
 
 Alternatively, for CoreCLR:
 
@@ -19,8 +19,11 @@ Alternatively, for CoreCLR:
 |-|-|-|
 CORECLR_ENABLE_PROFILING|1|The CoreCLR will only connect to a profiler if this is set to 1 (true).
 CORECLR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CoreCLR will search for the CLSID or ProgID specified.
-CORECLR_PROFILER_PATH_32|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
-CORECLR_PROFILER_PATH_64|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+CORECLR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
+CORECLR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+
+> Please see [Profiler Proxy](profilerproxy.md) for details on using the Profiler Proxy dll. We recommend setting the COR_PROFILER variables to
+the proxy whenever applicable since it redirects to the latest CLRIE installed on every process re/start.
 
 Additional variables needed to make the CLR Instrumentation Engine work:
 
@@ -40,9 +43,11 @@ MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signatu
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
 
 ## Deprecated as of Version 1.0.22
-The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting logging flags and loading Instrumentation Methods.
+The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting
+logging flags and loading Instrumentation Methods.
 
-These variables are deprecated in favor of the default ExtensionsHost implementation to promote collaboration around one protocol for onboarding Instrumentation Methods.
+These variables are deprecated in favor of the default ExtensionsHost implementation to promote collaboration around one protocol for
+onboarding Instrumentation Methods.
 
 | Variable | Value | Description |
 |-|-|-|

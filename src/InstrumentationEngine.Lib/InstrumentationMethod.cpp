@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
@@ -10,12 +10,12 @@
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
-    BSTR bstrModuleFolder,
-    BSTR bstrName,
-    BSTR bstrDescription,
-    BSTR bstrModule,
-    GUID& guidClassId,
-    DWORD dwPriority
+    _In_ BSTR bstrModuleFolder,
+    _In_ BSTR bstrName,
+    _In_ BSTR bstrDescription,
+    _In_ BSTR bstrModule,
+    _In_ GUID& guidClassId,
+    _In_ DWORD dwPriority
     ) : m_hmod(NULL), m_bstrName(bstrName), m_bstrModuleFolder(bstrModuleFolder), m_bstrModule(bstrModule), m_bstrDescription(bstrDescription), m_guidClassId(guidClassId), m_dwPriority(dwPriority)
 {
 

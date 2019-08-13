@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-      -->
+     Licensed under the MIT License. -->
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
   <PropertyGroup Label="Globals">
@@ -19,6 +19,7 @@
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(NETFXKitsDir)\Include\um;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -39,7 +40,6 @@
     <ClInclude Include="CExtensionsHost.h" />
     <ClInclude Include="RawProfilerHookLoader.h" />
     <ClInclude Include="RawProfilerHookSettingsReader.h" />
-    <ClInclude Include="SafeFindFileHandle.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />

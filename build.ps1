@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
-#
+# Licensed under the MIT License.
 
 param(
     [switch] $IncludeTests,
@@ -75,6 +75,8 @@ else
 {
     $configuration = "Debug"
 }
+
+$BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
 
 $SignType = 'None' # Used for internal testing of signing.
 
@@ -162,19 +164,21 @@ if (!$SkipBuild)
 
         # NuGet restore disregards platform/configuration
         # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
+        $restoreArgsInit = "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
         $restoreArgs = @(
-            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"x86`""
-            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"x64`""
-            "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
+            "$restoreArgsInit /p:platform=`"x86`""
+            "$restoreArgsInit /p:platform=`"x64`""
+            "$restoreArgsInit /p:platform=`"Any CPU`""
         )
         Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
     }
 
     # Build InstrumentationEngine.sln
+    $buildArgsInit = "$repoPath\InstrumentationEngine.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams)"
     $buildArgs = @(
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams)"
-        "$repoPath\InstrumentationEngine.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$buildArgsInit /p:platform=`"x86`""
+        "$buildArgsInit /p:platform=`"x64`""
+        "$buildArgsInit /p:platform=`"Any CPU`" /m"
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
@@ -195,18 +199,20 @@ if (!$SkipPackaging)
 
     # NuGet restore disregards platform/configuration
     # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
+    $restoreArgsInit = "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
     $restoreArgs = @(
-        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"x86`""
-        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"x64`""
-        "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
+        "$restoreArgsInit /p:platform=`"x86`""
+        "$restoreArgsInit /p:platform=`"x64`""
+        "$restoreArgsInit /p:platform=`"Any CPU`""
     )
     Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
+    $buildArgsInit = "$repoPath\src\InstrumentationEngine.Packages.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
     $buildArgs = @(
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x86`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"x64`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
-        "$repoPath\src\InstrumentationEngine.Packages.sln /p:platform=`"Any CPU`" /p:configuration=`"$configuration`" /p:SignType=$SignType /clp:$($clParams) /m"
+        "$buildArgsInit /p:platform=`"x86`""
+        "$buildArgsInit /p:platform=`"x64`""
+        "$buildArgsInit /p:platform=`"Any CPU`""
     )
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
@@ -223,9 +229,9 @@ if ($IncludeTests)
     $vstest = "`"$vstest`""
 
     # Release builds contain the RawProfilerHook.Tests_AnyCPU.dll which is not tested in debug configuration.
-    $anyCpuTests = (Get-ChildItem -path "$repoPath\bin\$configuration\anycpu" -Filter *Tests*.dll -Recurse -Exclude *TestAdapter.tests.dll | Select-Object -ExpandProperty FullName | ForEach-Object { "`"$_`""})
     $x86Tests = (Get-ChildItem -path "$repoPath\bin\$configuration\x86" -Filter *Tests*.dll -Recurse -Exclude *TestAdapter.tests.dll | Select-Object -ExpandProperty FullName | ForEach-Object { "`"$_`""})
     $x64Tests = (Get-ChildItem -path "$repoPath\bin\$configuration\x64" -Filter *Tests*.dll -Recurse -Exclude *TestAdapter.tests.dll | Select-Object -ExpandProperty FullName | ForEach-Object { "`"$_`""})
+    $anyCpuTests = (Get-ChildItem -path "$repoPath\bin\$configuration\anycpu" -Filter *Tests*.dll -Recurse -Exclude *TestAdapter.tests.dll | Select-Object -ExpandProperty FullName | ForEach-Object { "`"$_`""})
 
     $testBuildArgs = @(
         ($x86Tests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x86.runsettings`""

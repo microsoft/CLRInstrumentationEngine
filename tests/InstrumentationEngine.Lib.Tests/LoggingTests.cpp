@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 #include "stdafx.h"
 #include "CppUnitTest.h"
@@ -82,7 +82,7 @@ namespace InstrumentationEngineLibTests
             // Create partial file path
             auto dir = fs::current_path() / L"\\.";
             loggerService.SetFilePath(dir);
-            
+
             AssertSucceeded(loggerService.Initialize());
 
             loggerService.LogError(L"Error1");
@@ -161,7 +161,7 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.Initialize());
 
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_Trace));
-            
+
             loggerService.LogError(L"Error1");
             loggerService.LogMessage(L"Message1");
 

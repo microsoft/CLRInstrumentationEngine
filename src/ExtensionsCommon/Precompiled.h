@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 #pragma once
 
@@ -60,7 +60,7 @@
 #include <thread>
 #include <future>
 
-#include "banned.h"
+#include "../Common.Lib/banned.h"
 
 // Microsoft Instrumentation Engine encludes
 #include "InstrumentationEngineDefs.h"

@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
+
 #include "stdafx.h"
 #include "InstrumentationEngine.h"
 #include "ModuleInfo.h"
@@ -78,7 +79,16 @@ namespace MicrosoftInstrumentationEngine
         {
             // Note, this will return E_NOTIMPL before framework 4.8, so we don't
             // assert on failure.
-            IfFailRet(pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap));
+            if (FAILED(hr = (pProfilerInfo4->GetILToNativeMapping2(m_functionId, m_rejitId, cMap, pcNeeded, pMap))))
+            {
+                if (hr != E_NOTIMPL)
+                {
+                    CLogging::LogError(_T("pProfilerInfo4->GetILToNativeMapping2 failed in MicrosoftInstrumentationEngine::CMethodJitInfo::GetILNativeMapping with error 0x%08X"), hr);
+                }
+
+                return hr;
+            }
+
             return S_OK;
         }
 
@@ -114,7 +124,7 @@ namespace MicrosoftInstrumentationEngine
         if (m_pModuleInfo == nullptr)
         {
             // A lambda is used here so that we can use IfFailRet inside this function
-            // to cache the initialization result without having to add another function to 
+            // to cache the initialization result without having to add another function to
             // the class interface.
             auto initialize = [this]() -> HRESULT
             {
@@ -133,7 +143,7 @@ namespace MicrosoftInstrumentationEngine
                 IfFailRet(pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo));
 
                 m_pModuleInfo = static_cast<CModuleInfo*>(pModuleInfo.p);
-                
+
                 m_isTransformed = m_pModuleInfo->GetIsMethodInstrumented(m_methodToken);
 
                 return S_OK;

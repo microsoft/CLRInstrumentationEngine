@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #include "unknwn.h"
 #include <pthread.h>
 
@@ -31,7 +34,7 @@ typedef const CHAR* STRSAFE_LPCSTR;
 
 inline void * _recalloc(void *memblock, size_t num, size_t size)
 {
-    return realloc(memblock, num * size);  
+    return realloc(memblock, num * size);
 }
 #define _InterlockedCompareExchange InterlockedCompareExchange
 
@@ -91,7 +94,7 @@ __inline int InlineIsEqualGUID(REFGUID rguid1, REFGUID rguid2)
 #define E_NOT_VALID_STATE                _HRESULT_TYPEDEF_(0x8007139FL)
 
 
-// -- string -- 
+// -- string --
 typedef BSTR *LPBSTR;
 #define MAKEINTRESOURCE     MAKEINTRESOURCEW
 #define MAKEINTRESOURCEW(i) ((LPWSTR)((ULONG_PTR)((WORD)(i))))
@@ -121,7 +124,7 @@ typedef struct localeinfo_struct
 EXTERN_C PALAPI size_t PAL_wcsnlen (const WCHAR*__s, size_t __maxlen);
 EXTERN_C PALAPI int _vwprintf (const WCHAR *format, va_list arg);
 EXTERN_C PALAPI PVOID EncodePointer(PVOID Ptr);
-EXTERN_C PALAPI PVOID DecodePointer(PVOID Ptr); 
+EXTERN_C PALAPI PVOID DecodePointer(PVOID Ptr);
 EXTERN_C PALAPI LPWSTR CharLowerW(LPWSTR lpsz);
 EXTERN_C PALAPI LPWSTR CharUpperW(LPWSTR lpsz);
 EXTERN_C PALAPI DWORD CharLowerBuffW(LPWSTR lpsz, DWORD cchLength);
@@ -148,34 +151,34 @@ MIDL_INTERFACE("FC4801A3-2BA9-11CF-A229-00AA003D7352")
 IObjectWithSite : public IUnknown
 {
 public:
-    virtual HRESULT SetSite( 
+    virtual HRESULT SetSite(
         /* [in] */ IUnknown *pUnkSite) = 0;
-    
-    virtual HRESULT GetSite( 
+
+    virtual HRESULT GetSite(
         /* [in] */ REFIID riid,
         /* [iid_is][out] */ void **ppvSite) = 0;
-    
+
 };
 
 MIDL_INTERFACE("00000101-0000-0000-C000-000000000046")
 IEnumString : public IUnknown
 {
 public:
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next(
         /* [in] */ ULONG celt,
-        /* [annotation] */ 
+        /* [annotation] */
         _Out_writes_to_(celt,*pceltFetched)  LPOLESTR *rgelt,
-        /* [annotation] */ 
+        /* [annotation] */
         _Out_opt_  ULONG *pceltFetched) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Skip( 
+
+    virtual HRESULT STDMETHODCALLTYPE Skip(
         /* [in] */ ULONG celt) = 0;
-    
+
     virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE Clone( 
+
+    virtual HRESULT STDMETHODCALLTYPE Clone(
         /* [out] */ __RPC__deref_out_opt IEnumString **ppenum) = 0;
-    
+
 };
 
 // --- oaidl.h ---
@@ -194,42 +197,42 @@ MIDL_INTERFACE("00020400-0000-0000-C000-000000000046")
 IDispatch : public IUnknown
 {
 public:
-    virtual HRESULT STDMETHODCALLTYPE GetTypeInfoCount( 
+    virtual HRESULT STDMETHODCALLTYPE GetTypeInfoCount(
         /* [out] */ __RPC__out UINT *pctinfo) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE GetTypeInfo( 
+
+    virtual HRESULT STDMETHODCALLTYPE GetTypeInfo(
         /* [in] */ UINT iTInfo,
         /* [in] */ LCID lcid,
         /* [out] */ __RPC__deref_out_opt ITypeInfo **ppTInfo) = 0;
-    
-    virtual HRESULT STDMETHODCALLTYPE GetIDsOfNames( 
+
+    virtual HRESULT STDMETHODCALLTYPE GetIDsOfNames(
         /* [in] */ REFIID riid,
         /* [size_is][in] */ LPOLESTR *rgszNames,
         /* [range][in] */ UINT cNames,
         /* [in] */ LCID lcid,
         /* [size_is][out] */ DISPID *rgDispId) = 0;
-    
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Invoke( 
-        /* [annotation][in] */ 
+
+    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Invoke(
+        /* [annotation][in] */
         _In_  DISPID dispIdMember,
-        /* [annotation][in] */ 
+        /* [annotation][in] */
         _In_  REFIID riid,
-        /* [annotation][in] */ 
+        /* [annotation][in] */
         _In_  LCID lcid,
-        /* [annotation][in] */ 
+        /* [annotation][in] */
         _In_  WORD wFlags,
-        /* [annotation][out][in] */ 
+        /* [annotation][out][in] */
         _In_  DISPPARAMS *pDispParams,
-        /* [annotation][out] */ 
+        /* [annotation][out] */
         _Out_opt_  VARIANT *pVarResult,
-        /* [annotation][out] */ 
+        /* [annotation][out] */
         _Out_opt_  EXCEPINFO *pExcepInfo,
-        /* [annotation][out] */ 
+        /* [annotation][out] */
         _Out_opt_  UINT *puArgErr) = 0;
 };
 
 typedef IUnknown *LPUNKNOWN;
-// So we can have CoCreateInstance in most of the code base, 
+// So we can have CoCreateInstance in most of the code base,
 // instead of spreading around of if'def FEATURE_PALs for PAL_CoCreateInstance.
 // #define CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv) Unix_CoCreateInstance(rclsid, riid, ppv)
 EXTERN_C HRESULT CoCreateInstance(REFCLSID   rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext,
@@ -241,7 +244,7 @@ EXTERN_C HRESULT CoCreateInstance(REFCLSID   rclsid, LPUNKNOWN pUnkOuter, DWORD 
 // -- winnt.h ---
 typedef LONG DISPID;
 #define MAKELANGID(p, s)       ((((WORD  )(s)) << 10) | (WORD  )(p))
-#define HEAP_GENERATE_EXCEPTIONS        0x00000004      
+#define HEAP_GENERATE_EXCEPTIONS        0x00000004
 #define FILE_WRITE_DATA                  (0x0002)
 
 // --- winerror.h ---
@@ -325,7 +328,7 @@ typedef enum tagCOINIT
   COINIT_SPEED_OVER_MEMORY  = 0x8,      // Trade memory for speed.
 } COINIT;
 
-typedef 
+typedef
 enum tagCLSCTX
     {
         CLSCTX_INPROC_SERVER	= 0x1,
@@ -444,7 +447,7 @@ PALAPI DWORD ExpandEnvironmentStringsW(LPCWSTR lpSrc, LPWSTR lpDst, DWORD nSize)
 #define	FADF_HAVEIID	( 0x40 )
 #define	FADF_DISPATCH	( 0x400 )
 
-#define WT_EXECUTEDEFAULT           0x00000000                           
+#define WT_EXECUTEDEFAULT           0x00000000
 #define WT_EXECUTELONGFUNCTION      0x00000010
 #define WT_EXECUTEONLYONCE          0x00000008
 #define PathFileExists  PathFileExistsW
@@ -506,7 +509,7 @@ typedef struct FLOAT10
     char b[10];
 } FLOAT10;
 
-#define TLS_MINIMUM_AVAILABLE     64    
+#define TLS_MINIMUM_AVAILABLE     64
 #define TLS_OUT_OF_INDEXES        ((DWORD)0xFFFFFFFF)
 #define TOKEN_QUERY             (0x0008)
 
@@ -589,7 +592,7 @@ typedef enum _SID_NAME_USE {
 inline HANDLE FindFirstFileEx(LPCTSTR lpFileName, FINDEX_INFO_LEVELS fInfoLevelId, LPVOID lpFindFileData,
     FINDEX_SEARCH_OPS fSearchOp, LPVOID lpSearchFilter, DWORD dwAdditionalFlags )
 {
-    if (fInfoLevelId != FindExInfoStandard || fSearchOp != FindExSearchNameMatch || 
+    if (fInfoLevelId != FindExInfoStandard || fSearchOp != FindExSearchNameMatch ||
         lpSearchFilter != nullptr || dwAdditionalFlags != 0)
     {
         return NULL;
@@ -602,10 +605,10 @@ inline HANDLE FindFirstFileEx(LPCTSTR lpFileName, FINDEX_INFO_LEVELS fInfoLevelI
 // This causes us to have different versions of managed dispatcher per platform as it shares critical section objects with native code
 // We override its definition and the Enter/Leave methods here and use a critical section that is of the same size
 typedef struct _PAL_CRITICAL_SECTION {
-    PVOID DebugInfo;        
+    PVOID DebugInfo;
     LONG LockCount;
     LONG RecursionCount;
-    ULONG_PTR OwningThread; 
+    ULONG_PTR OwningThread;
     pthread_mutex_t* Mutex;           // Corresponds to LockSemaphore member in windows
     ULONG_PTR SpinCount;
 } PAL_CRITICAL_SECTION;

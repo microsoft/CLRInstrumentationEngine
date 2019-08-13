@@ -1,8 +1,8 @@
 ﻿# CLR Instrumentation Engine
 
-Develop Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-CI-Yaml)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11310)
+Develop Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-CI-Yaml?branchName=develop)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11310&branchName=develop)
 
-Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311)
+Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=master)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=master)
 
 ## Overview
 
@@ -14,8 +14,9 @@ For more information about our current and future project scope and to track our
 
 ## Getting Started
 
-The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process. Please see [Getting Started](docs/getting_started.md) for more details.
+The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process.
 
+* [Getting Started](docs/getting_started.md) for details on how use the CLR Instrumentation Engine.
 * [Environment Variables](docs/environment_variables.md)
 * [Configure Instrumentation Methods](docs/configuration.md)
 
@@ -54,12 +55,12 @@ Critical security issues and bugs should be reported privately, via email, to th
 Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should
 receive a response within 24 hours. If for some reason you do not, please follow up via
 email to ensure we received your original message. Further information, including the
-[MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in
-the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
+[MSRC PGP](https://technet.microsoft.com/security/dn606155) key, can be found in
+the [Security TechCenter](https://technet.microsoft.com/security/default).
 
 ## License
 
-Usage governance of the Instrumentation Engine is detailed in the [End User License Agreement](Instrumentation%20Engine%20SDK%20EULA.rtf) and [License](LICENSE).
+Usage governance of the Instrumentation Engine is detailed in the [License](LICENSE).
 
 ## Code of Conduct
 

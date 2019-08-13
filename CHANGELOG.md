@@ -7,10 +7,34 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.27
+
+# 1.0.26
+Same functionality as 1.0.25.
+
+# 1.0.25
+This version did not get published due to issues encountered in App Service. Mitigation was taken by repackaging the previously released version (1.0.21) as 1.0.25.
++ Bugfixes:
+  + Build header nupkg for AnyCPU
+  + Fix unicode character in bldver.rc
+  + Remove nobuild property for package projects to unblock dotnet core 3
+  + Handle null methodNames from dll obfuscation
++ Updates:
+  + Change EULA to MIT license for OSS
+
+# 1.0.24
++ BugFixes:
+  + Avoid deadlock within CEventLoggingBase when terminating logging.
+
+# 1.0.23
++ New:
+  + Added instrumentation method registration query method via new IProfilerManager5 API.
+
 # 1.0.22
 + New:
   + Added generating MSI and MSM packages
   + Added yaml builds
+  + Added ProfilerProxy
   + Added export for global logger with no association with any IProfilerManager instances.
   + Added global logger support to IProfilerManager via new IProfilerManager4 API.
 + BugFixes:

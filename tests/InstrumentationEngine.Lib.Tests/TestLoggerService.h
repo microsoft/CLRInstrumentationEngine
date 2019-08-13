@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #pragma once
 
 #include "stdafx.h"
@@ -31,12 +34,12 @@ namespace InstrumentationEngineLibTests
         }
 
     protected:
-        void LogEvent(const tstring& tsEntry) override
+        void LogEvent(const EventLogItem& tsEntry) override
         {
             // Sleep some arbitrary amount of time.
             Sleep(m_entries.size() % 25); // ms
 
-            m_entries.push_back(tsEntry);
+            m_entries.push_back(tsEntry.tsEventLog);
         }
     };
 

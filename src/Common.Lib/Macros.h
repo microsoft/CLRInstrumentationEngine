@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 #pragma once
 
-namespace MicrosoftInstrumentationEngine
-{
 // for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
 #ifndef PLATFORM_UNIX
 #ifdef _WIN64
@@ -29,6 +27,11 @@ namespace MicrosoftInstrumentationEngine
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
 
+#ifndef IfFailRetNoLog
+#define IfFailRetNoLog(EXPR) \
+    do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
+#endif
+
 // Wrap errno_t result of EXPR in HRESULT and then IfFailRet.
 #ifndef IfFailRetErrno
 #define IfFailRetErrno(EXPR) \
@@ -45,7 +48,6 @@ namespace MicrosoftInstrumentationEngine
 #define MAKE_HRESULT_FROM_ERRNO(errnoValue) \
     (MAKE_HRESULT(errnoValue == 0 ? SEVERITY_SUCCESS : SEVERITY_ERROR, FACILITY_NULL, HRESULT_CODE(errnoValue)))
 #endif
-
 
 #ifndef IfNullRetPointer
 #define IfNullRetPointer(EXPR) \
@@ -92,4 +94,3 @@ namespace MicrosoftInstrumentationEngine
 
     template<typename T, int size>
     int array_length(T(&)[size]){return size;}
-}

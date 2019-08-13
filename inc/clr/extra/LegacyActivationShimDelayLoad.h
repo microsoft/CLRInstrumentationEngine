@@ -1,9 +1,5 @@
-// ==++==
-// 
-//   Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
-// ==--==
-//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 #ifndef __LEGACYACTIVATIONSHIMDELAYLOAD_H__
 #define __LEGACYACTIVATIONSHIMDELAYLOAD_H__

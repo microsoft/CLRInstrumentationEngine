@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-//
+// Licensed under the MIT License.
 
 #pragma once
 
@@ -29,6 +29,7 @@ namespace MicrosoftInstrumentationEngine
                      public IProfilerManager2,
                      public IProfilerManager3,
                      public IProfilerManager4,
+                     public IProfilerManager5,
                      public IProfilerManagerLogging,
                      public ICorProfilerCallback7
     {
@@ -212,6 +213,7 @@ namespace MicrosoftInstrumentationEngine
             COM_INTERFACE_ENTRY(IProfilerManager2)
             COM_INTERFACE_ENTRY(IProfilerManager3)
             COM_INTERFACE_ENTRY(IProfilerManager4)
+            COM_INTERFACE_ENTRY(IProfilerManager5)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -438,6 +440,10 @@ namespace MicrosoftInstrumentationEngine
     // IProfilerManager4 Methods
     public:
         STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+
+    // IProfilerManager5 Methods
+    public:
+        STDMETHOD(IsInstrumentationMethodRegistered)(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered);
 
     // IProfilerManagerLogging Methods
     public:

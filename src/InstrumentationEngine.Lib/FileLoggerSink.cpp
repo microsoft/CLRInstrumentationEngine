@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #include "stdafx.h"
 #include "FileLoggerSink.h"
 
@@ -113,7 +116,11 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
         }
     }
 
-    *pEffectiveFlags = effectiveFlags;
+    // Only return non-None flags if the output file has been opened.
+    if (m_pOutputFile)
+    {
+        *pEffectiveFlags = effectiveFlags;
+    }
 
     return S_OK;
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
-      -->
+     Licensed under the MIT License. -->
 <Project>
   <PropertyGroup>
     <ProjectGuid>{F11B4D26-CADD-4F9C-9F69-D2737F8122F7}</ProjectGuid>

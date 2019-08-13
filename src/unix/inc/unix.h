@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #pragma once
 
 #ifndef __UNIX_H__
@@ -53,8 +56,8 @@ typedef __builtin_va_list va_list;
 
 #ifdef __cplusplus
 
-// Define operator overloads to enable bit operations on enum values that are 
-// used to define flags. Use DEFINE_ENUM_FLAG_OPERATORS(YOUR_TYPE) to enable these 
+// Define operator overloads to enable bit operations on enum values that are
+// used to define flags. Use DEFINE_ENUM_FLAG_OPERATORS(YOUR_TYPE) to enable these
 // operators on YOUR_TYPE.
 
 // Moved here from objbase.w.

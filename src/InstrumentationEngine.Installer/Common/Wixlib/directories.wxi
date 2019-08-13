@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <Include>
     <?if $(var.Configuration) = Debug ?>
         <?define VersionFolder = $(var.PackageVersion)_$(var.Configuration) ?>
@@ -14,11 +16,14 @@
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Directory Id="ProgramFiles64Folder" Name="PFiles64" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
-                <Directory Id="InstrumentationEngine64" Name="InstrumentationEngine">
+                <Directory Id="InstrumentationEngine64" Name="Microsoft CLR Instrumentation Engine">
                     <Directory Id="Version64" Name="$(var.VersionFolder)">
                         <Directory Id="Instrumentation64" Name="Instrumentation64">
                             <Directory Id="base64" Name="base" />
                         </Directory>
+                    </Directory>
+                    <Directory Id="Proxy64" Name="Proxy">
+                        <Directory Id="ProxyVersion64" Name="v$(var.MajorVersion)" />
                     </Directory>
                 </Directory>
             </Directory>
@@ -27,11 +32,14 @@
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
             <Directory Id="ProgramFilesFolder" Name="PFiles32" ComponentGuidGenerationSeed="$(var.GuidGenSeed)">
-                <Directory Id="InstrumentationEngine32" Name="InstrumentationEngine">
+                <Directory Id="InstrumentationEngine32" Name="Microsoft CLR Instrumentation Engine">
                     <Directory Id="Version32" Name="$(var.VersionFolder)">
                         <Directory Id="Instrumentation32" Name="Instrumentation32">
                             <Directory Id="base32" Name="base" />
                         </Directory>
+                    </Directory>
+                    <Directory Id="Proxy32" Name="Proxy">
+                        <Directory Id="ProxyVersion32" Name="v$(var.MajorVersion)" />
                     </Directory>
                 </Directory>
             </Directory>

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <Include>
     <Fragment>
         <DirectoryRef Id="base64">
@@ -22,6 +24,11 @@
                 <File Id="InstrumentationEngine64" Name="MicrosoftInstrumentationEngine_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\MicrosoftInstrumentationEngine_x64.dll" />
             </Component>
         </DirectoryRef>
+        <DirectoryRef Id="ProxyVersion64">
+            <Component Id="InstrumentationEngineProxy64.$(var.MajorVersion)" Guid="*" Win64="yes">
+                <File Id="InstrumentationEngineProxy64" Name="InstrumentationEngine.ProfilerProxy_x64.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x64\InstrumentationEngine.ProfilerProxy_x64.dll" />
+            </Component>
+        </DirectoryRef>
     </Fragment>
     <Fragment>
         <DirectoryRef Id="base32">
@@ -43,6 +50,11 @@
         <DirectoryRef Id="Instrumentation32">
             <Component Id="InstrumentationEngine32.$(var.Version)" Guid="*" Win64="no">
                 <File Id="InstrumentationEngine32" Name="MicrosoftInstrumentationEngine_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\MicrosoftInstrumentationEngine_x86.dll" />
+            </Component>
+        </DirectoryRef>
+        <DirectoryRef Id="ProxyVersion32">
+            <Component Id="InstrumentationEngineProxy32.$(var.MajorVersion)" Guid="*" Win64="no">
+                <File Id="InstrumentationEngineProxy32" Name="InstrumentationEngine.ProfilerProxy_x86.dll" KeyPath="yes" Source="$(var.BinOutputPath)\x86\InstrumentationEngine.ProfilerProxy_x86.dll" />
             </Component>
         </DirectoryRef>
     </Fragment>

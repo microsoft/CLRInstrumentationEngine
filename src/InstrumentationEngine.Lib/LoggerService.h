@@ -1,18 +1,25 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// 
+// Licensed under the MIT License.
 
 #pragma once
 
 #include "stdafx.h"
+
 #include <fstream>
 #include <sstream>
+#include <queue>
+
 #ifndef PLATFORM_UNIX
 #include <functional>
 #include <thread>
 #endif
-#include <queue>
+
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "LoggerSink.h"
+
+#include "../Common.Lib/InitOnce.h"
+
+using namespace CommonLib;
 
 namespace MicrosoftInstrumentationEngine
 {
