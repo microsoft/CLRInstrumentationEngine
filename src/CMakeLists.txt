@@ -84,6 +84,7 @@ macro (build_init build_language build_type)
     # that part.
     include_directories(${REPOSITORY_ROOT}/bin/${CMAKE_BUILD_TYPE}/x64)
 
+    include_directories(${REPOSITORY_ROOT}/inc/clr/prof) # Must be ahead of Core CLR PAL
     include_directories(${REPOSITORY_ROOT}/src/unix/inc)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/atl)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/empty)

@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.27
++ New:
+  + Added support for ICorProfilerInfo10
 
 # 1.0.26
 Same functionality as 1.0.25.
