@@ -197,6 +197,7 @@ library MicrosoftInstrumentationEngine
         LoggingFlags_Errors = 0x1,                    // Log error messages
         LoggingFlags_Trace = 0x2,                     // Log verbose trace messages
         LoggingFlags_InstrumentationResults = 0x4     // Log full dumping of il results.
+        LoggingFlags_Debug = 0x8                      // Log important events for debugging issues.
     };
 
     // Interface implemented by the profiler manager that is used by instrumentation methods to send logging messages to the instrumentation engine.
