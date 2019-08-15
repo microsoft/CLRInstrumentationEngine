@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.28
+
 # 1.0.27
 + New:
   + Added support for ICorProfilerInfo10
