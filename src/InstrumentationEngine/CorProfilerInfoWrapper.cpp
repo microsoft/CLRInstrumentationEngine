@@ -67,6 +67,12 @@ MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::CCorProfilerInfoWrapper
     {
         return;
     }
+
+    hr = m_pRealCorProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo10), (LPVOID*)&m_pRealCorProfilerInfo10);
+    if (FAILED(hr))
+    {
+        return;
+    }
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::QueryInterface(
@@ -136,6 +142,12 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::QueryInterface(
     {
         AddRef();
         *ppvObject = (ICorProfilerInfo9*)this;
+        return S_OK;
+    }
+    else if (riid == __uuidof(ICorProfilerInfo10) && m_pRealCorProfilerInfo10 != NULL)
+    {
+        AddRef();
+        *ppvObject = (ICorProfilerInfo10*)this;
         return S_OK;
     }
     return E_NOINTERFACE;
@@ -1106,4 +1118,51 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo4(
 {
     IfNullRet(m_pRealCorProfilerInfo9);
     return m_pRealCorProfilerInfo9->GetCodeInfo4(pNativeCodeStartAddress, cCodeInfos, pcCodeInfos, codeInfos);
+}
+
+// ICorProfilerInfo10
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumerateObjectReferences(
+    _In_ ObjectID objectId,
+    _In_ ObjectReferenceCallback callback,
+    _In_ void *clientData)
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->EnumerateObjectReferences(objectId, callback, clientData);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::IsFrozenObject(
+    _In_ ObjectID objectId,
+    _Out_ BOOL *pbFrozen)
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->IsFrozenObject(objectId, pbFrozen);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetLOHObjectSizeThreshold(
+    _Out_ DWORD *pThreshold)
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->GetLOHObjectSizeThreshold(pThreshold);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestReJITWithInliners(
+    _In_ DWORD dwRejitFlags,
+    _In_ ULONG cFunctions,
+    _In_reads_(cFunctions) ModuleID moduleIds[],
+    _In_reads_(cFunctions) mdMethodDef methodIds[])
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->RequestReJITWithInliners(dwRejitFlags, cFunctions, moduleIds, methodIds);
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SuspendRuntime(void)
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->SuspendRuntime();
+}
+
+HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::ResumeRuntime(void)
+{
+    IfNullRet(m_pRealCorProfilerInfo10);
+    return m_pRealCorProfilerInfo10->ResumeRuntime();
 }
