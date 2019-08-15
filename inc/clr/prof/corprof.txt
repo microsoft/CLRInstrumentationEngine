@@ -1,0 +1,1 @@
+Source: https://github.com/dotnet/coreclr/blob/v3.0.0-preview8.19379.2/src/pal/prebuilt/inc/corprof.h
