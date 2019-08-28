@@ -41,6 +41,7 @@ namespace RawProfilerHook.Tests
                 "Exception extensions module is loaded");
 
             TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
+            TestEngineNoBitness.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
         }
 
         public class TestRawProfilerHookCallsGetAssemblyReferencesBase : TestBase
@@ -70,6 +71,7 @@ namespace RawProfilerHook.Tests
                 "Exception extensions module is loaded");
 
             TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
+            TestEngineNoBitness.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
         }
     }
 }

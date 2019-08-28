@@ -15,23 +15,17 @@ namespace RawProfilerHook.Tests
     /// <summary>
     ///     Summary description for TestsExtensionHostLoading
     /// </summary>
-    public class TestEngine : RemoteUnitTestExecutor.TestEngineBase
+    public class TestEngineNoBitness : RemoteUnitTestExecutor.TestEngineBase
     {
 #if X64
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
-        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_64";
         private const bool IsX86 = false;
-        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_64";
-        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
-        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_32";
         private const bool IsX86 = true;
-        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_32";
-        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
 #endif
 
@@ -47,7 +41,7 @@ namespace RawProfilerHook.Tests
 
         public static ITestResult ExecuteTest<T>()
         {
-            var executor = new TestEngine();
+            var executor = new TestEngineNoBitness();
 
             return executor.ExecuteTest(
                 typeof(T).AssemblyQualifiedName,
@@ -55,7 +49,7 @@ namespace RawProfilerHook.Tests
                 null);
         }
 
-        public TestEngine()
+        public TestEngineNoBitness()
         {
             this.traceFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), $"profiler_trace_{Guid.NewGuid().ToString()}.txt"));
         }
@@ -77,7 +71,7 @@ namespace RawProfilerHook.Tests
 
         protected override void OnBeforeStarted(DebugeeProcess debugee)
         {
-            string profilerDest = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestEngine).Assembly.Location), RTIASrcFolder));
+            string profilerDest = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestEngineNoBitness).Assembly.Location), RTIASrcFolder));
 
             Trace.TraceInformation("profilerDest: {0}", profilerDest);
 
@@ -86,7 +80,7 @@ namespace RawProfilerHook.Tests
                 //{ "MicrosoftInstrumentationEngine_DebugWait", "true"},
                 { "COR_ENABLE_PROFILING", "1"},
                 { "COR_PROFILER", InstrumentationEngineProfilerId},
-                { InstrumentationEngineEnvVar, GetFullPath(InstrumentationEngineProfilerModuleName) },
+                { "COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName) },
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors"},
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
 #if ALLOWNOTSIGNED
@@ -97,11 +91,11 @@ namespace RawProfilerHook.Tests
             };
 
             hostEnvironment.Add(
-                RawProfilerHookEnvVar,
+                "MicrosoftInstrumentationEngine_RawProfilerHook",
                 RawProfilerHookComponentId);
 
             hostEnvironment.Add(
-                RawProfilerHookPathEnvVar,
+                "MicrosoftInstrumentationEngine_RawProfilerHookPath",
                 GetFullPath(RawProfilerHookModuleName));
 
             foreach (var variable in hostEnvironment)
