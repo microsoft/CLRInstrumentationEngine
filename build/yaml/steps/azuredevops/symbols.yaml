@@ -1,0 +1,32 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Azure DevOps Index Sources and Publish Symbols
+
+parameters:
+  PublishSymbols: ''
+
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Symbols'
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)\bin'
+    Contents: |
+     **\*.pdb
+     **\*.exe
+     **\*.dll
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\symbols'
+    CleanTargetFolder: true
+  condition: succeededOrFailed()
+
+- task: PublishSymbols@2
+  displayName: 'Index Sources & Publish Symbols'
+  inputs:
+    SymbolsFolder: '$(Build.ArtifactStagingDirectory)\symbols'
+    SymbolServerType: TeamServices
+    PublishSymbols: ${{ parameters.PublishSymbols }}
+
+- template: publishbuildartifacts.yaml
+parameters:
+    PathToPublish: '$(Build.ArtifactStagingDirectory)\symbols'
+    ArtifactName: 'symbols-windows-$(Configuration)'

@@ -5,6 +5,7 @@
 
 parameters:
   IndexSources: false
+  PublishSymbols: false
   SignType: None
   MatrixStrategy: {}
   CopyFilters: |
@@ -38,7 +39,9 @@ jobs:
   - template: ../../steps/windows/binaries.yaml
 
   - ${{ if eq('true', parameters.IndexSources) }}:
-    - template: ../../steps/azuredevops/publishsymbols.yaml
+    - template: ../../steps/azuredevops/symbols.yaml
+      parameters:
+        PublishSymbols: ${{ parameters.PublishSymbols }}
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
