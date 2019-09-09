@@ -19,8 +19,8 @@ jobs:
       CopyFilters: |
         **
         !**\Nagler*
-        !**\*Tests*
-        !**\*Tests*\**
+        !**\*Test*
+        !**\*Test*\**
       PublishSymbols: true
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:

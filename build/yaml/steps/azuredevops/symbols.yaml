@@ -12,9 +12,12 @@ steps:
   inputs:
     SourceFolder: '$(Build.ArtifactStagingDirectory)\bin'
     Contents: |
-     **\*.pdb
-     **\*.exe
-     **\*.dll
+      **\*.pdb
+      **\*.exe
+      **\*.dll
+      !**\Nagler*
+      !**\*Test*
+      !**\*Test*\**
     TargetFolder: '$(Build.ArtifactStagingDirectory)\symbols'
     CleanTargetFolder: true
   condition: succeededOrFailed()
