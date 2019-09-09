@@ -12,13 +12,11 @@ namespace Agent
 {
 namespace Host
 {
-    LPCWSTR cszRawProfilerHookVariableNameNoBitness = L"MicrosoftInstrumentationEngine_RawProfilerHook";
+    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook";
     LPCWSTR cszRawProfilerHookPathVariableNameNoBitness = L"MicrosoftInstrumentationEngine_RawProfilerHookPath";
 #ifdef X86
-    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook_32";
     LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
 #else
-    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook_64";
     LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
 #endif
 
@@ -42,19 +40,10 @@ namespace Host
 
         IfFailRetHresult(env.GetEnvironmentVariable(cszRawProfilerHookVariableName, strRawProfilerHookClsid), hr);
         // If cszRawProfilerHookVariableName variable is not set
-        // then check cszRawProfilerHookVariableNameNoBitness.
         if (S_FALSE == hr)
         {
-            TraceMsg(
-                L"Examining environment variable",
-                Param(L"name", cszRawProfilerHookVariableNameNoBitness));
-
-            IfFailRetHresult(env.GetEnvironmentVariable(cszRawProfilerHookVariableNameNoBitness, strRawProfilerHookClsid), hr);
-            if (S_FALSE == hr)
-            {
-                TraceMsg("RawProfilerHookComponent is not set");
-                return hr;
-            }
+            TraceMsg("RawProfilerHookComponent is not set");
+            return hr;
         }
 
         IfFalseRet(strRawProfilerHookClsid.size() > 0, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));

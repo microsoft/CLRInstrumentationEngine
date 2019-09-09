@@ -42,6 +42,15 @@ MicrosoftInstrumentationEngine_FileLogPath|"[FULL PATH TO LOGGING FILE]"|File to
 MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signature validation
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
 
+## Raw Profiler Hook
+
+The RawProfilerHook allows one additional profiler that has not yet on-boarded to the ClrInstrumentationEngine to work with the Instrumentation Methods.
+
+| Variable | Value | Description |
+|-|-|-|
+MicrosoftInstrumentationEngine_RawProfilerHook|"{GUID}"|This would be the value set to CORECLR/COR_PROFILER.
+MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64|"[FULL PATH TO raw profiler dll]"|This would be the value set to CORECLR/COR_PROFILER_PATH_32/64.
+
 ## Deprecated as of Version 1.0.22
 The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting
 logging flags and loading Instrumentation Methods.

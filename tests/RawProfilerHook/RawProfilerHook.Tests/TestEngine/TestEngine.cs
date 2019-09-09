@@ -22,7 +22,6 @@ namespace RawProfilerHook.Tests
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
         public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_64";
         private const bool IsX86 = false;
-        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_64";
         public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
@@ -30,11 +29,11 @@ namespace RawProfilerHook.Tests
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
         public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_32";
         private const bool IsX86 = true;
-        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook_32";
         public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
 #endif
 
+        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook";
         public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
         public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
         private const string InstrumentationEngineProfilerId = "{324F817A-7420-4E6D-B3C1-143FBED6D855}";
