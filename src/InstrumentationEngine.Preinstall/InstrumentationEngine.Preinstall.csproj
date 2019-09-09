@@ -32,7 +32,7 @@
   <PropertyGroup>
     <ZipFileName>$(Title).$(PackageVersion).zip</ZipFileName>
     <!-- Required after imports to sufficiently apply this property. -->
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles</PrepareForRunDependsOn>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles;ProducePatchedXdt</PrepareForRunDependsOn>
   </PropertyGroup>
   <Target Name="ZipFiles">
     <ItemGroup>
@@ -84,5 +84,10 @@
           DestinationFolder="$(OutDir)">
       <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
     </Copy>
+  </Target>
+  <!--'$(OutDir)applicationhost.xdt'-->
+  <!-- $(BuildFilesDir)\Scripts\PatchXdt\Test.ps1-->
+  <Target Name="ProducePatchedXdt">
+    <Exec Command="%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -executionpolicy Unrestricted -Command &quot;&amp; { &amp; $(BuildFilesDir)\Scripts\PatchXdt\PatchXdt.ps1 &apos;$(OutDir)applicationhost.xdt&apos; } &quot;" />
   </Target>
 </Project>
