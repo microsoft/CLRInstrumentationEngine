@@ -27,6 +27,6 @@ steps:
     PublishSymbols: ${{ parameters.PublishSymbols }}
 
 - template: publishbuildartifacts.yaml
-parameters:
+  parameters:
     PathToPublish: '$(Build.ArtifactStagingDirectory)\symbols'
     ArtifactName: 'symbols-windows-$(Configuration)'
