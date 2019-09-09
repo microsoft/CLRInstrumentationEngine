@@ -8,7 +8,7 @@
     Creates an xdt file from
 
 .EXAMPLE
-    .\PatchXdt.ps1 -InputXdtFilePath 'C:\in\applicationHost.xdt' -OutputXdtFilePath 'C:\out\applicationHost.xdt'
+    .\GeneratePrivateXdt.ps1 -InputXdtFilePath 'C:\in\applicationHost.xdt' -OutputXdtFilePath 'C:\out\applicationHost.xdt'
 #>
 [CmdletBinding()]
 param(
@@ -32,7 +32,7 @@ param(
     $DisableSignatureValidation
 )
 
-Import-Module "$PSScriptRoot\PatchXdtHelper.psm1" -Force
+Import-Module "$PSScriptRoot\XdtHelper.psm1" -Force
 
 $ErrorActionPreference = 'Stop'
 
@@ -43,7 +43,7 @@ $params = @{
     DisableSignatureValidation = $DisableSignatureValidation
     DebugWait                  = $DebugWait
 }
-Edit-XdtFile -XdtFile $xdtFile -XmlEntries (Get-ClrieXmlEntries @params)
+Edit-XdtContent -XdtFile $xdtFile -XmlEntries (Get-ClrieXmlEntries @params)
 
 Write-Host "Saving changes..."
-Set-XdtFile -OutputFilePath $OutputXdtFilePath -XdtFile $xdtFile
+Set-Content -Value $xdtFile.OuterXml -Path $OutputXdtFilePath -Force

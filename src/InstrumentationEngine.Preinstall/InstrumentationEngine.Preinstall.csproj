@@ -90,6 +90,6 @@
       <Xdt_DisableSignatureValidation Condition=" '$(DisableSignatureValidation)'=='' ">$False</Xdt_DisableSignatureValidation>
       <Xdt_DebugWait Condition=" '$(DisableSignatureValidation)'=='' ">$False</Xdt_DebugWait>
     </PropertyGroup>
-    <Exec Command="%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -executionpolicy Unrestricted -Command &quot;&amp; { &amp; $(BuildFilesDir)\Scripts\PatchXdt\PatchXdt.ps1 &apos;$(OutDir)applicationhost.xdt&apos; -DebugWait:$(Xdt_DebugWait) -DisableSignatureValidation:$(Xdt_DisableSignatureValidation) } &quot;" />
+    <Exec Command="%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -executionpolicy Unrestricted -Command &quot;&amp; { &amp; $(BuildFilesDir)\Scripts\PrivateXdt\GeneratePrivateXdt.ps1 &apos;$(OutDir)applicationhost.xdt&apos; -DebugWait:$(Xdt_DebugWait) -DisableSignatureValidation:$(Xdt_DisableSignatureValidation) } &quot;" />
   </Target>
 </Project>

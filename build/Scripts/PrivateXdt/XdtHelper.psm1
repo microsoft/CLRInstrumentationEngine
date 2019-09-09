@@ -92,7 +92,7 @@ function Get-ClrieXmlEntries {
     }
 }
 
-function Edit-XdtFile {
+function Edit-XdtContent {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)]
@@ -110,6 +110,7 @@ function Edit-XdtFile {
         $elem = $XdtFile.CreateElement($entry.element)
         if ($entry.name) {
             [void]$elem.SetAttribute("name", $entry.name)
+            [void]$elem.SetAttribute("Locator", "http://schemas.microsoft.com/XML-Document-Transform", "Match(name)")
         }
         if ($entry.path) {
             [void]$elem.SetAttribute("path", $entry.path)
@@ -118,42 +119,10 @@ function Edit-XdtFile {
             [void]$elem.SetAttribute("Transform", "http://schemas.microsoft.com/XML-Document-Transform", $entry.transform)
         }
 
-        [void]$elem.SetAttribute("Locator", "http://schemas.microsoft.com/XML-Document-Transform", "Match(name)")
-
         if ($entry.value) {
             [void]$elem.SetAttribute("value", $entry.value)
         }
 
         $null = Invoke-Expression "`$XdtFile.$($entry.destination).PrependChild(`$elem)"
-    }
-}
-
-function Set-XdtFile {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $OutputFilePath,
-
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNull()]
-        [xml]
-        $XdtFile
-    )
-
-    try {
-        Write-Host "Attempting to open '$OutputFilePath'"
-        $outputFile = [System.IO.File]::Open($OutputFilePath, [System.IO.FIleMode]::OpenOrCreate)
-
-        Write-Host "Writing to '$($OutputFilePath)'"
-        $sw = [System.IO.StreamWriter]($outputFile)
-        $sw.BaseStream.SetLength(0)
-        $sw.Write($XdtFile.OuterXml)
-        $sw.Flush()
-        $sw.Close()
-    } finally {
-        if ($sw) { $sw.Dispose() }
-        if ($outputFile) { $outputFile.Dispose() }
     }
 }
