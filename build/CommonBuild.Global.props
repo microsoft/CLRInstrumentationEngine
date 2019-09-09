@@ -78,7 +78,7 @@
         <PackagesDir Condition=" '$(PackagesDir)' == '' Or $(PackagesDir) == '*Undefined*'">$(EnlistmentRoot)\packages</PackagesDir>
         <PackagesDir>$([System.IO.Path]::GetFullPath( $(PackagesDir) ))</PackagesDir>
 
-        <BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)..\build</BuildFilesDir>
+        <BuildFilesDir Condition="$(BuildFilesDir) == '' Or $(BuildFilesDir) == '*Undefined*'">$(EnlistmentRoot)\build</BuildFilesDir>
         <BuildFilesDir>$([System.IO.Path]::GetFullPath( $(BuildFilesDir) ))</BuildFilesDir>
 
         <!-- Build Macros -->
@@ -112,8 +112,8 @@
         <AppxPackageDir>$(OutputPath)</AppxPackageDir>
 
         <!-- C++ output and intermediate directories -->
-        <IntDir>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))\</IntDir>
-        <OutDir>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutDir>
+        <IntDir>$([System.IO.Path]::GetFullPath( $(IntermediateOutputPath) ))</IntDir>
+        <OutDir>$([System.IO.Path]::GetFullPath( $(OutputPath) ))</OutDir>
 
         <!-- Enable NuGet package restore during build -->
         <RestorePackages>true</RestorePackages>
