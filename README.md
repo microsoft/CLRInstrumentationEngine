@@ -51,7 +51,7 @@ See [Troubleshooting](docs/troubleshooting.md) for common pitfalls and remediati
 
 If you're still encountering a non-critical issues, please contact clrieowners@microsoft.com.
 
-Critical security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com. See [Security](SECURITY.md) for more details.
+Critical security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). See [Security](SECURITY.md) for more details.
 
 ## License
 
