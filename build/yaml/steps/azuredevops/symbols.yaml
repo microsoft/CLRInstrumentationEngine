@@ -27,7 +27,9 @@ steps:
   inputs:
     SymbolsFolder: '$(Build.ArtifactStagingDirectory)\symbols'
     SymbolServerType: TeamServices
+    SearchPattern: '**/*.pdb'
     PublishSymbols: ${{ parameters.PublishSymbols }}
+  continueOnError: true # this occasionally fails due to external service issues, and we don't consider it critical
 
 - template: publishbuildartifacts.yaml
   parameters:
