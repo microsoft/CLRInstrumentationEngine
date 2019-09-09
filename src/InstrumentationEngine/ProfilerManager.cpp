@@ -141,10 +141,12 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetupProfilingEnvironm
 
     DWORD waitTime = 60 * 1000; // Wait 1 minute for loading instrumentation methods
 
+#ifndef PLATFORM_UNIX
     if (IsDebuggerPresent())
     {
         waitTime = INFINITE;
     }
+#endif
 
 
     DWORD retVal = WaitForSingleObject(hConfigThread, waitTime);
