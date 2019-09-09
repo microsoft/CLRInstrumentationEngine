@@ -5,7 +5,7 @@
 
 <#
 .SYNOPSIS
-    Creates an xdt file from
+    Creates a modified xdt file that overrides the preinstalled site extension.
 
 .EXAMPLE
     .\GeneratePrivateXdt.ps1 -InputXdtFilePath 'C:\in\applicationHost.xdt' -OutputXdtFilePath 'C:\out\applicationHost.xdt'
