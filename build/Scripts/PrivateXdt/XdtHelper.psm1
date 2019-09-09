@@ -123,6 +123,9 @@ function Edit-XdtContent {
             [void]$elem.SetAttribute("value", $entry.value)
         }
 
+        # Invoke-Expression treats the input string as PowerShell code, allowing dynamic construction of code.
+        # The following code constructs the XPath in the $XdtFile from each $entry's destination
+        # and then prepends the $elem node constructed from the $entry's properties.
         $null = Invoke-Expression "`$XdtFile.$($entry.destination).PrependChild(`$elem)"
     }
 }
