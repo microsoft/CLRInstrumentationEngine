@@ -1149,7 +1149,7 @@ library MicrosoftInstrumentationEngine
         HRESULT Initialize();
         HRESULT GetCorSignature([out] ISignatureBuilder** ppSignature);
         HRESULT GetCount([out]DWORD* pdwCount);
-        HRESULT AddLocal([in] IType* pType, [out, optional]DWORD* pIndex);
+        HRESULT AddLocal([in] IType* pType, [in, out, ptr, optional] DWORD* pIndex);
         HRESULT ReplaceSignature([in] const BYTE* pSignature, [in] DWORD dwSigSize);
 
         // Commits the newly added locals to the method local signature
@@ -1299,19 +1299,19 @@ library MicrosoftInstrumentationEngine
         HRESULT ParseMethodSignature(
             [in] const BYTE* pSignature,
             [in] ULONG cbSignature,
-            [out, optional] ULONG* pCallingConvention,
+            [in, out, ptr, optional] ULONG* pCallingConvention,
             [out, optional] IType** ppReturnType,
             [out, optional] IEnumTypes** ppEnumParameterTypes,
-            [out, optional] ULONG* pcGenericTypeParameters,
-            [out, optional] ULONG* pcbRead
+            [in, out, ptr, optional] ULONG* pcGenericTypeParameters,
+            [in, out, ptr, optional] ULONG* pcbRead
             );
 
         HRESULT ParseLocalVarSignature(
             [in] const BYTE* pSignature,
             [in] ULONG cbSignature,
-            [out, optional] ULONG* pCallingConvention,
+            [in, out, ptr, optional] ULONG* pCallingConvention,
             [out, optional] IEnumTypes** ppEnumTypes,
-            [out, optional] ULONG* pcbRead
+            [in, out, ptr, optional] ULONG* pcbRead
             );
 
         HRESULT ParseTypeSequence(
@@ -1319,7 +1319,7 @@ library MicrosoftInstrumentationEngine
             [in] ULONG cbBuffer,
             [in] ULONG cTypes,
             [out, optional] IEnumTypes** ppEnumTypes,
-            [out, optional] ULONG* pcbRead
+            [in, out, ptr, optional] ULONG* pcbRead
             );
     };
 
@@ -1397,7 +1397,7 @@ library MicrosoftInstrumentationEngine
     ]
     interface ITypeCreator : IUnknown
     {
-        HRESULT FromSignature([in] DWORD cbBuffer, [in] const BYTE* pCorSignature, [out] IType ** ppType, [out, optional] DWORD* pdwSigSize);
+        HRESULT FromSignature([in] DWORD cbBuffer, [in] const BYTE* pCorSignature, [out] IType ** ppType, [in, out, ptr, optional] DWORD* pdwSigSize);
         HRESULT FromCorElement([in] CorElementType type, [out] IType** ppType);
         HRESULT FromToken([in] CorElementType type, [in] mdToken token, [out] IType** ppType);
         //FromClassID
