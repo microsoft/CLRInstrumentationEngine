@@ -1300,8 +1300,8 @@ library MicrosoftInstrumentationEngine
             [in] const BYTE* pSignature,
             [in] ULONG cbSignature,
             [in, out, ptr, optional] ULONG* pCallingConvention,
-            [out, optional] IType** ppReturnType,
-            [out, optional] IEnumTypes** ppEnumParameterTypes,
+            [in, out, ptr, optional] IType** ppReturnType,
+            [in, out, ptr, optional] IEnumTypes** ppEnumParameterTypes,
             [in, out, ptr, optional] ULONG* pcGenericTypeParameters,
             [in, out, ptr, optional] ULONG* pcbRead
             );
@@ -1310,7 +1310,7 @@ library MicrosoftInstrumentationEngine
             [in] const BYTE* pSignature,
             [in] ULONG cbSignature,
             [in, out, ptr, optional] ULONG* pCallingConvention,
-            [out, optional] IEnumTypes** ppEnumTypes,
+            [in, out, ptr, optional] IEnumTypes** ppEnumTypes,
             [in, out, ptr, optional] ULONG* pcbRead
             );
 
@@ -1318,7 +1318,7 @@ library MicrosoftInstrumentationEngine
             [in] const BYTE* pBuffer,
             [in] ULONG cbBuffer,
             [in] ULONG cTypes,
-            [out, optional] IEnumTypes** ppEnumTypes,
+            [in, out, ptr, optional] IEnumTypes** ppEnumTypes,
             [in, out, ptr, optional] ULONG* pcbRead
             );
     };
