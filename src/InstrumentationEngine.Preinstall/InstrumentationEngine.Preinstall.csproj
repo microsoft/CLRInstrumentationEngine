@@ -32,7 +32,7 @@
   <PropertyGroup>
     <ZipFileName>$(Title).$(PackageVersion).zip</ZipFileName>
     <!-- Required after imports to sufficiently apply this property. -->
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles</PrepareForRunDependsOn>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles;GeneratePrivateXdt</PrepareForRunDependsOn>
   </PropertyGroup>
   <Target Name="ZipFiles">
     <ItemGroup>
@@ -84,5 +84,12 @@
           DestinationFolder="$(OutDir)">
       <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
     </Copy>
+  </Target>
+  <Target Name="GeneratePrivateXdt">
+    <PropertyGroup>
+      <XDT_DISABLESIGNATUREVALIDATION Condition=" '$(XDT_DISABLESIGNATUREVALIDATION)'=='' ">$True</XDT_DISABLESIGNATUREVALIDATION>
+      <XDT_DEBUGWAIT Condition=" '$(XDT_DEBUGWAIT)'=='' ">$False</XDT_DEBUGWAIT>
+    </PropertyGroup>
+    <Exec Command="%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -executionpolicy Unrestricted -Command &quot;&amp; { &amp; $(BuildFilesDir)\Scripts\PrivateXdt\GeneratePrivateXdt.ps1 &apos;$(OutDir)applicationhost.xdt&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION) } &quot;" />
   </Target>
 </Project>

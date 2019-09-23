@@ -49,6 +49,7 @@ jobs:
         **\*.msi
         **\*.msm
         **\*.guids
+        **\*.xdt
       TargetFolder: '$(Build.ArtifactStagingDirectory)\packages'
       CleanTargetFolder: true
     continueOnError: true
