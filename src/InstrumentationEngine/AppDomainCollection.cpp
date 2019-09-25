@@ -165,6 +165,8 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetAssemblyInfoByI
 
     CLogging::LogMessage(_T("Starting CAppDomainCollection::GetAssemblyInfoById"));
 
+    CCriticalSectionHolder lock(&m_cs);
+
     for (std::pair<AppDomainID, CComPtr<CAppDomainInfo>> p : m_appDomains)
     {
         hr = p.second->GetAssemblyInfoById(assemblyID, ppAssemblyInfo);
@@ -185,6 +187,8 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetModuleInfoById(
     HRESULT hr = S_OK;
 
     CLogging::LogMessage(_T("Starting CAppDomainCollection::GetModuleInfoById"));
+
+    CCriticalSectionHolder lock(&m_cs);
 
     for (std::pair<AppDomainID, CComPtr<CAppDomainInfo>> p : m_appDomains)
     {
