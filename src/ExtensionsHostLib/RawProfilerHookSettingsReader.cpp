@@ -39,7 +39,6 @@ namespace Host
             Param(L"name", cszRawProfilerHookVariableName));
 
         IfFailRetHresult(env.GetEnvironmentVariable(cszRawProfilerHookVariableName, strRawProfilerHookClsid), hr);
-        // If cszRawProfilerHookVariableName variable is not set
         if (S_FALSE == hr)
         {
             TraceMsg("RawProfilerHookComponent is not set");
@@ -63,6 +62,8 @@ namespace Host
                 cszRawProfilerHookPathVariableName,
                 strRawProfilerHookModulePath), hr);
 
+        // This is for backwards compatibility; fall back to the no-bitness environment variable
+        //    MicrosoftInstrumentationEngine_RawProfilerHookPath
         if (S_FALSE == hr)
         {
             TraceMsg(
@@ -79,7 +80,7 @@ namespace Host
             L"RawProfilerHookModulePath specified",
             Param(L"path", strRawProfilerHookModulePath));
 
-        // if cszRawProfilerHookPathVariableName and cszRawProfilerHookPathVariableNameNoBitness are not set we consider it as error,
+        // if cszRawProfilerHookPathVariableName and cszRawProfilerHookPathVariableNameNoBitness are not set then we consider it as error;
         // there's no path to the component module to load
         IfTrueRet(S_FALSE == hr, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));
         IfFalseRet(strRawProfilerHookModulePath.size() > 0, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));

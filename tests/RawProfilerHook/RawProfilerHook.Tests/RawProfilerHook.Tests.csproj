@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProcessExtensions.cs" />
-    <Compile Include="TestEngine\TestEngineNoBitness.cs" />
     <Compile Include="TestEngine\TestEngine.cs" />
     <Compile Include="TestsRawProfilerHookAttach.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
