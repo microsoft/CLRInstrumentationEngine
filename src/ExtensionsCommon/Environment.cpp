@@ -15,13 +15,13 @@ namespace Settings
         _In_ const std::wstring& strVariableName,
         _Out_ std::wstring& strVariableValue)
     {
-        const int MaxVaiableSize = 1024;
+        const int MaxVariableSize = 1024;
         std::wstring strVariableValueTemp(1024, L'\n');
 
         auto dwCount = ::GetEnvironmentVariable(
             strVariableName.c_str(),
             &strVariableValueTemp[0],
-            MaxVaiableSize);
+            MaxVariableSize);
 
         strVariableValueTemp.resize(dwCount);
         strVariableValue.swap(strVariableValueTemp);

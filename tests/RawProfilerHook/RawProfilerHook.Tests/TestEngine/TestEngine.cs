@@ -17,25 +17,34 @@ namespace RawProfilerHook.Tests
     /// </summary>
     public class TestEngine : RemoteUnitTestExecutor.TestEngineBase
     {
+        public static bool IgnoreBitness { get; set; }
 #if X64
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
+        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_64";
         private const bool IsX86 = false;
+        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
 #else
         public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
         public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
+        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_32";
         private const bool IsX86 = true;
+        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
         public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
 #endif
 
         public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
+
+        public const string InstrumentationEngineNoBitnessEnvVar = "COR_PROFILER_PATH";
         public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
         private const string InstrumentationEngineProfilerId = "{324F817A-7420-4E6D-B3C1-143FBED6D855}";
-        private const string InstrumentationEngineApmcExtensionApmcId = "{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}";
-        public const string RTIASrcFolder = @".\";
 
+        public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook";
+        public const string RawProfilerHookPathNoBitnessEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath";
         private const string RawProfilerHookComponentId = "{4BCBE156-37EC-4179-B051-0183C57BACF9}";
+
+        public const string ProfilerSrcFolder = @".\";
 
         private readonly string traceFilePath;
 
@@ -71,29 +80,43 @@ namespace RawProfilerHook.Tests
 
         protected override void OnBeforeStarted(DebugeeProcess debugee)
         {
-            string profilerDest = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestEngine).Assembly.Location), RTIASrcFolder));
+            string profilerDest = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestEngine).Assembly.Location), ProfilerSrcFolder));
 
             Trace.TraceInformation("profilerDest: {0}", profilerDest);
 
             var hostEnvironment = new Dictionary<string, string>
             {
-                //{ "MicrosoftInstrumentationEngine_DebugWait", "true"},
-                { "COR_ENABLE_PROFILING", "1"},
-                { "COR_PROFILER", InstrumentationEngineProfilerId},
-                { "COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName) },
-                { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors"},
+                // { "MicrosoftInstrumentationEngine_DebugWait", "1" }, // Attach native debugger to RemoteUnitTestExecutor.Host_x86|64.exe which spawns once this function finishes
+                { "COR_ENABLE_PROFILING", "1" },
+                { "COR_PROFILER", InstrumentationEngineProfilerId },
+                { RawProfilerHookEnvVar, RawProfilerHookComponentId },
+                { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors" },
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
 #if ALLOWNOTSIGNED
                 , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true"}
 #endif
             };
 
-            hostEnvironment.Add(
-                "MicrosoftInstrumentationEngine_RawProfilerHook",
-                RawProfilerHookComponentId);
+            if (IgnoreBitness)
+            {
+                hostEnvironment.Add(
+                    InstrumentationEngineNoBitnessEnvVar,
+                    GetFullPath(InstrumentationEngineProfilerModuleName));
 
-            hostEnvironment.Add(
-                "MicrosoftInstrumentationEngine_RawProfilerHookPath", GetFullPath(RawProfilerHookModuleName));
+                hostEnvironment.Add(
+                    RawProfilerHookPathNoBitnessEnvVar,
+                    GetFullPath(RawProfilerHookModuleName));
+            }
+            else
+            {
+                hostEnvironment.Add(
+                    InstrumentationEngineEnvVar,
+                    GetFullPath(InstrumentationEngineProfilerModuleName));
+
+                hostEnvironment.Add(
+                    RawProfilerHookPathEnvVar,
+                    GetFullPath(RawProfilerHookModuleName));
+            }
 
             foreach (var variable in hostEnvironment)
             {
