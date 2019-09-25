@@ -10,7 +10,7 @@ The CLR Instrumentation Engine (CLRIE) is a cooperation profiler that allows run
 
 The CLRIE's goal is to create a cooperative environment for different profilers to work together on various platforms. In order to further this goal, we plan to open source this repo to the community by the end June 2019.
 
-For more information about our current and future project scope and to track our progress, please see the [CLRIE Road Map](roadmap.md).
+For more information about our current and future project scope and to track our progress, please see the [CLRIE Road Map](ROADMAP.md).
 
 ## Getting Started
 
@@ -51,12 +51,7 @@ See [Troubleshooting](docs/troubleshooting.md) for common pitfalls and remediati
 
 If you're still encountering a non-critical issues, please contact clrieowners@microsoft.com.
 
-Critical security issues and bugs should be reported privately, via email, to the Microsoft Security
-Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should
-receive a response within 24 hours. If for some reason you do not, please follow up via
-email to ensure we received your original message. Further information, including the
-[MSRC PGP](https://technet.microsoft.com/security/dn606155) key, can be found in
-the [Security TechCenter](https://technet.microsoft.com/security/default).
+Critical security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). See [Security](SECURITY.md) for more details.
 
 ## License
 

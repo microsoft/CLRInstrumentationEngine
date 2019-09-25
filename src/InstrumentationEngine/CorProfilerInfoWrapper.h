@@ -12,7 +12,7 @@ namespace MicrosoftInstrumentationEngine
     class CProfilerManager;
 
     class CCorProfilerInfoWrapper :
-        public ICorProfilerInfo9
+        public ICorProfilerInfo10
     {
     private:
         LONG m_refcount;
@@ -26,6 +26,7 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<ICorProfilerInfo7> m_pRealCorProfilerInfo7;
         CComPtr<ICorProfilerInfo8> m_pRealCorProfilerInfo8;
         CComPtr<ICorProfilerInfo9> m_pRealCorProfilerInfo9;
+        CComPtr<ICorProfilerInfo10> m_pRealCorProfilerInfo10;
 
         // Non-addref'd back pointer the profiler manager.
         CProfilerManager* m_pProfilerManager;
@@ -613,5 +614,29 @@ namespace MicrosoftInstrumentationEngine
             _In_ ULONG32 cCodeInfos,
             _Out_ ULONG32 *pcCodeInfos,
             _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]);
+
+    // ICorProfilerInfo10
+    public:
+        STDMETHOD(EnumerateObjectReferences)(
+            _In_ ObjectID objectId,
+            _In_ ObjectReferenceCallback callback,
+            _In_ void *clientData);
+
+        STDMETHOD(IsFrozenObject)(
+            _In_ ObjectID objectId,
+            _Out_ BOOL *pbFrozen);
+
+        STDMETHOD(GetLOHObjectSizeThreshold)(
+            _Out_ DWORD *pThreshold);
+
+        STDMETHOD(RequestReJITWithInliners)(
+            _In_ DWORD dwRejitFlags,
+            _In_ ULONG cFunctions,
+            _In_reads_(cFunctions) ModuleID moduleIds[],
+            _In_reads_(cFunctions) mdMethodDef methodIds[]);
+
+        STDMETHOD(SuspendRuntime)(void);
+
+        STDMETHOD(ResumeRuntime)(void);
     };
 }
