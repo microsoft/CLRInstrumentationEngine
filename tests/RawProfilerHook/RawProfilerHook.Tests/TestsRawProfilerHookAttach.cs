@@ -62,11 +62,11 @@ namespace RawProfilerHook.Tests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
-        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(".\\" + TestEngine.RawProfilerHookModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
+        [DeploymentItem(@"..\..\AnyCPU\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
+        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName, ".")]
         public void TestRawProfilerHookCallsGetAssemblyReferences()
         {
             Assert.IsFalse(
