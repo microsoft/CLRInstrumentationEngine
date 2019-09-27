@@ -84,8 +84,7 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     }
     else
     {
-        TraceError(_T("No Instrumentation method configs found. Cancelling profiler host initialization."));
-        return S_FALSE;
+        TraceError(_T("No Instrumentation method configs found to load in process %u."), GetCurrentProcessId());
     }
 
     Agent::Host::CRawProfilerHookSettingsReader rawHookSettingsReader;
@@ -125,7 +124,7 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     }
     else
     {
-        TraceMsg(L"Raw profiler hook module is not specified, skip loading, path:");
+        TraceMsg(L"Raw profiler hook module is not specified, skip loading.");
     }
 
     return S_OK;
