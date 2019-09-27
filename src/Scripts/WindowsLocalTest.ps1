@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
 <#
 .SYNOPSIS
     This script spawns a process with the COR_PROFILER environment variables set. This script assumes the ClrInstrumentationEngine msi is installed.
