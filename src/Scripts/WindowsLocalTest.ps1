@@ -4,9 +4,27 @@
 <#
 .SYNOPSIS
     This script spawns a process with the COR_PROFILER environment variables set. This script assumes the ClrInstrumentationEngine msi is installed.
+    NOTE: The bitness of the application will dictate whether to use 32-bit or 64-bit for the profiler, instrumentation methods, and raw profiler hook.
 
 .PARAMETER ApplicationPath
-    Optiona, the application to run with the profiler set. By default, will spawn another PowerShell process.
+    Optional, the application to run with the profiler set. By default, will spawn another PowerShell process.
+
+.PARAMETER InstrumentationMethodConfigPath
+    Required for ParameterSet 'InstrumentationMethod'
+    Optional for ParameterSet 'RawProfilerHook'
+    Path to the config file defining the InstrumentationMethod to load.
+    NOTE: This config file will be set for both the 32-bit and 64-bit environment variable.
+
+.PARAMETER RawProfilerHookGuid
+    Required for ParameterSet 'RawProfilerHook'
+    Optional for ParameterSet 'InstrumentationMethod'
+    The COR_PROFILER guid of a raw profiler.
+
+.PARAMETER RawProfilerHookPath
+    Required for ParameterSet 'RawProfilerHook'
+    Optional for ParameterSet 'InstrumentationMethod'
+    The COR_PROFILER_PATH string for the raw profiler dll.
+    NOTE: This config file will be set for both the 32-bit and 64-bit environment variable.
 
 .PARAMETER DebugWait
     Optional, sets MicrosoftInstrumentationEngine_DebugWait which causes the ClrInstrumentationEngine to wait for a debugger to attach.
@@ -26,17 +44,25 @@ param(
     [string]
     $ApplicationPath = 'powershell',
 
-    [Parameter(Mandatory = $false)]
     [Parameter(ParameterSetName='InstrumentationMethod', Mandatory = $true)]
+    [Parameter(ParameterSetName='RawProfilerHook', Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
+    [ValidateScript({ Test-Path $_ })]
     [string]
-    $InstrumentationMethod64ConfigPath,
+    $InstrumentationMethodConfigPath,
 
-    [Parameter(Mandatory = $false)]
-    [Parameter(ParameterSetName='InstrumentationMethod', Mandatory = $true)]
+    [Parameter(ParameterSetName='InstrumentationMethod', Mandatory = $false)]
+    [Parameter(ParameterSetName='RawProfilerHook', Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string]
-    $InstrumentationMethod32ConfigPath,
+    $RawProfilerHookGuid,
+
+    [Parameter(ParameterSetName='InstrumentationMethod', Mandatory = $false)]
+    [Parameter(ParameterSetName='RawProfilerHook', Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [ValidateScript({ Test-Path $_ })]
+    [string]
+    $RawProfilerHookPath,
 
     [Parameter(Mandatory = $false)]
     [switch]
@@ -93,8 +119,14 @@ if ($ProxyUsePreview) {
 
 # Instrumentation Method variables
 if ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod') {
-    $env:MicrosoftInstrumentationEngine_ConfigPath32_TestMethod = $InstrumentationMethod32ConfigPath
-    $env:MicrosoftInstrumentationEngine_ConfigPath64_TestMethod = $InstrumentationMethod64ConfigPath
+    $env:MicrosoftInstrumentationEngine_ConfigPath32_TestMethod = $InstrumentationMethodConfigPath
+    $env:MicrosoftInstrumentationEngine_ConfigPath64_TestMethod = $InstrumentationMethodConfigPath
+}
+
+if ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') {
+    $env:MicrosoftInstrumentationEngine_RawProfilerHook = $RawProfilerHookGuid
+    $env:MicrosoftInstrumentationEngine_RawProfilerHookPath_32 = $RawProfilerHookPath
+    $env:MicrosoftInstrumentationEngine_RawProfilerHookPath_64 = $RawProfilerHookPath
 }
 
 Start-Process $ApplicationPath
