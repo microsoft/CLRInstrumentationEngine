@@ -29,6 +29,9 @@
 .PARAMETER DebugWait
     Optional, sets MicrosoftInstrumentationEngine_DebugWait which causes the ClrInstrumentationEngine to wait for a debugger to attach.
 
+.PARAMETER DisableSignatureValidation
+    Optional, sets MicrosoftInstrumentationEngine_DisableCodeSignatureValidation which allows CLRIE to use unsigned Instrumentation Methods.
+
 .PARAMETER ProxyUseDebug
     Optional, forces the CLRIE ProfilerProxy to look at CLRIE versions with "_Debug" suffix.
 
@@ -81,52 +84,107 @@ param(
     $ProxyUsePreview
 )
 
-# COR_PROFILER variables
-$env:COR_ENABLE_PROFILING = 1
-$env:COR_PROFILER = "{324F817A-7420-4E6D-B3C1-143FBED6D855}"
-$env:COR_PROFILER_PATH_32 = "C:\Program Files (x86)\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x86.dll"
-$env:COR_PROFILER_PATH_64 = "C:\Program Files\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x64.dll"
-$env:CORECLR_ENABLE_PROFILING = 1
-$env:CORECLR_PROFILER = "{324F817A-7420-4E6D-B3C1-143FBED6D855}"
-$env:CORECLR_PROFILER_PATH_32 = "C:\Program Files (x86)\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x86.dll"
-$env:CORECLR_PROFILER_PATH_64 = "C:\Program Files\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x64.dll"
-
-# CLRIE variables
-if ($DebugWait) {
-    $env:MicrosoftInstrumentationEngine_DebugWait = 1
-} else {
-    $env:MicrosoftInstrumentationEngine_DebugWait = 0
-}
-
-if ($DisableSignatureValidation) {
-    $env:MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 1
-} else {
-    $env:MicrosoftInstrumentationEngine_DisableCodeSignatureValidation = 0
-}
-
-# ProfilerProxy variables
-if ($ProxyUseDebug) {
-    $env:InstrumentationEngineProxy_UseDebug = 1
-} else {
-    $env:InstrumentationEngineProxy_UseDebug = 0
-}
-
-if ($ProxyUsePreview) {
-    $env:InstrumentationEngineProxy_UsePreview = 1
-} else {
-    $env:InstrumentationEngineProxy_UsePreview = 0
-}
-
-# Instrumentation Method variables
-if ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod') {
-    $env:MicrosoftInstrumentationEngine_ConfigPath32_TestMethod = $InstrumentationMethodConfigPath
-    $env:MicrosoftInstrumentationEngine_ConfigPath64_TestMethod = $InstrumentationMethodConfigPath
-}
-
-if ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') {
-    $env:MicrosoftInstrumentationEngine_RawProfilerHook = $RawProfilerHookGuid
-    $env:MicrosoftInstrumentationEngine_RawProfilerHookPath_32 = $RawProfilerHookPath
-    $env:MicrosoftInstrumentationEngine_RawProfilerHookPath_64 = $RawProfilerHookPath
+# CLRIE configuration variables
+@(
+    # COR_PROFILER
+    @{
+        name   = 'COR_ENABLE_PROFILING'
+        value  = 1
+        enable = $true
+    }
+    @{
+        name   = 'COR_PROFILER'
+        value  = '{324F817A-7420-4E6D-B3C1-143FBED6D855}'
+        enable = $true
+    }
+    @{
+        name   = 'COR_PROFILER_PATH_32'
+        value  = "${env:ProgramFiles(x86)}\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x86.dll"
+        enable = $true
+    }
+    @{
+        name   = 'COR_PROFILER_PATH_64'
+        value  = "$env:ProgramFiles\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x64.dll"
+        enable = $true
+    }
+    @{
+        name   = 'CORECLR_ENABLE_PROFILING'
+        value  = 1
+        enable = $true
+    }
+    @{
+        name   = 'CORECLR_PROFILER'
+        value  = '{324F817A-7420-4E6D-B3C1-143FBED6D855}'
+        enable = $true
+    }
+    @{
+        name   = 'CORECLR_PROFILER_PATH_32'
+        value  = "${env:ProgramFiles(x86)}\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x86.dll"
+        enable = $true
+    }
+    @{
+        name   = 'CORECLR_PROFILER_PATH_64'
+        value  = "$env:ProgramFiles\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x64.dll"
+        enable = $true
+    }
+    # CLRIE-specifie
+    @{
+        name   = "MicrosoftInstrumentationEngine_DebugWait"
+        value  = 1
+        enable = $DebugWait
+    }
+    @{
+        name   = 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation'
+        value  = 1
+        enable = $DisableSignatureValidation
+    }
+    # Proxy-specific
+    @{
+        name   = 'InstrumentationEngineProxy_UseDebug'
+        value  = 1
+        enable = $ProxyUseDebug
+    }
+    @{
+        name   = 'InstrumentationEngineProxy_UsePreview'
+        value  = 1
+        enable = $ProxyUsePreview
+    }
+    # Instrumentation Method
+    @{
+        name   = 'MicrosoftInstrumentationEngine_ConfigPath32_TestMethod'
+        value  = $InstrumentationMethodConfigPath
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod')
+    }
+    @{
+        name   = 'MicrosoftInstrumentationEngine_ConfigPath64_TestMethod'
+        value  = $InstrumentationMethodConfigPath
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod')
+    }
+    # Raw Profiler Hook
+    @{
+        name   = 'MicrosoftInstrumentationEngine_RawProfilerHook'
+        value  = $RawProfilerHookGuid
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+    }
+    @{
+        name   = 'MicrosoftInstrumentationEngine_RawProfilerHookPath_32'
+        value  = $RawProfilerHookPath
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+    }
+    @{
+        name   = 'MicrosoftInstrumentationEngine_RawProfilerHookPath_64'
+        value  = $RawProfilerHookPath
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+    }
+) | ForEach-Object {
+    $envVarPath = "Env:\$($_.name)"
+    if ($_.enable) {
+        Write-Verbose "Set $($_.name) = $($_.value)"
+        New-Item -Path $envVarPath -Value $_.value -Force | Out-Null
+    } elseif (Test-Path $envVarPath) {
+        Write-Verbose "Removed $($_.name)"
+        Remove-Item -Path $envVarPath
+    }
 }
 
 Start-Process $ApplicationPath
