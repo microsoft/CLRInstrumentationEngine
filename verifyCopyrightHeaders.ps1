@@ -18,6 +18,7 @@ $excludedDirs =  @(
     'obj'
     'package'
     'Release'
+    'out'
 
     # external
     'atl'
@@ -50,12 +51,17 @@ $excludedFiles = @(
     'extension.xml'
 
     # generated
+    'ExtensionsHost_i.c'
+    'ExtensionsHost_i.h'
+    'ExtensionsHost_p.c'
     'HostExtension_i.c'
     'HostExtension_i.h'
     'InstrumentationEngine.h'
     'InstrumentationEngine_api.cpp'
     'RawProfilerHook_i.c'
     'RawProfilerHook_i.h'
+    'dlldata.c'
+    'build.sem'
 
     # the license itself
     'LICENSE'

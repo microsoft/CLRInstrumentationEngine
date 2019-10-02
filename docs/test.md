@@ -1,5 +1,11 @@
 # Testing the CLR Instrumentation Engine.
 
+## Testing locally
+
+### Windows
+
+The [WindowsLocalTest.ps1](../src/Scripts/WindowsLocalTest.ps1) script requires installing the ClrInstrumentationEngine msi or msm and launches a user-specified application (or another PowerShell process) with the COR_PROFILER environment variables set. The script takes switch parameters to configure several environment variables (like DebugWait) as well as one InstrumentationMethod config path and RawProfilerHook Guid and path.
+
 ## Running unit tests locally
 
 ### Windows
