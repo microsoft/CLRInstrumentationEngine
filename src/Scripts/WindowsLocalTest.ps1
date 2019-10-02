@@ -127,7 +127,7 @@ param(
         value  = "$env:ProgramFiles\Microsoft CLR Instrumentation Engine\Proxy\v1\InstrumentationEngine.ProfilerProxy_x64.dll"
         enable = $true
     }
-    # CLRIE-specifie
+    # CLRIE-specific
     @{
         name   = "MicrosoftInstrumentationEngine_DebugWait"
         value  = 1
