@@ -547,7 +547,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
         {
             m_instrumentationMethods.push_back(TInstrumentationMethodsCollection::value_type(std::shared_ptr<CInstrumentationMethod>(pInstrumentationMethod), dwFlags));
         }
-
     }
 
     IfFailRet(pInstrumentationMethod->GetRawInstrumentationMethod(ppInstrumentationMethod));
@@ -3382,7 +3381,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     std::vector<WCHAR> modulePath(cchModulePath);
                     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, modulePath.data(), nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: %s\r\n"), modulePath.data());
+                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: %s\r\n"), modulePath.data());
 
                     // Get MethodInfo
 
@@ -3406,7 +3405,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
                     ULONG rva;
                     ((CMethodInfo*)pMethodInfo)->GetCodeRva(&rva);
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for %s with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for %s with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
                 }
             }
 
