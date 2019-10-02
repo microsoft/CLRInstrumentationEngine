@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.28
++ Updates:
+  + Add bitness to RawProfilerHook environment variables
 
 # 1.0.27
 + New:
