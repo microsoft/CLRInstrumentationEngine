@@ -36,10 +36,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionCallbacks.tt</DependentUpon>
     </Compile>
-    <None Include="BeginCallbacks.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BeginCallbacks.cs</LastGenOutput>
-    </None>
     <Compile Include="PublicContract.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -47,6 +43,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BeginCallbacks.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BeginCallbacks.cs</LastGenOutput>
+    </None>
     <None Include="EndCallbacks.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>EndCallbacks.cs</LastGenOutput>
@@ -55,8 +55,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ExceptionCallbacks.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="PublicContract.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PublicContract.cs</LastGenOutput>

@@ -56,7 +56,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(_In_ 
         CSignatureValidator validator;
         if (FALSE == validator.VerifyEmbeddedSignature(wszModuleFullPath))
         {
-            CLogging::LogError(_T("CInstrumentationMethod::Initialize - Instrumentaiton Method should be code signed"));
+            CLogging::LogError(_T("CInstrumentationMethod::Initialize - Instrumentation Method should be code signed"));
             FreeLibrary(m_hmod);
             return E_FAIL;
         }
