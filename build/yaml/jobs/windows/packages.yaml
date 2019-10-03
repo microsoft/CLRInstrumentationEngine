@@ -15,7 +15,7 @@ jobs:
     matrix:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
   pool:
-    name: VSEng-MicroBuildVS2017
+    name: VSEng-MicroBuildVS2019
     demands:
     - msbuild
     - vstest
