@@ -169,8 +169,6 @@ HRESULT MicrosoftInstrumentationEngine::CLocalVariableCollection::CommitSignatur
     }
 
     HRESULT hr;
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
 
     CComPtr<ISignatureBuilder> signatureBuilder;
     IfFailRet(this->GetCorSignature(&signatureBuilder));
