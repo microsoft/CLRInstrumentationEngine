@@ -18,19 +18,6 @@
 
 using namespace ATL;
 
-// static
-MicrosoftInstrumentationEngine::CProfilerManager* MicrosoftInstrumentationEngine::CProfilerManager::s_profilerManagerInstance = NULL;
-//static
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerManagerInstance(_Out_ CProfilerManager** ppProfilerManager)
-{
-    HRESULT hr = S_OK;
-
-    *ppProfilerManager = s_profilerManagerInstance;
-    (*ppProfilerManager)->AddRef();
-
-    return hr;
-}
-
 MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
     m_bProfilingDisabled(false),
     m_dwEventMask(GetDefaultEventMask()),
@@ -109,7 +96,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
     IfFailRet(CoCreateFreeThreadedMarshaler((IUnknown*)(ATL::CComObjectRootEx<ATL::CComMultiThreadModel>*)(this), (IUnknown**)&m_pFTM));
 #endif
 
-    m_pAppDomainCollection.Attach(new CAppDomainCollection);
+    m_pAppDomainCollection.Attach(new CAppDomainCollection(this));
     if (m_pAppDomainCollection == NULL)
     {
         return E_OUTOFMEMORY;
@@ -666,20 +653,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
     CInitializeHolder initHolder(this);
-
-    if (s_profilerManagerInstance != NULL)
-    {
-        return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
-    }
-    s_profilerManagerInstance = this;
-
-    // TODO: this will be called once for each instance of the clr in the process.
-    // For in-proc sxs, this means the host may create multiple instances of this object.
-    // TODO: Need to figure out how to deal with this. Colin believes "choose first" may be good enough.
-    // However, need feedback from Tofino on this issue.
-    //
-    // See David Browman's blog on the issue:
-    // http://blogs.msdn.com/b/davbr/archive/2010/08/25/profilers-in-process-side-by-side-clr-instances-and-a-free-test-harness.aspx
 
     IfFailRet(pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo), (LPVOID*)&m_pRealProfilerInfo));
 
@@ -1250,54 +1223,6 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadFinished, assemblyId, hrStatus));
 
     return hr;
-}
-
-LoggingFlags MicrosoftInstrumentationEngine::CProfilerManager::ExtractLoggingFlags(
-    _In_ LPCWSTR wszRequestedFlagNames,
-    _In_ LoggingFlags allowedFlags
-    )
-{
-    if (nullptr == wszRequestedFlagNames)
-    {
-        return LoggingFlags_None;
-    }
-
-    // If the request is for all logging flags, just return the allowable flags
-    if (wcsstr(wszRequestedFlagNames, _T("All")) != nullptr)
-    {
-        return allowedFlags;
-    }
-
-    // For each logging flag, check that the named flag was specified and that the log flag is something
-    // that we are actually trying to find. Combine the results of each (since each result will be a
-    // single flag) and return the combination.
-    return (LoggingFlags)(
-        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Errors"), LoggingFlags_Errors) |
-        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Messages"), LoggingFlags_Trace) |
-        ExtractLoggingFlag(wszRequestedFlagNames, allowedFlags, _T("Dumps"), LoggingFlags_InstrumentationResults)
-        );
-}
-
-LoggingFlags MicrosoftInstrumentationEngine::CProfilerManager::ExtractLoggingFlag(
-    _In_ LPCWSTR wszRequestedFlagNames,
-    _In_ LoggingFlags allowedFlags,
-    _In_ LPCWSTR wszSingleTestFlagName,
-    _In_ LoggingFlags singleTestFlag
-    )
-{
-    if (nullptr == wszRequestedFlagNames || nullptr == wszSingleTestFlagName)
-    {
-        return LoggingFlags_None;
-    }
-
-    // Test that the desired flag is in the combination of flags that are allowed to be checked.
-    // Additionally, check that the name of the flag is in the string that specifies what types
-    // of messages are requested to be logged.
-    if (IsFlagSet(allowedFlags, singleTestFlag) && wcsstr(wszRequestedFlagNames, wszSingleTestFlagName) != nullptr)
-    {
-        return singleTestFlag;
-    }
-    return LoggingFlags_None;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadStarted(
@@ -3074,7 +2999,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAssemblyInfo(
 
 
     CComPtr<CAssemblyInfo> pAssemblyInfo;
-    pAssemblyInfo.Attach(new CAssemblyInfo());
+    pAssemblyInfo.Attach(new CAssemblyInfo(this));
     if (pAssemblyInfo == nullptr)
     {
         return E_OUTOFMEMORY;
@@ -3144,7 +3069,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
     m_pRealProfilerInfo->GetModuleMetaData (moduleId, ofRead | ofWrite, IID_IMetaDataAssemblyEmit, (IUnknown**)&pMetaDataAssemblyEmit);
 
     CComPtr<CModuleInfo> pModuleInfo;
-    pModuleInfo.Attach(new CModuleInfo);
+    pModuleInfo.Attach(new CModuleInfo(this));
     if (pModuleInfo == nullptr)
     {
         return E_OUTOFMEMORY;
@@ -3243,7 +3168,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ 
 
 
     CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - creating new method info"));
-    pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+    pMethodInfo.Attach(new CMethodInfo(this, functionId, functionToken, classId, pModuleInfo, NULL));
 
     IfFailRet(pMethodInfo->Initialize(true, false));
 
@@ -3281,7 +3206,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_I
 
     CComPtr<CMethodInfo> pMethodInfo;
     CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - creating new method info"));
-    pMethodInfo.Attach(new CMethodInfo(functionId, functionToken, classId, pModuleInfo, NULL));
+    pMethodInfo.Attach(new CMethodInfo(this, functionId, functionToken, classId, pModuleInfo, NULL));
 
     IfFailRet(pMethodInfo->Initialize(false, false));
 
@@ -3289,6 +3214,49 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_I
 
     CLogging::LogMessage(_T("End CProfilerManager::CreateNewMethodInfo"));
 
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo)
+{
+    IfNullRetPointer(pMethodInfo);
+
+    if (functionId == 0)
+    {
+        CLogging::LogError(_T("CProfilerManager::AddMethodInfoToMap - cannot add to method info map without a function id"));
+        return E_FAIL;
+    }
+
+    m_methodInfos.insert({ functionId, pMethodInfo });
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
+{
+    m_methodInfos.erase(functionId);
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+{
+    HRESULT hr = S_OK;
+    CLogging::LogMessage(_T("Starting CProfilerManager::GetMethodInfoById"));
+    IfNullRetPointer(ppMethodInfo);
+    *ppMethodInfo = NULL;
+
+    unordered_map<FunctionID, CComPtr<CMethodInfo>>::iterator it = m_methodInfos.find(functionId);
+    if (it != m_methodInfos.end())
+    {
+        CComPtr<CMethodInfo> pMethodInfo = it->second;
+        *ppMethodInfo = pMethodInfo.Detach();
+    }
+    else
+    {
+        CLogging::LogMessage(_T("CProfilerManager::GetMethodInfoById - No method info found"));
+        return E_FAIL;
+    }
+
+    CLogging::LogMessage(_T("End CProfilerManager::GetMethodInfoById"));
     return S_OK;
 }
 
@@ -3310,7 +3278,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfoForRej
 
     CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfoForRejit - creating new method info"));
     CComPtr<CMethodInfo> pMethodInfo;
-    pMethodInfo.Attach(new CMethodInfo(0, methodToken, 0, pModuleInfo, pFunctionControl));
+    pMethodInfo.Attach(new CMethodInfo(this, 0, methodToken, 0, pModuleInfo, pFunctionControl));
 
     IfFailRet(pMethodInfo->Initialize(false, true));
 

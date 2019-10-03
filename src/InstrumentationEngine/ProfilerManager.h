@@ -34,10 +34,6 @@ namespace MicrosoftInstrumentationEngine
                      public ICorProfilerCallback7
     {
     private:
-        // currently, the profiler manager does not support in-proc sxs.
-        // If this is non-null during the initialize call, the profiler attach is rejected.
-        static CProfilerManager* s_profilerManagerInstance;
-
         // Instrumentation methods can disabling profiling on this process before it starts by calling this during initialize.
         bool m_bProfilingDisabled;
 
@@ -102,6 +98,11 @@ namespace MicrosoftInstrumentationEngine
         // If flag set - only trusted instrumentation methods can be loaded
         bool m_bValidateCodeSignature;
 
+        // Map of method infos by function id. This is needed becasue some raw profiler
+        // callbacks only take a FunctionID instead of a moduleid / functionid
+        // these are cleaned up after instrumentation for the method is over.
+        std::unordered_map<FunctionID, CComPtr<CMethodInfo>> m_methodInfos;
+
         // private nested class for holding the raw pointers to the callbacks.
         // This just makes it easy to have the destructor do Release while allowing for
         // caching the qi results.
@@ -112,9 +113,9 @@ namespace MicrosoftInstrumentationEngine
             CComPtr<ICorProfilerCallback2> m_CorProfilerCallback2;
             CComPtr<ICorProfilerCallback3> m_CorProfilerCallback3;
             CComPtr<ICorProfilerCallback4> m_CorProfilerCallback4;
-			CComPtr<ICorProfilerCallback5> m_CorProfilerCallback5;
-			CComPtr<ICorProfilerCallback6> m_CorProfilerCallback6;
-			CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
+            CComPtr<ICorProfilerCallback5> m_CorProfilerCallback5;
+            CComPtr<ICorProfilerCallback6> m_CorProfilerCallback6;
+            CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
 
             IUnknown* GetMemberForInterface(REFGUID guidInterface)
             {
@@ -134,19 +135,19 @@ namespace MicrosoftInstrumentationEngine
                 {
                     return m_CorProfilerCallback4;
                 }
-				else if (guidInterface == __uuidof(ICorProfilerCallback5))
-				{
-					return m_CorProfilerCallback5;
-				}
-				else if (guidInterface == __uuidof(ICorProfilerCallback6))
-				{
-					return m_CorProfilerCallback6;
-				}
-				else if (guidInterface == __uuidof(ICorProfilerCallback7))
-				{
-					return m_CorProfilerCallback7;
-				}
-				else
+                else if (guidInterface == __uuidof(ICorProfilerCallback5))
+                {
+                    return m_CorProfilerCallback5;
+                }
+                else if (guidInterface == __uuidof(ICorProfilerCallback6))
+                {
+                    return m_CorProfilerCallback6;
+                }
+                else if (guidInterface == __uuidof(ICorProfilerCallback7))
+                {
+                    return m_CorProfilerCallback7;
+                }
+                else
                 {
                     CLogging::LogError(_T("CProfilerCallbackHolder::GetMemberForInterface Bogus interface member requested"));
                     return NULL;
@@ -182,8 +183,6 @@ namespace MicrosoftInstrumentationEngine
         void SetInitializingInstrumentationMethodFlags(_In_ DWORD dwFlags);
         DWORD GetInitializingInstrumentationMethodFlags() const;
 
-        static HRESULT GetProfilerManagerInstance(_Out_ CProfilerManager** ppProfilerManager);
-
         HRESULT GetEventMask(_Out_ DWORD* dwEventMask);
         HRESULT SetEventMask(DWORD dwEventMask);
         HRESULT GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh);
@@ -202,6 +201,10 @@ namespace MicrosoftInstrumentationEngine
         HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
         CLogging* GetLogging();
+
+        HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
+        HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
+        HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
         // IUnknown
     public:
@@ -381,19 +384,6 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
-        // Returns the LoggingFlags parsed from their representation in wszRequestedFlagNames so long as they are contained by allowedFlags.
-        LoggingFlags ExtractLoggingFlags(
-            _In_ LPCWSTR wszRequestedFlagNames,
-            _In_ LoggingFlags allowedFlags
-            );
-        // Returns the test flag if (1) it is a subset of the allowed flags and (2) the test flag name is contained by requested flag names.
-        LoggingFlags ExtractLoggingFlag(
-            _In_ LPCWSTR wszRequestedFlagNames,
-            _In_ LoggingFlags allowedFlags,
-            _In_ LPCWSTR wszSingleTestFlagName,
-            _In_ LoggingFlags singleTestFlag
-            );
-
         // IProfilerManager methods
     public:
         STDMETHOD(SetupProfilingEnvironment)(_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths);
@@ -433,8 +423,8 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod));
 
-		// Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
-		STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
+        STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
 
 
     // IProfilerManager2 Methods
@@ -1032,8 +1022,8 @@ public:
 #endif
 
 #define IGNORE_IN_NET20_BEGIN \
-	if (m_attachedClrVersion != ClrVersion_2) \
-	{ \
+    if (m_attachedClrVersion != ClrVersion_2) \
+    { \
 
 #define IGNORE_IN_NET20_END \
-	}
+    }
