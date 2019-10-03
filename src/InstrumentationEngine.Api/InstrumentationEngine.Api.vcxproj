@@ -28,7 +28,7 @@
     <ProjectGuid>{D68DA75E-9194-44CB-9196-FF7FDC7EA3D5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>InstrumentationEngine.Api</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
