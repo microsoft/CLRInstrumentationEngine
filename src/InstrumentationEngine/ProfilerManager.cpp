@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
+#include "ProfilerManagerWrapper.h"
 #include "MethodJitInfo.h"
 #include "CorProfilerInfoWrapper.h"
 #include "AssemblyInfo.h"
@@ -506,7 +507,9 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
             // InstrumentationMethod. Since we are using global lock - InstrumentationMethod can only set flags associated
             // with it in this thread.
             CInitializeInstrumentationMethodHolder initHolder(this);
-            hr = pInstrumentationMethod->Initialize(this, m_bValidateCodeSignature);
+            CComPtr<CProfilerManagerWrapper> pProfilerManagerWrapper;
+            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerWrapper(pInstrumentationMethod->GetClassId(), this));
+            hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper.Detach(), m_bValidateCodeSignature);
             dwFlags = GetInitializingInstrumentationMethodFlags();
         }
 
@@ -859,7 +862,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetEventMask2(_In_ DWO
     return S_OK;
 }
 
-MicrosoftInstrumentationEngine::ClrVersion MicrosoftInstrumentationEngine::CProfilerManager::GetAttachedClrVersion()
+ClrVersion CProfilerManager::GetAttachedClrVersion()
 {
     return m_attachedClrVersion;
 }

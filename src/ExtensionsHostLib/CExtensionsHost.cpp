@@ -26,7 +26,7 @@ using Agent::Diagnostics::Param;
 
 using namespace CommonLib;
 
-std::wstring configFilePattern = L"*.config";
+std::wstring configFilePattern = _T("*.config");
 
 // CExtensionsHost
 
@@ -84,7 +84,8 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     }
     else
     {
-        TraceError(_T("No Instrumentation method configs found to load in process %u."), GetCurrentProcessId());
+        TraceError(_T("No Instrumentation method configs found to load in process"),
+            Param(_T("pid"), GetCurrentProcessId()));
     }
 
     Agent::Host::CRawProfilerHookSettingsReader rawHookSettingsReader;
@@ -101,8 +102,8 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
     if (S_FALSE != hr)
     {
         TraceMsg(
-            L"Attempting to load raw profiler hook",
-            Param(L"path", strRawProfilerHookModulePath));
+            _T("Attempting to load raw profiler hook"),
+            Param(_T("path"), strRawProfilerHookModulePath));
 
         IfFalseRet(Agent::Io::PathUtils::Exists(strRawProfilerHookModulePath), E_NOT_SET);
 
@@ -118,13 +119,13 @@ _Check_return_ HRESULT CExtensionsHost::InternalInitialize(
             spRawProfilerHook,
             m_hRawHookModule));
 
-        TraceMsg(L"Raw profiler hook module loaded, component instance created");
+        TraceMsg(_T("Raw profiler hook module loaded, component instance created"));
 
         IfFailRet(spProfilerManager->AddRawProfilerHook(spRawProfilerHook));
     }
     else
     {
-        TraceMsg(L"Raw profiler hook module is not specified, skip loading.");
+        TraceMsg(_T("Raw profiler hook module is not specified, skip loading."));
     }
 
     return S_OK;

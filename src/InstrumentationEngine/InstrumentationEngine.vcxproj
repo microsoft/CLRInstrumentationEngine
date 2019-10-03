@@ -141,6 +141,7 @@
     <ClCompile Include="ModifierType.cpp" />
     <ClCompile Include="ModuleInfo.cpp" />
     <ClCompile Include="ProfilerManager.cpp" />
+    <ClCompile Include="ProfilerManagerWrapper.cpp" />
     <ClCompile Include="SignatureBuilder.cpp" />
     <ClCompile Include="SimpleType.cpp" />
     <ClCompile Include="SingleRetDefaultInstrumentation.cpp" />

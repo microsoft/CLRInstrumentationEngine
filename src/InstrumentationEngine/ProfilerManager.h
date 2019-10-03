@@ -200,12 +200,9 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
-        CLogging* GetLogging();
-
         HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
         HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
         HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
-
         // IUnknown
     public:
         BEGIN_COM_MAP(CProfilerManager)
@@ -241,10 +238,7 @@ namespace MicrosoftInstrumentationEngine
             _In_  LPVOID lpParameter
             );
 
-
         HRESULT LoadInstrumentationMethods(_In_ BSTR bstrConfigPath);
-
-        HRESULT ApplyInstrumentationMethodInstrumentation(_In_ CMethodInfo* pMethodInfo);
 
         HRESULT DetermineClrVersion();
 
@@ -425,7 +419,6 @@ namespace MicrosoftInstrumentationEngine
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
-
 
     // IProfilerManager2 Methods
     public:
@@ -926,7 +919,6 @@ namespace MicrosoftInstrumentationEngine
     OBJECT_ENTRY_AUTO(__uuidof(CProfilerManager), CProfilerManager);
 #endif
 
-
     // function called when a profiler callback swallows an exception to send the error report to watson as if
     // the app crashed
     void SendErrorReport(EXCEPTION_POINTERS* pException);
@@ -982,7 +974,6 @@ public:
         RestoreSEHTranslator();
     }
 };
-
 
 #define PROF_CALLBACK_BEGIN \
     CSEHTranslatorHolder translatorHolder; \
