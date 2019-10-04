@@ -44,6 +44,9 @@
 #include <unordered_map>
 #include "Logging.h"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/CriticalSectionHolder.h"
 
