@@ -31,6 +31,7 @@ param(
 )
 
 Import-Module "$PSScriptRoot\XdtHelper.psm1" -Force
+Add-Type -AssemblyName 'System.Xml.Linq'
 
 $ErrorActionPreference = 'Stop'
 
@@ -44,4 +45,6 @@ $params = @{
 Edit-XdtContent -XdtFile $xdtFile -XmlEntries (Get-ClrieXmlEntries @params)
 
 Write-Host "Saving changes..."
-Set-Content -Value $xdtFile.OuterXml -Path $OutputXdtFilePath -Force
+# This nicely formats the XML
+[System.Xml.Linq.XDocument] $doc = [System.Xml.Linq.XDocument]::Parse($xdtFile.OuterXml)
+Set-Content -Value $doc.ToString() -Path $OutputXdtFilePath -Force
