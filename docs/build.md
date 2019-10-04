@@ -40,13 +40,13 @@ testing with both our internal Microsoft products as well as the products of ext
 ### Windows
 
 On Windows we use MSBuild, with `.vcxproj` files to build native binaries and `.csproj` files to build the NuGet/Zip packages.
-1. Install Visual Studio 2017 with the following Workloads and Components:
+1. Install Visual Studio 2019 with the following Workloads and Components:
     - **[Workload]** .NET desktop development
     - **[Workload]** Desktop development with C++
-    - **[Component]** Windows 10 SDK (10.0.14393)
+    - **[Component]** Windows 10 SDK (10.0.18362)
     - **[Component]** Visual C++ ATL for x86 and x64
-    - **[Component]** VC++ 2017 version 15.8 v14.15 Libs for Spectre (x86 and x64)
-2. Open `InstrumentationEngine.sln` and `src/InstrumentationEngine.Packages.sln` in Visual Studio 2017
+    - **[Component]** VC++ 2019 version v14.2x Libs for Spectre (x86 and x64)
+2. Open `InstrumentationEngine.sln` and `src/InstrumentationEngine.Packages.sln` in Visual Studio 2019
 3. Either run "Build Solution" for a single configuration, or "Build > Batch Build..." to build all configurations
 (Debug|Release with x86|x64|AnyCPU).
 

@@ -5,7 +5,6 @@
 #include "CppUnitTest.h"
 #include <fstream>
 #include <sstream>
-#include <filesystem>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace fs = std::experimental::filesystem;

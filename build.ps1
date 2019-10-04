@@ -100,7 +100,7 @@ if (-not ($repoPath))
 }
 
 ###
-# Picks up msbuild from vs2017 installation
+# Picks up msbuild from vs2019 installation
 ###
 $VsRequirements = @(
     'Microsoft.Component.MSBuild'
@@ -124,12 +124,7 @@ if ($env:VisualStudioVersion)
 }
 
 $installationPath = Invoke-Expression "& $vswhere $filterArgs"
-$msbuild = Join-Path $installationPath 'MSBuild\15.0\bin\MSBuild.exe'
-if (-not (Test-Path $msbuild))
-{
-    $msbuild = Join-Path $installationPath 'MSBuild\Current\bin\MSBuild.exe'
-}
-
+$msbuild = Join-Path $installationPath 'MSBuild\Current\bin\MSBuild.exe'
 if (-not (Test-Path $msbuild))
 {
     $msbuild = Join-Path (Read-Host "Please enter the full path to your VS installation (eg. 'C:\Program Files (x86)\Microsoft Visual Studio\Preview\Enterprise)'`r`n") 'MSBuild\15.0\Bin\MSBuild.exe'

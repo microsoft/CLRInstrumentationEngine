@@ -25,12 +25,12 @@
     <ProjectGuid>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CommonLib</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(EnlistmentRoot)\build\ClrInstrumentationEngine.cpp.props" />
