@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#include "ProfilerManagerWrapper.h"
+#include "ProfilerManager.h"
 #include "LoggingWrapper.h"
 
 #ifndef PLATFORM_UNIX

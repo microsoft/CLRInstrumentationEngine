@@ -17,6 +17,9 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
+    // !!!IMPORTANT!!!
+    // CProfilerManagerWrapper implements the same interfaces (sans ICorProfilerCallback#) as this class.
+    // Make sure to update that class if CProfilerManager implements new interfaces.
     class __declspec(uuid("324F817A-7420-4E6D-B3C1-143FBED6D855"))
     CProfilerManager :
                      public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
@@ -858,20 +861,28 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(ModuleInMemorySymbolsUpdated)(
             _In_ ModuleID moduleId);
 
-     private:
-         // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
-         HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument);
+        // Internal public methods that are not part of interfaces.
+    public:
+        STDMETHOD(LogMessageEx)(_In_ const WCHAR* wszMessage, ...);
 
-         // Call CallBeforeInstrumentMethodOnInstrumentationMethods on each instrumentation method.
-         HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        STDMETHOD(LogErrorEx)(_In_ const WCHAR* wszError, ...);
 
-         // Call InstrumentMethod on each instrumentation method.
-         HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        STDMETHOD(LogDumpMessageEx)(_In_ const WCHAR* wszMessage, ...);
 
-         // Call InstrumentMethod on each instrumentation method.
-         HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+    private:
+        // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
+        HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument);
 
-         HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
+        // Call CallBeforeInstrumentMethodOnInstrumentationMethods on each instrumentation method.
+        HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+
+        // Call InstrumentMethod on each instrumentation method.
+        HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+
+        // Call InstrumentMethod on each instrumentation method.
+        HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+
+        HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _Out_ IInstrumentationMethod** ppInstrumentationMethod);

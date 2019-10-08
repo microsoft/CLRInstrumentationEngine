@@ -85,7 +85,7 @@ param(
 )
 
 # CLRIE configuration variables
-@(
+$configurationEnvironmentVariables = @(
     # COR_PROFILER
     @{
         name   = 'COR_ENABLE_PROFILING'
@@ -181,7 +181,9 @@ param(
         value  = $RawProfilerHookPath
         enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') -and $RawProfilerHookPath
     }
-) | ForEach-Object {
+)
+
+$configurationEnvironmentVariables | ForEach-Object {
     $envVarPath = "Env:\$($_.name)"
     if ($_.enable) {
         Write-Verbose "Set $($_.name) = $($_.value)"
@@ -195,5 +197,10 @@ param(
 Start-Process $ApplicationPath
 
 # This reverts the state of the caller to not be profiled
-$env:COR_ENABLE_PROFILING = 0
-$env:CORECLR_ENABLE_PROFILING = 0
+$configurationEnvironmentVariables | ForEach-Object {
+    $envVarPath = "Env:\$($_.name)"
+    if (Test-Path $envVarPath) {
+        Write-Verbose "Removed $($_.name)"
+        Remove-Item -Path $envVarPath
+    }
+}

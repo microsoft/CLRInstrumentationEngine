@@ -13,8 +13,8 @@ CInstrumentationMethod :
     public CComCoClass<CInstrumentationMethod, &__uuidof(CInstrumentationMethod)>
 {
 private:
-	static const WCHAR TestOutputPathEnvName[];
-	static const WCHAR TestScriptFileEnvName[];
+    static const WCHAR TestOutputPathEnvName[];
+    static const WCHAR TestScriptFileEnvName[];
     static const WCHAR TestScriptFolder[];
     static const WCHAR IsRejitEnvName[];
 
@@ -28,10 +28,10 @@ private:
 
     shared_ptr<CInjectAssembly> m_spInjectAssembly;
 
-	std::wstring m_strBinaryDir;
+    std::wstring m_strBinaryDir;
 
-    // Non-addref'd pointer to the profiler manager
-    IProfilerManager* m_pProfilerManager;
+    CComPtr<IProfilerManager> m_pProfilerManager;
+    CComPtr<IProfilerManagerLogging> m_pProfilerManagerLogger;
 
 public:
     CInstrumentationMethod() : m_typeMap
