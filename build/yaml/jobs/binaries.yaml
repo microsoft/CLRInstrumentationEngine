@@ -15,12 +15,15 @@ jobs:
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
+    # Filter out Tests for Signed Builds
     ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       CopyFilters: |
         **
         !**\Nagler*
         !**\*Test*
         !**\*Test*\**
+    # Publish Symbols only for Real Signed builds
+    ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None', 'Test') )}}:
       PublishSymbols: true
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
