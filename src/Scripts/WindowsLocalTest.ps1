@@ -85,7 +85,7 @@ param(
 )
 
 # CLRIE configuration variables
-@(
+$configurationEnvironmentVariables = @(
     # COR_PROFILER
     @{
         name   = 'COR_ENABLE_PROFILING'
@@ -138,6 +138,11 @@ param(
         value  = 1
         enable = $DisableSignatureValidation
     }
+    @{
+        name   = 'MicrosoftInstrumentationEngine_LogLevel'
+        value  = 'Errors'
+        enable = $true
+    }
     # Proxy-specific
     @{
         name   = 'InstrumentationEngineProxy_UseDebug'
@@ -164,19 +169,21 @@ param(
     @{
         name   = 'MicrosoftInstrumentationEngine_RawProfilerHook'
         value  = $RawProfilerHookGuid
-        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') -and $RawProfilerHookGuid
     }
     @{
         name   = 'MicrosoftInstrumentationEngine_RawProfilerHookPath_32'
         value  = $RawProfilerHookPath
-        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') -and $RawProfilerHookPath
     }
     @{
         name   = 'MicrosoftInstrumentationEngine_RawProfilerHookPath_64'
         value  = $RawProfilerHookPath
-        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook')
+        enable = ($PSCmdlet.ParameterSetName -ieq 'InstrumentationMethod' -or $PSCmdlet.ParameterSetName -ieq 'RawProfilerHook') -and $RawProfilerHookPath
     }
-) | ForEach-Object {
+)
+
+$configurationEnvironmentVariables | ForEach-Object {
     $envVarPath = "Env:\$($_.name)"
     if ($_.enable) {
         Write-Verbose "Set $($_.name) = $($_.value)"
@@ -188,3 +195,12 @@ param(
 }
 
 Start-Process $ApplicationPath
+
+# This reverts the state of the caller to not be profiled
+$configurationEnvironmentVariables | ForEach-Object {
+    $envVarPath = "Env:\$($_.name)"
+    if (Test-Path $envVarPath) {
+        Write-Verbose "Removed $($_.name)"
+        Remove-Item -Path $envVarPath
+    }
+}

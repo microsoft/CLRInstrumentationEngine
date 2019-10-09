@@ -28,7 +28,7 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<ICorProfilerInfo9> m_pRealCorProfilerInfo9;
         CComPtr<ICorProfilerInfo10> m_pRealCorProfilerInfo10;
 
-        // Non-addref'd Back pointer the profiler manager.
+        // Non-addref'd back pointer the profiler manager.
         CProfilerManager* m_pProfilerManager;
 
         CComPtr<CCorMethodMalloc> m_pMethodMalloc;
