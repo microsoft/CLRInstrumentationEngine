@@ -13,8 +13,8 @@
     <AssemblyOriginatorKeyFile>$(EnlistmentRoot)\build\Keys\testkeys.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(PublicRelease)' == 'True'">
-    <DefineConstants>$(DefineConstants);PUBLIC_RELEASE</DefineConstants>
+  <PropertyGroup Condition="'$(SignType)' == 'Real'">
+    <DefineConstants Condition="'$(PublicRelease)' == 'True'">$(DefineConstants);PUBLIC_RELEASE</DefineConstants>
     <DelaySign>true</DelaySign>
     <AssemblyOriginatorKeyFile>$(EnlistmentRoot)\build\Keys\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
