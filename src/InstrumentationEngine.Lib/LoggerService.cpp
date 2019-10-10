@@ -148,7 +148,7 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr)
 
     // Format and truncate the message
     WCHAR szLogEntry[LogEntryMaxSize];
-    _vsnwprintf_s(szLogEntry, _TRUNCATE, wszMessage, argptr);
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
     // Send formatted message to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_messageSinks)
@@ -179,7 +179,7 @@ void CLoggerService::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
 
     // Format and truncate the error
     WCHAR szLogEntry[LogEntryMaxSize];
-    _vsnwprintf_s(szLogEntry, _TRUNCATE, wszError, argptr);
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszError, argptr);
 
     // Send formatted error to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_errorSinks)
@@ -222,7 +222,7 @@ void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr
 
     // Format and truncate the message
     WCHAR szLogEntry[LogEntryMaxSize];
-    _vsnwprintf_s(szLogEntry, _TRUNCATE, wszMessage, argptr);
+    _vsnwprintf_s(szLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
     // Send formatted message to each sink
     for (shared_ptr<ILoggerSink>& pSink : m_dumpSinks)

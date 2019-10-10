@@ -7,7 +7,6 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-
     class CProfilerManagerWrapper :
         public IProfilerManager,
         public IProfilerManager2,
@@ -46,67 +45,67 @@ namespace MicrosoftInstrumentationEngine
 
         // IProfilerManager methods
     public:
-        STDMETHOD(SetupProfilingEnvironment)(_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths);
+        STDMETHOD(SetupProfilingEnvironment)(_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths) override;
 
         STDMETHOD(AddRawProfilerHook)(
             _In_ IUnknown *pUnkProfilerCallback
-            );
+            ) override;
 
         STDMETHOD(RemoveRawProfilerHook)(
-            );
+            ) override;
 
         STDMETHOD(GetCorProfilerInfo)(
             _Outptr_ IUnknown **ppCorProfiler
-            );
+            ) override;
 
-        STDMETHOD(GetRuntimeType)(_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType);
+        STDMETHOD(GetRuntimeType)(_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType) override;
 
-        STDMETHOD(GetProfilerHost)(_Out_ IProfilerManagerHost** ppProfilerManagerHost);
+        STDMETHOD(GetProfilerHost)(_Out_ IProfilerManagerHost** ppProfilerManagerHost) override;
 
-        STDMETHOD(GetLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+        STDMETHOD(GetLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging) override;
 
-        STDMETHOD(SetLoggingHost)(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost);
+        STDMETHOD(SetLoggingHost)(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost) override;
 
-        STDMETHOD(GetAppDomainCollection)(_Out_ IAppDomainCollection** ppAppDomainCollection);
+        STDMETHOD(GetAppDomainCollection)(_Out_ IAppDomainCollection** ppAppDomainCollection) override;
 
-        STDMETHOD(CreateSignatureBuilder)(_Out_ ISignatureBuilder ** ppSignatureBuilder);
+        STDMETHOD(CreateSignatureBuilder)(_Out_ ISignatureBuilder ** ppSignatureBuilder) override;
 
-        STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown);
+        STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown) override;
 
-        STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod));
+        STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod)) override;
 
-        STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod) override;
 
         // IProfilerManager2 Methods
     public:
-        STDMETHOD(DisableProfiling)();
+        STDMETHOD(DisableProfiling)() override;
 
-        STDMETHOD(ApplyMetadata)(_In_ IModuleInfo* pMethodInfo);
+        STDMETHOD(ApplyMetadata)(_In_ IModuleInfo* pMethodInfo) override;
 
         // IProfilerManager3 Methods
     public:
-        STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer);
+        STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer) override;
 
         // IProfilerManager4 Methods
     public:
-        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging) override;
 
         // IProfilerManager5 Methods
     public:
-        STDMETHOD(IsInstrumentationMethodRegistered)(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered);
+        STDMETHOD(IsInstrumentationMethodRegistered)(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered) override;
 
         // IProfilerManagerLogging Methods
     public:
-        STDMETHOD(LogMessage)(_In_ const WCHAR* wszMessage);
+        STDMETHOD(LogMessage)(_In_ const WCHAR* wszMessage) override;
 
-        STDMETHOD(LogError)(_In_ const WCHAR* wszError);
+        STDMETHOD(LogError)(_In_ const WCHAR* wszError) override;
 
-        STDMETHOD(LogDumpMessage)(_In_ const WCHAR* wszMessage);
+        STDMETHOD(LogDumpMessage)(_In_ const WCHAR* wszMessage) override;
 
-        STDMETHOD(EnableDiagnosticLogToDebugPort)(_In_ BOOL enable);
+        STDMETHOD(EnableDiagnosticLogToDebugPort)(_In_ BOOL enable) override;
 
-        STDMETHOD(GetLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags);
+        STDMETHOD(GetLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags) override;
 
-        STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags);
+        STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override;
     };
 }

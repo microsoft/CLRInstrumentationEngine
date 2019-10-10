@@ -26,7 +26,7 @@ using Agent::Diagnostics::Param;
 
 using namespace CommonLib;
 
-std::wstring configFilePattern = _T("*.config");
+tstring configFilePattern = _T("*.config");
 
 // CExtensionsHost
 

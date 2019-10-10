@@ -25,3 +25,5 @@ using namespace std;
 #include "../InstrumentationEngine.Lib/refcount.h"
 
 #endif
+
+#include "../Common.Lib/tstring.h"
