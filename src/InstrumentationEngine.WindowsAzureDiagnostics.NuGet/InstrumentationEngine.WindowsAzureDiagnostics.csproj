@@ -20,7 +20,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.WindowsAzureDiagnostics.nuspec</NuspecFile>
-    <MsiSuffix Condition=" '$(Configuration)' == 'Debug' ">_$(Configuration)</MsiSuffix>
     <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);bindir=$(InputBinCfgRoot)\x64</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -36,7 +35,6 @@
   <ItemGroup>
     <Content Include="$(InputBinCfgRoot)\x64\InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi">
       <Link>InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
