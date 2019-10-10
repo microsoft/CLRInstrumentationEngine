@@ -132,7 +132,7 @@ if (-not (Test-Path $msbuild))
 
 if (-not (Test-Path $msbuild))
 {
-    Write-Error 'Cannot find msbuild.exe. Please check your VS 2017 installation.'
+    Write-Error 'Cannot find msbuild.exe. Please check your VS installation.'
 }
 
 $msbuild = "`"$msbuild`""
@@ -218,7 +218,7 @@ if ($IncludeTests)
     $vstest = Join-Path $installationPath 'Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe'
     if (-not (Test-Path $vstest))
     {
-        Write-Error "Cannot find $vstest. Please check your VS 2017 installation."
+        Write-Error "Cannot find $vstest. Please check your VS installation."
     }
 
     $vstest = "`"$vstest`""
