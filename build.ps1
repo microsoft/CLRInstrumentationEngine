@@ -1,13 +1,63 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
+<#
+.SYNOPSIS
+    This script conducts a local build of CLRIE's binaries and package.
+
+.PARAMETER BuildVersion
+    Optional, the build version associated with this script invocation. Will be generated if not set.
+    This parameter allows rerunning failed builds (for example, testing packaging changes with -SkipBuild parameter)
+
+.PARAMETER IncludeTests
+    Optional, run unit tests after build steps are finished. NOTE, this requires the binaries to be built already.
+
+.PARAMETER SkipBuild
+    Optional, skips the binary build phase.
+
+.PARAMETER SkipPackaging
+    Optional, skips the package build phase.
+
+.PARAMETER SkipCleanAndRestore
+    Optional, the binary build phase will delete the bin & obj folders and reruns dotnet restore. This flag skips those steps during binary build.
+
+.PARAMETER Release
+    Optional, by default the build will run with Debug configuration. This flag switches to using Release configuration.
+
+.PARAMETER VerboseMsbuild
+    Optional, enables more verbose output for msbuild (great for investigating build failures). We recommend piping the output to a temp.log file:
+        .\build.ps1 -Verbose > temp.log
+#>
+[CmdletBinding()]
 param(
-    [switch] $IncludeTests,
-    [switch] $SkipBuild,
-    [switch] $SkipPackaging,
-    [switch] $SkipCleanAndRestore,
-    [switch] $Release,
-    [switch] $Verbose
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $BuildVersion,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $IncludeTests,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $SkipBuild,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $SkipPackaging,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $SkipCleanAndRestore,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $Release,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $VerboseMsbuild
 )
 
 $ErrorActionPreference = 'Stop'
@@ -22,14 +72,14 @@ function Invoke-ExpressionHelper
         [string] $Activity
     )
 
-    Write-Host -Verbose "Running '$Activity'..." -ForegroundColor Green -BackgroundColor Black
+    Write-Host "Running '$Activity'..." -ForegroundColor Green -BackgroundColor Black
 
     $progress = 1.0
 
     foreach ($arg in $Arguments)
     {
         Write-Progress -Activity $Activity -Status "Percent Complete: $([Math]::Round($progress/$Arguments.Count, 2) * 100)%" -PercentComplete ($progress/$Arguments.Count * 100)
-        Write-Verbose -Verbose "[ $Executable $arg ]"
+        Write-Verbose "[ $Executable $arg ]"
 
         Invoke-Expression "& $Executable $arg"
 
@@ -58,7 +108,7 @@ function Verify-DotnetExists
 ###
 # Set variables
 ###
-if ($Verbose)
+if ($VerboseMsbuild)
 {
     $clParams = "Verbosity=d"
 }
@@ -76,7 +126,10 @@ else
     $configuration = "Debug"
 }
 
-$BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
+if (!$BuildVersion)
+{
+    $BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
+}
 
 $SignType = 'None' # Used for internal testing of signing.
 
@@ -86,7 +139,7 @@ $SignType = 'None' # Used for internal testing of signing.
 try { $repoRoot = (Get-Item $PSCommandPath).Directory.FullName } catch { } # ignore terminating errors
 if ($repoRoot)
 {
-    Write-Verbose -Verbose "Checking if [$repoRoot] is the CLR Instrumentation Engine repo"
+    Write-Verbose "Checking if [$repoRoot] is the CLR Instrumentation Engine repo"
     $repoMarker = Join-Path $repoRoot 'EnlistmentRoot.marker'
     if (Test-Path $repoMarker -ErrorAction SilentlyContinue)
     {
@@ -109,7 +162,7 @@ $VsRequirements = @(
     'Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre'
 )
 
-Write-Verbose -Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
+Write-Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
 $filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
 
@@ -132,7 +185,7 @@ if (-not (Test-Path $msbuild))
 
 if (-not (Test-Path $msbuild))
 {
-    Write-Error 'Cannot find msbuild.exe. Please check your VS 2017 installation.'
+    Write-Error 'Cannot find msbuild.exe. Please check your VS installation.'
 }
 
 $msbuild = "`"$msbuild`""
@@ -212,13 +265,13 @@ if (!$SkipPackaging)
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
-# Build Tests
+# Run Unit Tests
 if ($IncludeTests)
 {
     $vstest = Join-Path $installationPath 'Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe'
     if (-not (Test-Path $vstest))
     {
-        Write-Error "Cannot find $vstest. Please check your VS 2017 installation."
+        Write-Error "Cannot find $vstest. Please check your VS installation."
     }
 
     $vstest = "`"$vstest`""
