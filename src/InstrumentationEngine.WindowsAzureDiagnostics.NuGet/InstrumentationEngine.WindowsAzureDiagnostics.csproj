@@ -21,7 +21,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.WindowsAzureDiagnostics.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);bindir=$(InputBinCfgRoot)\x64</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)\x64</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{CFFCDAC0-38D2-444E-83D0-49B74C9249F9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,7 +33,7 @@
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(InputBinCfgRoot)\x64\InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi">
+    <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi">
       <Link>InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi</Link>
     </Content>
   </ItemGroup>
