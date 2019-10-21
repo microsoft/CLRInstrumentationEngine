@@ -5,7 +5,7 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetExt>.nupkg</TargetExt>
-    <PackageId>Microsoft.InstrumentationEngine.WindowsAzureDiagnostics</PackageId>
+    <PackageId>Microsoft.InstrumentationEngine.Installer</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,13 +19,13 @@
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>InstrumentationEngine.WindowsAzureDiagnostics.nuspec</NuspecFile>
+    <NuspecFile>InstrumentationEngine.Installer.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
     <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)\x64</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{CFFCDAC0-38D2-444E-83D0-49B74C9249F9}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.InstrumentationEngine.WindowsAzureDiagnostics</RootNamespace>
+    <RootNamespace>Microsoft.InstrumentationEngine.Installer</RootNamespace>
     <NoWarn>2008</NoWarn>
     <Platforms>x64</Platforms>
   </PropertyGroup>
