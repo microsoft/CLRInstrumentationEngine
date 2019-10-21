@@ -11,8 +11,12 @@ Please format the changes as follows:
 + New:
   + Add support for profiling all CLRs within the same process
   + Add ProfilerManagerWrapper to host Instrumentation Methods
+  + Add local .ps1 testing script
++ BugFixes:
+  + Fix index & publish symbols (Windows)
 + Updates:
   + Add bitness to RawProfilerHook environment variables
+  + Update CLRIE to build with VS 2019
 
 # 1.0.27
 + New:
