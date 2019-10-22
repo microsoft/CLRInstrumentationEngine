@@ -52,6 +52,7 @@
     <EmbeddedResource Include="EmbeddedResources\InjectToMscorlibTest.cs" />
     <EmbeddedResource Include="EmbeddedResources\HttpMethodTests.cs" />
     <EmbeddedResource Include="EmbeddedResources\DynamicCodeTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\MethodLoggingTests.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="RuntimeExceptionCallbacks.cs" />
     <Compile Include="TestConstants.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="TestAddInstruction.cs" />
     <Compile Include="TestException.cs" />
     <Compile Include="TestRoundTrip.cs" />
+    <Compile Include="MethodLogging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +231,10 @@
       <Link>Baselines\DynamicEmittedCode.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\MethodLogging.xml">
+      <Link>Baselines\MethodLogging.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">
       <Link>TestScripts\AddMultiNop_IfTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -379,6 +385,10 @@
     </Content>
     <Content Include="..\TestScripts\DynamicEmittedCode.xml">
       <Link>TestScripts\DynamicEmittedCode.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\MethodLogging.xml">
+      <Link>TestScripts\MethodLogging.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

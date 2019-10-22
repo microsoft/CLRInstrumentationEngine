@@ -20,7 +20,16 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 
     DWORD retVal = WaitForSingleObject(hConfigThread, 15000);
 
-    if (m_bExceptionTrackingEnabled)
+    if (m_bTestInstrumentationMethodLogging)
+    {
+        pProfilerManager->GetLoggingInstance(&m_pProfilerManagerInstanceLogger);
+
+        CComQIPtr<IProfilerManager4> pProfilerManager4 = pProfilerManager;
+        pProfilerManager4->GetGlobalLoggingInstance(&m_pProfilerManagerLogger);
+        m_pProfilerManagerLogger->LogDumpMessage(_T("<InstrumentationMethodLog>"));
+        m_pProfilerManagerInstanceLogger->LogDumpMessage(_T("Success!"));
+    }
+    else if (m_bExceptionTrackingEnabled)
     {
         CComPtr<ICorProfilerInfo> pCorProfilerInfo;
         pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo);
@@ -127,6 +136,10 @@ HRESULT CInstrumentationMethod::LoadTestScript()
             shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
             ProcessInjectAssembly(pCurrChildNode, spNewInjectAssembly);
             m_spInjectAssembly = spNewInjectAssembly;
+        }
+        else if (wcscmp(bstrCurrNodeName, L"MethodLogging") == 0)
+        {
+            m_bTestInstrumentationMethodLogging = true;
         }
         else if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
         {
@@ -699,6 +712,11 @@ HRESULT CInstrumentationMethod::OnShutdown()
     {
         m_pProfilerManagerLogger->LogDumpMessage(_T("</ExceptionTrace>\r\n"));
     }
+    else if (m_bTestInstrumentationMethodLogging)
+    {
+        m_pProfilerManagerLogger->LogDumpMessage(_T("</InstrumentationMethodLog>"));
+    }
+
     return S_OK;
 }
 
@@ -1140,13 +1158,11 @@ HRESULT CInstrumentationMethod::GetType(IModuleInfo* pModuleInfo, const CLocalTy
     return hr;
 }
 
-
 HRESULT CInstrumentationMethod::AllowInlineSite(_In_ IMethodInfo* pMethodInfoInlinee, _In_ IMethodInfo* pMethodInfoCaller, _Out_ BOOL* pbAllowInline)
 {
     *pbAllowInline = FALSE;
     return S_OK;
 }
-
 
 HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
     _In_ IMethodInfo* pMethodInfo,

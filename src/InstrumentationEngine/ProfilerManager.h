@@ -17,9 +17,19 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
-    // !!!IMPORTANT!!!
-    // CProfilerManagerWrapper implements the same interfaces (sans ICorProfilerCallback#) as this class.
-    // Make sure to update that class if CProfilerManager implements new interfaces.
+    // This abstract class should be updated with new IProfilerManager interfaces.
+    // Both CProfilerManager and CProfilerManagerWrapper inherit this class.
+    class IProfilerManagerContract :
+        public IProfilerManager,
+        public IProfilerManager2,
+        public IProfilerManager3,
+        public IProfilerManager4,
+        public IProfilerManager5,
+        public IProfilerManagerLogging
+    {
+
+    };
+
     class __declspec(uuid("324F817A-7420-4E6D-B3C1-143FBED6D855"))
     CProfilerManager :
                      public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
@@ -28,12 +38,7 @@ namespace MicrosoftInstrumentationEngine
 #else
                      public ATL::CComCoClass<CProfilerManager, &CLSID_CProfilerManager>,
 #endif
-                     public IProfilerManager,
-                     public IProfilerManager2,
-                     public IProfilerManager3,
-                     public IProfilerManager4,
-                     public IProfilerManager5,
-                     public IProfilerManagerLogging,
+                     public IProfilerManagerContract,
                      public ICorProfilerCallback7
     {
     private:

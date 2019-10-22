@@ -25,12 +25,14 @@ private:
     unordered_map<IMethodInfo*, shared_ptr<CInstrumentMethodEntry>> m_methodInfoToEntryMap;
 
     bool m_bExceptionTrackingEnabled;
+    bool m_bTestInstrumentationMethodLogging;
 
     shared_ptr<CInjectAssembly> m_spInjectAssembly;
 
     std::wstring m_strBinaryDir;
 
     CComPtr<IProfilerManager> m_pProfilerManager;
+    CComPtr<IProfilerManagerLogging> m_pProfilerManagerInstanceLogger;
     CComPtr<IProfilerManagerLogging> m_pProfilerManagerLogger;
 
 public:
@@ -59,6 +61,7 @@ public:
         { L"System.Object", ELEMENT_TYPE_OBJECT },
     }),
     m_bExceptionTrackingEnabled(false),
+    m_bTestInstrumentationMethodLogging(false),
     m_spInjectAssembly(nullptr)
     {
     }

@@ -8,12 +8,7 @@
 namespace MicrosoftInstrumentationEngine
 {
     class CProfilerManagerWrapper :
-        public IProfilerManager,
-        public IProfilerManager2,
-        public IProfilerManager3,
-        public IProfilerManager4,
-        public IProfilerManager5,
-        public IProfilerManagerLogging,
+        public IProfilerManagerContract,
         public CModuleRefCount
     {
     public:
@@ -31,6 +26,7 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CProfilerManagerWrapper);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
+            // TODO: pull these interfaces from IProfilerManagerContract instead.
             return ImplQueryInterface(
                 static_cast<IProfilerManager*>(this),
                 static_cast<IProfilerManager2*>(this),

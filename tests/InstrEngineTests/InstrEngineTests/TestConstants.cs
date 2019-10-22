@@ -11,6 +11,6 @@ namespace InstrEngineTests
 {
     internal class TestConstants
     {
-        public const int TestTimeout = 60000; //Int32.MaxValue;
+        public const int TestTimeout = Int32.MaxValue; //60000
     }
 }

@@ -23,7 +23,7 @@
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>69</Offset>
-      </Instruction>	
+      </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>71</Offset>
@@ -31,7 +31,7 @@
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>101</Offset>
-      </Instruction>	
+      </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>118</Offset>
@@ -39,7 +39,7 @@
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>117</Offset>
-      </Instruction>	  
+      </Instruction>
     </Instructions>
   </InstrumentMethod>
 </InstrumentationTestScript>

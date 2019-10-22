@@ -8,8 +8,9 @@
 #include "ProfilerManager.h"
 #include "ProfilerManagerWrapper.h"
 
-//static
-LPCWSTR CProfilerManagerWrapper::wszLogFormattablePrefix = _T("[IM:%s]");
+#ifndef FORMATTABLE_PREFIX
+#define FORMATTABLE_PREFIX _T("[IM:%s]")
+#endif
 
 CProfilerManagerWrapper::CProfilerManagerWrapper(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager)
 {
@@ -150,8 +151,20 @@ HRESULT CProfilerManagerWrapper::IsInstrumentationMethodRegistered(_In_ REFGUID 
 HRESULT CProfilerManagerWrapper::LogMessage(_In_ const WCHAR* wszMessage)
 {
     HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = _T("[IM:%s]");
-    IfFailRetErrno(wcscat_s(wszBuffer, wszMessage));
+    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
+    tstring tsMessage = wszMessage;
+    tstring tsEscapedMessage;
+    for (tstring::iterator it = tsMessage.begin(); it < tsMessage.end(); it++)
+    {
+        // Escape any existing format strings to avoid conflicts with the FORMATTABLE_PREFIX
+        if (*it == L'%')
+        {
+            tsEscapedMessage.push_back(*it);
+        }
+        tsEscapedMessage.push_back(*it);
+    }
+    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
 
     return m_pProfilerManager->LogMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 }
@@ -162,8 +175,21 @@ HRESULT CProfilerManagerWrapper::LogMessage(_In_ const WCHAR* wszMessage)
 HRESULT CProfilerManagerWrapper::LogError(_In_ const WCHAR* wszError)
 {
     HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = _T("[IM:%s]");
-    IfFailRetErrno(wcscat_s(wszBuffer, wszError));
+    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
+    tstring tsMessage = wszError;
+    tstring tsEscapedMessage;
+    for (tstring::iterator it = tsMessage.begin(); it < tsMessage.end(); it++)
+    {
+        // Escape any existing format strings to avoid conflicts with the FORMATTABLE_PREFIX
+        if (*it == L'%')
+        {
+            tsEscapedMessage.push_back(*it);
+        }
+
+        tsEscapedMessage.push_back(*it);
+    }
+    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
 
     return m_pProfilerManager->LogErrorEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 }
@@ -174,9 +200,21 @@ HRESULT CProfilerManagerWrapper::LogError(_In_ const WCHAR* wszError)
 HRESULT CProfilerManagerWrapper::LogDumpMessage(_In_ const WCHAR* wszMessage)
 {
     HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = _T("[IM:%s]");
-    IfFailRetErrno(wcscat_s(wszBuffer, wszMessage));
+    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
+    tstring tsMessage = wszMessage;
+    tstring tsEscapedMessage;
+    for (tstring::iterator it = tsMessage.begin(); it < tsMessage.end(); it++)
+    {
+        // Escape any existing format strings to avoid conflicts with the FORMATTABLE_PREFIX
+        if (*it == L'%')
+        {
+            tsEscapedMessage.push_back(*it);
+        }
 
+        tsEscapedMessage.push_back(*it);
+    }
+    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
     return m_pProfilerManager->LogDumpMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 
 }
@@ -195,3 +233,5 @@ HRESULT CProfilerManagerWrapper::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
     return m_pProfilerManager->SetLoggingFlags(loggingFlags);
 }
+
+#undef PREPEND_FORMATTABLE_PREFIX
