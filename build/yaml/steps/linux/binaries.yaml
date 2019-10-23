@@ -12,28 +12,12 @@ steps:
     azureContainerRegistry: proddiagbuild.azurecr.io
     command: login
 
-# Setup Nuget Credentials
-- task: Bash@3
-  displayName: Get Credentials
-  inputs:
-    filePath: src/unix/scripts/prep-credentials.sh
-  env:
-    PersonalAuthenticationToken: $(DevDiv-VisualStudio-Com-PackageRead)
-
 # Build binaries
 - task: Bash@3
   displayName: Docker Build
   inputs:
     filePath: src/unix/docker/docker-build.sh
     arguments: $(Distro) $(Configuration) $(Platform) verbose
-
-# Clean Nuget Credentials from files
-- task: Bash@3
-  displayName: Clean Credentials
-  inputs:
-    filePath: src/unix/scripts/clean-credentials.sh
-  continueOnError: true
-  condition: always()
 
 # Cleanup containers
 - task: Bash@3
