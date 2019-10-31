@@ -33,7 +33,6 @@ private:
 
     CComPtr<IProfilerManager> m_pProfilerManager;
     CComPtr<IProfilerManagerLogging> m_pProfilerManagerInstanceLogger;
-    CComPtr<IProfilerManagerLogging> m_pProfilerManagerLogger;
 
 public:
     CInstrumentationMethod() : m_typeMap

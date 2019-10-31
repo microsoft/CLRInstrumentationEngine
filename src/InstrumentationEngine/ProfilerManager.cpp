@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
-#include "ProfilerManagerWrapper.h"
+#include "ProfilerManagerForInstrumentationMethod.h"
 #include "MethodJitInfo.h"
 #include "CorProfilerInfoWrapper.h"
 #include "AssemblyInfo.h"
@@ -507,8 +507,8 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
             // InstrumentationMethod. Since we are using global lock - InstrumentationMethod can only set flags associated
             // with it in this thread.
             CInitializeInstrumentationMethodHolder initHolder(this);
-            CComPtr<CProfilerManagerWrapper> pProfilerManagerWrapper;
-            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerWrapper(pInstrumentationMethod->GetClassId(), this));
+            CComPtr<CProfilerManagerForInstrumentationMethod> pProfilerManagerWrapper;
+            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(pInstrumentationMethod->GetClassId(), this));
             if (pProfilerManagerWrapper == nullptr)
             {
                 return E_OUTOFMEMORY;

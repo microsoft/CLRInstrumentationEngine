@@ -7,12 +7,12 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-    class CProfilerManagerWrapper :
+    class CProfilerManagerForInstrumentationMethod :
         public IProfilerManagerContract,
         public CModuleRefCount
     {
     public:
-        CProfilerManagerWrapper(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager);
+        CProfilerManagerForInstrumentationMethod(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager);
 
     private:
         static const int LogEntryMaxSize = 4096;
@@ -22,8 +22,8 @@ namespace MicrosoftInstrumentationEngine
 
         // IUnknown Members
     public:
-        DEFINE_DELEGATED_REFCOUNT_ADDREF(CProfilerManagerWrapper);
-        DEFINE_DELEGATED_REFCOUNT_RELEASE(CProfilerManagerWrapper);
+        DEFINE_DELEGATED_REFCOUNT_ADDREF(CProfilerManagerForInstrumentationMethod);
+        DEFINE_DELEGATED_REFCOUNT_RELEASE(CProfilerManagerForInstrumentationMethod);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
             // TODO: pull these interfaces from IProfilerManagerContract instead.
@@ -104,4 +104,6 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override;
     };
+
+    void EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped);
 }
