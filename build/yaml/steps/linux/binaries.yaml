@@ -5,11 +5,10 @@
 
 steps:
 # Login to ACR
-- task: Docker@1
+- task: Docker@2
   displayName: Docker Login
   inputs:
-    azureSubscriptionEndpoint: VS Diagnostics Dev (ProdDiag-Infrastructure)
-    azureContainerRegistry: proddiagbuild.azurecr.io
+    containerRegistry: VS Diagnostics Dev (ProdDiag-Infrastructure)
     command: login
 
 # Build binaries
