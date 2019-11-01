@@ -16,10 +16,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    name: DotNet-Build
-    demands:
-    - docker
-    - sh
+    vmImage: ubuntu-16.04
 
   workspace:
     clean: outputs

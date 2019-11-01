@@ -10,7 +10,6 @@ name: $(date:yyyyMMdd)$(rev:rr)
 
 variables:
   TeamName: ClrInstrumentationEngine
-  Pipeline: pr
 
 stages:
 - stage: Build
