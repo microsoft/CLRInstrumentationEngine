@@ -35,4 +35,5 @@ jobs:
       PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if notIn(parameters.SignType, '', 'None') }}:
+    - template: ../../steps/microbuild/cleanup.yaml

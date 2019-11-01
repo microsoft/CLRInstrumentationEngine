@@ -65,6 +65,7 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-all'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if notIn(parameters.SignType, '', 'None') }}:
+    - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
