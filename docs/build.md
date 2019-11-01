@@ -6,7 +6,7 @@ pipeline builds.
 ## Azure DevOps Build
 
 Azure DevOps (previously known as Visual Studio Team Services or "VSTS") is the suite of tools and services for the end-to-end lifecycle of
-software development. It provides repos to host source code, boards for task tracking, test suites and build pipelines for compiling code, and
+software development. It provides repos that host source code, task boards for work tracking, test suites and build pipelines for compiling code, and
 artifact management to retain packages such as nuget feeds.
 
 Although the CLRIE repo is hosted in GitHub, it originally was hosted privately by Microsoft and leveraged Azure DevOps pipelines to build and
@@ -21,15 +21,15 @@ Although the build agents and tasks are internal, the build definitions are decl
 
 The yaml files are located in the $RepoRoot$/build/yaml folder. The code is structured in the following manner:
 * Pipelines – The top level yaml file that is queued for a given Azure DevOps build. A pipeline defines the jobs to run.
-  * [ClrInstrumentationEngine-PR-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11217) uses PR.yaml
-  * [ClrInstrumentationEngine-CI-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11310) uses CI.yaml
-  * [ClrInstrumentationEngine-Signed-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11311) uses Signed.yaml
+  * [PR-Yaml](https://dev.azure.com/ms/CLRInstrumentationEngine/_build?definitionId=230&_a=summary) points to [build/yaml/pipelines/PR.yaml](../build/yaml/pipelines/pr.yaml)
+  * [CI-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11310) points to [build/yaml/pipelines/CI.yaml](../build/yaml/pipelines/ci.yaml)
+  * (Internal) [ClrInstrumentationEngine-Signed-Yaml](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11311) points [build/yaml/pipelines/Signed.yaml](../build/yaml/pipelines/signed.yaml)
 * Jobs – A job represents the execution boundary of a set of steps on an agent machine.
   * The three high-level jobs include Binaries.yaml, Test.yaml, and Packages.yaml.
   * Jobs/Binaries.yaml and Jobs/Packages.yaml reference the corresponding files in the Windows and Linux folders for parallelization
 * Steps – The task to run (eg. Nuget restore, msbuild solution, copy files).
 
-We restrict access to running the above builds as it requires internal processes such as signing and security checks. If you require
+We restrict access of running the above builds to Microsoft and close contributors as to avoid malicious code from running. The signed build requires internal processes (signing and security checks) and will not be exposed to the public. If you require
 modifications or changes to the build, you are free to update the yaml files.
 
 Please contact clrieowners@microsoft.com regarding questions or requesting the release of a new version. This process involves regression
@@ -57,8 +57,9 @@ Alternatively, you may run the script `[CLRInstrumentationEngine repo]\build.ps1
 IncludeTests|Runs unit tests after build.
 SkipBuild|Skips building the solutions. Use this with `-IncludeTests` flag to only run tests.
 SkipPackaging|Skips building the package solution. This prevents generating zip files, nugets, and any other artifacts.
+SkipCleanAndRestore|Skips cleaning the bin/ & obj/ folders before building. This saves time when rebuilding due to small changes.
 Release|Cause build to run with `Release` configuration. By default, build uses `Debug` configuration.
-Verbose|Sets msbuild verbosity to `normal`. By default, verbosity is set to `ErrorsOnly`.
+VerboseMsbuild|Sets msbuild verbosity to `normal`. By default, verbosity is set to `ErrorsOnly`.
 
 If you encounter this error:
 

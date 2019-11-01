@@ -30,7 +30,7 @@ about profilers in general.
 
 See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
-## Using the CLR Instrumentation Engine <a name="using-clrie"/>
+## Using the CLR Instrumentation Engine <a name="using-clrie" />
 
 ### Cooperative Model
 
