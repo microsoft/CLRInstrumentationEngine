@@ -8,7 +8,7 @@ steps:
 - task: Docker@2
   displayName: Docker Login
   inputs:
-    containerRegistry: VS Diagnostics Dev (ProdDiag-Infrastructure)
+    containerRegistry: VS Diagnostics Dev (ProdDiagBuild)
     command: login
 
 # Build binaries
