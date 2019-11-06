@@ -42,8 +42,6 @@ namespace MicrosoftInstrumentationEngine
                      public ICorProfilerCallback7
     {
     private:
-        bool m_fakeflag;
-
         // Instrumentation methods can disabling profiling on this process before it starts by calling this during initialize.
         bool m_bProfilingDisabled;
 

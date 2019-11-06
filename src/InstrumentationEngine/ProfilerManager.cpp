@@ -28,8 +28,7 @@ CProfilerManager::CProfilerManager() :
     m_bIsInInitialize(false),
     m_bIsInitializingInstrumentationMethod(false),
     m_dwInstrumentationMethodFlags(0),
-    m_bValidateCodeSignature(true),
-    m_fakeflag(false)
+    m_bValidateCodeSignature(true)
 {
 #ifdef PLATFORM_UNIX
     PAL_Initialize(0, NULL);
