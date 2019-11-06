@@ -4,21 +4,21 @@
     <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
     <MethodName>Instru_ReplaceTest</MethodName>
     <Instructions>
-	  <Instruction>
+      <Instruction>
         <Opcode>ldc.i4.8</Opcode>
-        <Offset>0</Offset>		
+        <Offset>0</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>ldc.i4.2</Opcode>
-        <Offset>19</Offset>		
+        <Offset>19</Offset>
         <InstrumentationType>Replace</InstrumentationType>
-      </Instruction>	
-	  <Instruction>
+      </Instruction>
+      <Instruction>
         <Opcode>ldc.i4.4</Opcode>
-        <Offset>31</Offset>		
+        <Offset>31</Offset>
         <InstrumentationType>Replace</InstrumentationType>
-      </Instruction>	  
+      </Instruction>
     </Instructions>
   </InstrumentMethod>
 </InstrumentationTestScript>

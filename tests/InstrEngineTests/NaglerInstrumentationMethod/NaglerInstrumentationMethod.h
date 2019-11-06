@@ -13,8 +13,8 @@ CInstrumentationMethod :
     public CComCoClass<CInstrumentationMethod, &__uuidof(CInstrumentationMethod)>
 {
 private:
-	static const WCHAR TestOutputPathEnvName[];
-	static const WCHAR TestScriptFileEnvName[];
+    static const WCHAR TestOutputPathEnvName[];
+    static const WCHAR TestScriptFileEnvName[];
     static const WCHAR TestScriptFolder[];
     static const WCHAR IsRejitEnvName[];
 
@@ -25,13 +25,14 @@ private:
     unordered_map<IMethodInfo*, shared_ptr<CInstrumentMethodEntry>> m_methodInfoToEntryMap;
 
     bool m_bExceptionTrackingEnabled;
+    bool m_bTestInstrumentationMethodLogging;
 
     shared_ptr<CInjectAssembly> m_spInjectAssembly;
 
-	std::wstring m_strBinaryDir;
+    std::wstring m_strBinaryDir;
 
-    // Non-addref'd pointer to the profiler manager
-    IProfilerManager* m_pProfilerManager;
+    CComPtr<IProfilerManager> m_pProfilerManager;
+    CComPtr<IProfilerManagerLogging> m_pProfilerManagerInstanceLogger;
 
 public:
     CInstrumentationMethod() : m_typeMap
@@ -59,6 +60,7 @@ public:
         { L"System.Object", ELEMENT_TYPE_OBJECT },
     }),
     m_bExceptionTrackingEnabled(false),
+    m_bTestInstrumentationMethodLogging(false),
     m_spInjectAssembly(nullptr)
     {
     }

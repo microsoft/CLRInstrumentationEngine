@@ -11,13 +11,13 @@
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>1</Offset>        
+        <Offset>1</Offset>
         <RepeatCount>20</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>2</Offset>
-        <RepeatCount>20</RepeatCount>        
+        <RepeatCount>20</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
@@ -27,17 +27,17 @@
         <Opcode>nop</Opcode>
         <Offset>5</Offset>
         <RepeatCount>20</RepeatCount>
-      </Instruction>    
+      </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>7</Offset>
-        <RepeatCount>20</RepeatCount>        
+        <RepeatCount>20</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>8</Offset>
         <RepeatCount>20</RepeatCount>
-      </Instruction>    
+      </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>9</Offset>
@@ -45,7 +45,7 @@
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>10</Offset>
-      </Instruction> 
+      </Instruction>
     </Instructions>
   </InstrumentMethod>
 </InstrumentationTestScript>

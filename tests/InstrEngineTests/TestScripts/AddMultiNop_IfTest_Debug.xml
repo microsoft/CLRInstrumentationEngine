@@ -7,12 +7,12 @@
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>12</Offset>
-		<RepeatCount>2</RepeatCount>
+        <RepeatCount>2</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>17</Offset>
-      </Instruction>	  
+      </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>34</Offset>
