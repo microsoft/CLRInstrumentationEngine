@@ -17,6 +17,19 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
+    // This abstract class should be updated with new IProfilerManager interfaces.
+    // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
+    class IProfilerManagerContract :
+        public IProfilerManager,
+        public IProfilerManager2,
+        public IProfilerManager3,
+        public IProfilerManager4,
+        public IProfilerManager5,
+        public IProfilerManagerLogging
+    {
+
+    };
+
     class __declspec(uuid("324F817A-7420-4E6D-B3C1-143FBED6D855"))
     CProfilerManager :
                      public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
@@ -25,12 +38,7 @@ namespace MicrosoftInstrumentationEngine
 #else
                      public ATL::CComCoClass<CProfilerManager, &CLSID_CProfilerManager>,
 #endif
-                     public IProfilerManager,
-                     public IProfilerManager2,
-                     public IProfilerManager3,
-                     public IProfilerManager4,
-                     public IProfilerManager5,
-                     public IProfilerManagerLogging,
+                     public IProfilerManagerContract,
                      public ICorProfilerCallback7
     {
     private:
@@ -200,12 +208,9 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
 
-        CLogging* GetLogging();
-
         HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
         HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
         HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
-
         // IUnknown
     public:
         BEGIN_COM_MAP(CProfilerManager)
@@ -241,10 +246,7 @@ namespace MicrosoftInstrumentationEngine
             _In_  LPVOID lpParameter
             );
 
-
         HRESULT LoadInstrumentationMethods(_In_ BSTR bstrConfigPath);
-
-        HRESULT ApplyInstrumentationMethodInstrumentation(_In_ CMethodInfo* pMethodInfo);
 
         HRESULT DetermineClrVersion();
 
@@ -425,7 +427,6 @@ namespace MicrosoftInstrumentationEngine
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
-
 
     // IProfilerManager2 Methods
     public:
@@ -865,20 +866,28 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(ModuleInMemorySymbolsUpdated)(
             _In_ ModuleID moduleId);
 
-     private:
-         // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
-         HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument);
+        // Internal public methods that are not part of interfaces.
+    public:
+        STDMETHOD(LogMessageEx)(_In_ const WCHAR* wszMessage, ...);
 
-         // Call CallBeforeInstrumentMethodOnInstrumentationMethods on each instrumentation method.
-         HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        STDMETHOD(LogErrorEx)(_In_ const WCHAR* wszError, ...);
 
-         // Call InstrumentMethod on each instrumentation method.
-         HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        STDMETHOD(LogDumpMessageEx)(_In_ const WCHAR* wszMessage, ...);
 
-         // Call InstrumentMethod on each instrumentation method.
-         HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+    private:
+        // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
+        HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument);
 
-         HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
+        // Call CallBeforeInstrumentMethodOnInstrumentationMethods on each instrumentation method.
+        HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+
+        // Call InstrumentMethod on each instrumentation method.
+        HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+
+        // Call InstrumentMethod on each instrumentation method.
+        HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+
+        HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
@@ -925,7 +934,6 @@ namespace MicrosoftInstrumentationEngine
 #ifndef PLATFORM_UNIX
     OBJECT_ENTRY_AUTO(__uuidof(CProfilerManager), CProfilerManager);
 #endif
-
 
     // function called when a profiler callback swallows an exception to send the error report to watson as if
     // the app crashed
@@ -982,7 +990,6 @@ public:
         RestoreSEHTranslator();
     }
 };
-
 
 #define PROF_CALLBACK_BEGIN \
     CSEHTranslatorHolder translatorHolder; \

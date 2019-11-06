@@ -75,11 +75,11 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT Initialize();
 
-        void LogMessage(_In_ LPCWSTR wszMessage, va_list argptr);
+        void LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogMessage(_In_ LPCWSTR wszMessage, ...);
-        void LogError(_In_ LPCWSTR wszMessage, va_list argptr);
+        void LogError(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogError(_In_ LPCWSTR wszError, ...);
-        void LogDumpMessage(_In_ LPCWSTR wszMessage, va_list argptr);
+        void LogDumpMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogDumpMessage(_In_ LPCWSTR wszMessage, ...);
 
         HRESULT GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost);

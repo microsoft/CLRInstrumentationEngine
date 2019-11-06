@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "ProfilerManager.h"
+#include "ProfilerManagerForInstrumentationMethod.h"
 #include "MethodJitInfo.h"
 #include "CorProfilerInfoWrapper.h"
 #include "AssemblyInfo.h"
@@ -18,7 +19,7 @@
 
 using namespace ATL;
 
-MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
+CProfilerManager::CProfilerManager() :
     m_bProfilingDisabled(false),
     m_dwEventMask(GetDefaultEventMask()),
     m_dwEventMaskHigh(0),
@@ -78,13 +79,13 @@ MicrosoftInstrumentationEngine::CProfilerManager::CProfilerManager() :
 #endif
 }
 
-MicrosoftInstrumentationEngine::CProfilerManager::~CProfilerManager()
+CProfilerManager::~CProfilerManager()
 {
     DeleteCriticalSection(&m_cs);
     CLogging::Shutdown();
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
+HRESULT CProfilerManager::FinalConstruct()
 {
     HRESULT hr = S_OK;
 
@@ -105,13 +106,13 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalConstruct()
     return hr;
 }
 
-void MicrosoftInstrumentationEngine::CProfilerManager::FinalRelease()
+void CProfilerManager::FinalRelease()
 {
 
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
+HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(rgConfigPaths);
@@ -151,7 +152,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetupProfilingEnvironm
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddRawProfilerHook(
+HRESULT CProfilerManager::AddRawProfilerHook(
     _In_ IUnknown *pUnkProfilerCallback
     )
 {
@@ -241,7 +242,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddRawProfilerHook(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveRawProfilerHook(
+HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
     HRESULT hr = S_OK;
@@ -253,7 +254,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveRawProfilerHook(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetCorProfilerInfo(
+HRESULT CProfilerManager::GetCorProfilerInfo(
     _Outptr_ IUnknown **ppCorProfiler
     )
 {
@@ -266,7 +267,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetCorProfilerInfo(
 }
 
 // return the profiler host instance
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
+HRESULT CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
 {
     CCriticalSectionHolder holder(&m_cs);
 
@@ -279,7 +280,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetProfilerHost(_Out_ 
 
 // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
 // to log to the profiler manager or optionally to the profiler host.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
+HRESULT CProfilerManager::GetLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
 {
     *ppLogging = (IProfilerManagerLogging*)this;
     (*ppLogging)->AddRef();
@@ -289,7 +290,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetLoggingInstance(_Ou
 
 // By default, logging messages are written to the debug output port. However,
 // hosts can optionally signup to receive them through an instance of IProfilerManagerLogging
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost)
+HRESULT CProfilerManager::SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost)
 {
     HRESULT hr = S_OK;
 
@@ -298,7 +299,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetLoggingHost(_In_opt
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetAppDomainCollection(_Out_ IAppDomainCollection** ppAppDomainCollection)
+HRESULT CProfilerManager::GetAppDomainCollection(_Out_ IAppDomainCollection** ppAppDomainCollection)
 {
     HRESULT hr = S_OK;
     *ppAppDomainCollection = (IAppDomainCollection*)m_pAppDomainCollection;
@@ -310,14 +311,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetAppDomainCollection
 // IProfilerManagerLogging Methods
 // If trace logging in enabled in the profiler manager, trace messages are sent to the
 // profiler manager through this function.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogMessage(_In_ const WCHAR* wszMessage)
+HRESULT CProfilerManager::LogMessage(_In_ const WCHAR* wszMessage)
 {
     CLogging::LogMessage(wszMessage);
     return S_OK;
 }
 
 // Errors detected during profiling will be sent to the host through this method
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogError(_In_ const WCHAR* wszError)
+HRESULT CProfilerManager::LogError(_In_ const WCHAR* wszError)
 {
     CLogging::LogError(wszError);
     return S_OK;
@@ -325,7 +326,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogError(_In_ const WC
 
 // If instrumentation result tracing is enabled, the detailed results of each instrumented
 // method will be sent to the profiler manager host through this method.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogDumpMessage(_In_ const WCHAR* wszMessage)
+HRESULT CProfilerManager::LogDumpMessage(_In_ const WCHAR* wszMessage)
 {
     CLogging::LogDumpMessage(wszMessage);
     return S_OK;
@@ -333,14 +334,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LogDumpMessage(_In_ co
 
 // Called to cause logging to be written to the debug output port (via DebugOutputString) as well
 // as to the host.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::EnableDiagnosticLogToDebugPort(_In_ BOOL enable)
+HRESULT CProfilerManager::EnableDiagnosticLogToDebugPort(_In_ BOOL enable)
 {
     CLogging::SetLogToDebugPort(enable != 0);
     return S_OK;
 }
 
 // Allows instrumentation methods and hosts to ask for the current logging flags
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+HRESULT CProfilerManager::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
     HRESULT hr = S_OK;
 
@@ -352,7 +353,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetLoggingFlags(_Out_ 
 }
 
 // Allows instrumentation methods and hosts to modify the current logging level
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
+HRESULT CProfilerManager::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
     HRESULT hr = S_OK;
 
@@ -364,7 +365,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetLoggingFlags(_In_ L
 // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
 // as that would screw up the com state for the application thread. This thread allows the profiler manager
 // to co create a free threaded version of msxml on a thread that it owns to avoid this.
-DWORD WINAPI MicrosoftInstrumentationEngine::CProfilerManager::InstrumentationMethodThreadProc(
+DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     _In_  LPVOID lpParameter
 )
 {
@@ -402,7 +403,7 @@ DWORD WINAPI MicrosoftInstrumentationEngine::CProfilerManager::InstrumentationMe
     return 0;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LoadInstrumentationMethods(_In_ BSTR bstrConfigPath)
+HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ BSTR bstrConfigPath)
 {
     HRESULT hr = S_OK;
 
@@ -453,7 +454,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::LoadInstrumentationMet
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationMethod(
+HRESULT CProfilerManager::RemoveInstrumentationMethod(
     _In_ IInstrumentationMethod* pInstrumentationMethod)
 {
     HRESULT hr = S_OK;
@@ -491,7 +492,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationM
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMethod(
+HRESULT CProfilerManager::AddInstrumentationMethod(
     _In_ CInstrumentationMethod* pInstrumentationMethod,
     _Out_ IInstrumentationMethod** ppInstrumentationMethod)
 {
@@ -506,7 +507,15 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
             // InstrumentationMethod. Since we are using global lock - InstrumentationMethod can only set flags associated
             // with it in this thread.
             CInitializeInstrumentationMethodHolder initHolder(this);
-            hr = pInstrumentationMethod->Initialize(this, m_bValidateCodeSignature);
+            CComPtr<CProfilerManagerForInstrumentationMethod> pProfilerManagerWrapper;
+            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(pInstrumentationMethod->GetClassId(), this));
+            if (pProfilerManagerWrapper == nullptr)
+            {
+                return E_OUTOFMEMORY;
+            }
+
+            // Do not detach so CComPtr can track refcount.
+            hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper, m_bValidateCodeSignature);
             dwFlags = GetInitializingInstrumentationMethodFlags();
         }
 
@@ -541,7 +550,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMethod(
+HRESULT CProfilerManager::AddInstrumentationMethod(
     _In_ BSTR bstrModulePath,
     _In_ BSTR bstrName,
     _In_ BSTR bstrDescription,
@@ -573,14 +582,14 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddInstrumentationMeth
     return this->AddInstrumentationMethod(pInstrumentationMethod.release(), ppInstrumentationMethod);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::DisableProfiling()
+HRESULT CProfilerManager::DisableProfiling()
 {
     m_bProfilingDisabled = true;
 
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ApplyMetadata(_In_ IModuleInfo* pMethodInfo)
+HRESULT CProfilerManager::ApplyMetadata(_In_ IModuleInfo* pMethodInfo)
 {
     HRESULT hr = S_OK;
 
@@ -597,7 +606,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ApplyMetadata(_In_ IMo
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DWORD* pApiVer)
+HRESULT CProfilerManager::GetApiVersion(_Out_ DWORD* pApiVer)
 {
     IfNullRet(pApiVer);
 
@@ -605,7 +614,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetApiVersion(_Out_ DW
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
+HRESULT CProfilerManager::GetGlobalLoggingInstance(_Out_ IProfilerManagerLogging** ppLogging)
 {
     if (nullptr == ppLogging)
     {
@@ -626,7 +635,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetGlobalLoggingInstan
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::IsInstrumentationMethodRegistered(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered)
+HRESULT CProfilerManager::IsInstrumentationMethodRegistered(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered)
 {
     IfNullRet(pfRegistered);
 
@@ -644,7 +653,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::IsInstrumentationMetho
 }
 
 // ICorProfilerCallback methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
+HRESULT CProfilerManager::Initialize(
     _In_ IUnknown *pICorProfilerInfoUnk)
 {
     HRESULT hr = S_OK;
@@ -701,7 +710,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Initialize(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::DetermineClrVersion()
+HRESULT CProfilerManager::DetermineClrVersion()
 {
     if (m_pRealProfilerInfo)
     {
@@ -744,38 +753,38 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::DetermineClrVersion()
     return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
 }
 
-void MicrosoftInstrumentationEngine::CProfilerManager::SetIsInInitialize(_In_ bool val)
+void CProfilerManager::SetIsInInitialize(_In_ bool val)
 {
     m_bIsInInitialize = val;
 }
 
-bool MicrosoftInstrumentationEngine::CProfilerManager::GetIsInInitialize() const
+bool CProfilerManager::GetIsInInitialize() const
 {
     return m_bIsInInitialize;
 }
 
-void MicrosoftInstrumentationEngine::CProfilerManager::SetIsInitializingInstrumentationMethod(_In_ bool val)
+void CProfilerManager::SetIsInitializingInstrumentationMethod(_In_ bool val)
 {
     m_bIsInitializingInstrumentationMethod = val;
     m_dwInstrumentationMethodFlags = 0;
 }
 
-bool MicrosoftInstrumentationEngine::CProfilerManager::GetIsInitializingInstrumentationMethod() const
+bool CProfilerManager::GetIsInitializingInstrumentationMethod() const
 {
     return m_bIsInitializingInstrumentationMethod;
 }
 
-void MicrosoftInstrumentationEngine::CProfilerManager::SetInitializingInstrumentationMethodFlags(_In_ DWORD dwFlags)
+void CProfilerManager::SetInitializingInstrumentationMethodFlags(_In_ DWORD dwFlags)
 {
     m_dwInstrumentationMethodFlags = dwFlags;
 }
 
-DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetInitializingInstrumentationMethodFlags() const
+DWORD CProfilerManager::GetInitializingInstrumentationMethodFlags() const
 {
     return m_dwInstrumentationMethodFlags;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetEventMask(_Out_ DWORD* dwEventMask)
+HRESULT CProfilerManager::GetEventMask(_Out_ DWORD* dwEventMask)
 {
     HRESULT hr = S_OK;
     // NOTE: holding the critical section just in case some one calls Get from another thread
@@ -787,7 +796,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetEventMask(_Out_ DWO
     return hr;
 }
 
-DWORD MicrosoftInstrumentationEngine::CProfilerManager::CalculateEventMask(DWORD dwAdditionalFlags)
+DWORD CProfilerManager::CalculateEventMask(DWORD dwAdditionalFlags)
 {
     DWORD result = m_dwEventMask | dwAdditionalFlags;
 
@@ -803,7 +812,7 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::CalculateEventMask(DWORD
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetEventMask(DWORD dwEventMask)
+HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
 {
     HRESULT hr = S_OK;
 
@@ -841,7 +850,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetEventMask(DWORD dwE
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh)
+HRESULT CProfilerManager::GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh)
 {
     CComQIPtr<ICorProfilerInfo5> pCorProfilerInfo5 = m_pRealProfilerInfo.p;
     IfNullRet(pCorProfilerInfo5);
@@ -849,7 +858,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetEventMask2(_Out_ DW
     return pCorProfilerInfo5->GetEventMask2(dwEventMaskLow, dwEventMaskHigh);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dwEventMaskHigh)
+HRESULT CProfilerManager::SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dwEventMaskHigh)
 {
     HRESULT hr = S_OK;
 
@@ -859,19 +868,19 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SetEventMask2(_In_ DWO
     return S_OK;
 }
 
-MicrosoftInstrumentationEngine::ClrVersion MicrosoftInstrumentationEngine::CProfilerManager::GetAttachedClrVersion()
+ClrVersion CProfilerManager::GetAttachedClrVersion()
 {
     return m_attachedClrVersion;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetRuntimeType(_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType)
+HRESULT CProfilerManager::GetRuntimeType(_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType)
 {
     IfNullRetPointer(pRuntimeType);
     *pRuntimeType = m_runtimeType;
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetRealCorProfilerInfo(ICorProfilerInfo** ppRealProfilerInfo)
+HRESULT CProfilerManager::GetRealCorProfilerInfo(ICorProfilerInfo** ppRealProfilerInfo)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(ppRealProfilerInfo);
@@ -884,7 +893,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetRealCorProfilerInfo
 
 // Set the default event mask. This is union'd with the event mask from instrumentation methods and the host.
 //static
-DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetDefaultEventMask()
+DWORD CProfilerManager::GetDefaultEventMask()
 {
     return
         COR_PRF_MONITOR_APPDOMAIN_LOADS |
@@ -895,7 +904,7 @@ DWORD MicrosoftInstrumentationEngine::CProfilerManager::GetDefaultEventMask()
         ;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()
+HRESULT CProfilerManager::Shutdown()
 {
     HRESULT hr = S_OK;
 
@@ -939,7 +948,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::Shutdown()
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationStarted(
+HRESULT CProfilerManager::AppDomainCreationStarted(
     _In_ AppDomainID appDomainId
     )
 {
@@ -967,7 +976,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationStart
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationFinished(
+HRESULT CProfilerManager::AppDomainCreationFinished(
     _In_ AppDomainID appDomainId,
     _In_ HRESULT hrStatus
     )
@@ -1005,7 +1014,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainCreationFinis
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownStarted(
+HRESULT CProfilerManager::AppDomainShutdownStarted(
     _In_ AppDomainID appDomainId
     )
 {
@@ -1022,7 +1031,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownStart
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownFinished(
+HRESULT CProfilerManager::AppDomainShutdownFinished(
     _In_ AppDomainID appDomainId,
     _In_ HRESULT hrStatus
     )
@@ -1067,7 +1076,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AppDomainShutdownFinis
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SendFabricatedModuleUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo)
+HRESULT CProfilerManager::SendFabricatedModuleUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo)
 {
     HRESULT hr = S_OK;
 
@@ -1081,7 +1090,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SendFabricatedModuleUn
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SendFabricatedAssemblyUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo)
+HRESULT CProfilerManager::SendFabricatedAssemblyUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo)
 {
     HRESULT hr = S_OK;
 
@@ -1095,7 +1104,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SendFabricatedAssembly
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStartedImpl(_In_ ModuleID moduleId)
+HRESULT CProfilerManager::ModuleUnloadStartedImpl(_In_ ModuleID moduleId)
 {
     HRESULT hr = S_OK;
 
@@ -1120,7 +1129,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStartedImp
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ HRESULT hrStatus)
+HRESULT CProfilerManager::ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ HRESULT hrStatus)
 {
     HRESULT hr = S_OK;
 
@@ -1163,7 +1172,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinishedIm
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId)
+HRESULT CProfilerManager::AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId)
 {
     HRESULT hr = S_OK;
 
@@ -1188,7 +1197,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStartedI
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus)
+HRESULT CProfilerManager::AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus)
 {
     HRESULT hr = S_OK;
 
@@ -1225,7 +1234,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadStarted(
+HRESULT CProfilerManager::AssemblyLoadStarted(
     _In_ AssemblyID assemblyId
     )
 {
@@ -1241,7 +1250,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadFinished(
+HRESULT CProfilerManager::AssemblyLoadFinished(
     _In_ AssemblyID assemblyId,
     _In_ HRESULT hrStatus
     )
@@ -1268,7 +1277,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyLoadFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStarted(
+HRESULT CProfilerManager::AssemblyUnloadStarted(
     _In_ AssemblyID assemblyId
     )
 {
@@ -1283,7 +1292,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished(
+HRESULT CProfilerManager::AssemblyUnloadFinished(
     _In_ AssemblyID assemblyId,
     _In_ HRESULT hrStatus
     )
@@ -1299,7 +1308,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AssemblyUnloadFinished
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleLoadStarted(
+HRESULT CProfilerManager::ModuleLoadStarted(
     _In_ ModuleID moduleId
     )
 {
@@ -1315,7 +1324,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleLoadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleLoadFinished(
+HRESULT CProfilerManager::ModuleLoadFinished(
     _In_ ModuleID moduleId,
     _In_ HRESULT hrStatus
     )
@@ -1331,7 +1340,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleLoadFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStarted(
+HRESULT CProfilerManager::ModuleUnloadStarted(
     _In_ ModuleID moduleId
     )
 {
@@ -1346,7 +1355,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinished(
+HRESULT CProfilerManager::ModuleUnloadFinished(
     _In_ ModuleID moduleId,
     _In_ HRESULT hrStatus
     )
@@ -1362,7 +1371,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleUnloadFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleAttachedToAssembly(
+HRESULT CProfilerManager::ModuleAttachedToAssembly(
     _In_ ModuleID moduleId,
     _In_ AssemblyID AssemblyId
     )
@@ -1391,7 +1400,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleAttachedToAssemb
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassLoadStarted(
+HRESULT CProfilerManager::ClassLoadStarted(
     _In_ ClassID classId)
 {
     HRESULT hr = S_OK;
@@ -1405,7 +1414,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassLoadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassLoadFinished(
+HRESULT CProfilerManager::ClassLoadFinished(
     _In_ ClassID classId,
     _In_ HRESULT hrStatus
     )
@@ -1421,7 +1430,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassLoadFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassUnloadStarted(
+HRESULT CProfilerManager::ClassUnloadStarted(
     _In_ ClassID classId
     )
 {
@@ -1436,7 +1445,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassUnloadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassUnloadFinished(
+HRESULT CProfilerManager::ClassUnloadFinished(
     _In_ ClassID classId,
     _In_ HRESULT hrStatus
     )
@@ -1452,7 +1461,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClassUnloadFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FunctionUnloadStarted(
+HRESULT CProfilerManager::FunctionUnloadStarted(
     _In_ FunctionID functionId
     )
 {
@@ -1467,7 +1476,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FunctionUnloadStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
+HRESULT CProfilerManager::JITCompilationStarted(
     _In_ FunctionID functionId,
     _In_ BOOL fIsSafeToBlock
     )
@@ -1557,7 +1566,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationStarted(
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationFinished(
+HRESULT CProfilerManager::JITCompilationFinished(
     _In_ FunctionID functionId,
     _In_ HRESULT hrStatus,
     _In_ BOOL fIsSafeToBlock
@@ -1582,7 +1591,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCompilationFinished
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCachedFunctionSearchStarted(
+HRESULT CProfilerManager::JITCachedFunctionSearchStarted(
     _In_ FunctionID functionId,
     /* [out] */ BOOL *pbUseCachedFunction
     )
@@ -1603,7 +1612,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCachedFunctionSearc
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCachedFunctionSearchFinished(
+HRESULT CProfilerManager::JITCachedFunctionSearchFinished(
     _In_ FunctionID functionId,
     _In_ COR_PRF_JIT_CACHE result
     )
@@ -1619,7 +1628,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITCachedFunctionSearc
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITFunctionPitched(
+HRESULT CProfilerManager::JITFunctionPitched(
     _In_ FunctionID functionId
     )
 {
@@ -1634,7 +1643,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITFunctionPitched(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITInlining(
+HRESULT CProfilerManager::JITInlining(
     _In_ FunctionID callerId,
     _In_ FunctionID calleeId,
     /* [out] */ BOOL *pfShouldInline
@@ -1733,7 +1742,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::JITInlining(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadCreated(
+HRESULT CProfilerManager::ThreadCreated(
     _In_ ThreadID threadId
     )
 {
@@ -1748,7 +1757,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadCreated(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadDestroyed(
+HRESULT CProfilerManager::ThreadDestroyed(
     _In_ ThreadID threadId
     )
 {
@@ -1763,7 +1772,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadDestroyed(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadAssignedToOSThread(
+HRESULT CProfilerManager::ThreadAssignedToOSThread(
     _In_ ThreadID managedThreadId,
     _In_ DWORD osThreadId
     )
@@ -1779,7 +1788,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadAssignedToOSThre
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientInvocationStarted()
+HRESULT CProfilerManager::RemotingClientInvocationStarted()
 {
     HRESULT hr = S_OK;
 
@@ -1792,7 +1801,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientInvocati
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientSendingMessage(
+HRESULT CProfilerManager::RemotingClientSendingMessage(
     _In_ GUID *pCookie,
     _In_ BOOL fIsAsync
     )
@@ -1808,7 +1817,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientSendingM
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientReceivingReply(
+HRESULT CProfilerManager::RemotingClientReceivingReply(
     _In_ GUID *pCookie,
     _In_ BOOL fIsAsync
     )
@@ -1824,7 +1833,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientReceivin
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientInvocationFinished()
+HRESULT CProfilerManager::RemotingClientInvocationFinished()
 {
     HRESULT hr = S_OK;
 
@@ -1837,7 +1846,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingClientInvocati
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerReceivingMessage(
+HRESULT CProfilerManager::RemotingServerReceivingMessage(
     _In_ GUID *pCookie,
     _In_ BOOL fIsAsync
     )
@@ -1853,7 +1862,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerReceivin
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerInvocationStarted()
+HRESULT CProfilerManager::RemotingServerInvocationStarted()
 {
     HRESULT hr = S_OK;
 
@@ -1866,7 +1875,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerInvocati
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerInvocationReturned()
+HRESULT CProfilerManager::RemotingServerInvocationReturned()
 {
     HRESULT hr = S_OK;
 
@@ -1879,7 +1888,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerInvocati
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerSendingReply(
+HRESULT CProfilerManager::RemotingServerSendingReply(
     _In_ GUID *pCookie,
     _In_ BOOL fIsAsync
     )
@@ -1895,7 +1904,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemotingServerSendingR
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::UnmanagedToManagedTransition(
+HRESULT CProfilerManager::UnmanagedToManagedTransition(
     _In_ FunctionID functionId,
     _In_ COR_PRF_TRANSITION_REASON reason
     )
@@ -1911,7 +1920,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::UnmanagedToManagedTran
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ManagedToUnmanagedTransition(
+HRESULT CProfilerManager::ManagedToUnmanagedTransition(
     _In_ FunctionID functionId,
     _In_ COR_PRF_TRANSITION_REASON reason
     )
@@ -1927,7 +1936,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ManagedToUnmanagedTran
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendStarted(
+HRESULT CProfilerManager::RuntimeSuspendStarted(
     _In_ COR_PRF_SUSPEND_REASON suspendReason
     )
 {
@@ -1942,7 +1951,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendStarted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendFinished()
+HRESULT CProfilerManager::RuntimeSuspendFinished()
 {
     HRESULT hr = S_OK;
 
@@ -1955,7 +1964,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendFinished
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendAborted()
+HRESULT CProfilerManager::RuntimeSuspendAborted()
 {
     HRESULT hr = S_OK;
 
@@ -1968,7 +1977,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeSuspendAborted(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeResumeStarted()
+HRESULT CProfilerManager::RuntimeResumeStarted()
 {
     HRESULT hr = S_OK;
 
@@ -1981,7 +1990,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeResumeStarted()
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeResumeFinished()
+HRESULT CProfilerManager::RuntimeResumeFinished()
 {
     HRESULT hr = S_OK;
 
@@ -1994,7 +2003,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeResumeFinished(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeThreadSuspended(
+HRESULT CProfilerManager::RuntimeThreadSuspended(
     _In_ ThreadID threadId
     )
 {
@@ -2009,7 +2018,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeThreadSuspended
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeThreadResumed(
+HRESULT CProfilerManager::RuntimeThreadResumed(
     _In_ ThreadID threadId
     )
 {
@@ -2024,7 +2033,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RuntimeThreadResumed(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences(
+HRESULT CProfilerManager::MovedReferences(
     _In_ ULONG cMovedObjectIDRanges,
     _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
     _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
@@ -2042,7 +2051,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectAllocated(
+HRESULT CProfilerManager::ObjectAllocated(
     _In_ ObjectID objectId,
     _In_ ClassID classId
     )
@@ -2058,7 +2067,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectAllocated(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectsAllocatedByClass(
+HRESULT CProfilerManager::ObjectsAllocatedByClass(
     _In_ ULONG cClassCount,
     _In_reads_(cClassCount) ClassID classIds[],
     _In_reads_(cClassCount) ULONG cObjects[]
@@ -2075,7 +2084,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectsAllocatedByClas
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectReferences(
+HRESULT CProfilerManager::ObjectReferences(
     _In_ ObjectID objectId,
     _In_ ClassID classId,
     _In_ ULONG cObjectRefs,
@@ -2093,7 +2102,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ObjectReferences(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RootReferences(
+HRESULT CProfilerManager::RootReferences(
     _In_ ULONG cRootRefs,
     _In_reads_(cRootRefs) ObjectID rootRefIds[]
     )
@@ -2109,7 +2118,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RootReferences(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionThrown(
+HRESULT CProfilerManager::ExceptionThrown(
     _In_ ObjectID thrownObjectId
     )
 {
@@ -2130,7 +2139,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionThrown(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctionEnter(
+HRESULT CProfilerManager::ExceptionSearchFunctionEnter(
     _In_ FunctionID functionId
     )
 {
@@ -2154,7 +2163,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctio
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctionLeave()
+HRESULT CProfilerManager::ExceptionSearchFunctionLeave()
 {
     HRESULT hr = S_OK;
 
@@ -2173,7 +2182,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFunctio
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterEnter(
+HRESULT CProfilerManager::ExceptionSearchFilterEnter(
     _In_ FunctionID functionId)
 {
     HRESULT hr = S_OK;
@@ -2196,7 +2205,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterE
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterLeave()
+HRESULT CProfilerManager::ExceptionSearchFilterLeave()
 {
     HRESULT hr = S_OK;
 
@@ -2215,7 +2224,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchFilterL
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchCatcherFound(
+HRESULT CProfilerManager::ExceptionSearchCatcherFound(
     _In_ FunctionID functionId
     )
 {
@@ -2239,7 +2248,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionSearchCatcher
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionOSHandlerEnter(
+HRESULT CProfilerManager::ExceptionOSHandlerEnter(
     _In_ UINT_PTR __unused
     )
 {
@@ -2254,7 +2263,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionOSHandlerEnte
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionOSHandlerLeave(
+HRESULT CProfilerManager::ExceptionOSHandlerLeave(
     _In_ UINT_PTR __unused
     )
 {
@@ -2269,7 +2278,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionOSHandlerLeav
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctionEnter(
+HRESULT CProfilerManager::ExceptionUnwindFunctionEnter(
     _In_ FunctionID functionId
     )
 {
@@ -2293,7 +2302,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctio
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctionLeave()
+HRESULT CProfilerManager::ExceptionUnwindFunctionLeave()
 {
     HRESULT hr = S_OK;
 
@@ -2312,7 +2321,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFunctio
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinallyEnter(
+HRESULT CProfilerManager::ExceptionUnwindFinallyEnter(
     _In_ FunctionID functionId
     )
 {
@@ -2336,7 +2345,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinally
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinallyLeave()
+HRESULT CProfilerManager::ExceptionUnwindFinallyLeave()
 {
     HRESULT hr = S_OK;
 
@@ -2355,7 +2364,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionUnwindFinally
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherEnter(
+HRESULT CProfilerManager::ExceptionCatcherEnter(
     _In_ FunctionID functionId,
     _In_ ObjectID objectId
     )
@@ -2380,7 +2389,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherEnter(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherLeave()
+HRESULT CProfilerManager::ExceptionCatcherLeave()
 {
     HRESULT hr = S_OK;
 
@@ -2399,7 +2408,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCatcherLeave(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::COMClassicVTableCreated(
+HRESULT CProfilerManager::COMClassicVTableCreated(
     _In_ ClassID wrappedClassId,
     _In_ REFGUID implementedIID,
     _In_ void *pVTable,
@@ -2434,7 +2443,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::COMClassicVTableCreate
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::COMClassicVTableDestroyed(
+HRESULT CProfilerManager::COMClassicVTableDestroyed(
     _In_ ClassID wrappedClassId,
     _In_ REFGUID implementedIID,
     _In_ void *pVTable
@@ -2468,7 +2477,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::COMClassicVTableDestro
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCLRCatcherFound()
+HRESULT CProfilerManager::ExceptionCLRCatcherFound()
 {
     HRESULT hr = S_OK;
 
@@ -2481,7 +2490,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCLRCatcherFou
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCLRCatcherExecute()
+HRESULT CProfilerManager::ExceptionCLRCatcherExecute()
 {
     HRESULT hr = S_OK;
 
@@ -2495,7 +2504,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ExceptionCLRCatcherExe
 }
 
 // ICorProfilerCallback2 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadNameChanged(
+HRESULT CProfilerManager::ThreadNameChanged(
     _In_ ThreadID threadId,
     _In_ ULONG cchName,
     _In_reads_opt_(cchName) WCHAR name[]
@@ -2512,7 +2521,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ThreadNameChanged(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GarbageCollectionStarted(
+HRESULT CProfilerManager::GarbageCollectionStarted(
     _In_ int cGenerations,
     _In_reads_(cGenerations) BOOL generationCollected[],
     _In_ COR_PRF_GC_REASON reason
@@ -2529,7 +2538,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GarbageCollectionStart
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences(
+HRESULT CProfilerManager::SurvivingReferences(
     _In_ ULONG cSurvivingObjectIDRanges,
     _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
     _In_reads_(cSurvivingObjectIDRanges) ULONG cObjectIDRangeLength[]
@@ -2546,7 +2555,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GarbageCollectionFinished()
+HRESULT CProfilerManager::GarbageCollectionFinished()
 {
     HRESULT hr = S_OK;
 
@@ -2559,7 +2568,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GarbageCollectionFinis
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalizeableObjectQueued(
+HRESULT CProfilerManager::FinalizeableObjectQueued(
     _In_ DWORD finalizerFlags,
     _In_ ObjectID objectID
     )
@@ -2575,7 +2584,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::FinalizeableObjectQueu
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RootReferences2(
+HRESULT CProfilerManager::RootReferences2(
     _In_ ULONG cRootRefs,
     _In_reads_(cRootRefs) ObjectID rootRefIds[],
     _In_reads_(cRootRefs) COR_PRF_GC_ROOT_KIND rootKinds[],
@@ -2594,7 +2603,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RootReferences2(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::HandleCreated(
+HRESULT CProfilerManager::HandleCreated(
     _In_ GCHandleID handleId,
     _In_ ObjectID initialObjectId
     )
@@ -2610,7 +2619,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::HandleCreated(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::HandleDestroyed(
+HRESULT CProfilerManager::HandleDestroyed(
     _In_ GCHandleID handleId
     )
 {
@@ -2626,7 +2635,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::HandleDestroyed(
 }
 
 // ICorProfilerCallback3 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::InitializeForAttach(
+HRESULT CProfilerManager::InitializeForAttach(
     _In_ IUnknown *pCorProfilerInfoUnk,
     _In_ void *pvClientData,
     _In_ UINT cbClientData
@@ -2645,7 +2654,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::InitializeForAttach(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ProfilerAttachComplete(void)
+HRESULT CProfilerManager::ProfilerAttachComplete(void)
 {
     HRESULT hr = S_OK;
 
@@ -2660,7 +2669,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ProfilerAttachComplete
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ProfilerDetachSucceeded(void)
+HRESULT CProfilerManager::ProfilerDetachSucceeded(void)
 {
     HRESULT hr = S_OK;
 
@@ -2674,7 +2683,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ProfilerDetachSucceede
 }
 
 // ICorProfilerCallback4 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationStarted(
+HRESULT CProfilerManager::ReJITCompilationStarted(
     _In_ FunctionID functionId,
     _In_ ReJITID rejitId,
     _In_ BOOL fIsSafeToBlock
@@ -2695,7 +2704,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationStarte
 
 // This is the primary function by which the rejit il is obtained. Give the instrumentation methods first crack and then
 // pass the il from there to here.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
+HRESULT CProfilerManager::GetReJITParameters(
     _In_ ModuleID moduleId,
     _In_ mdMethodDef methodToken,
     _In_ ICorProfilerFunctionControl* pFunctionControl
@@ -2796,7 +2805,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetReJITParameters(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinished(
+HRESULT CProfilerManager::ReJITCompilationFinished(
     _In_ FunctionID functionId,
     _In_ ReJITID rejitId,
     _In_ HRESULT hrStatus,
@@ -2842,7 +2851,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITCompilationFinish
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITError(
+HRESULT CProfilerManager::ReJITError(
     _In_ ModuleID moduleId,
     _In_ mdMethodDef methodId,
     _In_ FunctionID functionId,
@@ -2860,7 +2869,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ReJITError(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences2(
+HRESULT CProfilerManager::MovedReferences2(
     _In_ ULONG cMovedObjectIDRanges,
     _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
     _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
@@ -2878,7 +2887,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::MovedReferences2(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences2(
+HRESULT CProfilerManager::SurvivingReferences2(
     _In_ ULONG cSurvivingObjectIDRanges,
     _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
     _In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[]
@@ -2896,7 +2905,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::SurvivingReferences2(
 }
 
 // ICorProfilerCallback5 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConditionalWeakTableElementReferences(
+HRESULT CProfilerManager::ConditionalWeakTableElementReferences(
     _In_ ULONG cRootRefs,
     _In_reads_(cRootRefs) ObjectID keyRefIds[],
     _In_reads_(cRootRefs) ObjectID valueRefIds[],
@@ -2915,7 +2924,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConditionalWeakTableEl
 }
 
 // ICorProfilerCallback6 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetAssemblyReferences(
+HRESULT CProfilerManager::GetAssemblyReferences(
     _In_ const WCHAR *wszAssemblyPath,
     _In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider)
 {
@@ -2931,7 +2940,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetAssemblyReferences(
 }
 
 //ICorProfilerCallback7 methods
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleInMemorySymbolsUpdated(
+HRESULT CProfilerManager::ModuleInMemorySymbolsUpdated(
     _In_ ModuleID moduleId)
 {
     HRESULT hr = S_OK;
@@ -2945,7 +2954,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ModuleInMemorySymbolsU
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAppDomainInfo(
+HRESULT CProfilerManager::ConstructAppDomainInfo(
     _In_ AppDomainID appDomainId,
     _Out_ IAppDomainInfo** ppAppDomainInfo
     )
@@ -2974,7 +2983,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAppDomainInfo
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out_ IAssemblyInfo** ppAssemblInfo)
+HRESULT CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out_ IAssemblyInfo** ppAssemblInfo)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(ppAssemblInfo);
@@ -3020,7 +3029,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructAssemblyInfo(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
+HRESULT CProfilerManager::ConstructModuleInfo(
     _In_ ModuleID moduleId,
     _Out_ IModuleInfo** ppModuleInfo
     )
@@ -3116,7 +3125,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ConstructModuleInfo(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfo"));
@@ -3183,7 +3192,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfo(_In_ 
 
 // This creates a new methodinfo that is not shared with the instrumentation code paths.
 // This ensures isolation of lifetimes for the cases where reobtaining the methodinfo is not necessary
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CProfilerManager::CreateNewMethodInfo"));
@@ -3217,7 +3226,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateNewMethodInfo(_I
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo)
+HRESULT CProfilerManager::AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo)
 {
     IfNullRetPointer(pMethodInfo);
 
@@ -3231,13 +3240,13 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::AddMethodInfoToMap(_In
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
+HRESULT CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
 {
     m_methodInfos.erase(functionId);
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
+HRESULT CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CProfilerManager::GetMethodInfoById"));
@@ -3260,7 +3269,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetMethodInfoById(_In_
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfoForRejit(
+HRESULT CProfilerManager::CreateMethodInfoForRejit(
     _In_ ModuleID moduleId,
     _In_ mdMethodDef methodToken,
     _In_ ICorProfilerFunctionControl* pFunctionControl,
@@ -3291,9 +3300,40 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateMethodInfoForRej
     return S_OK;
 }
 
+// Internal public methods
+HRESULT CProfilerManager::LogMessageEx(_In_ const WCHAR* wszMessage, ...)
+{
+    va_list argptr;
+    va_start(argptr, wszMessage);
+    CLogging::VLogMessage(wszMessage, argptr);
+    va_end(argptr);
+
+    return S_OK;
+}
+
+HRESULT CProfilerManager::LogErrorEx(_In_ const WCHAR* wszError, ...)
+{
+    va_list argptr;
+    va_start(argptr, wszError);
+    CLogging::VLogError(wszError, argptr);
+    va_end(argptr);
+
+    return S_OK;
+}
+
+HRESULT CProfilerManager::LogDumpMessageEx(_In_ const WCHAR* wszMessage, ...)
+{
+    va_list argptr;
+    va_start(argptr, wszMessage);
+    CLogging::VLogDumpMessage(wszMessage, argptr);
+    va_end(argptr);
+
+    return S_OK;
+}
+
 // Call BeforeInstrumentMethod on each instrumentation method. This gives them a chance to replace the method
 // body using CreateBaseline. Note that only one instrumentation method will be allowed to replace the method body.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallBeforeInstrumentMethodOnInstrumentationMethods(
+HRESULT CProfilerManager::CallBeforeInstrumentMethodOnInstrumentationMethods(
     _In_ IMethodInfo* pMethodInfo,
     _In_ BOOL isRejit,
     _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument)
@@ -3316,7 +3356,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallBeforeInstrumentMe
 }
 
 // Call InstrumentMethod on each instrumentation method.
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstrumentationMethods(
+HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
     _In_ IMethodInfo* pMethodInfo,
     _In_ BOOL isRejit,
     _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument)
@@ -3394,7 +3434,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallInstrumentOnInstru
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateSignatureBuilder(_Out_ ISignatureBuilder ** ppSignatureBuilder)
+HRESULT CProfilerManager::CreateSignatureBuilder(_Out_ ISignatureBuilder ** ppSignatureBuilder)
 {
     IfNullRetPointer(ppSignatureBuilder);
     *ppSignatureBuilder = nullptr;
@@ -3410,7 +3450,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CreateSignatureBuilder
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown)
+HRESULT CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown)
 {
     HRESULT hr = S_OK;
 
@@ -3441,10 +3481,8 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::GetInstrumentationMeth
     return E_NOINTERFACE;
 }
 
-
-
 // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
+HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
     _In_ IMethodInfo* pMethodInfo,
     _In_ BOOL isRejit,
     _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument
@@ -3476,7 +3514,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallShouldInstrumentOn
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
+HRESULT CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Start CProfilerManager::CallOnInstrumentationComplete"));
@@ -3527,7 +3565,7 @@ void __cdecl MicrosoftInstrumentationEngine::SehTranslatorFunc(unsigned int u, E
     throw CSehException(pExp);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstrumentationMethods(
+HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
     _In_ IMethodInfo* pInlineeMethodInfo,
     _In_ IMethodInfo* pInlineSiteMethodInfo,
     _Out_ BOOL* pbShouldInline
@@ -3561,7 +3599,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::CallAllowInlineOnInstr
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(_In_ FunctionID functionId)
+HRESULT CProfilerManager::ClearILTransformationStatus(_In_ FunctionID functionId)
 {
     HRESULT hr;
     ClassID classId;
@@ -3571,7 +3609,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationS
     return ClearILTransformationStatus(moduleId, token);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CProfilerManager::ClearILTransformationStatus(_In_ ModuleID moduleId, _In_ mdMethodDef functionToken)
+HRESULT CProfilerManager::ClearILTransformationStatus(_In_ ModuleID moduleId, _In_ mdMethodDef functionToken)
 {
     HRESULT hr;
     CComPtr<IModuleInfo> pModuleInfo;

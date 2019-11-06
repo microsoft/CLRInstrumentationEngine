@@ -141,6 +141,7 @@
     <ClCompile Include="ModifierType.cpp" />
     <ClCompile Include="ModuleInfo.cpp" />
     <ClCompile Include="ProfilerManager.cpp" />
+    <ClCompile Include="ProfilerManagerForInstrumentationMethod.cpp" />
     <ClCompile Include="SignatureBuilder.cpp" />
     <ClCompile Include="SimpleType.cpp" />
     <ClCompile Include="SingleRetDefaultInstrumentation.cpp" />
@@ -148,7 +149,7 @@
     <ClCompile Include="TokenType.cpp" />
     <ClCompile Include="Type.cpp" />
     <ClCompile Include="TypeCreator.cpp" />
-    <ClInclude Include="*.h" />
+    <ClInclude Include="ProfilerManagerForInstrumentationMethod.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InstrumentationEngine.Lib\InstrumentationEngine.Lib.vcxproj">
