@@ -33,7 +33,7 @@ jobs:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
       Platform: $(Platform)
 
-  - ${{ if notIn(parameters.SignType, '', 'None') }}:
+  - ${{ if eq(variables.IsInternal, 'true') }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml

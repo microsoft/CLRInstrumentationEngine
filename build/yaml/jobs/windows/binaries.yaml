@@ -54,7 +54,7 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
       ArtifactName: 'binaries-windows-$(Configuration)'
 
-  - ${{ if notIn(parameters.SignType, '', 'None') }}:
+  - ${{ if eq(variables.IsInternal, 'true') }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
