@@ -10,7 +10,6 @@ name: $(date:yyyyMMdd)$(rev:rr)
 
 variables:
   TeamName: ClrInstrumentationEngine
-  IsInternal: true
 
 stages:
 - stage: Build
@@ -21,6 +20,7 @@ stages:
       IndexSources: true
       SignType: $(SignType)
       Configuration: Release
+      UseInternalTasks: true
 
 - stage: Package
   jobs:
@@ -29,3 +29,4 @@ stages:
     parameters:
       SignType: $(SignType)
       Configuration: Release
+      UseInternalTasks: true

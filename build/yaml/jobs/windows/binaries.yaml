@@ -7,6 +7,7 @@ parameters:
   IndexSources: false
   PublishSymbols: false
   SignType: None
+  UseInternalTasks: false
   MatrixStrategy: {}
   CopyFilters: |
     **
@@ -29,9 +30,10 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/microbuild/signing.yaml
-    parameters:
-      SignType: ${{ parameters.SignType }}
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
+    - template: ../../steps/microbuild/signing.yaml
+      parameters:
+        SignType: ${{ parameters.SignType }}
 
   - template: ../../steps/windows/binaries.yaml
 
@@ -54,7 +56,7 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
       ArtifactName: 'binaries-windows-$(Configuration)'
 
-  - ${{ if eq(variables.IsInternal, 'true') }}:
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml

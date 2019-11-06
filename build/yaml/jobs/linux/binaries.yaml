@@ -5,6 +5,7 @@
 
 parameters:
   SignType: None
+  UseInternalTasks: false
   MatrixStrategy: {}
 
 jobs:
@@ -32,5 +33,5 @@ jobs:
       PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
 
-  - ${{ if eq(variables.IsInternal, 'true') }}:
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
     - template: ../../steps/microbuild/cleanup.yaml

@@ -8,6 +8,7 @@ parameters:
   IndexSources: false
   SignType: None
   Configuration: Both
+  UseInternalTasks: false
 
 jobs:
 # Windows Binaries
@@ -15,6 +16,7 @@ jobs:
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
+    UseInternalTasks: ${{ parameters.UseInternalTasks }}
     # Filter out Tests for Signed Builds
     ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       CopyFilters: |
@@ -51,6 +53,7 @@ jobs:
 - template: linux/binaries.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
+    UseInternalTasks: ${{ parameters.UseInternalTasks }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

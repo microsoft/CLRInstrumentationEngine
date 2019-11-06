@@ -5,6 +5,7 @@
 
 parameters:
   SignType: None
+  UseInternalTasks: false
   MatrixStrategy: {}
 
 jobs:
@@ -25,9 +26,10 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/microbuild/signing.yaml
-    parameters:
-      SignType: ${{ parameters.SignType }}
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
+    - template: ../../steps/microbuild/signing.yaml
+      parameters:
+        SignType: ${{ parameters.SignType }}
 
   - template: ../../steps/linux/packages.yaml
 
@@ -41,7 +43,7 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-all'
 
-  - ${{ if eq(variables.IsInternal, 'true') }}:
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml

@@ -4,6 +4,7 @@
 # Job Template: Test Windows Binaries
 
 parameters:
+  UseInternalTasks: false
   MatrixStrategy: {}
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
       Platform: $(Platform)
 
-  - ${{ if eq(variables.IsInternal, 'true') }}:
+  - ${{ if eq('true', parameters.UseInternalTasks) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
