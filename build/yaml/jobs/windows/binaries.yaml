@@ -7,6 +7,7 @@ parameters:
   IndexSources: false
   PublishSymbols: false
   SignType: None
+  IsMicrobuildInternal: false
   MatrixStrategy: {}
   CopyFilters: |
     **
@@ -20,10 +21,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    name: VSEng-MicroBuildVS2019
-    demands:
-    - msbuild
-    - vstest
+    vmImage: windows-2019
 
   workspace:
     clean: outputs
@@ -32,9 +30,10 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/microbuild/signing.yaml
-    parameters:
-      SignType: ${{ parameters.SignType }}
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/signing.yaml
+      parameters:
+        SignType: ${{ parameters.SignType }}
 
   - template: ../../steps/windows/binaries.yaml
 
@@ -57,7 +56,8 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
       ArtifactName: 'binaries-windows-$(Configuration)'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
 

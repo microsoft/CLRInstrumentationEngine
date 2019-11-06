@@ -5,6 +5,7 @@
 
 parameters:
   SignType: None
+  IsMicrobuildInternal: false
   MatrixStrategy: {}
 
 jobs:
@@ -16,10 +17,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    name: DotNet-Build
-    demands:
-    - docker
-    - sh
+    vmImage: ubuntu-16.04
 
   workspace:
     clean: outputs
@@ -35,4 +33,5 @@ jobs:
       PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/cleanup.yaml
