@@ -6,7 +6,7 @@ Please format the changes as follows:
 + New:
 + BugFixes:
 + Updates:
-
+ 
 # 1.0.28
 + New:
   + Add support for profiling all CLRs within the same process
