@@ -474,7 +474,7 @@ namespace InstrumentationEngineLibTests
             loggerService.LogError(tsError1.c_str());
 
             // Give event logger time to process messages
-            Sleep(10); // ms
+            Sleep(100); // ms
 
             const vector<tstring> entries = loggerService.GetEventEntries();
 

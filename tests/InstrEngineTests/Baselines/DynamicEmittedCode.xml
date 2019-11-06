@@ -26,7 +26,7 @@
     <Instructions><![CDATA[
 IL_0000 nop
 IL_0001 nop
-IL_0002 ldstr 0x700002e6
+IL_0002 ldstr 0x70000324
 IL_0007 call 0xa00001f
 IL_000c nop
 IL_000d ret

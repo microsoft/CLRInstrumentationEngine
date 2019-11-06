@@ -34,7 +34,7 @@ void CLogging::LogMessage(_In_ const WCHAR* wszMessage, ...)
 
     va_list argptr;
     va_start(argptr, wszMessage);
-    s_loggerService.Get()->LogMessage(wszMessage, argptr);
+    VLogMessage(wszMessage, argptr);
     va_end(argptr);
 }
 
@@ -45,7 +45,7 @@ void CLogging::LogError(_In_ const WCHAR* wszError, ...)
 
     va_list argptr;
     va_start(argptr, wszError);
-    s_loggerService.Get()->LogError(wszError, argptr);
+    VLogError(wszError, argptr);
     va_end(argptr);
 }
 
@@ -56,8 +56,30 @@ void CLogging::LogDumpMessage(_In_ const WCHAR* wszMessage, ...)
 
     va_list argptr;
     va_start(argptr, wszMessage);
-    s_loggerService.Get()->LogDumpMessage(wszMessage, argptr);
+    VLogDumpMessage(wszMessage, argptr);
     va_end(argptr);
+}
+
+
+// static
+void CLogging::VLogMessage(_In_ const WCHAR* wszMessage, _In_ va_list argptr)
+{
+    IfNotInitRet(s_initialize);
+    s_loggerService.Get()->LogMessage(wszMessage, argptr);
+}
+
+// static
+void CLogging::VLogError(_In_ const WCHAR* wszError, _In_ va_list argptr)
+{
+    IfNotInitRet(s_initialize);
+    s_loggerService.Get()->LogError(wszError, argptr);
+}
+
+// static
+void CLogging::VLogDumpMessage(_In_ const WCHAR* wszMessage, _In_ va_list argptr)
+{
+    IfNotInitRet(s_initialize);
+    s_loggerService.Get()->LogDumpMessage(wszMessage, argptr);
 }
 
 // static
