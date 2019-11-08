@@ -6,13 +6,13 @@
 
 parameters:
   Configuration: Both
-  IsMicrobuildInternal: false
+  IsMicroBuildInternal: false
 
 jobs:
 # Test Windows Binaries
 - template: windows/tests.yaml
   parameters:
-    IsMicrobuildInternal: ${{ parameters.IsMicrobuildInternal }}
+    IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
         Debug_x86:
