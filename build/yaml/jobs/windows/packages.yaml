@@ -16,7 +16,13 @@ jobs:
     matrix:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
   pool:
-    vmImage: windows-2019
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - name: VSEng-MicroBuildVS2019
+      demands:
+      - msbuild
+      - vstest
+  - ${{ if not(eq('true', parameters.IsMicrobuildInternal)) }}:
+    - vmImage: windows-2019
 
   workspace:
     clean: outputs
