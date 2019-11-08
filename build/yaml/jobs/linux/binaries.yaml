@@ -17,13 +17,13 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
-    - name: DotNet-Build
+    ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+      name: DotNet-Build
       demands:
       - docker
       - sh
-  - ${{ if not(eq('true', parameters.IsMicrobuildInternal)) }}:
-    - vmImage: ubuntu-16.04
+    ${{ if not(eq('true', parameters.IsMicrobuildInternal)) }}:
+      vmImage: ubuntu-16.04
 
   workspace:
     clean: outputs
