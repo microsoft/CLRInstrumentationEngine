@@ -20,7 +20,7 @@ stages:
       IndexSources: true
       SignType: $(SignType)
       Configuration: Release
-      IsMicrobuildInternal: true
+      IsMicroBuildInternal: true
 
 - stage: Package
   jobs:
@@ -29,4 +29,4 @@ stages:
     parameters:
       SignType: $(SignType)
       Configuration: Release
-      IsMicrobuildInternal: true
+      IsMicroBuildInternal: true
