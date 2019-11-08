@@ -18,12 +18,12 @@ jobs:
 
   pool:
   - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
-    - name: DotNet-Build
+      name: DotNet-Build
       demands:
       - docker
       - sh
   - ${{ if not(eq('true', parameters.IsMicrobuildInternal)) }}:
-    - vmImage: ubuntu-16.04
+      vmImage: ubuntu-16.04
 
   workspace:
     clean: outputs
