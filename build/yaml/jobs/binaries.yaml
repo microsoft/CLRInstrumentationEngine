@@ -8,6 +8,7 @@ parameters:
   IndexSources: false
   SignType: None
   Configuration: Both
+  IsMicrobuildInternal: false
 
 jobs:
 # Windows Binaries
@@ -15,12 +16,17 @@ jobs:
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
+    IsMicrobuildInternal: ${{ parameters.IsMicrobuildInternal }}
+    # Filter out Tests for Signed Builds
     ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       CopyFilters: |
         **
         !**\Nagler*
-        !**\*Tests*
-        !**\*Tests*\**
+        !**\*Test*
+        !**\*Test*\**
+    # Publish Symbols only for Real Signed builds
+    ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None', 'Test') )}}:
+      PublishSymbols: true
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Release_x86:
@@ -47,6 +53,7 @@ jobs:
 - template: linux/binaries.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
+    IsMicrobuildInternal: ${{ parameters.IsMicrobuildInternal }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

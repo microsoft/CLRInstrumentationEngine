@@ -177,4 +177,3 @@ dlldata.c
 
 # Script generated files
 build.sem
-/src/unix/dependencies/nuget.config

@@ -30,7 +30,7 @@ about profilers in general.
 
 See the [Design Notes](../DESIGN-NOTES.md) for in-depth details of the CLR Instrumentation Engine.
 
-## Using the CLR Instrumentation Engine <a name="using-clrie"/>
+## Using the CLR Instrumentation Engine <a name="using-clrie" />
 
 ### Cooperative Model
 
@@ -79,3 +79,18 @@ A simple example of an InstrumentationMethod can be found in
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 
 See [Configuration](configuration.md) for more details
+
+### How do I use the Raw Profiler Hook?
+
+The RawProfilerHook allows one additional profiler that has not yet on-boarded to the ClrInstrumentationEngine to work with the Instrumentation Methods.
+
+The profiler callbacks will first iterate through each Instrumentation Method in priority order. Then the resultant IL is given to the ICorProfiler profiler listening on the RawProfilerHook.
+
+In order to use the RawProfilerHook, you must modify these environment variables for the ICorProfiler profiler:
+
+Variable Name|RawProfilerHook Variable Name 
+:-|:-
+CORECLR/COR_PROFILER|MicrosoftInstrumentationEngine_RawProfilerHook
+CORECLR/COR_PROFILER_PATH_32/64|MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64
+
+See [Environment Variables](environment_variables.md) for more details.

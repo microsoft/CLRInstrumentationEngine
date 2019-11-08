@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<package>
+  <metadata>
+    <id>$packageid$</id>
+    <version>$version$</version>
+    <title>Microsoft Instrumentation Engine for Windows Azure Diagnostics</title>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
+    <license type="file">$licenseFile$</license>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+  </metadata>
+  <files>
+    <file src="$bindir$\InstrumentationEngine.Installer_x64.$version$$msisuffix$.msi" target="Tools" />
+
+    <!-- Licensing -->
+    <file src="$enlistmentroot$\$licenseFile$*" target="" />
+  </files>
+</package>

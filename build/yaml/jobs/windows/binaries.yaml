@@ -5,7 +5,9 @@
 
 parameters:
   IndexSources: false
+  PublishSymbols: false
   SignType: None
+  IsMicrobuildInternal: false
   MatrixStrategy: {}
   CopyFilters: |
     **
@@ -19,10 +21,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    name: VSEng-MicroBuildVS2017
-    demands:
-    - msbuild
-    - vstest
+    vmImage: windows-2019
 
   workspace:
     clean: outputs
@@ -31,14 +30,17 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/microbuild/signing.yaml
-    parameters:
-      SignType: ${{ parameters.SignType }}
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/signing.yaml
+      parameters:
+        SignType: ${{ parameters.SignType }}
 
   - template: ../../steps/windows/binaries.yaml
 
   - ${{ if eq('true', parameters.IndexSources) }}:
-    - template: ../../steps/azuredevops/publishsymbols.yaml
+    - template: ../../steps/azuredevops/symbols.yaml
+      parameters:
+        PublishSymbols: ${{ parameters.PublishSymbols }}
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
@@ -54,7 +56,8 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
       ArtifactName: 'binaries-windows-$(Configuration)'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
 

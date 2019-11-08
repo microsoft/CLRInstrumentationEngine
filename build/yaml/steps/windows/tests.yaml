@@ -16,7 +16,7 @@ steps:
      !**\*TestAdapter.dll
      !**\obj\**
     searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)'
-    vsTestVersion: 15.0
+    vsTestVersion: 16.0
     runInParallel: false
     codeCoverageEnabled: false
     runSettingsFile: tests/TestSettings/$(RunSettingsFile)

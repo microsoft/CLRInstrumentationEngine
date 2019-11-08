@@ -134,7 +134,7 @@ HRESULT CLoggerService::InitializeCore()
     return RecalculateLoggingFlags();
 }
 
-void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, va_list argptr)
+void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr)
 {
     IfNotInitRet(m_initialize);
 
@@ -165,7 +165,7 @@ void CLoggerService::LogMessage(_In_ LPCWSTR wszMessage, ...)
     va_end (argptr);
 }
 
-void CLoggerService::LogError(_In_ LPCWSTR wszError, va_list argptr)
+void CLoggerService::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
 {
     IfNotInitRet(m_initialize);
 
@@ -208,7 +208,7 @@ void CLoggerService::LogError(_In_ LPCWSTR wszError, ...)
     va_end(argptr);
 }
 
-void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, va_list argptr)
+void CLoggerService::LogDumpMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr)
 {
     IfNotInitRet(m_initialize);
 

@@ -4,64 +4,64 @@
     <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
     <MethodName>Instru_CreateErrorTest</MethodName>
     <Instructions>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>6</Offset>		
+        <Offset>6</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>11</Offset>		
+        <Offset>11</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>12</Offset>		
+        <Offset>12</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>13</Offset>		
+        <Offset>13</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>38</Offset>		
+        <Offset>38</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>43</Offset>		
+        <Offset>43</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>44</Offset>		
+        <Offset>44</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>45</Offset>		
+        <Offset>45</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>54</Offset>		
+        <Offset>54</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>59</Offset>		
+        <Offset>59</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>60</Offset>		
+        <Offset>60</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
-	  <Instruction>
+      <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>61</Offset>		
+        <Offset>61</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
     </Instructions>

@@ -63,6 +63,10 @@ namespace MicrosoftInstrumentationEngine
         static void LogError(_In_ const WCHAR* szError, ...);
         static void LogDumpMessage(_In_ const WCHAR* szMessage, ...);
 
+        static void VLogMessage(_In_ const WCHAR* szMessage, _In_ va_list argptr);
+        static void VLogError(_In_ const WCHAR* szError, _In_ va_list argptr);
+        static void VLogDumpMessage(_In_ const WCHAR* szMessage, _In_ va_list argptr);
+
         static HRESULT Initialize();
 
         static void SetLogToDebugPort(_In_ bool enable);

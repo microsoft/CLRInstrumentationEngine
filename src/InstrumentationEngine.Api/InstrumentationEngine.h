@@ -3,11 +3,11 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 8.01.0620 */
+ /* File created by MIDL compiler version 8.01.0622 */
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0620 
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
     protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
@@ -5503,7 +5503,7 @@ EXTERN_C const IID IID_ILocalVariableCollection;
         
         virtual HRESULT STDMETHODCALLTYPE AddLocal( 
             /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex) = 0;
+            /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pIndex) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReplaceSignature( 
             /* [in] */ __RPC__in const BYTE *pSignature,
@@ -5546,7 +5546,7 @@ EXTERN_C const IID IID_ILocalVariableCollection;
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
             __RPC__in ILocalVariableCollection * This,
             /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex);
+            /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pIndex);
         
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
             __RPC__in ILocalVariableCollection * This,
@@ -6095,7 +6095,7 @@ EXTERN_C const IID IID_ITypeCreator;
             /* [in] */ DWORD cbBuffer,
             /* [in] */ __RPC__in const BYTE *pCorSignature,
             /* [out] */ __RPC__deref_out_opt IType **ppType,
-            /* [optional][out] */ __RPC__out DWORD *pdwSigSize) = 0;
+            /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pdwSigSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE FromCorElement( 
             /* [in] */ CorElementType type,
@@ -6132,7 +6132,7 @@ EXTERN_C const IID IID_ITypeCreator;
             /* [in] */ DWORD cbBuffer,
             /* [in] */ __RPC__in const BYTE *pCorSignature,
             /* [out] */ __RPC__deref_out_opt IType **ppType,
-            /* [optional][out] */ __RPC__out DWORD *pdwSigSize);
+            /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pdwSigSize);
         
         HRESULT ( STDMETHODCALLTYPE *FromCorElement )( 
             __RPC__in ITypeCreator * This,
@@ -7785,7 +7785,7 @@ EXTERN_C const IID IID_ILocalVariableCollection2;
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [in] */ __RPC__in_opt IType *pType,
-            /* [optional][out] */ __RPC__out DWORD *pIndex);
+            /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pIndex);
         
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
             __RPC__in ILocalVariableCollection2 * This,
@@ -7995,25 +7995,25 @@ EXTERN_C const IID IID_ISignatureParser;
         virtual HRESULT STDMETHODCALLTYPE ParseMethodSignature( 
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IType **ppReturnType,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumParameterTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcGenericTypeParameters,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pCallingConvention,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IType **ppReturnType,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumParameterTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcGenericTypeParameters,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ParseLocalVarSignature( 
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pCallingConvention,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ParseTypeSequence( 
             /* [in] */ __RPC__in const BYTE *pBuffer,
             /* [in] */ ULONG cbBuffer,
             /* [in] */ ULONG cTypes,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead) = 0;
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead) = 0;
         
     };
     
@@ -8040,27 +8040,27 @@ EXTERN_C const IID IID_ISignatureParser;
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IType **ppReturnType,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumParameterTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcGenericTypeParameters,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pCallingConvention,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IType **ppReturnType,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumParameterTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcGenericTypeParameters,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead);
         
         HRESULT ( STDMETHODCALLTYPE *ParseLocalVarSignature )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ ULONG cbSignature,
-            /* [optional][out] */ __RPC__out ULONG *pCallingConvention,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pCallingConvention,
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead);
         
         HRESULT ( STDMETHODCALLTYPE *ParseTypeSequence )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pBuffer,
             /* [in] */ ULONG cbBuffer,
             /* [in] */ ULONG cTypes,
-            /* [optional][out] */ __RPC__deref_out_opt IEnumTypes **ppEnumTypes,
-            /* [optional][out] */ __RPC__out ULONG *pcbRead);
+            /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumTypes,
+            /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead);
         
         END_INTERFACE
     } ISignatureParserVtbl;

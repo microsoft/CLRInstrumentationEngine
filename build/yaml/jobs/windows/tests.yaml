@@ -4,6 +4,7 @@
 # Job Template: Test Windows Binaries
 
 parameters:
+  IsMicrobuildInternal: false
   MatrixStrategy: {}
 
 jobs:
@@ -15,10 +16,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    name: VSEng-MicroBuildVS2017
-    demands:
-    - msbuild
-    - vstest
+    vmImage: windows-2019
 
   workspace:
     clean: outputs
@@ -36,6 +34,7 @@ jobs:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
       Platform: $(Platform)
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+    - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml

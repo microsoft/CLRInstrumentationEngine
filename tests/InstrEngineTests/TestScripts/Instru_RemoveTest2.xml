@@ -4,52 +4,52 @@
     <ModuleName>InstruOperationsTests_Release_x64.exe</ModuleName>
     <MethodName>Instru_CreateErrorTest</MethodName>
     <Instructions>
-	  <Instruction>
-        <Offset>6</Offset>		
+      <Instruction>
+        <Offset>6</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>11</Offset>		
+      <Instruction>
+        <Offset>11</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>12</Offset>		
+      <Instruction>
+        <Offset>12</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>13</Offset>		
+      <Instruction>
+        <Offset>13</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>38</Offset>		
+      <Instruction>
+        <Offset>38</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>43</Offset>		
+      <Instruction>
+        <Offset>43</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>44</Offset>		
+      <Instruction>
+        <Offset>44</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>45</Offset>		
+      <Instruction>
+        <Offset>45</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>54</Offset>		
+      <Instruction>
+        <Offset>54</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>59</Offset>		
+      <Instruction>
+        <Offset>59</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>60</Offset>		
+      <Instruction>
+        <Offset>60</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
-	  <Instruction>
-        <Offset>61</Offset>		
+      <Instruction>
+        <Offset>61</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
     </Instructions>

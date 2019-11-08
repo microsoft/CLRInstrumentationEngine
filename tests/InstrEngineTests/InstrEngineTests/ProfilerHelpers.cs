@@ -132,25 +132,32 @@ namespace InstrEngineTests
             string baselinePath = Path.Combine(PathUtils.GetBaselinesPath(), baseline);
 
             string baselineStr;
-            StringBuilder outputStrBuilder = new StringBuilder();
             string outputStr;
 
             using (StreamReader baselineStream = new StreamReader(baselinePath))
+            using (StreamReader outputStream = new StreamReader(outputPath))
             {
-                using (StreamReader outputStream = new StreamReader(outputPath))
+                string tmpStr;
+                StringBuilder strBuilder = new StringBuilder();
+                while ((tmpStr = baselineStream.ReadLine()) != null)
                 {
-                    baselineStr = baselineStream.ReadToEnd();
-                    string tmpStr;
-                    while ((tmpStr = outputStream.ReadLine()) != null)
+                    if (!string.IsNullOrEmpty(tmpStr))
                     {
-                        if (!string.IsNullOrEmpty(tmpStr) &&
-                            !tmpStr.StartsWith("[TestIgnore]"))
-                        {
-                            outputStrBuilder.Append(tmpStr);
-                        }
+                        strBuilder.Append(tmpStr);
                     }
-                    outputStr = outputStrBuilder.ToString();
                 }
+                baselineStr = strBuilder.ToString();
+
+                strBuilder = new StringBuilder();
+                while ((tmpStr = outputStream.ReadLine()) != null)
+                {
+                    if (!string.IsNullOrEmpty(tmpStr) &&
+                        !tmpStr.StartsWith("[TestIgnore]"))
+                    {
+                        strBuilder.Append(tmpStr);
+                    }
+                }
+                outputStr = strBuilder.ToString();
             }
 
             string[] baselineDocs = SplitXmlDocuments(baselineStr);
@@ -222,7 +229,7 @@ namespace InstrEngineTests
         private static int CompareOrdinalNormalizeLineEndings(string a, string b)
         {
             string normalA = a?.Replace("\r\n", "\n");
-            string normalB = a?.Replace("\r\n", "\n");
+            string normalB = b?.Replace("\r\n", "\n");
             return String.CompareOrdinal(normalA, normalB);
         }
 

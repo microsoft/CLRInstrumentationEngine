@@ -6,7 +6,8 @@
 #include "EnumeratorImpl.h"
 #include "ProfilerManager.h"
 
-MicrosoftInstrumentationEngine::CAppDomainCollection::CAppDomainCollection()
+MicrosoftInstrumentationEngine::CAppDomainCollection::CAppDomainCollection(_In_ CProfilerManager* pProfilerManager) :
+    m_pProfilerManager(pProfilerManager)
 {
     InitializeCriticalSection(&m_cs);
     DEFINE_REFCOUNT_NAME(CAppDomainCollection);
@@ -165,6 +166,8 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetAssemblyInfoByI
 
     CLogging::LogMessage(_T("Starting CAppDomainCollection::GetAssemblyInfoById"));
 
+    CCriticalSectionHolder lock(&m_cs);
+
     for (std::pair<AppDomainID, CComPtr<CAppDomainInfo>> p : m_appDomains)
     {
         hr = p.second->GetAssemblyInfoById(assemblyID, ppAssemblyInfo);
@@ -185,6 +188,8 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetModuleInfoById(
     HRESULT hr = S_OK;
 
     CLogging::LogMessage(_T("Starting CAppDomainCollection::GetModuleInfoById"));
+
+    CCriticalSectionHolder lock(&m_cs);
 
     for (std::pair<AppDomainID, CComPtr<CAppDomainInfo>> p : m_appDomains)
     {
@@ -256,11 +261,8 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetMethodInfoById(
 {
     HRESULT hr = S_OK;
 
-    CComPtr<CProfilerManager> pProfilerManager;
-    IfFailRet(CProfilerManager::GetProfilerManagerInstance(&pProfilerManager));
-
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
-    IfFailRet(pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
+    IfFailRet(m_pProfilerManager->GetRealCorProfilerInfo(&pCorProfilerInfo));
 
     ClassID classId;
     ModuleID moduleId;
