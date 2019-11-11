@@ -514,8 +514,21 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
                 return E_OUTOFMEMORY;
             }
 
+            LoggingFlags flag;
+            pProfilerManagerWrapper->GetInstruMethodLoggingFlags(&flag);
+
+            LoggingFlags currentCumulativeInstruMethodLoggingFlags;
+            IfFailRet(CLogging::GetInstruMethodLoggingFlags(&currentCumulativeInstruMethodLoggingFlags));
+
+            LoggingFlags newCumulativeInstruMethodLoggingFlags = (LoggingFlags)(currentCumulativeInstruMethodLoggingFlags | flag);
+            if (currentCumulativeInstruMethodLoggingFlags != newCumulativeInstruMethodLoggingFlags)
+            {
+                CLogging::SetInstruMethodLoggingFlags(newCumulativeInstruMethodLoggingFlags);
+            }
+
             // Do not detach so CComPtr can track refcount.
             hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper, m_bValidateCodeSignature);
+
             dwFlags = GetInitializingInstrumentationMethodFlags();
         }
 

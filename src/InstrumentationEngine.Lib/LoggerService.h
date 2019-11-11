@@ -40,6 +40,9 @@ namespace MicrosoftInstrumentationEngine
         // each of the logger sinks. This is updated each time a logger sink dependency is changed
         // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
         LoggingFlags m_effectiveFlags;
+        // This is the cumulative InstrumentationMethod LoggingFlags
+        LoggingFlags m_allInstruMethodFlags;
+
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
         ATL::CComPtr<IProfilerManagerLoggingHost> m_pLoggingHost;
@@ -89,7 +92,9 @@ namespace MicrosoftInstrumentationEngine
         void SetLogToDebugPort(_In_ bool enable);
 
         HRESULT GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
+        HRESULT GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
         HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
+        HRESULT SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags);
 
         HRESULT Shutdown();
 

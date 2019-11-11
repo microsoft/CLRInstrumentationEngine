@@ -13,6 +13,17 @@ using System.Xml;
 
 namespace InstrEngineTests
 {
+    // Mirror the LoggingFlags in InstrumentationEngine.idl
+    internal enum LogLevel
+    {
+        None = 0x0,
+        Errors = 0x1,
+        Trace = 0x2,
+        InstrumentationResults = 0x4,
+        All = 0x7,
+        Unset = 0x8
+    }
+
     internal class ProfilerHelpers
     {
         #region private fields
@@ -66,7 +77,7 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
             psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B"));
             psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
-            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_FileLog", "Dumps");
+            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
 
             // Uncomment this line to debug tests
             //psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
@@ -79,6 +90,51 @@ namespace InstrEngineTests
             if (TestParameters.DisableMethodSignatureValidation)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", @"1");
+            }
+
+            if (TestParameters.DisableMethodPrefix)
+            {
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableLogMethodPrefix", @"1");
+            }
+
+            if (TestParameters.MethodLogLevel != LogLevel.Unset)
+            {
+                StringBuilder methodLogLevelBuilder = new StringBuilder();
+                if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
+                {
+                    methodLogLevelBuilder.Append("|None");
+                }
+                else
+                {
+                    if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
+                    {
+                        methodLogLevelBuilder.Append("|All");
+                    }
+                    else
+                    {
+                        if ((TestParameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
+                        {
+                            methodLogLevelBuilder.Append("|Errors");
+                        }
+
+                        if ((TestParameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
+                        {
+                            methodLogLevelBuilder.Append("|Messages");
+                        }
+
+                        if ((TestParameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
+                        {
+                            methodLogLevelBuilder.Append("|Dumps");
+                        }
+                    }
+                }
+
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel_D2959618-F9B6-4CB6-80CF-F3B0E3263888", methodLogLevelBuilder.ToString());
+            }
+            else
+            {
+                // This variable overrides ALL logging levels for FileLoggerSink.
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_FileLog", "Dumps");
             }
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());

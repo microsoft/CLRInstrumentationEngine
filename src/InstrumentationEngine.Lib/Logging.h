@@ -58,6 +58,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Allows instrumentation methods and hosts to ask for the current logging flags
         static HRESULT GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
+        static HRESULT GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
 
         static void LogMessage(_In_ const WCHAR* szMessage, ...);
         static void LogError(_In_ const WCHAR* szError, ...);
@@ -73,6 +74,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Allows instrumentation methods and hosts to modify the current logging flags
         static HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
+        static HRESULT SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags);
 
         static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
 

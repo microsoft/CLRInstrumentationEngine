@@ -15,15 +15,46 @@
 CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMethod(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager)
 {
     WCHAR wszCurrentMethodGuid[40] = { 0 };
+    m_flags = LoggingFlags_None;
+
+    // Ignore the value, this only cares about the variable existence.
+    m_bDisableMethodPrefix = GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DisableLogMethodPrefix"), nullptr, 0) > 0;
+
     if (0 != ::StringFromGUID2(instrumentationMethodGuid, wszCurrentMethodGuid, 40))
     {
         // GUID:36char, Brackets:2char, nullterminator:1char
         // 1 offset = trim start bracket
         // 36 length = keep only Guid portion
         m_wszInstrumentationMethodGuid = tstring(wszCurrentMethodGuid).substr(1, 36);
+        m_instrumentationMethodGuid = instrumentationMethodGuid;
+
+        // Get InstrumentationMethod-specific LogLevel Environment Variable
+        tstring wszInstrumentationMethodLogLevelEnvVar = _T("MicrosoftInstrumentationEngine_LogLevel_") + m_wszInstrumentationMethodGuid;
+        WCHAR wszEnvVar[MAX_PATH];
+        if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
+        {
+            m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
+        }
+        else
+        {
+            // We want to pick up the global logging level if no log level for the instrumentation method is set.
+            // If this fails, there's not much we can do.
+            CLogging::GetLoggingFlags(&m_flags);
+        }
+    }
+    else
+    {
+        CLogging::GetLoggingFlags(&m_flags);
     }
 
+
     m_pProfilerManager = pProfilerManager;
+}
+
+HRESULT CProfilerManagerForInstrumentationMethod::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+{
+    *pLoggingFlags = m_flags;
+    return S_OK;
 }
 
 // IProfilerManager Methods
@@ -145,48 +176,19 @@ HRESULT CProfilerManagerForInstrumentationMethod::IsInstrumentationMethodRegiste
 }
 
 // IProfilerManagerLogging Methods
-/*
- * Inject Instrumentation Method ClassId
- */
 HRESULT CProfilerManagerForInstrumentationMethod::LogMessage(_In_ const WCHAR* wszMessage)
 {
-    HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
-    tstring tsEscapedMessage;
-    EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
-
-    return m_pProfilerManager->LogMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+    return LogMessageInternal(wszMessage, LoggingFlags_Trace);
 }
 
-/*
- * Inject Instrumentation Method ClassId
- */
 HRESULT CProfilerManagerForInstrumentationMethod::LogError(_In_ const WCHAR* wszError)
 {
-    HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
-    tstring tsEscapedMessage;
-    EscapeFormatSpecifiers(wszError, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
-
-    return m_pProfilerManager->LogErrorEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+    return LogMessageInternal(wszError, LoggingFlags_Errors);
 }
 
-/*
- * Inject Instrumentation Method ClassId
- */
 HRESULT CProfilerManagerForInstrumentationMethod::LogDumpMessage(_In_ const WCHAR* wszMessage)
 {
-    HRESULT hr = S_OK;
-    WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
-    tstring tsEscapedMessage;
-    EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
-    return m_pProfilerManager->LogDumpMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+    return LogMessageInternal(wszMessage, LoggingFlags_InstrumentationResults);
 }
 
 HRESULT CProfilerManagerForInstrumentationMethod::EnableDiagnosticLogToDebugPort(_In_ BOOL enable)
@@ -202,6 +204,55 @@ HRESULT CProfilerManagerForInstrumentationMethod::GetLoggingFlags(_Out_ LoggingF
 HRESULT CProfilerManagerForInstrumentationMethod::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
     return m_pProfilerManager->SetLoggingFlags(loggingFlags);
+}
+
+/*
+ * Inject Instrumentation Method ClassId if not disabled.
+ */
+HRESULT CProfilerManagerForInstrumentationMethod::LogMessageInternal(_In_ const WCHAR* wszMessage, _In_ LoggingFlags logFlag)
+{
+    HRESULT hr = S_OK;
+
+    // Short-circuit if logging level not enabled
+    if (!IsFlagSet(m_flags, logFlag))
+    {
+        return S_OK;
+    }
+
+    if (m_bDisableMethodPrefix || m_wszInstrumentationMethodGuid.empty())
+    {
+        switch (logFlag)
+        {
+        case LoggingFlags_Errors:
+            return m_pProfilerManager->LogError(wszMessage);
+        case LoggingFlags_Trace:
+            return m_pProfilerManager->LogMessage(wszMessage);
+        case LoggingFlags_InstrumentationResults:
+            return m_pProfilerManager->LogDumpMessage(wszMessage);
+        default:
+            return S_OK;
+        }
+    }
+    else
+    {
+        WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
+        tstring tsEscapedMessage;
+        EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
+        IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
+        IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
+
+        switch (logFlag)
+        {
+        case LoggingFlags_Errors:
+            return m_pProfilerManager->LogErrorEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+        case LoggingFlags_Trace:
+            return m_pProfilerManager->LogMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+        case LoggingFlags_InstrumentationResults:
+            return m_pProfilerManager->LogDumpMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
+        default:
+            return S_OK;
+        }
+    }
 }
 
 void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped)

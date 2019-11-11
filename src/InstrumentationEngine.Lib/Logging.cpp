@@ -28,14 +28,26 @@ HRESULT CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 }
 
 // static
+HRESULT CLogging::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+{
+    IfNotInitRetUnexpected(s_initialize);
+
+    return s_loggerService.Get()->GetInstruMethodLoggingFlags(pLoggingFlags);
+}
+
+// static
 void CLogging::LogMessage(_In_ const WCHAR* wszMessage, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszMessage);
-    VLogMessage(wszMessage, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_Trace) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszMessage);
+        VLogMessage(wszMessage, argptr);
+        va_end(argptr);
+    }
 }
 
 // static
@@ -43,10 +55,14 @@ void CLogging::LogError(_In_ const WCHAR* wszError, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszError);
-    VLogError(wszError, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_Errors) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszError);
+        VLogError(wszError, argptr);
+        va_end(argptr);
+    }
 }
 
 // static
@@ -54,10 +70,14 @@ void CLogging::LogDumpMessage(_In_ const WCHAR* wszMessage, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszMessage);
-    VLogDumpMessage(wszMessage, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_InstrumentationResults) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszMessage);
+        VLogDumpMessage(wszMessage, argptr);
+        va_end(argptr);
+    }
 }
 
 
@@ -115,6 +135,14 @@ HRESULT CLogging::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
     IfNotInitRetUnexpected(s_initialize);
 
     return s_loggerService.Get()->SetLoggingFlags(loggingFlags);
+}
+
+// static
+HRESULT CLogging::SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags)
+{
+    IfNotInitRetUnexpected(s_initialize);
+
+    return s_loggerService.Get()->SetInstruMethodLoggingFlags(loggingFlags);
 }
 
 // static

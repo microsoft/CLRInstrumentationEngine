@@ -18,6 +18,7 @@ using namespace std;
 CLoggerService::CLoggerService() :
     m_defaultFlags(LoggingFlags_None),
     m_effectiveFlags(LoggingFlags_None),
+    m_allInstruMethodFlags(LoggingFlags_None),
     m_fLogToDebugPort(false),
     m_initialize([=]() { return InitializeCore(); })
 {
@@ -73,6 +74,23 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
     return S_OK;
 }
 
+HRESULT CLoggerService::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+{
+    HRESULT hr = S_OK;
+
+    IfNullRetPointerNoLog(pLoggingFlags);
+
+    *pLoggingFlags = LoggingFlags_None;
+
+    IfNotInitRetUnexpected(m_initialize);
+
+    CCriticalSectionHolder holder(&m_cs);
+
+    *pLoggingFlags = m_allInstruMethodFlags;
+
+    return S_OK;
+}
+
 HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 {
     IfNotInitRetUnexpected(m_initialize);
@@ -80,6 +98,17 @@ HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
     CCriticalSectionHolder holder(&m_cs);
 
     m_defaultFlags = loggingFlags;
+
+    return RecalculateLoggingFlags();
+}
+
+HRESULT CLoggerService::SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags)
+{
+    IfNotInitRetUnexpected(m_initialize);
+
+    CCriticalSectionHolder holder(&m_cs);
+
+    m_allInstruMethodFlags = loggingFlags;
 
     return RecalculateLoggingFlags();
 }
@@ -243,7 +272,7 @@ bool CLoggerService::AllowLogEntry(_In_ LoggingFlags flags)
 {
     IfNotInitRetFalse(m_initialize);
 
-    return IsFlagSet(m_effectiveFlags, flags);
+    return IsFlagSet((LoggingFlags)(m_effectiveFlags | m_allInstruMethodFlags), flags);
 }
 
 // static
@@ -304,18 +333,23 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     {
         // Reset the sink; get its desired logging level
         LoggingFlags sinkFlags;
+        LoggingFlags instruMethodSinkFlags;
         IfFailRetNoLog(pSink->Reset(m_defaultFlags, &sinkFlags));
+        IfFailRetNoLog(pSink->Reset(m_allInstruMethodFlags, &instruMethodSinkFlags));
 
         // Add the sink to each logging level vector
-        if (IsFlagSet(sinkFlags, LoggingFlags_Errors))
+        if (IsFlagSet(sinkFlags, LoggingFlags_Errors) ||
+            IsFlagSet(instruMethodSinkFlags, LoggingFlags_Errors))
         {
             m_errorSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_InstrumentationResults))
+        if (IsFlagSet(sinkFlags, LoggingFlags_InstrumentationResults) ||
+            IsFlagSet(instruMethodSinkFlags, LoggingFlags_InstrumentationResults))
         {
             m_dumpSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_Trace))
+        if (IsFlagSet(sinkFlags, LoggingFlags_Trace) ||
+            IsFlagSet(instruMethodSinkFlags, LoggingFlags_Trace))
         {
             m_messageSinks.push_back(pSink);
         }
