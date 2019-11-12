@@ -7,14 +7,14 @@
 parameters:
   SignType: None
   Configuration: Both
-  IsMicrobuildInternal: false
+  IsMicroBuildInternal: false
 
 jobs:
 # Windows Packages
 - template: windows/packages.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
-    IsMicrobuildInternal: ${{ parameters.IsMicrobuildInternal }}
+    IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Release_x86:
@@ -41,7 +41,7 @@ jobs:
 - template: linux/packages.yaml
   parameters:
     SignType: ${{ parameters.SignType }}
-    IsMicrobuildInternal: ${{ parameters.IsMicrobuildInternal }}
+    IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

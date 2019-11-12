@@ -5,7 +5,7 @@
 
 parameters:
   SignType: None
-  IsMicrobuildInternal: false
+  IsMicroBuildInternal: false
   MatrixStrategy: {}
 
 jobs:
@@ -17,7 +17,13 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    vmImage: windows-2019
+    ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+      name: VSEng-MicroBuildVS2019
+      demands:
+      - msbuild
+      - vstest
+    ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
+      vmImage: windows-2019
 
   workspace:
     clean: outputs
@@ -26,7 +32,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/signing.yaml
       parameters:
         SignType: ${{ parameters.SignType }}
@@ -43,7 +49,7 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-all'
 
-  - ${{ if eq('true', parameters.IsMicrobuildInternal) }}:
+  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
