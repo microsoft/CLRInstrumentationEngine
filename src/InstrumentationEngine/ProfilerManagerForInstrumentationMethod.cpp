@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-#pragma once
-
 #include "stdafx.h"
 #include <string>
 #include "ProfilerManager.h"
@@ -154,8 +152,8 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogMessage(_In_ const WCHAR* w
     WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
     tstring tsEscapedMessage;
     EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, tsEscapedMessage.c_str()));
 
     return m_pProfilerManager->LogMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 }
@@ -169,8 +167,8 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogError(_In_ const WCHAR* wsz
     WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
     tstring tsEscapedMessage;
     EscapeFormatSpecifiers(wszError, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, tsEscapedMessage.c_str()));
 
     return m_pProfilerManager->LogErrorEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 }
@@ -184,8 +182,8 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogDumpMessage(_In_ const WCHA
     WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
     tstring tsEscapedMessage;
     EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
-    IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-    IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, FORMATTABLE_PREFIX));
+    IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, tsEscapedMessage.c_str()));
     return m_pProfilerManager->LogDumpMessageEx(wszBuffer, m_wszInstrumentationMethodGuid.c_str());
 }
 
@@ -204,9 +202,9 @@ HRESULT CProfilerManagerForInstrumentationMethod::SetLoggingFlags(_In_ LoggingFl
     return m_pProfilerManager->SetLoggingFlags(loggingFlags);
 }
 
-void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped)
+void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped)
 {
-    for (wstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); it++)
+    for (tstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); it++)
     {
         // This duplicates any single '%' character (ie. "%%") in the
         // format string from being treated as a format specifier.
