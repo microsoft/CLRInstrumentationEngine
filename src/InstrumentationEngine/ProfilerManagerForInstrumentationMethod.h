@@ -105,5 +105,5 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override;
     };
 
-    void EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped);
+    void EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped);
 }

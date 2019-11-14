@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.29
++ BugFixes:
+  + Fix runtime error for Alpine
 
 # 1.0.28
 + New:
