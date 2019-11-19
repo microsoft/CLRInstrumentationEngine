@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <set>
 
 #ifndef PLATFORM_UNIX
 #include <functional>
@@ -40,8 +41,10 @@ namespace MicrosoftInstrumentationEngine
         // each of the logger sinks. This is updated each time a logger sink dependency is changed
         // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
         LoggingFlags m_effectiveFlags;
-        // This is the cumulative InstrumentationMethod LoggingFlags
-        LoggingFlags m_allInstruMethodFlags;
+        // This is the cumulative LoggingFlags for all InstrumentationMethods
+        LoggingFlags m_instrumentationMethodFlags;
+
+        std::unordered_map<LoggingFlags, std::set<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
 
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
@@ -71,6 +74,10 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT RecalculateLoggingFlags();
 
+        HRESULT UpdateFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
+
+        HRESULT UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel);
+
     public:
         bool AllowLogEntry(_In_ LoggingFlags flags);
 
@@ -92,9 +99,8 @@ namespace MicrosoftInstrumentationEngine
         void SetLogToDebugPort(_In_ bool enable);
 
         HRESULT GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
-        HRESULT GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags);
         HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
-        HRESULT SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags);
+        HRESULT UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
         HRESULT Shutdown();
 

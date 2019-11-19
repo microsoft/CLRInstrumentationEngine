@@ -508,22 +508,17 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
             // with it in this thread.
             CInitializeInstrumentationMethodHolder initHolder(this);
             CComPtr<CProfilerManagerForInstrumentationMethod> pProfilerManagerWrapper;
-            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(pInstrumentationMethod->GetClassId(), this));
+            GUID classId = pInstrumentationMethod->GetClassId();
+            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(classId, this));
             if (pProfilerManagerWrapper == nullptr)
             {
                 return E_OUTOFMEMORY;
             }
 
-            LoggingFlags flag;
-            pProfilerManagerWrapper->GetInstruMethodLoggingFlags(&flag);
-
-            LoggingFlags currentCumulativeInstruMethodLoggingFlags;
-            IfFailRet(CLogging::GetInstruMethodLoggingFlags(&currentCumulativeInstruMethodLoggingFlags));
-
-            LoggingFlags newCumulativeInstruMethodLoggingFlags = (LoggingFlags)(currentCumulativeInstruMethodLoggingFlags | flag);
-            if (currentCumulativeInstruMethodLoggingFlags != newCumulativeInstruMethodLoggingFlags)
+            LoggingFlags instrumentationMethodLoggingFlag;
+            if (SUCCEEDED(pProfilerManagerWrapper->GetInstrumentationMethodLoggingFlags(&instrumentationMethodLoggingFlag)))
             {
-                CLogging::SetInstruMethodLoggingFlags(newCumulativeInstruMethodLoggingFlags);
+                CLogging::UpdateInstrumentationMethodLoggingFlags(classId, instrumentationMethodLoggingFlag);
             }
 
             // Do not detach so CComPtr can track refcount.

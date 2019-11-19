@@ -51,7 +51,7 @@ CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMeth
     m_pProfilerManager = pProfilerManager;
 }
 
-HRESULT CProfilerManagerForInstrumentationMethod::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+HRESULT CProfilerManagerForInstrumentationMethod::GetInstrumentationMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
     *pLoggingFlags = m_flags;
     return S_OK;

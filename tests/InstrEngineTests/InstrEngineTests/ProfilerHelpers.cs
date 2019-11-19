@@ -45,11 +45,11 @@ namespace InstrEngineTests
 
         private static bool BinaryRecompiled = false;
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null)
+        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false)
         {
             // Usually we use the same file name for test script, baseline and test result
             ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args);
-            ProfilerHelpers.DiffResultToBaseline(fileName, fileName);
+            ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
         public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args)
@@ -77,7 +77,11 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
             psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B"));
             psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
-            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
+
+            if (!TestParameters.DisableLogLevel)
+            {
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
+            }
 
             // Uncomment this line to debug tests
             //psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
@@ -182,65 +186,98 @@ namespace InstrEngineTests
             return docs.ToArray();
         }
 
-        public static void DiffResultToBaseline(string output, string baseline)
+        public static void DiffResultToBaseline(string output, string baseline, bool regexCompare = false)
         {
             string outputPath = Path.Combine(PathUtils.GetTestResultsPath(), output);
             string baselinePath = Path.Combine(PathUtils.GetBaselinesPath(), baseline);
 
-            string baselineStr;
-            string outputStr;
-
-            using (StreamReader baselineStream = new StreamReader(baselinePath))
-            using (StreamReader outputStream = new StreamReader(outputPath))
+            try
             {
-                string tmpStr;
-                StringBuilder strBuilder = new StringBuilder();
-                while ((tmpStr = baselineStream.ReadLine()) != null)
-                {
-                    if (!string.IsNullOrEmpty(tmpStr))
-                    {
-                        strBuilder.Append(tmpStr);
-                    }
-                }
-                baselineStr = strBuilder.ToString();
+                string baselineStr;
+                string outputStr;
 
-                strBuilder = new StringBuilder();
-                while ((tmpStr = outputStream.ReadLine()) != null)
+                List<string> baselineStrList = new List<string>();
+                List<string> outputStrList = new List<string>();
+
+                using (StreamReader baselineStream = new StreamReader(baselinePath))
+                using (StreamReader outputStream = new StreamReader(outputPath))
                 {
-                    if (!string.IsNullOrEmpty(tmpStr) &&
-                        !tmpStr.StartsWith("[TestIgnore]"))
+                    string tmpStr;
+
+                    StringBuilder strBuilder = new StringBuilder();
+                    while ((tmpStr = baselineStream.ReadLine()) != null)
                     {
-                        strBuilder.Append(tmpStr);
+                        if (!string.IsNullOrEmpty(tmpStr))
+                        {
+                            strBuilder.Append(tmpStr);
+                            baselineStrList.Add($"^{tmpStr}$");
+                        }
+                    }
+                    baselineStr = strBuilder.ToString();
+
+                    strBuilder = new StringBuilder();
+                    while ((tmpStr = outputStream.ReadLine()) != null)
+                    {
+                        if (!string.IsNullOrEmpty(tmpStr) &&
+                            !tmpStr.StartsWith("[TestIgnore]"))
+                        {
+                            strBuilder.Append(tmpStr);
+                            outputStrList.Add(tmpStr);
+                        }
+                    }
+                    outputStr = strBuilder.ToString();
+                }
+
+                if (regexCompare)
+                {
+                    Assert.IsTrue(baselineStrList.Count == outputStrList.Count, "Baseline file line count does not match output file line count.");
+
+                    for (int i = 0; i < baselineStrList.Count; i++)
+                    {
+                        Match match = Regex.Match(outputStrList[i], baselineStrList[i]);
+                        if (!match.Success)
+                        {
+                            Assert.Fail("Baseline file regex failed to match output file:\n" + baselineStrList[i] + "\n" + outputStrList[i]);
+                        }
                     }
                 }
-                outputStr = strBuilder.ToString();
+                else
+                {
+                    // Use XML comparison
+                    string[] baselineDocs = SplitXmlDocuments(baselineStr);
+                    string[] outputDocs = SplitXmlDocuments(outputStr);
+
+                    Assert.AreEqual(baselineDocs.Length, outputDocs.Length);
+                    for (int docIdx = 0; docIdx < baselineDocs.Length; docIdx++)
+                    {
+
+                        string baselineXmlDocStr = baselineDocs[docIdx];
+                        string outputXmlDocStr = outputDocs[docIdx];
+
+                        XmlDocument baselineDocument = new XmlDocument();
+                        baselineDocument.LoadXml(baselineXmlDocStr);
+
+                        XmlDocument outputDocument = new XmlDocument();
+                        outputDocument.LoadXml(outputXmlDocStr);
+
+                        Assert.AreEqual(baselineDocument.ChildNodes.Count, outputDocument.ChildNodes.Count);
+
+                        for (int i = 0; i < baselineDocument.ChildNodes.Count; i++)
+                        {
+                            XmlNode currBaselineNode = baselineDocument.ChildNodes[i];
+                            XmlNode currOutputNode = outputDocument.ChildNodes[i];
+
+                            DiffResultToBaselineNode(currBaselineNode, currOutputNode);
+                        }
+                    }
+                }
             }
-
-            string[] baselineDocs = SplitXmlDocuments(baselineStr);
-            string[] outputDocs = SplitXmlDocuments(outputStr);
-
-            Assert.AreEqual(baselineDocs.Length, outputDocs.Length);
-            for (int docIdx = 0; docIdx < baselineDocs.Length; docIdx++)
+            catch (AssertFailedException)
             {
-
-                string baselineXmlDocStr = baselineDocs[docIdx];
-                string outputXmlDocStr = outputDocs[docIdx];
-
-                XmlDocument baselineDocument = new XmlDocument();
-                baselineDocument.LoadXml(baselineXmlDocStr);
-
-                XmlDocument outputDocument = new XmlDocument();
-                outputDocument.LoadXml(outputXmlDocStr);
-
-                Assert.AreEqual(baselineDocument.ChildNodes.Count, outputDocument.ChildNodes.Count);
-
-                for (int i = 0; i < baselineDocument.ChildNodes.Count; i++)
-                {
-                    XmlNode currBaselineNode = baselineDocument.ChildNodes[i];
-                    XmlNode currOutputNode = outputDocument.ChildNodes[i];
-
-                    DiffResultToBaselineNode(currBaselineNode, currOutputNode);
-                }
+                Console.WriteLine($"Baseline FilePath: {baselinePath}");
+                Console.WriteLine();
+                Console.WriteLine($"Output FilePath: {outputPath}");
+                throw;
             }
         }
 
@@ -251,7 +288,6 @@ namespace InstrEngineTests
             if (String.CompareOrdinal(baselineNode.Name, outputNode.Name) != 0)
             {
                 Assert.Fail("Baseline node name does not equal output node name\n" + baselineNode.Name + "\n" + outputNode.Name);
-                return;
             }
 
             bool isVolatile = baselineNode.Attributes != null &&
@@ -265,7 +301,6 @@ namespace InstrEngineTests
                 if (CompareOrdinalNormalizeLineEndings(baselineNode.Value, outputNode.Value) != 0)
                 {
                     Assert.Fail("Baseline value does not equal output value\n" + baselineNode.Value + "\n" + outputNode.Value);
-                    return;
                 }
 
                 Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count);
@@ -288,7 +323,6 @@ namespace InstrEngineTests
             string normalB = b?.Replace("\r\n", "\n");
             return String.CompareOrdinal(normalA, normalB);
         }
-
 
         private static XmlDocument LoadTestScript(string testScript)
         {

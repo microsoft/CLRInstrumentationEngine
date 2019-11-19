@@ -15,7 +15,7 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
-    public class InstrumentationMethodLogging
+    public class TestInstrumentationMethodLogging
     {
         [ClassInitialize]
         public static void Initialize(TestContext context)
@@ -56,6 +56,16 @@ namespace InstrEngineTests
             TestParameters.DisableMethodPrefix = false;
             TestParameters.MethodLogLevel = LogLevel.Errors | LogLevel.InstrumentationResults;
             ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingSome.xml", args: null);
+        }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
+        public void InstrMethodLoggingTestLevelAllWithNoLogLevel()
+        {
+            TestParameters.DisableMethodPrefix = false;
+            TestParameters.DisableLogLevel = true;
+            TestParameters.MethodLogLevel = LogLevel.All;
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingAllWithNoLogLevel.xml", args: null, regexCompare: true);
         }
     }
 }

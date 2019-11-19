@@ -28,11 +28,11 @@ HRESULT CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 }
 
 // static
-HRESULT CLogging::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+HRESULT CLogging::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
 {
     IfNotInitRetUnexpected(s_initialize);
 
-    return s_loggerService.Get()->GetInstruMethodLoggingFlags(pLoggingFlags);
+    return s_loggerService.Get()->UpdateInstrumentationMethodLoggingFlags(classId, loggingFlags);
 }
 
 // static
@@ -135,14 +135,6 @@ HRESULT CLogging::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
     IfNotInitRetUnexpected(s_initialize);
 
     return s_loggerService.Get()->SetLoggingFlags(loggingFlags);
-}
-
-// static
-HRESULT CLogging::SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags)
-{
-    IfNotInitRetUnexpected(s_initialize);
-
-    return s_loggerService.Get()->SetInstruMethodLoggingFlags(loggingFlags);
 }
 
 // static

@@ -15,11 +15,36 @@
 using namespace MicrosoftInstrumentationEngine;
 using namespace std;
 
+// Need to define this to use GUID in a set
+bool operator< (const GUID& guid1, const GUID& guid2)
+{
+    if (guid1.Data1 != guid2.Data1)
+        return (guid1.Data1 < guid2.Data1);
+
+    if (guid1.Data2 != guid2.Data2)
+        return (guid1.Data2 < guid2.Data2);
+
+    if (guid1.Data3 != guid2.Data3)
+        return (guid1.Data3 < guid2.Data3);
+
+    for (int i = 0; i < 8; i++)
+        if (guid1.Data4[i] != guid2.Data4[i])
+            return (guid1.Data4[i] < guid2.Data4[i]);
+
+    // They are equal, so not less_then
+    return false;
+}
+
 CLoggerService::CLoggerService() :
     m_defaultFlags(LoggingFlags_None),
     m_effectiveFlags(LoggingFlags_None),
-    m_allInstruMethodFlags(LoggingFlags_None),
+    m_instrumentationMethodFlags(LoggingFlags_None),
     m_fLogToDebugPort(false),
+    m_loggingFlagsToInstrumentationMethodsMap({
+        { LoggingFlags_Errors,                 {} },
+        { LoggingFlags_Trace,                  {} },
+        { LoggingFlags_InstrumentationResults, {} },
+    }),
     m_initialize([=]() { return InitializeCore(); })
 {
 }
@@ -74,21 +99,29 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
     return S_OK;
 }
 
-HRESULT CLoggerService::GetInstruMethodLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
+HRESULT CLoggerService::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
 {
     HRESULT hr = S_OK;
-
-    IfNullRetPointerNoLog(pLoggingFlags);
-
-    *pLoggingFlags = LoggingFlags_None;
 
     IfNotInitRetUnexpected(m_initialize);
 
     CCriticalSectionHolder holder(&m_cs);
 
-    *pLoggingFlags = m_allInstruMethodFlags;
+    m_instrumentationMethodFlags = LoggingFlags_None;
 
-    return S_OK;
+    IfFailRetNoLog(UpdateFlags(classId, loggingFlags));
+
+    for (unordered_map<LoggingFlags, set<GUID>>::iterator it = m_loggingFlagsToInstrumentationMethodsMap.begin();
+        it != m_loggingFlagsToInstrumentationMethodsMap.end();
+        it++)
+    {
+        if (!(it->second.empty()))
+        {
+            m_instrumentationMethodFlags = (LoggingFlags)(m_instrumentationMethodFlags | it->first);
+        }
+    }
+
+    return RecalculateLoggingFlags();
 }
 
 HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
@@ -98,17 +131,6 @@ HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
     CCriticalSectionHolder holder(&m_cs);
 
     m_defaultFlags = loggingFlags;
-
-    return RecalculateLoggingFlags();
-}
-
-HRESULT CLoggerService::SetInstruMethodLoggingFlags(_In_ LoggingFlags loggingFlags)
-{
-    IfNotInitRetUnexpected(m_initialize);
-
-    CCriticalSectionHolder holder(&m_cs);
-
-    m_allInstruMethodFlags = loggingFlags;
 
     return RecalculateLoggingFlags();
 }
@@ -272,7 +294,7 @@ bool CLoggerService::AllowLogEntry(_In_ LoggingFlags flags)
 {
     IfNotInitRetFalse(m_initialize);
 
-    return IsFlagSet((LoggingFlags)(m_effectiveFlags | m_allInstruMethodFlags), flags);
+    return IsFlagSet((LoggingFlags)(m_effectiveFlags | m_instrumentationMethodFlags), flags);
 }
 
 // static
@@ -333,23 +355,20 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     {
         // Reset the sink; get its desired logging level
         LoggingFlags sinkFlags;
-        LoggingFlags instruMethodSinkFlags;
+        LoggingFlags instrumentationMethodSinkFlags;
         IfFailRetNoLog(pSink->Reset(m_defaultFlags, &sinkFlags));
-        IfFailRetNoLog(pSink->Reset(m_allInstruMethodFlags, &instruMethodSinkFlags));
+        IfFailRetNoLog(pSink->Reset(m_instrumentationMethodFlags, &instrumentationMethodSinkFlags));
 
         // Add the sink to each logging level vector
-        if (IsFlagSet(sinkFlags, LoggingFlags_Errors) ||
-            IsFlagSet(instruMethodSinkFlags, LoggingFlags_Errors))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_Errors))
         {
             m_errorSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_InstrumentationResults) ||
-            IsFlagSet(instruMethodSinkFlags, LoggingFlags_InstrumentationResults))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_InstrumentationResults))
         {
             m_dumpSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_Trace) ||
-            IsFlagSet(instruMethodSinkFlags, LoggingFlags_Trace))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_Trace))
         {
             m_messageSinks.push_back(pSink);
         }
@@ -393,6 +412,56 @@ HRESULT CLoggerService::CreateSinks(vector<shared_ptr<ILoggerSink>>& sinks)
 #endif
     sinks.push_back(make_shared<CFileLoggerSink>());
     sinks.push_back(make_shared<CHostLoggerSink>());
+
+    return S_OK;
+}
+
+HRESULT CLoggerService::UpdateFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
+{
+    HRESULT hr = S_OK;
+
+    IfFailRetNoLog(UpdateFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_Errors));
+
+    IfFailRetNoLog(UpdateFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_Trace));
+
+    IfFailRetNoLog(UpdateFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_InstrumentationResults));
+
+    return S_OK;
+}
+
+HRESULT CLoggerService::UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel)
+{
+    set<GUID>* pSet = &(m_loggingFlagsToInstrumentationMethodsMap[loggingLevel]);
+
+    bool exists = pSet->find(classId) != pSet->end();
+    bool shouldExist = (loggingLevel & loggingFlags) != 0;
+    if (exists && !shouldExist)
+    {
+        // Remove
+        size_t result = pSet->erase(classId);
+        if (result < 1)
+        {
+            // Unable to remove
+        }
+    }
+    else if (!exists && shouldExist)
+    {
+        // Add
+        std::pair<set<GUID>::iterator, bool> ret = pSet->emplace(classId);
+        if (!ret.second)
+        {
+            // Unable to insert
+        }
+    }
 
     return S_OK;
 }

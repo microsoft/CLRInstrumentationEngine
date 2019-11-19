@@ -22,6 +22,9 @@ namespace InstrEngineTests
 
             // By default, this is not set.
             MethodLogLevel = LogLevel.Unset;
+
+            // By default, enable LogLevel
+            DisableLogLevel = false;
         }
 
         #endregion
@@ -31,6 +34,8 @@ namespace InstrEngineTests
         public static bool DisableMethodSignatureValidation { get; private set; }
 
         public static bool DisableMethodPrefix { get; internal set; }
+
+        public static bool DisableLogLevel { get; internal set; }
 
         internal static LogLevel MethodLogLevel { get; set; }
 

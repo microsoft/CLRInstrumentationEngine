@@ -71,7 +71,7 @@
     <Compile Include="TestAddInstruction.cs" />
     <Compile Include="TestException.cs" />
     <Compile Include="TestRoundTrip.cs" />
-    <Compile Include="InstrumentationMethodLogging.cs" />
+    <Compile Include="TestInstrumentationMethodLogging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +243,10 @@
       <Link>Baselines\InstrumentationMethodLoggingAll.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\InstrumentationMethodLoggingAllWithNoLogLevel.xml">
+      <Link>Baselines\InstrumentationMethodLoggingAllWithNoLogLevel.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Baselines\InstrumentationMethodLoggingSome.xml">
       <Link>Baselines\InstrumentationMethodLoggingSome.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -409,6 +413,10 @@
     </Content>
     <Content Include="..\TestScripts\InstrumentationMethodLoggingAll.xml">
       <Link>TestScripts\InstrumentationMethodLoggingAll.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\InstrumentationMethodLoggingAllWithNoLogLevel.xml">
+      <Link>TestScripts\InstrumentationMethodLoggingAllWithNoLogLevel.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\InstrumentationMethodLoggingSome.xml">

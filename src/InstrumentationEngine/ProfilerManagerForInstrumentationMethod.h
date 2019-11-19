@@ -107,7 +107,7 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override;
 
     public:
-        STDMETHOD(GetInstruMethodLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags);
+        STDMETHOD(GetInstrumentationMethodLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags);
 
     private:
         STDMETHOD(LogMessageInternal)(_In_ const WCHAR* wszMessage, _In_ LoggingFlags flagToCheck);
