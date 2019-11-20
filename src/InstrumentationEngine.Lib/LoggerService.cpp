@@ -109,8 +109,10 @@ HRESULT CLoggerService::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classI
 
     m_instrumentationMethodFlags = LoggingFlags_None;
 
-    IfFailRetNoLog(UpdateFlags(classId, loggingFlags));
+    IfFailRetNoLog(UpdateInstrumentationMethodFlags(classId, loggingFlags));
 
+    // Updates m_instrumentationMethodFlags with any changes to the supported LoggingFlags has at least one InstrumentationMethod
+    // requiring logging for that level.
     for (unordered_map<LoggingFlags, set<GUID>>::iterator it = m_loggingFlagsToInstrumentationMethodsMap.begin();
         it != m_loggingFlagsToInstrumentationMethodsMap.end();
         it++)
@@ -416,21 +418,21 @@ HRESULT CLoggerService::CreateSinks(vector<shared_ptr<ILoggerSink>>& sinks)
     return S_OK;
 }
 
-HRESULT CLoggerService::UpdateFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
+HRESULT CLoggerService::UpdateInstrumentationMethodFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
 {
     HRESULT hr = S_OK;
 
-    IfFailRetNoLog(UpdateFlagsInternal(
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
         classId,
         loggingFlags,
         LoggingFlags_Errors));
 
-    IfFailRetNoLog(UpdateFlagsInternal(
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
         classId,
         loggingFlags,
         LoggingFlags_Trace));
 
-    IfFailRetNoLog(UpdateFlagsInternal(
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
         classId,
         loggingFlags,
         LoggingFlags_InstrumentationResults));
@@ -438,7 +440,7 @@ HRESULT CLoggerService::UpdateFlags(_In_ GUID classId, _In_ LoggingFlags logging
     return S_OK;
 }
 
-HRESULT CLoggerService::UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel)
+HRESULT CLoggerService::UpdateInstrumentationMethodFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel)
 {
     set<GUID>* pSet = &(m_loggingFlagsToInstrumentationMethodsMap[loggingLevel]);
 
@@ -451,6 +453,7 @@ HRESULT CLoggerService::UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags
         if (result < 1)
         {
             // Unable to remove
+            return E_FAIL;
         }
     }
     else if (!exists && shouldExist)
@@ -460,6 +463,7 @@ HRESULT CLoggerService::UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags
         if (!ret.second)
         {
             // Unable to insert
+            return E_FAIL;
         }
     }
 

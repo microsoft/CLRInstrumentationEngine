@@ -44,6 +44,8 @@ namespace MicrosoftInstrumentationEngine
         // This is the cumulative LoggingFlags for all InstrumentationMethods
         LoggingFlags m_instrumentationMethodFlags;
 
+        // This Map contains as keys each of the LoggingFlags and for each key the value is the set of
+        // InstrumentationMethods that support the LoggingFlags.
         std::unordered_map<LoggingFlags, std::set<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
 
         bool m_fLogToDebugPort;
@@ -74,9 +76,11 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT RecalculateLoggingFlags();
 
-        HRESULT UpdateFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
+        // Updates the logging flags for the specific InstrumentationMethod classId
+        HRESULT UpdateInstrumentationMethodFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
-        HRESULT UpdateFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel);
+        // For the given loggingLevel, updates the Set with adding/removing the classId based on the loggingFlags
+        HRESULT UpdateInstrumentationMethodFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel);
 
     public:
         bool AllowLogEntry(_In_ LoggingFlags flags);
