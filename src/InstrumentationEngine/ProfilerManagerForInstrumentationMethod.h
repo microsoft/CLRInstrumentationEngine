@@ -113,5 +113,5 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(LogMessageInternal)(_In_ const WCHAR* wszMessage, _In_ LoggingFlags flagToCheck);
     };
 
-    void EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped);
+    void EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped);
 }
