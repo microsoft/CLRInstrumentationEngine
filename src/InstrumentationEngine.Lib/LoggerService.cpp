@@ -15,26 +15,6 @@
 using namespace MicrosoftInstrumentationEngine;
 using namespace std;
 
-// Need to define this to use GUID in a set
-bool operator< (const GUID& guid1, const GUID& guid2)
-{
-    if (guid1.Data1 != guid2.Data1)
-        return (guid1.Data1 < guid2.Data1);
-
-    if (guid1.Data2 != guid2.Data2)
-        return (guid1.Data2 < guid2.Data2);
-
-    if (guid1.Data3 != guid2.Data3)
-        return (guid1.Data3 < guid2.Data3);
-
-    for (int i = 0; i < 8; i++)
-        if (guid1.Data4[i] != guid2.Data4[i])
-            return (guid1.Data4[i] < guid2.Data4[i]);
-
-    // They are equal, so not less_then
-    return false;
-}
-
 CLoggerService::CLoggerService() :
     m_defaultFlags(LoggingFlags_None),
     m_effectiveFlags(LoggingFlags_None),
@@ -113,7 +93,7 @@ HRESULT CLoggerService::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classI
 
     // Updates m_instrumentationMethodFlags with any changes to the supported LoggingFlags has at least one InstrumentationMethod
     // requiring logging for that level.
-    for (unordered_map<LoggingFlags, set<GUID>>::iterator it = m_loggingFlagsToInstrumentationMethodsMap.begin();
+    for (unordered_map<LoggingFlags, vector<GUID>>::iterator it = m_loggingFlagsToInstrumentationMethodsMap.begin();
         it != m_loggingFlagsToInstrumentationMethodsMap.end();
         it++)
     {
@@ -442,29 +422,29 @@ HRESULT CLoggerService::UpdateInstrumentationMethodFlags(_In_ GUID classId, _In_
 
 HRESULT CLoggerService::UpdateInstrumentationMethodFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel)
 {
-    set<GUID>* pSet = &(m_loggingFlagsToInstrumentationMethodsMap[loggingLevel]);
+    vector<GUID>* pInstrumentationMethods = &(m_loggingFlagsToInstrumentationMethodsMap[loggingLevel]);
 
-    bool exists = pSet->find(classId) != pSet->end();
+    bool exists = false;
+    vector<GUID>::iterator it;
+    for (it = pInstrumentationMethods->begin();
+        it != pInstrumentationMethods->end();
+        it++)
+    {
+        if ((*it) == classId)
+        {
+            exists = true;
+            break;
+        }
+    }
+
     bool shouldExist = (loggingLevel & loggingFlags) != 0;
     if (exists && !shouldExist)
     {
-        // Remove
-        size_t result = pSet->erase(classId);
-        if (result < 1)
-        {
-            // Unable to remove
-            return E_FAIL;
-        }
+        pInstrumentationMethods->erase(it);
     }
     else if (!exists && shouldExist)
     {
-        // Add
-        std::pair<set<GUID>::iterator, bool> ret = pSet->emplace(classId);
-        if (!ret.second)
-        {
-            // Unable to insert
-            return E_FAIL;
-        }
+        pInstrumentationMethods->push_back(classId);
     }
 
     return S_OK;

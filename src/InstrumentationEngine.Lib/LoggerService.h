@@ -8,7 +8,6 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
-#include <set>
 
 #ifndef PLATFORM_UNIX
 #include <functional>
@@ -21,6 +20,19 @@
 #include "../Common.Lib/InitOnce.h"
 
 using namespace CommonLib;
+
+// Fixes the error "implicit instantiation of undefined template 'std::hash<LoggingFlags>'"
+// when building gnu with Clang 3.5 by supplying a full template specialization.
+namespace std
+{
+    template<>
+    class hash<LoggingFlags> {
+    public:
+        std::size_t operator()(LoggingFlags const& key) const noexcept {
+            return key;
+        }
+    };
+}
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -46,7 +58,11 @@ namespace MicrosoftInstrumentationEngine
 
         // This Map contains as keys each of the LoggingFlags and for each key the value is the set of
         // InstrumentationMethods that support the LoggingFlags.
-        std::unordered_map<LoggingFlags, std::set<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
+        //
+        // For Ubuntu builds we are currently using Clang 3.5 which fails compiling using sets and unordered_sets with
+        // the following error: "error: debug information for auto is not yet supported". Once we update
+        // the version of Clang, consider refactoring this vector of GUIDs to a set.
+        std::unordered_map<LoggingFlags, std::vector<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
 
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
@@ -79,7 +95,7 @@ namespace MicrosoftInstrumentationEngine
         // Updates the logging flags for the specific InstrumentationMethod classId
         HRESULT UpdateInstrumentationMethodFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
-        // For the given loggingLevel, updates the Set with adding/removing the classId based on the loggingFlags
+        // For the given loggingLevel, updates the Vector with adding/removing the classId based on the loggingFlags
         HRESULT UpdateInstrumentationMethodFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel);
 
     public:
