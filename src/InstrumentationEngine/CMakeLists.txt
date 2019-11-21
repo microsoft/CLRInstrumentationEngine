@@ -45,6 +45,7 @@ set(src_files
     ./ModifierType.cpp
     ./ModuleInfo.cpp
     ./ProfilerManager.cpp
+    ./ProfilerManagerForInstrumentationMethod.cpp
     ./SignatureBuilder.cpp
     ./SimpleType.cpp
     ./SingleRetDefaultInstrumentation.cpp

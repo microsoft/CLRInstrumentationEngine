@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-#pragma once
-
 #include "stdafx.h"
 #include <string>
 #include "ProfilerManager.h"
@@ -238,8 +236,8 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogMessageInternal(_In_ const 
         WCHAR wszBuffer[LogEntryMaxSize] = { 0 };
         tstring tsEscapedMessage;
         EscapeFormatSpecifiers(wszMessage, tsEscapedMessage);
-        IfFailRetErrno(wcscat_s(wszBuffer, FORMATTABLE_PREFIX));
-        IfFailRetErrno(wcscat_s(wszBuffer, tsEscapedMessage.c_str()));
+        IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, FORMATTABLE_PREFIX));
+        IfFailRetErrno(wcscat_s(wszBuffer, LogEntryMaxSize, tsEscapedMessage.c_str()));
 
         switch (logFlag)
         {
@@ -255,9 +253,9 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogMessageInternal(_In_ const 
     }
 }
 
-void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const wstring tsOriginal, _Inout_ wstring& tsEscaped)
+void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped)
 {
-    for (wstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); it++)
+    for (tstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); it++)
     {
         // This duplicates any single '%' character (ie. "%%") in the
         // format string from being treated as a format specifier.

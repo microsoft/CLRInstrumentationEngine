@@ -7,11 +7,15 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
-# 1.0.29
+# 1.0.30
 + New:
   + Add configuration for InstrumentationMethod loglevels
 + Updates:
   + Added documentation around the logging infrastructure
+
+# 1.0.29
++ BugFixes:
+  + Fix runtime error for Alpine
 
 # 1.0.28
 + New:
