@@ -557,5 +557,52 @@ namespace InstrumentationEngineLibTests
             // Check log counts are correct (1 error)
             Assert::AreEqual((size_t)0, entriesAfterShutdown.size());
         }
+
+        // Tests that the log file sink can write to a file using
+        // InstrumentationMethodFlags
+        TEST_METHOD(LogFileCanWriteWithInstrumentationMethodFlags)
+        {
+            CTestLoggerService loggerService;
+            loggerService.SetFileFlags((LoggingFlags)(LoggingFlags_Errors & LoggingFlags_Trace));
+
+            // Create exact file path
+            auto fileName = fs::current_path() / L"Log.txt";
+            if (exists(fileName))
+            {
+                remove(fileName);
+            }
+
+            loggerService.SetFilePath(fileName);
+
+            AssertSucceeded(loggerService.Initialize());
+
+            AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_None));
+
+            GUID testGuid;
+            IIDFromString(L"{00000000-0000-0000-0000-000000000000}", &testGuid);
+            loggerService.UpdateInstrumentationMethodLoggingFlags(testGuid, LoggingFlags_Errors);
+
+            GUID testGuid2;
+            IIDFromString(L"{00000000-0000-0000-0000-000000000001}", &testGuid2);
+            loggerService.UpdateInstrumentationMethodLoggingFlags(testGuid2, LoggingFlags_Trace);
+
+            loggerService.LogError(L"Error1");
+            loggerService.LogMessage(L"Message1");
+            loggerService.LogDumpMessage(L"Dump1");
+
+            // Log file shall exist
+            AssertLogFileExists(loggerService);
+
+            // Get contents of log file
+            vector<tstring> lines;
+            ReadAllLines(fileName, lines);
+
+            // Check file content only has error
+            Assert::AreEqual((size_t)2, lines.size(), fileName.c_str());
+            Assert::AreEqual(wstring::npos, lines.at(0).find(L"Message1"), lines.at(0).c_str());
+            Assert::AreEqual(wstring::npos, lines.at(1).find(L"Error1"), lines.at(1).c_str());
+
+            AssertSucceeded(loggerService.Shutdown());
+        }
     };
 }

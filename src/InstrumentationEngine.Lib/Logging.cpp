@@ -28,14 +28,26 @@ HRESULT CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 }
 
 // static
+HRESULT CLogging::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
+{
+    IfNotInitRetUnexpected(s_initialize);
+
+    return s_loggerService.Get()->UpdateInstrumentationMethodLoggingFlags(classId, loggingFlags);
+}
+
+// static
 void CLogging::LogMessage(_In_ const WCHAR* wszMessage, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszMessage);
-    VLogMessage(wszMessage, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_Trace) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszMessage);
+        VLogMessage(wszMessage, argptr);
+        va_end(argptr);
+    }
 }
 
 // static
@@ -43,10 +55,14 @@ void CLogging::LogError(_In_ const WCHAR* wszError, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszError);
-    VLogError(wszError, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_Errors) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszError);
+        VLogError(wszError, argptr);
+        va_end(argptr);
+    }
 }
 
 // static
@@ -54,10 +70,14 @@ void CLogging::LogDumpMessage(_In_ const WCHAR* wszMessage, ...)
 {
     IfNotInitRet(s_initialize);
 
-    va_list argptr;
-    va_start(argptr, wszMessage);
-    VLogDumpMessage(wszMessage, argptr);
-    va_end(argptr);
+    LoggingFlags flag;
+    if (SUCCEEDED(GetLoggingFlags(&flag)) && (flag & LoggingFlags_InstrumentationResults) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszMessage);
+        VLogDumpMessage(wszMessage, argptr);
+        va_end(argptr);
+    }
 }
 
 

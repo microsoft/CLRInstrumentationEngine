@@ -8,6 +8,10 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.30
++ New:
+  + Add configuration for InstrumentationMethod loglevels
++ Updates:
+  + Added documentation around the logging infrastructure
 
 # 1.0.29
 + BugFixes:

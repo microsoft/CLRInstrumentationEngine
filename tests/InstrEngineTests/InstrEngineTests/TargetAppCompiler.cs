@@ -27,7 +27,7 @@ namespace InstrEngineTests
             "BasicManagedTests2",
             "ExceptionTests",
             "InstruOperationsTests",
-            "MethodLoggingTests",
+            "InstrumentationMethodLoggingTests",
             "MethodReplacementTests",
             "LocalTests",
             "RuntimeExceptionCallbacks",

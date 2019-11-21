@@ -18,7 +18,13 @@ using namespace std;
 CLoggerService::CLoggerService() :
     m_defaultFlags(LoggingFlags_None),
     m_effectiveFlags(LoggingFlags_None),
+    m_instrumentationMethodFlags(LoggingFlags_None),
     m_fLogToDebugPort(false),
+    m_loggingFlagsToInstrumentationMethodsMap({
+        { LoggingFlags_Errors,                 {} },
+        { LoggingFlags_Trace,                  {} },
+        { LoggingFlags_InstrumentationResults, {} },
+    }),
     m_initialize([=]() { return InitializeCore(); })
 {
 }
@@ -71,6 +77,33 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
     *pLoggingFlags = m_effectiveFlags;
 
     return S_OK;
+}
+
+HRESULT CLoggerService::UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
+{
+    HRESULT hr = S_OK;
+
+    IfNotInitRetUnexpected(m_initialize);
+
+    CCriticalSectionHolder holder(&m_cs);
+
+    m_instrumentationMethodFlags = LoggingFlags_None;
+
+    IfFailRetNoLog(UpdateInstrumentationMethodFlags(classId, loggingFlags));
+
+    // Updates m_instrumentationMethodFlags with any changes to the supported LoggingFlags has at least one InstrumentationMethod
+    // requiring logging for that level.
+    for (unordered_map<LoggingFlags, vector<GUID>>::iterator it = m_loggingFlagsToInstrumentationMethodsMap.begin();
+        it != m_loggingFlagsToInstrumentationMethodsMap.end();
+        it++)
+    {
+        if (!(it->second.empty()))
+        {
+            m_instrumentationMethodFlags = (LoggingFlags)(m_instrumentationMethodFlags | it->first);
+        }
+    }
+
+    return RecalculateLoggingFlags();
 }
 
 HRESULT CLoggerService::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
@@ -243,7 +276,7 @@ bool CLoggerService::AllowLogEntry(_In_ LoggingFlags flags)
 {
     IfNotInitRetFalse(m_initialize);
 
-    return IsFlagSet(m_effectiveFlags, flags);
+    return IsFlagSet((LoggingFlags)(m_effectiveFlags | m_instrumentationMethodFlags), flags);
 }
 
 // static
@@ -304,18 +337,20 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     {
         // Reset the sink; get its desired logging level
         LoggingFlags sinkFlags;
+        LoggingFlags instrumentationMethodSinkFlags;
         IfFailRetNoLog(pSink->Reset(m_defaultFlags, &sinkFlags));
+        IfFailRetNoLog(pSink->Reset(m_instrumentationMethodFlags, &instrumentationMethodSinkFlags));
 
         // Add the sink to each logging level vector
-        if (IsFlagSet(sinkFlags, LoggingFlags_Errors))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_Errors))
         {
             m_errorSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_InstrumentationResults))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_InstrumentationResults))
         {
             m_dumpSinks.push_back(pSink);
         }
-        if (IsFlagSet(sinkFlags, LoggingFlags_Trace))
+        if (IsFlagSet(sinkFlags | instrumentationMethodSinkFlags, LoggingFlags_Trace))
         {
             m_messageSinks.push_back(pSink);
         }
@@ -359,6 +394,58 @@ HRESULT CLoggerService::CreateSinks(vector<shared_ptr<ILoggerSink>>& sinks)
 #endif
     sinks.push_back(make_shared<CFileLoggerSink>());
     sinks.push_back(make_shared<CHostLoggerSink>());
+
+    return S_OK;
+}
+
+HRESULT CLoggerService::UpdateInstrumentationMethodFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags)
+{
+    HRESULT hr = S_OK;
+
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_Errors));
+
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_Trace));
+
+    IfFailRetNoLog(UpdateInstrumentationMethodFlagsInternal(
+        classId,
+        loggingFlags,
+        LoggingFlags_InstrumentationResults));
+
+    return S_OK;
+}
+
+HRESULT CLoggerService::UpdateInstrumentationMethodFlagsInternal(_In_ GUID classId, _In_ LoggingFlags loggingFlags, _In_ LoggingFlags loggingLevel)
+{
+    vector<GUID>* pInstrumentationMethods = &(m_loggingFlagsToInstrumentationMethodsMap[loggingLevel]);
+
+    bool exists = false;
+    vector<GUID>::iterator it;
+    for (it = pInstrumentationMethods->begin();
+        it != pInstrumentationMethods->end();
+        it++)
+    {
+        if ((*it) == classId)
+        {
+            exists = true;
+            break;
+        }
+    }
+
+    bool shouldExist = (loggingLevel & loggingFlags) != 0;
+    if (exists && !shouldExist)
+    {
+        pInstrumentationMethods->erase(it);
+    }
+    else if (!exists && shouldExist)
+    {
+        pInstrumentationMethods->push_back(classId);
+    }
 
     return S_OK;
 }
