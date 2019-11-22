@@ -128,7 +128,7 @@ else
 
 if (!$BuildVersion)
 {
-    $BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
+    $BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddHHmm'))" # Set the build number so it's constant for the entirety of this build
 }
 
 $SignType = 'None' # Used for internal testing of signing.
