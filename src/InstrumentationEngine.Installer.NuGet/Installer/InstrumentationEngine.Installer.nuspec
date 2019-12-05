@@ -5,14 +5,14 @@
   <metadata>
     <id>$packageid$</id>
     <version>$version$</version>
-    <title>Microsoft Instrumentation Engine for Windows Azure Diagnostics</title>
+    <title>Microsoft Instrumentation Engine Installer</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
     <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
     <license type="file">$licenseFile$</license>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Microsoft Instrumentation Engine SDK and Extension Host</description>
+    <description>Microsoft Instrumentation Engine Package containing the MergeModule</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
   <files>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetExt>.nupkg</TargetExt>
+    <PackageId>Microsoft.InstrumentationEngine.Module</PackageId>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ResolveNuGetPackages>true</ResolveNuGetPackages>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>InstrumentationEngine.Module.nuspec</NuspecFile>
+    <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)\x64</NuspecProperties>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <ProjectGuid>{59CC768D-2E07-4FD9-8013-2EBC3898FEED}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.InstrumentationEngine.Module</RootNamespace>
+    <NoWarn>2008</NoWarn>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm">
+      <Link>InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msm</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <Target Name="VerifyPackCompleteEngine" AfterTargets="Pack" />
+</Project>
