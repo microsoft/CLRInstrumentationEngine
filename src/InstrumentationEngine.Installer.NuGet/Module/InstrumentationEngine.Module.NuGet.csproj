@@ -5,7 +5,7 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetExt>.nupkg</TargetExt>
-    <PackageId>Microsoft.InstrumentationEngine.Module</PackageId>
+    <PackageId>Microsoft.InstrumentationEngine.MergeModule</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm">
-      <Link>InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msm</Link>
+      <Link>InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>
