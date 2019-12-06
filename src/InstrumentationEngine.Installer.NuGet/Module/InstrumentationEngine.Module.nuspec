@@ -16,7 +16,7 @@
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
   </metadata>
   <files>
-    <file src="$bindir$\InstrumentationEngine.Module_x64.$version$$msisuffix$.msm" target="content" />
+    <file src="$binCfgRoot$\x64\InstrumentationEngine.Module_x64.$version$$msisuffix$.msm" target="content" />
 
     <!-- Licensing -->
     <file src="$enlistmentroot$\$licenseFile$*" target="" />
