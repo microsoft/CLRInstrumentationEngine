@@ -7,10 +7,16 @@ parameters:
   SignType: None
 
 steps:
-# nuget install MicroBuild.Plugins.Signing
+
 - ${{ if notIn(parameters.SignType, '', 'None') }}:
-  - task: MicroBuildSigningPlugin@2
-    displayName: Install Signing Plugin
-    inputs:
-      signType: ${{ parameters.SignType }}
-      zipSources: false
+  - powershell: |
+      Write-Host "##vso[task.setvariable variable=SignType;]${{ parameters.SignType }}"
+    displayName: Set Signing From Parameters
+
+# nuget install MicroBuild.Plugins.Signing
+- task: MicroBuildSigningPlugin@2
+  displayName: Install Signing Plugin
+  condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
+  inputs:
+    signType: ${{ parameters.SignType }}
+    zipSources: false
