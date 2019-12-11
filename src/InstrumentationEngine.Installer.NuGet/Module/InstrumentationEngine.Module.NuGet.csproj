@@ -21,6 +21,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.Module.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{59CC768D-2E07-4FD9-8013-2EBC3898FEED}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -32,7 +33,7 @@
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(InputBinCfgRoot)\x64\InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm">
+    <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm">
       <Link>InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm</Link>
     </Content>
   </ItemGroup>
