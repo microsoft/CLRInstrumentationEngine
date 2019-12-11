@@ -1,0 +1,5 @@
+obj\*,Ignore Intermediates
+bin\*\baselines\*.xml,Ignore Test artifacts
+bin\*\intercept.2.0.1.tests\*, Ignore Test folder
+bin\*\intercept.latest.tests\*, Ignore Test folder
+bin\*\*.tests*.dll, Ignore Test assemblies

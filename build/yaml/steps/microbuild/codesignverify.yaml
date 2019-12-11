@@ -1,0 +1,20 @@
+# Step Template: MicroBuild Signing and Verification
+
+parameters:
+    SignType: None
+
+steps:
+
+- ${{ if notIn(parameters.SignType, '', 'None') }}:
+  - powershell: |
+      Write-Host "##vso[task.setvariable variable=SignType;]${{ parameters.SignType }}"
+    displayName: Set Signing From Parameters
+
+# Verify Real Signed Files
+- task: MicroBuildCodesignVerify@1
+  displayName: Verify Signed Files
+  condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
+  inputs:
+    TargetFolder: $(Build.BinariesDirectory)
+    WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
+    WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'
