@@ -12,6 +12,8 @@ Please format the changes as follows:
   + Add configuration for InstrumentationMethod loglevels
 + Updates:
   + Added documentation around the logging infrastructure
++ BugFixes:
+  + Fix codesigning ProfilerProxy
 
 # 1.0.29
 + BugFixes:
