@@ -5,7 +5,7 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetExt>.nupkg</TargetExt>
-    <PackageId>Microsoft.InstrumentationEngine.Installer</PackageId>
+    <PackageId>Microsoft.InstrumentationEngine.MergeModule</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,13 +19,13 @@
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>InstrumentationEngine.Installer.nuspec</NuspecFile>
+    <NuspecFile>InstrumentationEngine.Module.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);msisuffix=$(MsiSuffix)</NuspecProperties>
-    <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)\x64</NuspecProperties>
+    <NuspecProperties>$(NuspecProperties);bindir=$(BinRoot)\$(Configuration)</NuspecProperties>
     <PreserveCompilationContext>false</PreserveCompilationContext>
-    <ProjectGuid>{CFFCDAC0-38D2-444E-83D0-49B74C9249F9}</ProjectGuid>
+    <ProjectGuid>{59CC768D-2E07-4FD9-8013-2EBC3898FEED}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.InstrumentationEngine.Installer</RootNamespace>
+    <RootNamespace>Microsoft.InstrumentationEngine.Module</RootNamespace>
     <NoWarn>2008</NoWarn>
     <Platforms>x64</Platforms>
   </PropertyGroup>
@@ -33,8 +33,8 @@
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi">
-      <Link>InstrumentationEngine.Installer_x64.$(PackageVersion)$(MsiSuffix).msi</Link>
+    <Content Include="$(BinRoot)\$(Configuration)\x64\InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm">
+      <Link>InstrumentationEngine.Module_x64.$(PackageVersion)$(MsiSuffix).msm</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace MethodLoggingTest
+namespace InstrumentationMethodLoggingTest
 {
     class Program
     {

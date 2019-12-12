@@ -128,7 +128,7 @@ else
 
 if (!$BuildVersion)
 {
-    $BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddhhmm'))" # Set the build number so it's constant for the entirety of this build
+    $BuildVersion = "$([System.DateTime]::Now.ToString('yyyyMMddHHmm'))" # Set the build number so it's constant for the entirety of this build
 }
 
 $SignType = 'None' # Used for internal testing of signing.
@@ -275,6 +275,12 @@ if ($IncludeTests)
     }
 
     $vstest = "`"$vstest`""
+
+    # Remove Test Results before running. This cleans up old test artifacts
+    if (Test-Path "$repoPath\TestResults")
+    {
+        Remove-Item "$repoPath\TestResults" -Recurse -Force
+    }
 
     # Release builds contain the RawProfilerHook.Tests_AnyCPU.dll which is not tested in debug configuration.
     $x86Tests = (Get-ChildItem -path "$repoPath\bin\$configuration\x86" -Filter *Tests*.dll -Recurse -Exclude *TestAdapter.tests.dll | Select-Object -ExpandProperty FullName | ForEach-Object { "`"$_`""})

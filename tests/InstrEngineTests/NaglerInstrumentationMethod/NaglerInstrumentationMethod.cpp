@@ -22,13 +22,24 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 
     if (m_bTestInstrumentationMethodLogging)
     {
-        CComPtr<IProfilerManagerLogging> spLogger;
+        CComPtr<IProfilerManagerLogging> spGlobalLogger;
         CComQIPtr<IProfilerManager4> pProfilerManager4 = pProfilerManager;
-        pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
-        spLogger->LogDumpMessage(_T("<InstrumentationMethodLog>"));
+        pProfilerManager4->GetGlobalLoggingInstance(&spGlobalLogger);
+        spGlobalLogger->LogDumpMessage(_T("<InstrumentationMethodLog>"));
 
-        pProfilerManager->GetLoggingInstance(&m_pProfilerManagerInstanceLogger);
-        m_pProfilerManagerInstanceLogger->LogDumpMessage(_T("Success!"));
+        CComPtr<IProfilerManagerLogging> spLogger;
+        pProfilerManager->GetLoggingInstance(&spLogger);
+        spGlobalLogger->LogDumpMessage(_T("<Message>"));
+        spLogger->LogMessage(_T("Message."));
+        spGlobalLogger->LogDumpMessage(_T("</Message>"));
+
+        spGlobalLogger->LogDumpMessage(_T("<Dump>"));
+        spLogger->LogDumpMessage(_T("Success!"));
+        spGlobalLogger->LogDumpMessage(_T("</Dump>"));
+
+        spGlobalLogger->LogDumpMessage(_T("<Error>"));
+        spLogger->LogError(_T("Error."));
+        spGlobalLogger->LogDumpMessage(_T("</Error>"));
     }
     else if (m_bExceptionTrackingEnabled)
     {
@@ -37,8 +48,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
         pCorProfilerInfo->SetEventMask(COR_PRF_MONITOR_EXCEPTIONS | COR_PRF_ENABLE_STACK_SNAPSHOT);
 
         CComPtr<IProfilerManagerLogging> spLogger;
-        CComQIPtr<IProfilerManager4> pProfilerManager4 = pProfilerManager;
-        pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+        pProfilerManager->GetLoggingInstance(&spLogger);
         spLogger->LogDumpMessage(_T("<ExceptionTrace>\r\n"));
     }
 
@@ -713,8 +723,7 @@ HRESULT CInstrumentationMethod::OnShutdown()
     if (m_bExceptionTrackingEnabled)
     {
         CComPtr<IProfilerManagerLogging> spLogger;
-        CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-        pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+        m_pProfilerManager->GetLoggingInstance(&spLogger);
         spLogger->LogDumpMessage(_T("</ExceptionTrace>\r\n"));
     }
     else if (m_bTestInstrumentationMethodLogging)
@@ -1181,8 +1190,7 @@ HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionCatcherEnter>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionCatcherEnter>\r\n"));
@@ -1193,8 +1201,7 @@ HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
 HRESULT CInstrumentationMethod::ExceptionCatcherLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionCatcherLeave/>\r\n"));
 
     return S_OK;
@@ -1208,8 +1215,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchCatcherFound(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionSearchCatcherFound>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionSearchCatcherFound>\r\n"));
@@ -1225,8 +1231,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterEnter(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionSearchFilterEnter>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionSearchFilterEnter>\r\n"));
@@ -1237,8 +1242,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterEnter(
 HRESULT CInstrumentationMethod::ExceptionSearchFilterLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionCatcherLeave/>\r\n"));
 
     return S_OK;
@@ -1252,8 +1256,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionEnter(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionEnter>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionSearchFunctionEnter>\r\n"));
@@ -1264,8 +1267,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionEnter(
 HRESULT CInstrumentationMethod::ExceptionSearchFunctionLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionLeave/>\r\n"));
 
     return S_OK;
@@ -1277,8 +1279,7 @@ HRESULT CInstrumentationMethod::ExceptionThrown(
 {
     HRESULT hr = S_OK;
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionThrown>\r\n"));
 
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
@@ -1350,8 +1351,7 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     IfFailRet(pMethodInfo->GetName(&bstrMethodName));
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<MethodName>"));
     spLogger->LogDumpMessage(bstrMethodName);
     spLogger->LogDumpMessage(_T("</MethodName>\r\n"));
@@ -1390,8 +1390,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyEnter(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionEnter>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionSearchFunctionEnter>\r\n"));
@@ -1402,8 +1401,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyEnter(
 HRESULT CInstrumentationMethod::ExceptionUnwindFinallyLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionUnwindFinallyLeave/>\r\n"));
 
     return S_OK;
@@ -1417,8 +1415,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionEnter(
     pMethodInfo->GetFullName(&bstrFullName);
 
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionUnwindFunctionEnter>"));
     spLogger->LogDumpMessage(bstrFullName);
     spLogger->LogDumpMessage(_T("</ExceptionUnwindFunctionEnter>\r\n"));
@@ -1429,8 +1426,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionEnter(
 HRESULT CInstrumentationMethod::ExceptionUnwindFunctionLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
-    CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
-    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
     spLogger->LogDumpMessage(_T("<ExceptionUnwindFunctionLeave/>\r\n"));
 
     return S_OK;

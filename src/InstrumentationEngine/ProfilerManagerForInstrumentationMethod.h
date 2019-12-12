@@ -17,8 +17,11 @@ namespace MicrosoftInstrumentationEngine
     private:
         static const int LogEntryMaxSize = 4096;
         static LPCWSTR wszLogFormattablePrefix;
+        GUID m_instrumentationMethodGuid;
         tstring m_wszInstrumentationMethodGuid;
         CComPtr<CProfilerManager> m_pProfilerManager;
+        LoggingFlags m_flags;
+        bool m_bDisableMethodPrefix;
 
         // IUnknown Members
     public:
@@ -38,7 +41,6 @@ namespace MicrosoftInstrumentationEngine
                 ppvObject
             );
         }
-
         // IProfilerManager methods
     public:
         STDMETHOD(SetupProfilingEnvironment)(_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths) override;
@@ -103,6 +105,12 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(GetLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags) override;
 
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags) override;
+
+    public:
+        STDMETHOD(GetInstrumentationMethodLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags);
+
+    private:
+        STDMETHOD(LogMessageInternal)(_In_ const WCHAR* wszMessage, _In_ LoggingFlags flagToCheck);
     };
 
     void EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped);

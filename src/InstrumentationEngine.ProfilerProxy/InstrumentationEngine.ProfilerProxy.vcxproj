@@ -3,7 +3,7 @@
      Licensed under the MIT License. -->
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
-  <Import Project="$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
+  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -131,7 +131,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\packages\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" />
+    <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicrobuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -29,7 +29,9 @@ Additional variables needed to make the CLR Instrumentation Engine work:
 
 | Variable | Value | Description |
 |-|-|-|
-MicrosoftInstrumentationEngine_LogLevel|"Errors"|Filters event logs. Currently only "Errors" is allowed to prevent verbose logging.
+MicrosoftInstrumentationEngine_LogLevel|"Errors\|Messages\|Dumps\|All"|Filters logs. Currently only "Errors" is allowed for EventLogging to prevent verbose logging.
+MicrosoftInstrumentationEngine_LogLevel_GUID|"Errors\|Messages\|Dumps\|All"|Filters logs for InstrumentationMethods. Currently only "Errors" is allowed to prevent verbose logging.
+
 
 ## Optional and Miscellaneous Variables
 

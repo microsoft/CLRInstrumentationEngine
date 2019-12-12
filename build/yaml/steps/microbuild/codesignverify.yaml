@@ -1,10 +1,7 @@
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License.
-
 # Step Template: MicroBuild Signing and Verification
 
 parameters:
-  SignType: None
+    SignType: None
 
 steps:
 
@@ -13,10 +10,11 @@ steps:
       Write-Host "##vso[task.setvariable variable=SignType;]${{ parameters.SignType }}"
     displayName: Set Signing From Parameters
 
-# nuget install MicroBuild.Plugins.Signing
-- task: MicroBuildSigningPlugin@2
-  displayName: Install Signing Plugin
+# Verify Real Signed Files
+- task: MicroBuildCodesignVerify@1
+  displayName: Verify Signed Files
   condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
   inputs:
-    signType: ${{ parameters.SignType }}
-    zipSources: false
+    TargetFolder: $(Build.BinariesDirectory)
+    WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
+    WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'
