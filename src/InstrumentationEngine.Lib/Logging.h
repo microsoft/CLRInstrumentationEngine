@@ -74,6 +74,8 @@ namespace MicrosoftInstrumentationEngine
         // Allows instrumentation methods and hosts to modify the current logging flags
         static HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
 
+        static HRESULT UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
+
         static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
 
         static HRESULT Shutdown();

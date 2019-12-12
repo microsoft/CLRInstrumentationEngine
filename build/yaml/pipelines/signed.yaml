@@ -18,7 +18,7 @@ stages:
   - template: ../jobs/binaries.yaml
     parameters:
       IndexSources: true
-      SignType: $(SignType)
+      SignType: $(SignType) # NOTE this string won't be replaced until runtime
       Configuration: Release
       IsMicroBuildInternal: true
 
@@ -27,6 +27,6 @@ stages:
   # Packages (Windows & Linux)
   - template: ../jobs/packages.yaml
     parameters:
-      SignType: $(SignType)
+      SignType: $(SignType) # NOTE this string won't be replaced until runtime
       Configuration: Release
       IsMicroBuildInternal: true

@@ -39,6 +39,11 @@ jobs:
 
   - template: ../../steps/linux/packages.yaml
 
+  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+    - template: ../../steps/microbuild/codesignverify.yaml
+      parameters:
+        SignType: ${{ parameters.SignType }}
+
   - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'

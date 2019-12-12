@@ -32,7 +32,6 @@ private:
     std::wstring m_strBinaryDir;
 
     CComPtr<IProfilerManager> m_pProfilerManager;
-    CComPtr<IProfilerManagerLogging> m_pProfilerManagerInstanceLogger;
 
 public:
     CInstrumentationMethod() : m_typeMap

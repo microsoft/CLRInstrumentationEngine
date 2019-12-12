@@ -12,7 +12,7 @@
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
-    <SemanticVersionPatch>29</SemanticVersionPatch>
+    <SemanticVersionPatch>30</SemanticVersionPatch>
 
     <FileVersionMajor>15</FileVersionMajor>
     <FileVersionMinor>1</FileVersionMinor>
@@ -30,7 +30,7 @@
      -->
     <ProxyFileVersionMajor>$(SemanticVersionMajor)</ProxyFileVersionMajor>
     <ProxyFileVersionMinor>0</ProxyFileVersionMinor>
-    <ProxyFileVersionPatch>0</ProxyFileVersionPatch>
+    <ProxyFileVersionPatch>1</ProxyFileVersionPatch>
     <ProxyFileVersion>$(ProxyFileVersionMajor).$(ProxyFileVersionMinor).$(ProxyFileVersionPatch)</ProxyFileVersion>
 
     <!--
@@ -38,7 +38,7 @@
       Update for every public release.
       Format is YYYY-MM-DD
     -->
-    <SemanticVersionDate>2019-11-08</SemanticVersionDate>
+    <SemanticVersionDate>2019-11-13</SemanticVersionDate>
 
     <!--
       Build version is used to distinguish internally built NuGet packages.

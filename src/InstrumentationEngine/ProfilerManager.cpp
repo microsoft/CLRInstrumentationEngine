@@ -508,14 +508,22 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
             // with it in this thread.
             CInitializeInstrumentationMethodHolder initHolder(this);
             CComPtr<CProfilerManagerForInstrumentationMethod> pProfilerManagerWrapper;
-            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(pInstrumentationMethod->GetClassId(), this));
+            GUID classId = pInstrumentationMethod->GetClassId();
+            pProfilerManagerWrapper.Attach(new (nothrow) CProfilerManagerForInstrumentationMethod(classId, this));
             if (pProfilerManagerWrapper == nullptr)
             {
                 return E_OUTOFMEMORY;
             }
 
+            LoggingFlags instrumentationMethodLoggingFlag;
+            if (SUCCEEDED(pProfilerManagerWrapper->GetInstrumentationMethodLoggingFlags(&instrumentationMethodLoggingFlag)))
+            {
+                CLogging::UpdateInstrumentationMethodLoggingFlags(classId, instrumentationMethodLoggingFlag);
+            }
+
             // Do not detach so CComPtr can track refcount.
             hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper, m_bValidateCodeSignature);
+
             dwFlags = GetInitializingInstrumentationMethodFlags();
         }
 

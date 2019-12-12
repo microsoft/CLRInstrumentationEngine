@@ -25,7 +25,7 @@ jobs:
         !**\*Test*
         !**\*Test*\**
     # Publish Symbols only for Real Signed builds
-    ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None', 'Test') )}}:
+    ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       PublishSymbols: true
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
