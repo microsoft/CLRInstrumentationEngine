@@ -1,8 +1,18 @@
-obj\*,Ignore Intermediates
-bin\*\baselines\*.xml,Ignore Test artifacts
-bin\*\testscripts\*.xml,Ignore Test artifacts
-bin\*\intercept.2.0.1.tests\*, Ignore Test folder
-bin\*\intercept.latest.tests\*, Ignore Test folder
-bin\*\rawprofilerhook.tests\*, Ignore Test folder
-bin\*\*tests*.dll, Ignore Test assemblies
-bin\*\naglerinstrumentationmethod*, Ignore Nagler Test Method
+obj\*, Ignore Intermediates
+
+bin\*\instrumentationengine.lib.tests.dll, Ignore test assembly
+bin\*\instrumentationengine.profilerproxy.tests.dll, Ignore test assembly
+bin\*\instrenginetests_anycpu.dll, Ignore test assembly
+
+bin\*\naglerinstrumentationmethod*, Ignore naglerInstrumentationMethod
+bin\*\*.xml, Ignore xml files
+
+bin\*\intercept.2.0.1.tests\*, Ignore test folder
+bin\*\intercept.latest.tests\*, Ignore test folder
+bin\*\rawprofilerhook.tests\*, Ignore test folder
+
+bin\*\*.wixlib, Ignore wix artifact
+bin\*\*.wixpdb, Ignore wix artifact
+bin\*\*.msidir\*.cab, Ignore embedded cab files
+
+binaries-windows-release\*, Ignore downloaded binary artifacts

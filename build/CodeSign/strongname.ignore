@@ -1,5 +1,6 @@
-obj\*,Ignore Intermediates
-bin\*\intercept.2.0.1.tests\*, Ignore Test folder
-bin\*\intercept.latest.tests\*, Ignore Test folder
-bin\*\rawprofilerhook.tests\*, Ignore Test folder
-bin\*\*tests*.dll, Ignore Test assemblies
+obj\*, Ignore Intermediates
+
+bin\*\instrenginetests_anycpu.dll, Ignore test assembly
+bin\*\intercept.2.0.1.tests\*, Ignore test folder
+bin\*\intercept.latest.tests\*, Ignore test folder
+bin\*\rawprofilerhook.tests\*, Ignore test folder
