@@ -15,6 +15,6 @@ steps:
   displayName: Verify Signed Files
   condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
   inputs:
-    TargetFolder: $(Build.BinariesDirectory)
+    TargetFolder: $(Build.StagingDirectory)
     WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
     WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'
