@@ -346,6 +346,10 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     )
 {
     HRESULT hr = S_OK;
+
+    IfNullRetPointer(ppMethodHeader);
+    IfNullRetPointer(pcbMethodSize);
+
     *ppMethodHeader = nullptr;
     *pcbMethodSize = 0;
 
