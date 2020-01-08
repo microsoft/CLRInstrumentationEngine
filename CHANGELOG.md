@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.31
+
 # 1.0.30
 + New:
   + Add configuration for InstrumentationMethod loglevels
