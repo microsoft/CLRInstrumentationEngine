@@ -349,13 +349,13 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
 
     // IDL [out] parameter annotation is optional unless the function only has one.
     // The corresponding [in] parameter for the size to fill the [out] parameter must be 0.
-    BYTE* pIgnoreMethodHeader;
+    BYTE* pIgnoreMethodHeader = nullptr;
     if (ppMethodHeader == NULL)
     {
         ppMethodHeader = &pIgnoreMethodHeader;
     }
 
-    ULONG cbIgnoreMethodSize;
+    ULONG cbIgnoreMethodSize = 0;
     if (pcbMethodSize == NULL)
     {
         pcbMethodSize = &cbIgnoreMethodSize;
