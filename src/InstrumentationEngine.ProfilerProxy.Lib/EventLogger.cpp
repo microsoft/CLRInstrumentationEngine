@@ -13,7 +13,6 @@ CEventLogger::CEventLogger() :
 
 CEventLogger::~CEventLogger()
 {
-    Shutdown();
 }
 
 HRESULT CEventLogger::Initialize()

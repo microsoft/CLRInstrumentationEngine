@@ -361,6 +361,8 @@ namespace ProfilerProxy
             CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
         }
 
+        CProxyLogging::Shutdown();
+
         return S_OK;
     }
 
