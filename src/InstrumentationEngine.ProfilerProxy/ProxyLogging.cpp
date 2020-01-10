@@ -66,7 +66,6 @@ void CProxyLogging::LogError(_In_ const WCHAR* wszError, ...)
     va_end(argptr);
 }
 
-
 // static
 HRESULT CProxyLogging::Shutdown()
 {

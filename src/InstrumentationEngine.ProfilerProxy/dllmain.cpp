@@ -327,15 +327,13 @@ namespace ProfilerProxy
             }
         }
 #endif
+        // Guard against g_hProfiler if it's currently being loaded.
+        CCriticalSectionHolder lock(&g_criticalSection);
 
-        // initializes CProxyLogging only once; shutdown only occurs on DllCanUnloadNow()
-        CProxyLogging::Initialize();
+        CProxyLoggingHolder proxyLoggingHolder;
 
         DWORD pid = GetCurrentProcessId();
         CProxyLogging::LogMessage(_T("dllmain::DllGetClassObject - Loading Proxy from Process: %u"), pid);
-
-        // Guard against g_hProfiler if it's currently being loaded.
-        CCriticalSectionHolder lock(&g_criticalSection);
 
         if (g_hProfiler == nullptr)
         {
@@ -361,8 +359,6 @@ namespace ProfilerProxy
             CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
         }
 
-        CProxyLogging::Shutdown();
-
         return S_OK;
     }
 
@@ -383,8 +379,6 @@ namespace ProfilerProxy
                 {
                     ::FreeLibrary(g_hProfiler);
                     g_hProfiler = nullptr;
-
-                    CProxyLogging::Shutdown();
                 }
             }
         }

@@ -39,6 +39,20 @@ namespace ProfilerProxy
     private:
         static HRESULT InitializeCore();
     };
+
+    // RAII for ProxyLogging
+    class CProxyLoggingHolder
+    {
+    public:
+        CProxyLoggingHolder()
+        {
+            CProxyLogging::Initialize();
+        }
+        ~CProxyLoggingHolder()
+        {
+            CProxyLogging::Shutdown();
+        }
+    };
 }
 
 
