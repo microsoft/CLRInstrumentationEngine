@@ -349,20 +349,15 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
 
     // IDL [out] parameter annotation is optional unless the function only has one.
     // The corresponding [in] parameter for the size to fill the [out] parameter must be 0.
-    BYTE* pIgnoreMethodHeader = nullptr;
-    if (ppMethodHeader == NULL)
+    if (ppMethodHeader != nullptr)
     {
-        ppMethodHeader = &pIgnoreMethodHeader;
+        *ppMethodHeader = nullptr;
     }
 
-    ULONG cbIgnoreMethodSize = 0;
-    if (pcbMethodSize == NULL)
+    if (pcbMethodSize != nullptr)
     {
-        pcbMethodSize = &cbIgnoreMethodSize;
+        *pcbMethodSize = 0;
     }
-
-    *ppMethodHeader = nullptr;
-    *pcbMethodSize = 0;
 
     CComPtr<CAppDomainCollection> pAppDomainCollection;
     IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
@@ -385,8 +380,15 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     // This will properly manage the cache of original il bytes.
     IfFailRet(pModuleInfo->GetMethodIl(m_pRealCorProfilerInfo, methodToken, (IMAGE_COR_ILMETHOD**)&pMethodHeader, &cbMethodSize));
 
-    *ppMethodHeader = (LPCBYTE)pMethodHeader;
-    *pcbMethodSize = cbMethodSize;
+    if (ppMethodHeader != nullptr)
+    {
+        *ppMethodHeader = (LPCBYTE)pMethodHeader;
+    }
+
+    if (pcbMethodSize != nullptr)
+    {
+        *pcbMethodSize = cbMethodSize;
+    }
 
     return S_OK;
 }
