@@ -330,33 +330,48 @@ namespace ProfilerProxy
         // Guard against g_hProfiler if it's currently being loaded.
         CCriticalSectionHolder lock(&g_criticalSection);
 
-        CProxyLoggingHolder proxyLoggingHolder;
-
-        DWORD pid = GetCurrentProcessId();
-        CProxyLogging::LogMessage(_T("dllmain::DllGetClassObject - Loading Proxy from Process: %u"), pid);
-
-        if (g_hProfiler == nullptr)
+        bool exceptionOccurred = false;
+        try
         {
-            hr = LoadProfiler();
+            CProxyLogging::Initialize();
+
+            DWORD pid = GetCurrentProcessId();
+            CProxyLogging::LogMessage(_T("dllmain::DllGetClassObject - Loading Proxy from Process: %u"), pid);
+
+            if (g_hProfiler == nullptr)
+            {
+                hr = LoadProfiler();
+            }
+
+            if (g_hProfiler != nullptr)
+            {
+                LPFNGETCLASSOBJECT dllGetClassObj = (LPFNGETCLASSOBJECT)::GetProcAddress(g_hProfiler, "DllGetClassObject");
+                if (dllGetClassObj != nullptr)
+                {
+                    hr = dllGetClassObj(rclsid, riid, ppObj);
+                }
+                else
+                {
+                    hr = HRESULT_FROM_WIN32(GetLastError());
+                }
+            }
+
+            if (FAILED(hr))
+            {
+                // Log error but do not fail since proxy shouldn't impact the process.
+                CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
+            }
+        }
+        catch (...)
+        {
+            // TODO log exception.
+            CProxyLogging::Shutdown();
+            exceptionOccurred = true;
         }
 
-        if (g_hProfiler != nullptr)
+        if (!exceptionOccurred)
         {
-            LPFNGETCLASSOBJECT dllGetClassObj = (LPFNGETCLASSOBJECT)::GetProcAddress(g_hProfiler, "DllGetClassObject");
-            if (dllGetClassObj != nullptr)
-            {
-                hr = dllGetClassObj(rclsid, riid, ppObj);
-            }
-            else
-            {
-                hr = HRESULT_FROM_WIN32(GetLastError());
-            }
-        }
-
-        if (FAILED(hr))
-        {
-            // Log error but do not fail since proxy shouldn't impact the process.
-            CProxyLogging::LogError(_T("dllmain::DllGetClassObject - Failed to load profiler with error code 0x%x"), hr);
+            CProxyLogging::Shutdown();
         }
 
         return S_OK;
