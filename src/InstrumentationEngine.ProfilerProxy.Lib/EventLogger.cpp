@@ -9,6 +9,7 @@ using namespace ProfilerProxy;
 CEventLogger::CEventLogger() :
     m_initEventSource([=]() { return InitializeEventSource(_T("Instrumentation Engine Profiler Proxy")); })
 {
+    Initialize();
 }
 
 CEventLogger::~CEventLogger()
