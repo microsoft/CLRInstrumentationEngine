@@ -159,7 +159,7 @@ namespace InstrumentationEngineProfilerProxyTests
             eventLogger2.LogError(L"Error2");
 
             // Give event logger time to process messages
-            Sleep(10); // ms
+            Sleep(50); // ms
 
             const vector<EventLogItem> entries2 = eventLogger2.GetEntries();
             Assert::AreEqual((size_t)2, entries2.size());
