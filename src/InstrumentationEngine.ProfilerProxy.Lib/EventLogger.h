@@ -24,6 +24,10 @@ namespace ProfilerProxy
 
         HRESULT Initialize();
 
+        void LogMessage(_In_ const WCHAR* szMessage, ...);
+        void LogWarning(_In_ const WCHAR* szMessage, ...);
+        void LogError(_In_ const WCHAR* szError, ...);
+
         void LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogWarning(_In_ LPCWSTR wszWarning, _In_ va_list argptr);
         void LogError(_In_ LPCWSTR wszError, _In_ va_list argptr);

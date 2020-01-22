@@ -58,7 +58,8 @@ namespace InstrumentationEngineProfilerProxyTests
             std::wstring invalidVersionsArray[] = {
                 L"",                    // empty
                 L"A",                   // not digits
-                L"-1",                  // no minor/build
+                L"-1",                  // no negative numbers
+                L"1",                   // no minor/build
                 L"1.0.0_debug"          // case sensitivity
                 L"1.0.0-build"          // missing preview version
                 L"1.0.0_Debug-build123" // out of order

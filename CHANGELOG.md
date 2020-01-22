@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.31
++ BugFixes:
+  +  Avoid deadlock within ProxyLogging when terminating logging.
 
 # 1.0.30
 + New:
