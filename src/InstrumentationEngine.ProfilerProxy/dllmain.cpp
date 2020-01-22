@@ -103,7 +103,7 @@ namespace ProfilerProxy
     /*
      * This function returns whether the profiler dll exists.
      */
-    static HRESULT HasProfilerDll(_In_ CEventLogger &eventLogger, _In_ LPCWSTR wszProfilerPath, _In_ LPCWSTR wszVersionFolder, _Out_ BOOL* pHasProfiler)
+    static HRESULT HasProfilerDll(_In_ CEventLogger& eventLogger, _In_ LPCWSTR wszProfilerPath, _In_ LPCWSTR wszVersionFolder, _Out_ BOOL* pHasProfiler)
     {
         HRESULT hr = S_OK;
 
@@ -125,7 +125,7 @@ namespace ProfilerProxy
     /*
      * This function iterates over the versioned folders in the profilerPath and returns the latest folder containing the profiler dll.
      */
-    static HRESULT GetLatestVersionFolder(_In_ CEventLogger &eventLogger, _In_ LPCWSTR wszProfilerPath, _Out_ std::wstring& versionFolder)
+    static HRESULT GetLatestVersionFolder(_In_ CEventLogger& eventLogger, _In_ LPCWSTR wszProfilerPath, _Out_ std::wstring& versionFolder)
     {
         HRESULT hr = S_OK;
 
@@ -220,7 +220,7 @@ namespace ProfilerProxy
     /*
      * This function determines the latest profiler's path for LoadLibrary() call.
      */
-    static HRESULT LoadProfiler(_In_ CEventLogger &eventLogger)
+    static HRESULT LoadProfiler(_In_ CEventLogger& eventLogger)
     {
         HRESULT hr = S_OK;
 
