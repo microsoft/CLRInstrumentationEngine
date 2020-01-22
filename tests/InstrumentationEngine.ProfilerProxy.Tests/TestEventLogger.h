@@ -15,6 +15,11 @@ namespace InstrumentationEngineProfilerProxyTests
         std::vector<EventLogItem> m_entries;
 
     public:
+        TestEventLogger() :
+            CEventLogger(L"Instrumentation Engine Profiler Proxy Test")
+        {
+        }
+
         void ClearEntries()
         {
             m_entries.clear();

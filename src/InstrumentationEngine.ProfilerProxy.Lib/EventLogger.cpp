@@ -92,8 +92,12 @@ void CEventLogger::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
 
 HRESULT CEventLogger::Shutdown()
 {
-    HRESULT hr = TerminateEventSource();
-    m_initEventSource.Reset();
+    HRESULT hr = S_OK;
+    if (m_initEventSource.IsSuccessful())
+    {
+        hr = TerminateEventSource();
+        m_initEventSource.Reset();
+    }
 
     return hr;
 }

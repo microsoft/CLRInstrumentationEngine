@@ -28,7 +28,6 @@ namespace InstrumentationEngineProfilerProxyTests
         TEST_METHOD(EventLoggerCanWriteWaitForDrain)
         {
             TestEventLogger eventLogger;
-            AssertSucceeded(eventLogger.Initialize());
 
             // Number of items to write to event log
             const int nCount = 100;
@@ -38,7 +37,7 @@ namespace InstrumentationEngineProfilerProxyTests
             {
                 tstring tsError(L"Error");
                 tsError.append(to_wstring(i));
-                eventLogger.LogError(tsError.c_str(), nullptr);
+                eventLogger.LogError(tsError.c_str());
             }
 
             // Check log counts are correct.
@@ -57,7 +56,6 @@ namespace InstrumentationEngineProfilerProxyTests
         TEST_METHOD(EventLoggerCanWriteAllTypes)
         {
             TestEventLogger eventLogger;
-            AssertSucceeded(eventLogger.Initialize());
 
             // Number of items to write to event log
             const int nCount = 99; // divisible by 3
@@ -74,17 +72,17 @@ namespace InstrumentationEngineProfilerProxyTests
                 case 0:
                     // Log Error
                     tsError.append(to_wstring(i));
-                    eventLogger.LogError(tsError.c_str(), nullptr);
+                    eventLogger.LogError(tsError.c_str());
                     break;
                 case 1:
                     // Log Warning
                     tsWarning.append(to_wstring(i));
-                    eventLogger.LogWarning(tsWarning.c_str(), nullptr);
+                    eventLogger.LogWarning(tsWarning.c_str());
                     break;
                 case 2:
                     // Log Message
                     tsMessage.append(to_wstring(i));
-                    eventLogger.LogMessage(tsMessage.c_str(), nullptr);
+                    eventLogger.LogMessage(tsMessage.c_str());
                     break;
                 }
             }
@@ -120,26 +118,12 @@ namespace InstrumentationEngineProfilerProxyTests
             Assert::AreEqual(expectedCount, messageCount);
         }
 
-        // Tests EventLogger cannot write before initialization
-        TEST_METHOD(EventLoggerCannotWriteBeforeInitialize)
-        {
-            TestEventLogger eventLogger;
-            eventLogger.LogMessage(L"Test", nullptr);
-
-            // Give event logger time to process messages
-            Sleep(10); // ms
-
-            std::vector<EventLogItem> entries = eventLogger.GetEntries();
-            Assert::AreEqual((size_t)0, entries.size());
-        }
-
         // Tests EventLogger cannot write after shutdown
         TEST_METHOD(EventLoggerCannotWriteAfterShutdown)
         {
             TestEventLogger eventLogger;
-            AssertSucceeded(eventLogger.Initialize());
 
-            eventLogger.LogError(L"Error", nullptr);
+            eventLogger.LogError(L"Error");
 
             // Check log counts are correct.
             // Shutdown will trigger EventLogger to flush all events.
@@ -147,13 +131,38 @@ namespace InstrumentationEngineProfilerProxyTests
             const vector<EventLogItem> entriesAfterShutdown = eventLogger.GetEntries();
             Assert::AreEqual((size_t)1, entriesAfterShutdown.size());
 
-            eventLogger.LogError(L"Error", nullptr);
+            eventLogger.LogError(L"Error");
 
             // Give event logger time to process messages
             Sleep(10); // ms
 
             const vector<EventLogItem> entriesAfterShutdown2 = eventLogger.GetEntries();
             Assert::AreEqual((size_t)1, entriesAfterShutdown2.size());
+        }
+
+        // Tests multiple EventLoggers do not affect each other.
+        TEST_METHOD(MultipleEventLoggersCanWriteSimultaneously)
+        {
+            TestEventLogger eventLogger1;
+            TestEventLogger eventLogger2;
+
+            eventLogger1.LogError(L"Error1");
+            eventLogger2.LogError(L"Error2");
+
+            // Check log counts are correct.
+            // Shutdown will trigger EventLogger to flush all events.
+            AssertSucceeded(eventLogger1.Shutdown());
+            const vector<EventLogItem> entries1AfterShutdown = eventLogger1.GetEntries();
+            Assert::AreEqual((size_t)1, entries1AfterShutdown.size());
+
+            // Logger 2 should still be running even if Logger 1 shuts down.
+            eventLogger2.LogError(L"Error2");
+
+            // Give event logger time to process messages
+            Sleep(10); // ms
+
+            const vector<EventLogItem> entries2 = eventLogger2.GetEntries();
+            Assert::AreEqual((size_t)2, entries2.size());
         }
     };
 }

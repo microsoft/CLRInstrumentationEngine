@@ -5,7 +5,7 @@
 
 #ifndef IfFailRet_Proxy
 #define IfFailRet_Proxy(EXPR) \
-    do { if (FAILED(hr = (EXPR))) { pEventLogger->LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
+    do { if (FAILED(hr = (EXPR))) { eventLogger.LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
 
 #ifndef IfFailRetErrno_Proxy
