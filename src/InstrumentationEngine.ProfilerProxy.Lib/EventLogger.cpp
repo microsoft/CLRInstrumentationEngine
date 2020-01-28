@@ -9,6 +9,7 @@ using namespace ProfilerProxy;
 CEventLogger::CEventLogger() :
     m_initEventSource([=]() { return InitializeEventSource(_T("Instrumentation Engine Profiler Proxy")); })
 {
+    Initialize();
 }
 
 CEventLogger::~CEventLogger()
@@ -30,6 +31,36 @@ void CEventLogger::FormatAndAppendToQueue(_In_ WORD wType, _In_ LPCWSTR wszMessa
     _vsnwprintf_s(wszLogEntry, LogEntryMaxSize, _TRUNCATE, wszMessage, argptr);
 
     AppendToQueue(wType, wszLogEntry);
+}
+
+void CEventLogger::LogMessage(_In_ const WCHAR* wszMessage, ...)
+{
+    IfNotInitRet(m_initEventSource);
+
+    va_list argptr;
+    va_start(argptr, wszMessage);
+    LogMessage(wszMessage, argptr);
+    va_end(argptr);
+}
+
+void CEventLogger::LogWarning(_In_ const WCHAR* wszMessage, ...)
+{
+    IfNotInitRet(m_initEventSource);
+
+    va_list argptr;
+    va_start(argptr, wszMessage);
+    LogWarning(wszMessage, argptr);
+    va_end(argptr);
+}
+
+void CEventLogger::LogError(_In_ const WCHAR* wszError, ...)
+{
+    IfNotInitRet(m_initEventSource);
+
+    va_list argptr;
+    va_start(argptr, wszError);
+    LogError(wszError, argptr);
+    va_end(argptr);
 }
 
 void CEventLogger::LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr)
@@ -61,8 +92,12 @@ void CEventLogger::LogError(_In_ LPCWSTR wszError, _In_ va_list argptr)
 
 HRESULT CEventLogger::Shutdown()
 {
-    HRESULT hr = TerminateEventSource();
-    m_initEventSource.Reset();
+    HRESULT hr = S_OK;
+    if (m_initEventSource.IsSuccessful())
+    {
+        hr = TerminateEventSource();
+        m_initEventSource.Reset();
+    }
 
     return hr;
 }
