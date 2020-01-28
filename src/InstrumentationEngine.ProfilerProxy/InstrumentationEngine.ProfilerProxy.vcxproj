@@ -111,13 +111,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ProxyLogging.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ProxyLogging.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
