@@ -1436,24 +1436,19 @@ MicrosoftInstrumentationEngine::CLoadLocalInstruction::CLoadLocalInstruction(
 
 MicrosoftInstrumentationEngine::CLoadLocalAddrInstruction::CLoadLocalAddrInstruction(
            _In_ USHORT index
-            ) : COperandInstruction(Cee_Ldloc, TRUE)
+            ) : COperandInstruction(Cee_Ldloca, TRUE)
 {
     CLogging::LogMessage(_T("Starting CLoadLocalAddrInstruction::CLoadLocalAddrInstruction"));
 
     // Check if the instruction can can be made a one byte
-    if (index < 4)
+    if (index <= 0xff)
     {
-        m_opcode = (ILOrdinalOpcode) (index + Cee_Ldloc_0);
-    }
-    // or a 2 bytes
-    else if (index <= 0xff)
-    {
-        m_opcode = Cee_Ldloc_S;
+        m_opcode = Cee_Ldloca_S;
         m_value.b = (BYTE) index;
     }
     else
     {
-        m_opcode = Cee_Ldloc;
+        m_opcode = Cee_Ldloca;
         m_value.i = index;
     }
 
