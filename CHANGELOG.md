@@ -9,7 +9,8 @@ Please format the changes as follows:
 
 # 1.0.31
 + BugFixes:
-  +  Avoid deadlock within ProxyLogging when terminating logging.
+  + Avoid deadlock within ProxyLogging when terminating logging.
+  + Fixed CLRIE to correctly emit ldloca instead of ldloc.
 
 # 1.0.30
 + New:
