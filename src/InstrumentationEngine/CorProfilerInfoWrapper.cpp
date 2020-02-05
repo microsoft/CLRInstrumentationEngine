@@ -170,128 +170,128 @@ ULONG MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::Release()
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassFromObject(
-	_In_ ObjectID objectId,
-	_Out_ ClassID* pClassId
+    _In_ ObjectID objectId,
+    _Out_ ClassID* pClassId
 )
 {
     return m_pRealCorProfilerInfo->GetClassFromObject(objectId, pClassId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassFromToken(
-	_In_ ModuleID moduleId,
-	_In_ mdTypeDef typeDef,
-	_Out_ ClassID* pClassId
+    _In_ ModuleID moduleId,
+    _In_ mdTypeDef typeDef,
+    _Out_ ClassID* pClassId
 )
 {
     return m_pRealCorProfilerInfo->GetClassFromToken(moduleId, typeDef, pClassId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo(
-	_In_ FunctionID functionId,
-	_Out_ LPCBYTE* pStart,
-	_Out_ ULONG* pcSize
+    _In_ FunctionID functionId,
+    _Out_ LPCBYTE* pStart,
+    _Out_ ULONG* pcSize
 )
 {
     return m_pRealCorProfilerInfo->GetCodeInfo(functionId, pStart, pcSize);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetEventMask(
-	_Out_ DWORD* pdwEvents
+    _Out_ DWORD* pdwEvents
 )
 {
     IfNullRetPointer(pdwEvents);
-	return m_pProfilerManager->GetEventMask(pdwEvents);
+    return m_pProfilerManager->GetEventMask(pdwEvents);
 }
 
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFromIP(
-	_In_ LPCBYTE ip,
-	_Out_ FunctionID* pFunctionId
+    _In_ LPCBYTE ip,
+    _Out_ FunctionID* pFunctionId
 )
 {
     return m_pRealCorProfilerInfo->GetFunctionFromIP(ip, pFunctionId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFromToken(
-	_In_ ModuleID moduleId,
-	_In_ mdToken token,
-	_Out_ FunctionID* pFunctionId
+    _In_ ModuleID moduleId,
+    _In_ mdToken token,
+    _Out_ FunctionID* pFunctionId
 )
 {
     return m_pRealCorProfilerInfo->GetFunctionFromToken(moduleId, token, pFunctionId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetHandleFromThread(
-	_In_ ThreadID threadId,
-	_In_ HANDLE* phThread
+    _In_ ThreadID threadId,
+    _In_ HANDLE* phThread
 )
 {
     return m_pRealCorProfilerInfo->GetHandleFromThread(threadId, phThread);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetObjectSize(
-	_In_ ObjectID objectId,
-	_Out_ ULONG* pcSize
+    _In_ ObjectID objectId,
+    _Out_ ULONG* pcSize
 )
 {
     return m_pRealCorProfilerInfo->GetObjectSize(objectId, pcSize);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::IsArrayClass(
-	_In_ ClassID classId,
-	_Out_ CorElementType* pBaseElemType,
-	_Out_ ClassID* pBaseClassId,
-	_Out_ ULONG* pcRank
+    _In_ ClassID classId,
+    _Out_ CorElementType* pBaseElemType,
+    _Out_ ClassID* pBaseClassId,
+    _Out_ ULONG* pcRank
 )
 {
     return m_pRealCorProfilerInfo->IsArrayClass(classId, pBaseElemType, pBaseClassId, pcRank);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetThreadInfo(
-	_In_ ThreadID threadId,
-	_Out_ DWORD* pdwWin32ThreadId
+    _In_ ThreadID threadId,
+    _Out_ DWORD* pdwWin32ThreadId
 )
 {
     return m_pRealCorProfilerInfo->GetThreadInfo(threadId, pdwWin32ThreadId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCurrentThreadID(
-	_Out_ ThreadID* pThreadId
+    _Out_ ThreadID* pThreadId
 )
 {
     return m_pRealCorProfilerInfo->GetCurrentThreadID(pThreadId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassIDInfo(
-	_In_ ClassID classId,
-	_Out_ ModuleID* pModuleId,
-	_Out_ mdTypeDef* pTypeDefToken
+    _In_ ClassID classId,
+    _Out_ ModuleID* pModuleId,
+    _Out_ mdTypeDef* pTypeDefToken
 )
 {
     return m_pRealCorProfilerInfo->GetClassIDInfo(classId, pModuleId, pTypeDefToken);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionInfo(
-	_In_ FunctionID functionId,
-	_Out_ ClassID* pClassId,
-	_Out_ ModuleID* pModuleId,
-	_Out_ mdToken* pToken
+    _In_ FunctionID functionId,
+    _Out_ ClassID* pClassId,
+    _Out_ ModuleID* pModuleId,
+    _Out_ mdToken* pToken
 )
 {
     return m_pRealCorProfilerInfo->GetFunctionInfo(functionId, pClassId, pModuleId, pToken);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEventMask(
-	_In_ DWORD dwEvents
+    _In_ DWORD dwEvents
 )
 {
     return m_pProfilerManager->SetEventMask(dwEvents);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFunctionHooks(
-	_In_ FunctionEnter* pFuncEnter,
-	_In_ FunctionLeave* pFuncLeave,
-	_In_ FunctionTailcall* pFuncTailcall
+    _In_ FunctionEnter* pFuncEnter,
+    _In_ FunctionLeave* pFuncLeave,
+    _In_ FunctionTailcall* pFuncTailcall
 )
 {
     // TODO: Enforce a single consumer of this api?
@@ -299,7 +299,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFu
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetFunctionIDMapper(
-	_In_ FunctionIDMapper* pFunc
+    _In_ FunctionIDMapper* pFunc
 )
 {
     // TODO: Enforce a single consumer of this api?
@@ -307,32 +307,32 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetFunctionIDMa
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetTokenAndMetaDataFromFunction(
-	_In_ FunctionID functionId,
-	_In_ REFIID riid,
-	_Out_ IUnknown **ppImport,
-	_Out_ mdToken* pToken
+    _In_ FunctionID functionId,
+    _In_ REFIID riid,
+    _Out_ IUnknown **ppImport,
+    _Out_ mdToken* pToken
 )
 {
     return m_pRealCorProfilerInfo->GetTokenAndMetaDataFromFunction(functionId, riid, ppImport, pToken);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo(
-	_In_ ModuleID moduleId,
-	_Out_ LPCBYTE* ppBaseLoadAddress,
-	_In_ ULONG cchName,
-	_Out_ ULONG* pcchName,
-	_Out_writes_(cchName) WCHAR szName[],
-	_Out_ AssemblyID* pAssemblyId
+    _In_ ModuleID moduleId,
+    _Out_ LPCBYTE* ppBaseLoadAddress,
+    _In_ ULONG cchName,
+    _Out_ ULONG* pcchName,
+    _Out_writes_(cchName) WCHAR szName[],
+    _Out_ AssemblyID* pAssemblyId
 )
 {
     return m_pRealCorProfilerInfo->GetModuleInfo(moduleId, ppBaseLoadAddress, cchName, pcchName, szName, pAssemblyId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleMetaData(
-	_In_ ModuleID moduleId,
-	_In_ DWORD dwOpenFlags,
-	_In_ REFIID riid,
-	_Out_ IUnknown **ppOut
+    _In_ ModuleID moduleId,
+    _In_ DWORD dwOpenFlags,
+    _In_ REFIID riid,
+    _Out_ IUnknown **ppOut
 )
 {
     return m_pRealCorProfilerInfo->GetModuleMetaData(moduleId, dwOpenFlags, riid, ppOut);
@@ -346,14 +346,24 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     )
 {
     HRESULT hr = S_OK;
-    *ppMethodHeader = nullptr;
-    *pcbMethodSize = 0;
+
+    // IDL [out] parameter annotation is optional unless the function only has one.
+    // The corresponding [in] parameter for the size to fill the [out] parameter must be 0.
+    if (ppMethodHeader != nullptr)
+    {
+        *ppMethodHeader = nullptr;
+    }
+
+    if (pcbMethodSize != nullptr)
+    {
+        *pcbMethodSize = 0;
+    }
 
     CComPtr<CAppDomainCollection> pAppDomainCollection;
     IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
 
     CComPtr<CModuleInfo> pModuleInfo;
-	CComPtr<CMethodInfo> pMethodInfo;
+    CComPtr<CMethodInfo> pMethodInfo;
     if (SUCCEEDED(pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
     {
         hr = pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo);
@@ -370,14 +380,21 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     // This will properly manage the cache of original il bytes.
     IfFailRet(pModuleInfo->GetMethodIl(m_pRealCorProfilerInfo, methodToken, (IMAGE_COR_ILMETHOD**)&pMethodHeader, &cbMethodSize));
 
-	*ppMethodHeader = (LPCBYTE)pMethodHeader;
-	*pcbMethodSize = cbMethodSize;
+    if (ppMethodHeader != nullptr)
+    {
+        *ppMethodHeader = (LPCBYTE)pMethodHeader;
+    }
+
+    if (pcbMethodSize != nullptr)
+    {
+        *pcbMethodSize = cbMethodSize;
+    }
 
     return S_OK;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBodyAllocator(
-	_In_ ModuleID moduleId,
+    _In_ ModuleID moduleId,
     _Out_ IMethodMalloc **ppMalloc
     )
 {
@@ -407,8 +424,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBody(
     _In_ ModuleID moduleId,
-	_In_ mdMethodDef methodToken,
-	_In_ LPCBYTE pbNewILMethodHeader
+    _In_ mdMethodDef methodToken,
+    _In_ LPCBYTE pbNewILMethodHeader
     )
 {
     HRESULT hr = S_OK;
@@ -449,11 +466,11 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainInfo(
-	_In_ AppDomainID appDomainId,
-	_In_ ULONG cchName,
-	_Out_ ULONG* pcchName,
-	_Out_writes_(cchName) WCHAR szName[],
-	_Out_ ProcessID* pProcessId
+    _In_ AppDomainID appDomainId,
+    _In_ ULONG cchName,
+    _Out_ ULONG* pcchName,
+    _Out_writes_(cchName) WCHAR szName[],
+    _Out_ ProcessID* pProcessId
 )
 {
     return m_pRealCorProfilerInfo->GetAppDomainInfo(appDomainId, cchName, pcchName, szName, pProcessId);
@@ -461,8 +478,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainInf
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAssemblyInfo(
     _In_ AssemblyID assemblyId,
-	_In_ ULONG cchName,
-	_Out_ ULONG* pcchName,
+    _In_ ULONG cchName,
+    _Out_ ULONG* pcchName,
     _Out_writes_to_(cchName,* pcchName)  WCHAR szName[],
     _Out_ AppDomainID* pAppDomainId,
     _Out_ ModuleID* pModuleId
@@ -618,147 +635,147 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassIDInfo2
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo2(
-	_In_ FunctionID functionID,
-	_In_ ULONG32 cCodeInfos,
-	_Out_ ULONG32* pcCodeInfos,
-	_Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]
+    _In_ FunctionID functionID,
+    _In_ ULONG32 cCodeInfos,
+    _Out_ ULONG32* pcCodeInfos,
+    _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]
 )
 {
     return m_pRealCorProfilerInfo2->GetCodeInfo2(functionID, cCodeInfos, pcCodeInfos, codeInfos);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassFromTokenAndTypeArgs(
-	_In_ ModuleID moduleID,
-	_In_ mdTypeDef typeDef,
-	_In_ ULONG32 cTypeArgs,
-	_Out_writes_(cTypeArgs) ClassID typeArgs[],
-	_Out_ ClassID* pClassID
+    _In_ ModuleID moduleID,
+    _In_ mdTypeDef typeDef,
+    _In_ ULONG32 cTypeArgs,
+    _Out_writes_(cTypeArgs) ClassID typeArgs[],
+    _Out_ ClassID* pClassID
 )
 {
     return m_pRealCorProfilerInfo2->GetClassFromTokenAndTypeArgs(moduleID, typeDef, cTypeArgs, typeArgs, pClassID);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFromTokenAndTypeArgs(
-	_In_  ModuleID moduleID,
-	_In_ mdMethodDef funcDef,
-	_In_ ClassID classId,
-	_In_ ULONG32 cTypeArgs,
-	_Out_writes_(cTypeArgs) ClassID typeArgs[],
-	_Out_ FunctionID* pFunctionID
+    _In_  ModuleID moduleID,
+    _In_ mdMethodDef funcDef,
+    _In_ ClassID classId,
+    _In_ ULONG32 cTypeArgs,
+    _Out_writes_(cTypeArgs) ClassID typeArgs[],
+    _Out_ FunctionID* pFunctionID
 )
 {
     return m_pRealCorProfilerInfo2->GetFunctionFromTokenAndTypeArgs(moduleID, funcDef, classId, cTypeArgs, typeArgs, pFunctionID);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumModuleFrozenObjects(
-	_In_  ModuleID moduleID,
-	_Out_ ICorProfilerObjectEnum **ppEnum
+    _In_  ModuleID moduleID,
+    _Out_ ICorProfilerObjectEnum **ppEnum
 )
 {
     return m_pRealCorProfilerInfo2->EnumModuleFrozenObjects(moduleID, ppEnum);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetArrayObjectInfo(
-	_In_  ObjectID objectId,
-	_In_  ULONG32 cDimensions,
-	_Out_writes_(cDimensions) ULONG32 pDimensionSizes[],
-	_Out_writes_(cDimensions)  int pDimensionLowerBounds[],
-	_Out_ BYTE **ppData
+    _In_  ObjectID objectId,
+    _In_  ULONG32 cDimensions,
+    _Out_writes_(cDimensions) ULONG32 pDimensionSizes[],
+    _Out_writes_(cDimensions)  int pDimensionLowerBounds[],
+    _Out_ BYTE **ppData
 )
 {
     return m_pRealCorProfilerInfo2->GetArrayObjectInfo(objectId, cDimensions, pDimensionSizes, pDimensionLowerBounds, ppData);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetBoxClassLayout(
-	_In_  ClassID classId,
-	_Out_ ULONG32* pBufferOffset
+    _In_  ClassID classId,
+    _Out_ ULONG32* pBufferOffset
 )
 {
     return m_pRealCorProfilerInfo2->GetBoxClassLayout(classId, pBufferOffset);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetThreadAppDomain(
-	_In_ ThreadID threadId,
-	_Out_ AppDomainID* pAppDomainId
+    _In_ ThreadID threadId,
+    _Out_ AppDomainID* pAppDomainId
 )
 {
     return m_pRealCorProfilerInfo2->GetThreadAppDomain(threadId, pAppDomainId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetRVAStaticAddress(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_Out_ void **ppAddress
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _Out_ void **ppAddress
 )
 {
     return m_pRealCorProfilerInfo2->GetRVAStaticAddress(classId, fieldToken, ppAddress);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainStaticAddress(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_In_ AppDomainID appDomainId,
-	_Out_ void **ppAddress
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _In_ AppDomainID appDomainId,
+    _Out_ void **ppAddress
 )
 {
     return m_pRealCorProfilerInfo2->GetAppDomainStaticAddress(classId, fieldToken, appDomainId, ppAddress);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetThreadStaticAddress(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_In_ ThreadID threadId,
-	_Out_ void **ppAddress
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _In_ ThreadID threadId,
+    _Out_ void **ppAddress
 )
 {
     return m_pRealCorProfilerInfo2->GetThreadStaticAddress(classId, fieldToken, threadId, ppAddress);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetContextStaticAddress(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_In_ ContextID contextId,
-	_Out_ void **ppAddress
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _In_ ContextID contextId,
+    _Out_ void **ppAddress
 )
 {
     return m_pRealCorProfilerInfo2->GetContextStaticAddress(classId, fieldToken, contextId, ppAddress);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetStaticFieldInfo(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_Out_ COR_PRF_STATIC_TYPE* pFieldInfo
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _Out_ COR_PRF_STATIC_TYPE* pFieldInfo
 )
 {
     return m_pRealCorProfilerInfo2->GetStaticFieldInfo(classId, fieldToken, pFieldInfo);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetGenerationBounds(
-	_In_ ULONG cObjectRanges,
-	_Out_ ULONG* pcObjectRanges,
-	_Out_writes_(cObjectRanges) COR_PRF_GC_GENERATION_RANGE ranges[]
+    _In_ ULONG cObjectRanges,
+    _Out_ ULONG* pcObjectRanges,
+    _Out_writes_(cObjectRanges) COR_PRF_GC_GENERATION_RANGE ranges[]
 )
 {
     return m_pRealCorProfilerInfo2->GetGenerationBounds(cObjectRanges, pcObjectRanges, ranges);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetObjectGeneration(
-	_In_ ObjectID objectId,
-	_Out_ COR_PRF_GC_GENERATION_RANGE *range
+    _In_ ObjectID objectId,
+    _Out_ COR_PRF_GC_GENERATION_RANGE *range
 )
 {
     return m_pRealCorProfilerInfo2->GetObjectGeneration(objectId, range);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetNotifiedExceptionClauseInfo(
-	_Out_ COR_PRF_EX_CLAUSE_INFO* pinfo
+    _Out_ COR_PRF_EX_CLAUSE_INFO* pinfo
 )
 {
     return m_pRealCorProfilerInfo2->GetNotifiedExceptionClauseInfo(pinfo);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumJITedFunctions(
-	_Out_ ICorProfilerFunctionEnum **ppEnum
+    _Out_ ICorProfilerFunctionEnum **ppEnum
     )
 {
     return m_pRealCorProfilerInfo3->EnumJITedFunctions(ppEnum);
@@ -772,25 +789,25 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestProfiler
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetFunctionIDMapper2(
-	_In_ FunctionIDMapper2* pFunc,
-	_Out_ void *clientData
+    _In_ FunctionIDMapper2* pFunc,
+    _Out_ void *clientData
 )
 {
     return m_pRealCorProfilerInfo3->SetFunctionIDMapper2(pFunc, clientData);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetStringLayout2(
-	_Out_ ULONG* pStringLengthOffset,
-	_Out_ ULONG* pBufferOffset
+    _Out_ ULONG* pStringLengthOffset,
+    _Out_ ULONG* pBufferOffset
 )
 {
     return m_pRealCorProfilerInfo3->GetStringLayout2(pStringLengthOffset, pBufferOffset);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFunctionHooks3(
-	_In_ FunctionEnter3* pFuncEnter3,
-	_In_ FunctionLeave3* pFuncLeave3,
-	_In_ FunctionTailcall3* pFuncTailcall3
+    _In_ FunctionEnter3* pFuncEnter3,
+    _In_ FunctionLeave3* pFuncLeave3,
+    _In_ FunctionTailcall3* pFuncTailcall3
 )
 {
     // TODO: Enforce single caller?
@@ -798,9 +815,9 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFu
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFunctionHooks3WithInfo(
-	_In_ FunctionEnter3WithInfo* pFuncEnter3WithInfo,
-	_In_ FunctionLeave3WithInfo* pFuncLeave3WithInfo,
-	_In_ FunctionTailcall3WithInfo* pFuncTailcall3WithInfo
+    _In_ FunctionEnter3WithInfo* pFuncEnter3WithInfo,
+    _In_ FunctionLeave3WithInfo* pFuncLeave3WithInfo,
+    _In_ FunctionTailcall3WithInfo* pFuncTailcall3WithInfo
 )
 {
     // TODO: Enforce single caller?
@@ -808,93 +825,93 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFu
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionEnter3Info(
-	_In_ FunctionID functionId,
-	_In_ COR_PRF_ELT_INFO eltInfo,
-	_Out_ COR_PRF_FRAME_INFO* pFrameInfo,
-	_Inout_ ULONG* pcbArgumentInfo,
-	_Out_writes_(*pcbArgumentInfo) COR_PRF_FUNCTION_ARGUMENT_INFO* pArgumentInfo
+    _In_ FunctionID functionId,
+    _In_ COR_PRF_ELT_INFO eltInfo,
+    _Out_ COR_PRF_FRAME_INFO* pFrameInfo,
+    _Inout_ ULONG* pcbArgumentInfo,
+    _Out_writes_(*pcbArgumentInfo) COR_PRF_FUNCTION_ARGUMENT_INFO* pArgumentInfo
 )
 {
     return m_pRealCorProfilerInfo3->GetFunctionEnter3Info(functionId, eltInfo, pFrameInfo, pcbArgumentInfo, pArgumentInfo);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionLeave3Info(
-	_In_ FunctionID functionId,
-	_In_ COR_PRF_ELT_INFO eltInfo,
-	_Out_ COR_PRF_FRAME_INFO* pFrameInfo,
-	_Out_ COR_PRF_FUNCTION_ARGUMENT_RANGE* pRetvalRange
+    _In_ FunctionID functionId,
+    _In_ COR_PRF_ELT_INFO eltInfo,
+    _Out_ COR_PRF_FRAME_INFO* pFrameInfo,
+    _Out_ COR_PRF_FUNCTION_ARGUMENT_RANGE* pRetvalRange
 )
 {
     return m_pRealCorProfilerInfo3->GetFunctionLeave3Info(functionId, eltInfo, pFrameInfo, pRetvalRange);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionTailcall3Info(
-	_In_ FunctionID functionId,
-	_In_ COR_PRF_ELT_INFO eltInfo,
-	_Out_ COR_PRF_FRAME_INFO* pFrameInfo
+    _In_ FunctionID functionId,
+    _In_ COR_PRF_ELT_INFO eltInfo,
+    _Out_ COR_PRF_FRAME_INFO* pFrameInfo
 )
 {
     return m_pRealCorProfilerInfo3->GetFunctionTailcall3Info(functionId, eltInfo, pFrameInfo);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumModules(
-	_In_ ICorProfilerModuleEnum **ppEnum
+    _In_ ICorProfilerModuleEnum **ppEnum
 )
 {
     return m_pRealCorProfilerInfo3->EnumModules(ppEnum);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetRuntimeInformation(
-	_Out_ USHORT* pClrInstanceId,
-	_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType,
-	_Out_ USHORT* pMajorVersion,
-	_Out_ USHORT* pMinorVersion,
-	_Out_ USHORT* pBuildNumber,
-	_Out_ USHORT* pQFEVersion,
-	_In_ ULONG cchVersionString,
-	_Out_ ULONG* pcchVersionString,
-	_Out_writes_(cchVersionString) WCHAR szVersionString[]
+    _Out_ USHORT* pClrInstanceId,
+    _Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType,
+    _Out_ USHORT* pMajorVersion,
+    _Out_ USHORT* pMinorVersion,
+    _Out_ USHORT* pBuildNumber,
+    _Out_ USHORT* pQFEVersion,
+    _In_ ULONG cchVersionString,
+    _Out_ ULONG* pcchVersionString,
+    _Out_writes_(cchVersionString) WCHAR szVersionString[]
 )
 {
     return m_pRealCorProfilerInfo3->GetRuntimeInformation(pClrInstanceId, pRuntimeType, pMajorVersion, pMinorVersion, pBuildNumber, pQFEVersion, cchVersionString, pcchVersionString, szVersionString);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetThreadStaticAddress2(
-	_In_ ClassID classId,
-	_In_ mdFieldDef fieldToken,
-	_In_ AppDomainID appDomainId,
-	_In_ ThreadID threadId,
-	_Out_ void **ppAddress
+    _In_ ClassID classId,
+    _In_ mdFieldDef fieldToken,
+    _In_ AppDomainID appDomainId,
+    _In_ ThreadID threadId,
+    _Out_ void **ppAddress
 )
 {
     return m_pRealCorProfilerInfo3->GetThreadStaticAddress2(classId, fieldToken, appDomainId, threadId, ppAddress);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainsContainingModule(
-	_In_ ModuleID moduleId,
-	_In_ ULONG32 cAppDomainIds,
-	_Out_ ULONG32* pcAppDomainIds,
-	_Out_writes_(cAppDomainIds) AppDomainID appDomainIds[]
+    _In_ ModuleID moduleId,
+    _In_ ULONG32 cAppDomainIds,
+    _Out_ ULONG32* pcAppDomainIds,
+    _Out_writes_(cAppDomainIds) AppDomainID appDomainIds[]
 )
 {
     return m_pRealCorProfilerInfo3->GetAppDomainsContainingModule(moduleId, cAppDomainIds, pcAppDomainIds, appDomainIds);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo2(
-	_In_ ModuleID moduleId,
-	_Out_ LPCBYTE* ppBaseLoadAddress,
-	_In_ ULONG cchName,
-	_Out_ ULONG* pcchName,
-	_Out_writes_(cchName) WCHAR szName[],
-	_Out_ AssemblyID* pAssemblyId,
-	_Out_ DWORD* pdwModuleFlags
+    _In_ ModuleID moduleId,
+    _Out_ LPCBYTE* ppBaseLoadAddress,
+    _In_ ULONG cchName,
+    _Out_ ULONG* pcchName,
+    _Out_writes_(cchName) WCHAR szName[],
+    _Out_ AssemblyID* pAssemblyId,
+    _Out_ DWORD* pdwModuleFlags
 )
 {
     return m_pRealCorProfilerInfo3->GetModuleInfo2(moduleId, ppBaseLoadAddress, cchName, pcchName, szName, pAssemblyId, pdwModuleFlags);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumThreads(
-	_Out_ ICorProfilerThreadEnum **ppEnum
+    _Out_ ICorProfilerThreadEnum **ppEnum
 )
 {
     return m_pRealCorProfilerInfo4->EnumThreads(ppEnum);
@@ -906,30 +923,30 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::InitializeCurre
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestReJIT(
-	_In_ ULONG cFunctions,
-	_In_reads_(cFunctions) ModuleID moduleIds[],
-	_In_reads_(cFunctions) mdMethodDef methodIds[]
+    _In_ ULONG cFunctions,
+    _In_reads_(cFunctions) ModuleID moduleIds[],
+    _In_reads_(cFunctions) mdMethodDef methodIds[]
 )
 {
     return m_pRealCorProfilerInfo4->RequestReJIT(cFunctions, moduleIds, methodIds);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestRevert(
-	_In_ ULONG cFunctions,
-	_In_reads_(cFunctions) ModuleID moduleIds[],
-	_In_reads_(cFunctions) mdMethodDef methodIds[],
-	_In_reads_(cFunctions) HRESULT status[]
+    _In_ ULONG cFunctions,
+    _In_reads_(cFunctions) ModuleID moduleIds[],
+    _In_reads_(cFunctions) mdMethodDef methodIds[],
+    _In_reads_(cFunctions) HRESULT status[]
 )
 {
     return m_pRealCorProfilerInfo4->RequestRevert(cFunctions, moduleIds, methodIds, status);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo3(
-	_In_ FunctionID functionID,
-	_In_ ReJITID reJitId,
-	_In_ ULONG32 cCodeInfos,
-	_Out_ ULONG32* pcCodeInfos,
-	_Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]
+    _In_ FunctionID functionID,
+    _In_ ReJITID reJitId,
+    _In_ ULONG32 cCodeInfos,
+    _Out_ ULONG32* pcCodeInfos,
+    _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[]
 )
 {
     // Does this need to be overridden?
@@ -937,30 +954,30 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetCodeInfo3(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFromIP2(
-	_In_ LPCBYTE ip,
-	_Out_ FunctionID* pFunctionId,
-	_Out_ ReJITID* pReJitId
+    _In_ LPCBYTE ip,
+    _Out_ FunctionID* pFunctionId,
+    _Out_ ReJITID* pReJitId
 )
 {
     return m_pRealCorProfilerInfo4->GetFunctionFromIP2(ip, pFunctionId, pReJitId);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetReJITIDs(
-	_In_ FunctionID functionId,
-	_In_ ULONG cReJitIds,
-	_Out_ ULONG* pcReJitIds,
-	_Out_writes_(cReJitIds) ReJITID reJitIds[]
+    _In_ FunctionID functionId,
+    _In_ ULONG cReJitIds,
+    _Out_ ULONG* pcReJitIds,
+    _Out_writes_(cReJitIds) ReJITID reJitIds[]
 )
 {
     return m_pRealCorProfilerInfo4->GetReJITIDs(functionId, cReJitIds, pcReJitIds, reJitIds);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILToNativeMapping2(
-	_In_ FunctionID functionId,
-	_In_ ReJITID reJitId,
-	_In_ ULONG32 cMap,
-	_Out_  ULONG32* pcMap,
-	_Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[]
+    _In_ FunctionID functionId,
+    _In_ ReJITID reJitId,
+    _In_ ULONG32 cMap,
+    _Out_  ULONG32* pcMap,
+    _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[]
 )
 {
     // TODO: Override
@@ -968,15 +985,15 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILToNativeMa
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumJITedFunctions2(
-	_In_ ICorProfilerFunctionEnum **ppEnum
+    _In_ ICorProfilerFunctionEnum **ppEnum
 )
 {
     return m_pRealCorProfilerInfo4->EnumJITedFunctions2(ppEnum);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetObjectSize2(
-	_In_ ObjectID objectId,
-	_Out_ SIZE_T* pcSize
+    _In_ ObjectID objectId,
+    _Out_ SIZE_T* pcSize
 )
 {
     return m_pRealCorProfilerInfo4->GetObjectSize2(objectId, pcSize);
