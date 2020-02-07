@@ -32,7 +32,6 @@
     <ClInclude Include="DecorationCallbacksInfo.h" />
     <ClInclude Include="DecorationCallbacksInfoReader.h" />
     <ClInclude Include="DecorationCallbacksInfoStaticReader.h" />
-    <ClInclude Include="Environment.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="CrtDiagnostics.h" />
     <ClInclude Include="FormatMessage.h" />
@@ -53,12 +52,9 @@
     <ClInclude Include="LoadArgumentsHelper.h" />
     <ClInclude Include="MethodInstrumentationInfoKey.h" />
     <ClInclude Include="MethodRecord.h" />
-    <ClInclude Include="ModuleHandle.h" />
     <ClInclude Include="NativeInstanceMethodInstrumentationInfo.h" />
     <ClInclude Include="NativeInstanceMethodsCodeInjector.h" />
     <ClInclude Include="ManagedRedirectCodeInjector.h" />
-    <ClInclude Include="ModuleUtils.h" />
-    <ClInclude Include="PathUtils.h" />
     <ClInclude Include="Precompiled.h" />
     <ClInclude Include="ProfilerHostServices.h" />
     <ClInclude Include="ProfilerManagerHostBase.h" />
@@ -78,7 +74,6 @@
     <ClCompile Include="DecorationCallbacksInfo.cpp" />
     <ClCompile Include="DecorationCallbacksInfoReader.cpp" />
     <ClCompile Include="DecorationCallbacksInfoStaticReader.cpp" />
-    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="INativeMethodsStubs.h" />
     <ClCompile Include="InstrumentationMethodBase.cpp" />
@@ -86,12 +81,9 @@
     <ClCompile Include="LoadArgumentsHelper.cpp" />
     <ClCompile Include="MethodInstrumentationInfoCollection.cpp" />
     <ClCompile Include="MethodInstrumentationInfoKey.cpp" />
-    <ClCompile Include="ModuleHandle.cpp" />
     <ClCompile Include="NativeInstanceMethodInstrumentationInfo.cpp" />
     <ClCompile Include="NativeInstanceMethodsCodeInjector.cpp" />
     <ClCompile Include="ManagedRedirectCodeInjector.cpp" />
-    <ClCompile Include="ModuleUtils.cpp" />
-    <ClCompile Include="PathUtils.cpp" />
     <ClCompile Include="ProfilerManagerHostBase.cpp" />
     <ClCompile Include="ReflectionHelper.cpp" />
     <ClCompile Include="stdafx.cpp">

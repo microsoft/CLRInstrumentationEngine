@@ -3,11 +3,9 @@
 
 #pragma once
 
-namespace Agent
+namespace MicrosoftInstrumentationEngine
 {
-namespace Host
-{
-    class CRawProfilerHookSettingsReader final : public CProfilerHostServices
+    class CRawProfilerHookSettingsReader final
     {
         CRawProfilerHookSettingsReader(const CRawProfilerHookSettingsReader&) = delete;
         CRawProfilerHookSettingsReader& operator=(const CRawProfilerHookSettingsReader&) = delete;
@@ -17,6 +15,9 @@ namespace Host
         HRESULT ReadSettings(
             _Out_ GUID& clsidRawProfilerHookComponent,
             _Inout_ std::wstring& strRawProfilerHookModulePath);
+    private:
+        HRESULT GetEnvironmentVariable(
+            _In_ const std::wstring& strVariableName,
+            _Out_ std::wstring& strVariableValue);
     }; // CRawProfilerHookLoader
-}
 }

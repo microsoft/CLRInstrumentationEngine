@@ -3,9 +3,7 @@
 
 #pragma once
 
-namespace Agent
-{
-namespace Io
+namespace CommonLib
 {
     class CModuleHandle final
     {
@@ -21,5 +19,4 @@ namespace Io
 
         void Reset(const HMODULE hModule = nullptr);
     }; // CModuleHandle
-}
 }

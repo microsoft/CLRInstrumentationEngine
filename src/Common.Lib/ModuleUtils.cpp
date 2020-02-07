@@ -6,33 +6,29 @@
 #include "ModuleUtils.h"
 #include "PathUtils.h"
 
-namespace Agent
-{
-namespace Io
-{
-namespace ModuleUtils
+namespace CommonLib
 {
 
-	HMODULE g_hModuleMarker = nullptr;
+	HMODULE ModuleUtils::s_hModuleMarker = nullptr;
 
 	/// <summary>
 	/// Gets handle of the host module
 	/// </summary>
-	HINSTANCE GetHostModule()
+	HINSTANCE ModuleUtils::GetHostModule()
 	{
-		if (nullptr == g_hModuleMarker)
+		if (nullptr == s_hModuleMarker)
 		{
 			::GetModuleHandleEx(
 				GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
 				| GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-				reinterpret_cast<LPCWSTR>(&g_hModuleMarker),
-				&g_hModuleMarker);
+				reinterpret_cast<LPCWSTR>(&s_hModuleMarker),
+				&s_hModuleMarker);
 		}
 
-		return g_hModuleMarker;
+		return s_hModuleMarker;
 	}
 
-	std::wstring GetModuleDirectory(HINSTANCE hInstance)
+	std::wstring ModuleUtils::GetModuleDirectory(HINSTANCE hInstance)
 	{
 		std::wstring result(L"");
 		wchar_t szRelativePath[_MAX_PATH + 1] = { 0 };
@@ -44,11 +40,9 @@ namespace ModuleUtils
 			LPWSTR* lppPart = nullptr;
 			::GetFullPathName(szRelativePath, _countof(szAbsolutePath), szAbsolutePath, lppPart);
 
-			result = Agent::Io::PathUtils::GetDirFromPath(szAbsolutePath);
+			result = PathUtils::GetDirFromPath(szAbsolutePath);
 		}
 
 		return result;
 	}
-}
-}
 }

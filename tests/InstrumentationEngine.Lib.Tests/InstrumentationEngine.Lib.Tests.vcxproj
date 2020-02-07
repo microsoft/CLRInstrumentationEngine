@@ -93,7 +93,8 @@
     <ClInclude Include="TestLoggingHost.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CConfigurationLoaderTests.cpp" />
+    <ClCompile Include="ConfigurationLoaderTests.cpp" />
+    <ClCompile Include="ConfigurationLocatorTests.cpp" />
     <ClCompile Include="InstrumentationMethodTests.cpp" />
     <ClCompile Include="LoggingTests.cpp" />
     <ClCompile Include="SignatureValidatorTests.cpp" />

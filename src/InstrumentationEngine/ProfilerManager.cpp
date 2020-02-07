@@ -15,6 +15,12 @@
 #include "ConfigurationLoader.h"
 #include "InstrumentationMethodEvents.h"
 #include "LoggingWrapper.h"
+#include "ConfigurationLocator.h"
+#ifndef PLATFORM_UNIX
+#include "RawProfilerHookLoader.h"
+#include "RawProfilerHookSettingsReader.h"
+#include "../Common.Lib/PathUtils.h"
+#endif
 #include <algorithm>
 
 using namespace ATL;
@@ -28,7 +34,8 @@ CProfilerManager::CProfilerManager() :
     m_bIsInInitialize(false),
     m_bIsInitializingInstrumentationMethod(false),
     m_dwInstrumentationMethodFlags(0),
-    m_bValidateCodeSignature(true)
+    m_bValidateCodeSignature(true),
+    m_bAttach(false)
 {
 #ifdef PLATFORM_UNIX
     PAL_Initialize(0, NULL);
@@ -114,13 +121,14 @@ void CProfilerManager::FinalRelease()
 
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
 {
-    HRESULT hr = S_OK;
-    IfNullRetPointer(rgConfigPaths);
+    return E_NOTIMPL;
+}
 
-    for (UINT i = 0; i < numConfigPaths; i++)
-    {
-        m_configFilePaths.push_back(CComBSTR(rgConfigPaths[i]));
-    }
+HRESULT CProfilerManager::SetupProfilingEnvironment(_In_ const vector<CComPtr<CConfigurationSource>>& configSources)
+{
+    HRESULT hr = S_OK;
+
+    m_configSources = configSources;
 
     // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
     // as that would screw up the com state for the application thread. This thread allows the profiler manager
@@ -269,13 +277,11 @@ HRESULT CProfilerManager::GetCorProfilerInfo(
 // return the profiler host instance
 HRESULT CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
 {
-    CCriticalSectionHolder holder(&m_cs);
-
     IfNullRetPointer(ppProfilerManagerHost);
-    IfNullRet(m_profilerManagerHost);
 
-    HRESULT hr = m_profilerManagerHost.CopyTo(ppProfilerManagerHost);
-    return hr;
+    *ppProfilerManagerHost = nullptr;
+
+    return E_NOTIMPL;
 }
 
 // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
@@ -389,9 +395,9 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
         return 1;
     }
 
-    for (UINT i = 0; i < pProfilerManager->m_configFilePaths.size(); i++)
+    for (UINT i = 0; i < pProfilerManager->m_configSources.size(); i++)
     {
-        IfFailRet(pProfilerManager->LoadInstrumentationMethods(pProfilerManager->m_configFilePaths[i]));
+        IfFailRet(pProfilerManager->LoadInstrumentationMethods(pProfilerManager->m_configSources[i]));
     }
 
 #ifndef PLATFORM_UNIX
@@ -403,9 +409,14 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     return 0;
 }
 
-HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ BSTR bstrConfigPath)
+HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource)
 {
+    IfFalseRet(nullptr != pConfigurationSource, E_INVALIDARG);
+
     HRESULT hr = S_OK;
+
+    CComBSTR bstrConfigPath;
+    IfFailRet(pConfigurationSource->GetPath(&bstrConfigPath));
 
     if (SysStringLen(bstrConfigPath) == 0)
     {
@@ -420,7 +431,7 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ BSTR bstrConfigPath)
 
     if (FAILED(loader.LoadConfiguration(bstrConfigPath, tempMethods)))
     {
-        CLogging::LogError(_T("Failed to load configuration file '%s'."), bstrConfigPath);
+        CLogging::LogError(_T("Failed to load configuration file '%s'."), bstrConfigPath.m_str);
     }
 
     // Remove methods with duplicate classIds
@@ -445,10 +456,16 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ BSTR bstrConfigPath)
         }
     }
 
+    CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
+    IfFailRet(pConfigurationSource->EnumSettings(&pSettingsEnum));
+
     for (CInstrumentationMethod* method : instrumentationMethods)
     {
+        // Reset the position of the enumerator before initializing the next instrumentation method
+        IfFailRet(pSettingsEnum->Reset());
+
         IInstrumentationMethod* pInstrumentationMethod = nullptr;
-        this->AddInstrumentationMethod(method, &pInstrumentationMethod);
+        this->AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod);
     }
 
     return S_OK;
@@ -494,6 +511,7 @@ HRESULT CProfilerManager::RemoveInstrumentationMethod(
 
 HRESULT CProfilerManager::AddInstrumentationMethod(
     _In_ CInstrumentationMethod* pInstrumentationMethod,
+    _In_ IEnumInstrumentationMethodSettings* pSettingsEnum,
     _Out_ IInstrumentationMethod** ppInstrumentationMethod)
 {
     HRESULT hr = S_OK;
@@ -522,7 +540,14 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
             }
 
             // Do not detach so CComPtr can track refcount.
-            hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper, m_bValidateCodeSignature);
+            if (m_bAttach)
+            {
+                hr = pInstrumentationMethod->InitializeForAttach(pProfilerManagerWrapper, pSettingsEnum, m_bValidateCodeSignature);
+            }
+            else
+            {
+                hr = pInstrumentationMethod->Initialize(pProfilerManagerWrapper, m_bValidateCodeSignature);
+            }
 
             dwFlags = GetInitializingInstrumentationMethodFlags();
         }
@@ -587,7 +612,17 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
         return E_OUTOFMEMORY;
     }
 
-    return this->AddInstrumentationMethod(pInstrumentationMethod.release(), ppInstrumentationMethod);
+    CComPtr<CConfigurationSource> pSource;
+    pSource.Attach(new CConfigurationSource(bstrModulePath));
+    if (nullptr == pSource)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
+    IfFailRet(pSource->EnumSettings(&pSettingsEnum));
+
+    return this->AddInstrumentationMethod(pInstrumentationMethod.release(), pSettingsEnum, ppInstrumentationMethod);
 }
 
 HRESULT CProfilerManager::DisableProfiling()
@@ -668,35 +703,28 @@ HRESULT CProfilerManager::Initialize(
 
     PROF_CALLBACK_BEGIN
 
+    vector<CComPtr<CConfigurationSource>> configSources;
+
+    // Try to get instrumentation methods from environment variables
+    IfFailRet(CConfigurationLocator::GetFromEnvironment(configSources));
+#ifndef PLATFORM_UNIX
+    if (0 == configSources.size())
+    {
+        IfFailRet(CConfigurationLocator::GetFromFilesystem(configSources));
+    }
+#endif
+
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
     CInitializeHolder initHolder(this);
 
-    IfFailRet(pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo), (LPVOID*)&m_pRealProfilerInfo));
-
-    IfFailRet(DetermineClrVersion());
-
-    //set event mask to be default one. Later host and Instrumentation methods may call it again
-    IfFailRet(this->SetEventMask(m_dwEventMask));
-
-    m_profilerManagerHost.Attach(new CExtensionsHost);
-    IfFailRet(m_profilerManagerHost == nullptr ? E_OUTOFMEMORY : S_OK);
-
-    m_pWrappedProfilerInfo = (ICorProfilerInfo*)(new CCorProfilerInfoWrapper(this, m_pRealProfilerInfo));
-
-    // Initialize the profiler manager host. This gives the host the chance to initialize, configure instrumentation methods, and register for raw events if desired.
-    hr = m_profilerManagerHost->Initialize(this);
-    if (FAILED(hr))
-    {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - failed to initialize profiler manager host"));
-        return hr;
-    }
+    IfFailRet(InitializeCore(pICorProfilerInfoUnk, configSources));
 
     if (m_bProfilingDisabled)
     {
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    // Take the lock that products the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
+    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -819,6 +847,78 @@ DWORD CProfilerManager::CalculateEventMask(DWORD dwAdditionalFlags)
     return result;
 }
 
+HRESULT CProfilerManager::InitializeCore(
+    _In_ IUnknown* pCorProfilerInfoUnk,
+    _In_ const vector<CComPtr<CConfigurationSource>>& configSources
+    )
+{
+    IfNullRetPointer(pCorProfilerInfoUnk);
+
+    HRESULT hr = S_OK;
+
+    IfFailRet(pCorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo), (LPVOID*)&m_pRealProfilerInfo));
+
+    IfFailRet(DetermineClrVersion());
+
+    //set event mask to be default one. Later host and Instrumentation methods may call it again
+    IfFailRet(this->SetEventMask(m_dwEventMask));
+
+    m_pWrappedProfilerInfo = (ICorProfilerInfo*)(new CCorProfilerInfoWrapper(this, m_pRealProfilerInfo));
+
+    if (configSources.size() > 0)
+    {
+        IfFailRet(SetupProfilingEnvironment(configSources));
+    }
+    else
+    {
+        CLogging::LogError(_T("No instrumentation method configs found to load in process %ul"), GetCurrentProcessId());
+    }
+
+#ifndef PLATFORM_UNIX
+    IfFailRet(SetupRawProfiler());
+#endif
+
+    return S_OK;
+}
+
+#ifndef PLATFORM_UNIX
+HRESULT CProfilerManager::SetupRawProfiler()
+{
+    HRESULT hr = S_OK;
+
+    GUID guidRawProfilerClsid = { 0 };
+    wstring wstrRawProfilerModulePath;
+
+    CRawProfilerHookSettingsReader rawProfilerHookSettingsReader;
+    IfFailRet(rawProfilerHookSettingsReader.ReadSettings(guidRawProfilerClsid, wstrRawProfilerModulePath));
+
+    if (S_OK == hr)
+    {
+        CLogging::LogMessage(_T("Attempting to load raw profiler from '%s'."), wstrRawProfilerModulePath.c_str());
+
+        IfFalseRet(PathUtils::Exists(wstrRawProfilerModulePath), E_NOT_SET);
+
+        CComPtr<IUnknown> pRawProfiler;
+        CRawProfilerHookLoader rawProfilerLoader;
+        IfFailRet(rawProfilerLoader.LoadRawProfilerHookComponentFrom(
+            wstrRawProfilerModulePath,
+            guidRawProfilerClsid,
+            pRawProfiler,
+            m_hRawProfilerModule
+            ));
+
+        CLogging::LogMessage(_T("Raw profiler module loaded, component instance created."));
+
+        IfFailRet(AddRawProfilerHook(pRawProfiler));
+    }
+    else
+    {
+        CLogging::LogMessage(_T("Raw profiler module is not specified, skip loading."));
+    }
+
+    return S_OK;
+}
+#endif
 
 HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
 {
@@ -963,11 +1063,9 @@ HRESULT CProfilerManager::Shutdown()
     // Unloading instrumentation methods
     m_instrumentationMethods.clear();
 
-    // DO NOT Release the profiler manager host instance.
-    // The CLR does not release this pointer during shutdown, and most hosts do all
-    // of their cleanup during the Shutdown event. Detach the pointer and allow it
-    // to leak the reference.
-    m_profilerManagerHost.Detach();
+#ifndef PLATFORM_UNIX
+    m_hRawProfilerModule.Reset();
+#endif
 
     CLogging::Shutdown();
 
@@ -2672,9 +2770,23 @@ HRESULT CProfilerManager::InitializeForAttach(
 {
     HRESULT hr = S_OK;
 
-    // TODO: How to handle this? Does this need to support profiler attach? How does that impact initlization etc...
-
     PROF_CALLBACK_BEGIN
+
+    m_bAttach = true;
+
+    vector<CComPtr<CConfigurationSource>> configSources;
+
+    // TODO: Parse coniguration information from pvClientData.
+
+    // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
+    CInitializeHolder initHolder(this);
+
+    IfFailRet(InitializeCore(pCorProfilerInfoUnk, configSources));
+
+    if (m_bProfilingDisabled)
+    {
+        return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
+    }
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::InitializeForAttach, pCorProfilerInfoUnk, pvClientData, cbClientData));
 
@@ -2687,9 +2799,16 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
 {
     HRESULT hr = S_OK;
 
-    // TODO: How to handle this? Does this need to support profiler attach? How does that impact initlization etc...
-
     PROF_CALLBACK_BEGIN
+
+    {
+        CCriticalSectionHolder lock(&m_cs);
+
+        for (TInstrumentationMethodsCollection::reference pair : m_instrumentationMethods)
+        {
+            IfFailRet(pair.first->AttachComplete());
+        }
+    }
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::ProfilerAttachComplete));
 

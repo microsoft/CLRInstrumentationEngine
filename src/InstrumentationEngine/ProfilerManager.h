@@ -6,8 +6,11 @@
 #include "InstrumentationMethod.h"
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
+#include "ConfigurationSource.h"
 #include "MethodInfo.h"
-#include "../ExtensionsHostLib/CExtensionsHost.h"
+#ifndef PLATFORM_UNIX
+#include "../Common.Lib/ModuleHandle.h"
+#endif
 
 using namespace ATL;
 
@@ -65,17 +68,14 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<IMarshal> m_pFTM;
 #endif
 
-        // Pointer to the single profiler host instance
-        CComPtr<IProfilerManagerHost> m_profilerManagerHost;
-
         // Pointer to the real ICorProfilerInfo from the clr
         CComPtr<ICorProfilerInfo> m_pRealProfilerInfo;
 
         // The wrapped ICorProfilerInfo implementation that allows for instrumentation method cooperation
         CComPtr<ICorProfilerInfo> m_pWrappedProfilerInfo;
 
-        // list of configuration file paths
-        vector<ATL::CComBSTR> m_configFilePaths;
+        // list of instrumentation method configuration sources
+        vector<CComPtr<CConfigurationSource>> m_configSources;
 
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;
@@ -169,6 +169,13 @@ namespace MicrosoftInstrumentationEngine
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
+        // Indicates that this profiler instance was initialized via attach (instead of initialized at CLR startup).
+        bool m_bAttach;
+
+#ifndef PLATFORM_UNIX
+        CModuleHandle m_hRawProfilerModule;
+#endif
+
     public:
         CProfilerManager();
         ~CProfilerManager();
@@ -236,6 +243,11 @@ namespace MicrosoftInstrumentationEngine
     private:
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
+        HRESULT InitializeCore(
+            _In_ IUnknown* pCorProfilerInfoUnk,
+            _In_ const vector<CComPtr<CConfigurationSource>>& configSources
+            );
+
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
         // as that would screw up the com state for the application thread. This thread allows the profiler manager
         // to co create a free threaded version of msxml on a thread that it owns to avoid this.
@@ -246,7 +258,7 @@ namespace MicrosoftInstrumentationEngine
             _In_  LPVOID lpParameter
             );
 
-        HRESULT LoadInstrumentationMethods(_In_ BSTR bstrConfigPath);
+        HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource);
 
         HRESULT DetermineClrVersion();
 
@@ -385,6 +397,14 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
+
+        HRESULT SetupProfilingEnvironment(
+            _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources
+            );
+
+#ifndef PLATFORM_UNIX
+        HRESULT SetupRawProfiler();
+#endif
 
         // IProfilerManager methods
     public:
@@ -890,7 +910,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
-        HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _In_ IEnumInstrumentationMethodSettings* pSettingsEnum, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
 
         HRESULT ClearILTransformationStatus(_In_ FunctionID functionId);
 

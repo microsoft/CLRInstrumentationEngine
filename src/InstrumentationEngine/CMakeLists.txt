@@ -7,7 +7,7 @@ project(InstrumentationEngine)
 
 find_package(LibXml2 REQUIRED)
 
-include_directories(. ../InstrumentationEngine.Lib ../ExtensionsHostLib ${LIBXML2_INCLUDE_DIR})
+include_directories(. ../InstrumentationEngine.Lib ${LIBXML2_INCLUDE_DIR})
 
 build_init(CPP InstrumentationEngine)
 
@@ -88,7 +88,6 @@ target_link_libraries(${PROJECT_NAME}
     palrt
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
-    MicrosoftExtensionsHost
     corguids
     :libuuid.so
     :libunwind-x86_64.so

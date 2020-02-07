@@ -3,14 +3,11 @@
 
 #pragma once
 
-#include "../ExtensionsCommon/ModuleHandle.h"
-#include "../ExtensionsCommon/ProfilerHostServices.h"
+#include "../Common.Lib/ModuleHandle.h"
 
-namespace Agent
+namespace MicrosoftInstrumentationEngine
 {
-namespace Host
-{
-    class CRawProfilerHookLoader final : public CProfilerHostServices
+    class CRawProfilerHookLoader final
     {
         CRawProfilerHookLoader(const CRawProfilerHookLoader&) = delete;
         CRawProfilerHookLoader& operator=(const CRawProfilerHookLoader&) = delete;
@@ -20,8 +17,7 @@ namespace Host
         _Check_return_ HRESULT LoadRawProfilerHookComponentFrom(
             _In_ const std::wstring& strModulePath,
             _In_ const GUID& clsidRawProfilerHook,
-            _Out_ IUnknownSptr& spRawProfilerHook,
-            _Out_ Io::CModuleHandle& hRawProfilerHookModule);
+            _Out_ ATL::CComPtr<IUnknown>& spRawProfilerHook,
+            _Out_ CommonLib::CModuleHandle& hRawProfilerHookModule);
     }; // CRawProfilerHookLoader
-} // Host
-} // Agent
+}
