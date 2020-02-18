@@ -705,11 +705,11 @@ HRESULT CProfilerManager::Initialize(
         CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
         if (m_attachedClrVersion != ClrVersion_2)
         {
-            pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
+            hr = pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
         }
         else
         {
-            pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
+            hr = pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
         }
     }
 
@@ -743,18 +743,18 @@ HRESULT CProfilerManager::DetermineClrVersion()
         // TODO-leonidd-080923: Use GetRuntimeInfo when available to set the CLR version
         if (CComQIPtr<ICorProfilerInfo4> pi4 = m_pRealProfilerInfo.p)
         {
-            m_attachedClrVersion = ClrVersion_4_5; // v4.5
-            return S_OK;
+        m_attachedClrVersion = ClrVersion_4_5; // v4.5
+        return S_OK;
         }
         else if (CComQIPtr<ICorProfilerInfo3> pi3 = m_pRealProfilerInfo.p)
         {
-            m_attachedClrVersion = ClrVersion_4; // v4.0
-            return S_OK;
+        m_attachedClrVersion = ClrVersion_4; // v4.0
+        return S_OK;
         }
         else if (CComQIPtr<ICorProfilerInfo2> pi2 = m_pRealProfilerInfo.p)
         {
-            m_attachedClrVersion = ClrVersion_2; // v2.0
-            return S_OK;
+        m_attachedClrVersion = ClrVersion_2; // v2.0
+        return S_OK;
         }
     }
 
@@ -841,8 +841,17 @@ HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
     }
     else
     {
-        CLogging::LogError(_T("SetEventMask can only be called during initialize of Host or InstrumentationMethod"));
-        return E_FAIL;
+        // Prevent immutable flags from being set.
+        if ((dwEventMask & COR_PRF_MONITOR_IMMUTABLE) !=
+            (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
+        {
+            CLogging::LogError(_T("SetEventMask can only modify immutable flags during Profiler initialization."));
+            return E_FAIL;
+        }
+        else
+        {
+            m_dwEventMask |= dwEventMask;
+        }
     }
 
     CComQIPtr<ICorProfilerInfo5> pCorProfilerInfo5 = m_pRealProfilerInfo.p;
