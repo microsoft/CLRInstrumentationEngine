@@ -705,11 +705,11 @@ HRESULT CProfilerManager::Initialize(
         CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
         if (m_attachedClrVersion != ClrVersion_2)
         {
-            pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
+            hr = pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
         }
         else
         {
-            pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
+            hr = pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
         }
     }
 
@@ -839,9 +839,15 @@ HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
     {
         m_dwEventMask |= dwEventMask;
     }
+    else if ((dwEventMask & COR_PRF_MONITOR_IMMUTABLE) ==
+            (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
+    {
+        // Only allow mutable flags to be set.
+        m_dwEventMask |= dwEventMask;
+    }
     else
     {
-        CLogging::LogError(_T("SetEventMask can only be called during initialize of Host or InstrumentationMethod"));
+        CLogging::LogError(_T("SetEventMask can only modify immutable flags during Profiler initialization."));
         return E_FAIL;
     }
 
@@ -870,7 +876,22 @@ HRESULT CProfilerManager::SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dw
 {
     HRESULT hr = S_OK;
 
-    m_dwEventMaskHigh |= dwEventMaskHigh;
+    if (GetIsInInitialize())
+    {
+        m_dwEventMaskHigh |= dwEventMaskHigh;
+    }
+    else if ((dwEventMaskHigh & COR_PRF_HIGH_MONITOR_IMMUTABLE) ==
+        (m_dwEventMaskHigh & COR_PRF_HIGH_MONITOR_IMMUTABLE))
+    {
+        // Only allow mutable flags to be set.
+        m_dwEventMaskHigh |= dwEventMaskHigh;
+    }
+    else
+    {
+        CLogging::LogError(_T("SetEventMask2 can only modify immutable flags during Profiler initialization."));
+        return E_FAIL;
+    }
+
     IfFailRet(SetEventMask(dwEventMaskLow));
 
     return S_OK;
