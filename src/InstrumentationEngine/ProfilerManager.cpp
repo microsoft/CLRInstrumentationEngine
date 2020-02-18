@@ -743,18 +743,18 @@ HRESULT CProfilerManager::DetermineClrVersion()
         // TODO-leonidd-080923: Use GetRuntimeInfo when available to set the CLR version
         if (CComQIPtr<ICorProfilerInfo4> pi4 = m_pRealProfilerInfo.p)
         {
-        m_attachedClrVersion = ClrVersion_4_5; // v4.5
-        return S_OK;
+            m_attachedClrVersion = ClrVersion_4_5; // v4.5
+            return S_OK;
         }
         else if (CComQIPtr<ICorProfilerInfo3> pi3 = m_pRealProfilerInfo.p)
         {
-        m_attachedClrVersion = ClrVersion_4; // v4.0
-        return S_OK;
+            m_attachedClrVersion = ClrVersion_4; // v4.0
+            return S_OK;
         }
         else if (CComQIPtr<ICorProfilerInfo2> pi2 = m_pRealProfilerInfo.p)
         {
-        m_attachedClrVersion = ClrVersion_2; // v2.0
-        return S_OK;
+            m_attachedClrVersion = ClrVersion_2; // v2.0
+            return S_OK;
         }
     }
 
@@ -839,19 +839,16 @@ HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
     {
         m_dwEventMask |= dwEventMask;
     }
+    else if ((dwEventMask & COR_PRF_MONITOR_IMMUTABLE) ==
+            (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
+    {
+        // Only allow mutable flags to be set.
+        m_dwEventMask |= dwEventMask;
+    }
     else
     {
-        // Prevent immutable flags from being set.
-        if ((dwEventMask & COR_PRF_MONITOR_IMMUTABLE) !=
-            (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
-        {
-            CLogging::LogError(_T("SetEventMask can only modify immutable flags during Profiler initialization."));
-            return E_FAIL;
-        }
-        else
-        {
-            m_dwEventMask |= dwEventMask;
-        }
+        CLogging::LogError(_T("SetEventMask can only modify immutable flags during Profiler initialization."));
+        return E_FAIL;
     }
 
     CComQIPtr<ICorProfilerInfo5> pCorProfilerInfo5 = m_pRealProfilerInfo.p;
@@ -879,7 +876,22 @@ HRESULT CProfilerManager::SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dw
 {
     HRESULT hr = S_OK;
 
-    m_dwEventMaskHigh |= dwEventMaskHigh;
+    if (GetIsInInitialize())
+    {
+        m_dwEventMaskHigh |= dwEventMaskHigh;
+    }
+    else if ((dwEventMaskHigh & COR_PRF_HIGH_MONITOR_IMMUTABLE) ==
+        (m_dwEventMaskHigh & COR_PRF_HIGH_MONITOR_IMMUTABLE))
+    {
+        // Only allow mutable flags to be set.
+        m_dwEventMaskHigh |= dwEventMaskHigh;
+    }
+    else
+    {
+        CLogging::LogError(_T("SetEventMask2 can only modify immutable flags during Profiler initialization."));
+        return E_FAIL;
+    }
+
     IfFailRet(SetEventMask(dwEventMaskLow));
 
     return S_OK;
