@@ -14,7 +14,7 @@ steps:
     tsaVersion: 'TsaV2'
     codebase: 'NewOrUpdate'
     tsaEnvironment: 'PROD'
-    codeBaseName: 'clrinstrumentationengine'
+    codeBaseName: 'clrie'
     notificationAlias: 'willxie@microsoft.com'
     notifyAlwaysV2: false
     codeBaseAdmins: 'REDMOND\willxie'
