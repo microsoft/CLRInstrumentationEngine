@@ -2801,14 +2801,32 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
 
     PROF_CALLBACK_BEGIN
 
-    {
-        CCriticalSectionHolder lock(&m_cs);
+    // Populate module, assembly, and app domain information.
+    CComQIPtr<ICorProfilerInfo3> pProfilerInfo3 = m_pRealProfilerInfo;
+    IfNullRet(pProfilerInfo3);
 
-        for (TInstrumentationMethodsCollection::reference pair : m_instrumentationMethods)
+    CComPtr<ICorProfilerModuleEnum> pModuleEnum;
+    IfFailRet(pProfilerInfo3->EnumModules(&pModuleEnum));
+
+    bool fContinueModuleEnum;
+    do
+    {
+        ULONG ulFetched = 0;
+        ModuleID moduleIds[1];
+        IfFailRet(pModuleEnum->Next(1, moduleIds, &ulFetched));
+
+        if (fContinueModuleEnum = (S_OK == hr))
         {
-            IfFailRet(pair.first->AttachComplete());
+            // Constructing the module info will also construct the assembly
+            // and app domain info associated with the module.
+            CComPtr<IModuleInfo> pModuleInfo;
+            IfFailRet(ConstructModuleInfo(moduleIds[0], &pModuleInfo));
         }
-    }
+    } while (fContinueModuleEnum);
+
+    // Notify instrumentation methods that attach has completed. This is the opportunity for instrumentation
+    // methods to "play catchup" on the current state of the CLR while it is suspended.
+    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodAttach::AttachComplete));
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::ProfilerAttachComplete));
 
