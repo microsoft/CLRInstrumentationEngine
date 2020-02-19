@@ -1,0 +1,42 @@
+# Build Pipeline: Continuous Integration
+# Validates:
+# - binaries can be built for all platforms and configurations
+# - packages can be built for all platforms in the Release configuration
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+# Trigger every Sunday at 8am UTC (Sunday at midnight PST)
+# See https://docs.microsoft.com/azure/devops/pipelines/build/triggers?tabs=yaml&view=azure-devops#scheduled-triggers
+schedules:
+- cron: "0 8 * * Sun"
+  displayName: Weekly Static Analysis
+  branches:
+    include:
+    - master
+
+variables:
+  TeamName: ClrInstrumentationEngine
+
+stages:
+- stage: Build
+  jobs:
+  # Binaries (Windows)
+  - template: ../jobs/binaries.yaml
+    parameters:
+      IsMicroBuildInternal: true
+
+- stage: Analyze_Parallel
+  displayName: Code Analysis (Parallel)
+  dependsOn: []
+
+  jobs:
+  - template: ../jobs/codeanalysis/policheck.yaml
+
+- stage: Analyze_PostBuild
+  displayName: Code Analysis (After Build)
+  dependsOn: Build
+
+  jobs:
+  - template: ../jobs/codeanalysis/apiscan.yaml
+  - template: ../jobs/codeanalysis/binskim.yaml
+  - template: ../jobs/codeanalysis/fxcop.yaml

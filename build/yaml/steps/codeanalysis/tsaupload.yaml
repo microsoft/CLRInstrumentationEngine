@@ -1,0 +1,36 @@
+# Step Template: TSA upload to Codebase (CLRIE)
+
+parameters:
+  APIScan: false
+  BinSkim: false
+  FxCop: false
+  PoliCheck: false
+  PREFast: false
+
+steps:
+- task: TSAUpload@1
+  displayName: 'TSA upload to Codebase (CLRIE)'
+  inputs:
+    tsaVersion: 'TsaV2'
+    codebase: 'NewOrUpdate'
+    tsaEnvironment: 'PROD'
+    codeBaseName: 'clrinstrumentationengine'
+    notificationAlias: 'willxie@microsoft.com'
+    notifyAlwaysV2: false
+    codeBaseAdmins: 'REDMOND\willxie'
+    instanceUrlForTsaV2: 'DEVDIV'
+    projectNameDEVDIV: 'DevDiv'
+    areaPath: 'DevDiv\VS Diagnostics\IntelliTrace\Production Diagnostics'
+    iterationPath: 'DevDiv\OneVS'
+    uploadAPIScan: ${{ parameters.APIScan }}
+    uploadBinSkim: ${{ parameters.BinSkim }}
+    uploadFxCop: ${{ parameters.FxCop }}
+    uploadPoliCheck: ${{ parameters.PoliCheck }}
+    uploadPREfast: ${{ parameters.PREFast }}
+    uploadRoslyn: false
+    uploadTSLint: false
+    uploadAsync: false
+    uploadCredScan: false
+    uploadFortifySCA: false
+    uploadModernCop: false
+  continueOnError: true
