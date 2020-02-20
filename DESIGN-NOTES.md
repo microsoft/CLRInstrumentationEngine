@@ -1,4 +1,4 @@
-# Instrumentation Engine design notes
+# InstrumentationEngine design notes
 
 1. [Introduction](#introduction)
 2. [Components and Interfaces](#components)
@@ -32,17 +32,17 @@ Furthermore, the CLR allows a client to request a new jit compilation pass via â
 
 One long standing limitation of the profiler approach to diagnostics is the profiler api only allows a single profiler to exist in a process. This means any multiplexing of the functionality must be performed by the profiler client. This has proven to be problematic as different scenarios need to be consumers of the profiler functionality against the same application.
 
-Instrumentation Engine allows multiple profilers co-exist in the same process. It also simplifies some basic scenarios providing higher level interfaces.
+InstrumentationEngine allows multiple profilers co-exist in the same process. It also simplifies some basic scenarios providing higher level interfaces.
 
 ## <a name="components">Component and Interface Design Points</a>
 
-One of the goals of this design is to allow for consumers of the new instrumentation engine to be implemented in separate dlls. This allows them to be implemented by separate teams, and shared between different products. Achieving these goals will require a binary compatibility contract. Instrumentation Engine uses a form of Reg-Free COM that reuses the interface concept including IUnknown but does not bring in com baggage such as apartment threading or marshaling. This nicely matches the existing model of ICorProfiler.
+One of the goals of this design is to allow for consumers of the new InstrumentationEngine to be implemented in separate dlls. This allows them to be implemented by separate teams, and shared between different products. Achieving these goals will require a binary compatibility contract. InstrumentationEngine uses a form of Reg-Free COM that reuses the interface concept including IUnknown but does not bring in com baggage such as apartment threading or marshaling. This nicely matches the existing model of ICorProfiler.
 
 These instrumentation components are called "Instrumentation Methods" which will essentially be free threaded com objects loaded by direct call to the class factory using the com server exports (DllGetClassObject etcâ€¦). This has the advantage of requiring a simple vtable dispatch for each cross component call keeping overhead to a minimum.
 
 Since ICorProfiler reserves the right to callback on multiple threads simultaneously, the instrumentation methods will need to act as free-threaded objects and take responsibility for their own locking. This is nothing new, as ICorProfiler has always had that requirement.
 
-In order to allow for xcopy deploy without admin rights, the registration of the instrumentation components is done via an object configuration model using xml files. These xml config files are declared to the InstrumentationEngine via environment variables.
+The registration of the instrumentation components is done via an object configuration model using xml files. These xml config files are declared to the InstrumentationEngine via environment variables. As long as the Instrumentation Method folder/files are readable by the instrumented process and is signed, it will be consumed by the InstrumentationEngine.
 
 Example Configuration (NOTE: this is just an example, not a finished design):
 
@@ -76,7 +76,7 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationM
 
 ## <a name="profiler-manager">Profiler Manager</a>
 
-The idea behind the high level instrumentation engine is to allow instrumentation methods to coexist in an instrumentation scenario while maintaining a higher level api for manipulating IL than the ICorProfiler apis allow. The Profiler manager is a new object that is responsible for loading up the various instrumentation methods, querying them about what profiler flags to set, multiplexing the events to the various instrumentation methods, and managing the IL graph that allows them to coexist.
+The idea behind the high level InstrumentationEngine is to allow instrumentation methods to coexist in an instrumentation scenario while maintaining a higher level api for manipulating IL than the ICorProfiler apis allow. The Profiler manager is a new object that is responsible for loading up the various instrumentation methods, querying them about what profiler flags to set, multiplexing the events to the various instrumentation methods, and managing the IL graph that allows them to coexist.
 
 In order to allow for reuse across products, Profiler manager will live in a dll `MicrosoftInstrumentationEngine_x(86|64).dll`.
 
