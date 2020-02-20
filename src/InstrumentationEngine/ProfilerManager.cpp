@@ -128,7 +128,8 @@ HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) B
     for (UINT i = 0; i < numConfigPaths; i++)
     {
         CComPtr<CConfigurationSource> pConfigSource;
-        pConfigSource.Attach(new CConfigurationSource(rgConfigPaths[i]));
+        pConfigSource.Attach(new (nothrow) CConfigurationSource(rgConfigPaths[i]));
+        IfFalseRet(nullptr != pConfigSource, E_OUTOFMEMORY);
 
         configSources.push_back(pConfigSource.p);
     }
@@ -625,11 +626,8 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
     }
 
     CComPtr<CConfigurationSource> pSource;
-    pSource.Attach(new CConfigurationSource(bstrModulePath));
-    if (nullptr == pSource)
-    {
-        return E_OUTOFMEMORY;
-    }
+    pSource.Attach(new (nothrow) CConfigurationSource(bstrModulePath));
+    IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
     CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
     IfFailRet(pSource->EnumSettings(&pSettingsEnum));
@@ -2788,7 +2786,7 @@ HRESULT CProfilerManager::InitializeForAttach(
 
     vector<CComPtr<CConfigurationSource>> configSources;
 
-    // TODO: Parse coniguration information from pvClientData.
+    // TODO: Parse configuration information from pvClientData.
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
     CInitializeHolder initHolder(this);

@@ -24,11 +24,8 @@ namespace MicrosoftInstrumentationEngine
     STDMETHODIMP CConfigurationSource::AddSetting(_In_ LPCWSTR wszName, _In_ LPCWSTR wszValue)
     {
         CComPtr<CInstrumentationMethodSetting> pSetting;
-        pSetting.Attach(new CInstrumentationMethodSetting(wszName, wszValue));
-        if (nullptr == pSetting)
-        {
-            return E_OUTOFMEMORY;
-        }
+        pSetting.Attach(new (nothrow) CInstrumentationMethodSetting(wszName, wszValue));
+        IfFalseRet(nullptr != pSetting, E_OUTOFMEMORY);
 
         m_settings.push_back(pSetting.p);
 
@@ -44,11 +41,8 @@ namespace MicrosoftInstrumentationEngine
         HRESULT hr = S_OK;
 
         CComPtr<CEnumerator<IEnumInstrumentationMethodSettings, IInstrumentationMethodSetting>> pEnumerator;
-        pEnumerator.Attach(new CEnumerator<IEnumInstrumentationMethodSettings, IInstrumentationMethodSetting>());
-        if (nullptr == pEnumerator)
-        {
-            return E_OUTOFMEMORY;
-        }
+        pEnumerator.Attach(new (nothrow) CEnumerator<IEnumInstrumentationMethodSettings, IInstrumentationMethodSetting>());
+        IfFalseRet(nullptr != pEnumerator, E_OUTOFMEMORY);
 
         IfFailRet(pEnumerator->Initialize(m_settings));
 

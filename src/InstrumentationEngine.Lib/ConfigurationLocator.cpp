@@ -200,11 +200,8 @@ namespace MicrosoftInstrumentationEngine
         }
 
         CComPtr<CConfigurationSource> pSource;
-        pSource.Attach(new CConfigurationSource(wszConfigurationPath));
-        if (nullptr == pSource)
-        {
-            return E_OUTOFMEMORY;
-        }
+        pSource.Attach(new (nothrow) CConfigurationSource(wszConfigurationPath));
+        IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
         sources.push_back(pSource.p);
 
