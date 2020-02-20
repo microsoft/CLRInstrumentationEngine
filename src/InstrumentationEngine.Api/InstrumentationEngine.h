@@ -9269,7 +9269,7 @@ EXTERN_C const IID IID_IInstrumentationMethodAttach;
     IInstrumentationMethodAttach : public IUnknown
     {
     public:
-        virtual HRESULT STDMETHODCALLTYPE IntializeForAttach( 
+        virtual HRESULT STDMETHODCALLTYPE InitializeForAttach( 
             /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager,
             /* [in] */ __RPC__in_opt IInstrumentationMethodAttachContext *pContext) = 0;
         
@@ -9296,7 +9296,7 @@ EXTERN_C const IID IID_IInstrumentationMethodAttach;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodAttach * This);
         
-        HRESULT ( STDMETHODCALLTYPE *IntializeForAttach )( 
+        HRESULT ( STDMETHODCALLTYPE *InitializeForAttach )( 
             __RPC__in IInstrumentationMethodAttach * This,
             /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager,
             /* [in] */ __RPC__in_opt IInstrumentationMethodAttachContext *pContext);
@@ -9327,8 +9327,8 @@ EXTERN_C const IID IID_IInstrumentationMethodAttach;
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IInstrumentationMethodAttach_IntializeForAttach(This,pProfilerManager,pContext)	\
-    ( (This)->lpVtbl -> IntializeForAttach(This,pProfilerManager,pContext) ) 
+#define IInstrumentationMethodAttach_InitializeForAttach(This,pProfilerManager,pContext)	\
+    ( (This)->lpVtbl -> InitializeForAttach(This,pProfilerManager,pContext) ) 
 
 #define IInstrumentationMethodAttach_AttachComplete(This)	\
     ( (This)->lpVtbl -> AttachComplete(This) ) 

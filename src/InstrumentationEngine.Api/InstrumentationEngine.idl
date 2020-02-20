@@ -1620,7 +1620,7 @@ library MicrosoftInstrumentationEngine
     {
         // Called when attaching profiler to an existing process. During profiler attach, this method is called instead of
         // calling the IInstrumentationMethod::Attach method.
-        HRESULT IntializeForAttach(
+        HRESULT InitializeForAttach(
             [in] IProfilerManager* pProfilerManager,
             [in] IInstrumentationMethodAttachContext* pContext
             );

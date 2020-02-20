@@ -58,7 +58,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeForAtt
     pContext.Attach(new (nothrow) CInstrumentationMethodAttachContext(pSettingsEnum));
     IfFalseRet(nullptr != pContext, E_OUTOFMEMORY);
 
-    IfFailRet(pInstrumentationMethodAttach->IntializeForAttach(pProfilerManager, pContext));
+    IfFailRet(pInstrumentationMethodAttach->InitializeForAttach(pProfilerManager, pContext));
 
     return S_OK;
 }
