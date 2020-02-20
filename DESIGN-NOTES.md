@@ -1,4 +1,4 @@
-# Instrumentation Engine design notes
+# InstrumentationEngine design notes
 
 1. [Introduction](#introduction)
 2. [Components and Interfaces](#components)
@@ -32,17 +32,17 @@ Furthermore, the CLR allows a client to request a new jit compilation pass via �
 
 One long standing limitation of the profiler approach to diagnostics is the profiler api only allows a single profiler to exist in a process. This means any multiplexing of the functionality must be performed by the profiler client. This has proven to be problematic as different scenarios need to be consumers of the profiler functionality against the same application.
 
-Instrumentation Engine allows multiple profilers co-exist in the same process. It also simplifies some basic scenarios providing higher level interfaces.
+InstrumentationEngine allows multiple profilers co-exist in the same process. It also simplifies some basic scenarios providing higher level interfaces.
 
 ## <a name="components">Component and Interface Design Points</a>
 
-One of the goals of this design is to allow for consumers of the new instrumentation engine to be implemented in separate dlls. This allows them to be implemented by separate teams, and shared between different products. Achieving these goals will require a binary compatibility contract. Instrumentation Engine uses a form of Reg-Free COM that reuses the interface concept including IUnknown but does not bring in com baggage such as apartment threading or marshaling. This nicely matches the existing model of ICorProfiler.
+One of the goals of this design is to allow for consumers of the new InstrumentationEngine to be implemented in separate dlls. This allows them to be implemented by separate teams, and shared between different products. Achieving these goals will require a binary compatibility contract. InstrumentationEngine uses a form of Reg-Free COM that reuses the interface concept including IUnknown but does not bring in com baggage such as apartment threading or marshaling. This nicely matches the existing model of ICorProfiler.
 
-Sticking with the Intellitrace terminology, these instrumentation components called "Instrumentation Methods" which will essentially be free threaded com objects loaded by direct call to the class factory using the com server exports (DllGetClassObject etc…). This has the advantage of requiring a simple vtable dispatch for each cross component call keeping overhead to a minimum.
+These instrumentation components are called "Instrumentation Methods" which will essentially be free threaded com objects loaded by direct call to the class factory using the com server exports (DllGetClassObject etc…). This has the advantage of requiring a simple vtable dispatch for each cross component call keeping overhead to a minimum.
 
 Since ICorProfiler reserves the right to callback on multiple threads simultaneously, the instrumentation methods will need to act as free-threaded objects and take responsibility for their own locking. This is nothing new, as ICorProfiler has always had that requirement.
 
-In order to allow for xcopy deploy without admin rights, the registration of the instrumentation components is done via an object configuration model using xml files. This is similar to how intellitrace manages instrumentation methods today with one key difference: the instrumentation objects will likely be packaged in their own dlls. Therefore, for MSI based installations, a safe admin writable folder will contain the dlls, and the configuration file will describe the objects that are contained within that dll. For xcopy deployment, the sub folder containing the instrumentation methods will be a sub-folder of the xcopy payload and the xml config will be contained in the same folder as the monitoring agent.
+The registration of the instrumentation components is done via an object configuration model using xml files. These xml config files are declared to the InstrumentationEngine via environment variables. As long as the Instrumentation Method folder/files are readable by the instrumented process and is signed, it will be consumed by the InstrumentationEngine.
 
 Example Configuration (NOTE: this is just an example, not a finished design):
 
@@ -76,11 +76,11 @@ HRESULT MicrosoftInstrumentationEngine::CProfilerManager::RemoveInstrumentationM
 
 ## <a name="profiler-manager">Profiler Manager</a>
 
-The idea behind the high level instrumentation engine is to allow instrumentation methods to coexist in an instrumentation scenario while maintaining a higher level api for manipulating IL than the ICorProfiler apis allow. The Profiler manager is a new object that is responsible for loading up the various instrumentation methods, querying them about what profiler flags to set, multiplexing the events to the various instrumentation methods, and managing the IL graph that allows them to coexist.
+The idea behind the high level InstrumentationEngine is to allow instrumentation methods to coexist in an instrumentation scenario while maintaining a higher level api for manipulating IL than the ICorProfiler apis allow. The Profiler manager is a new object that is responsible for loading up the various instrumentation methods, querying them about what profiler flags to set, multiplexing the events to the various instrumentation methods, and managing the IL graph that allows them to coexist.
 
 In order to allow for reuse across products, Profiler manager will live in a dll `MicrosoftInstrumentationEngine_x(86|64).dll`.
 
-To use Profiler manager, the host application (MMA, Intellitrace, code coverage etc..) should set up the process up for profiling using the normal ICorProfiler environment variables:
+To use Profiler manager, the host application (MMA, IntelliTrace, code coverage etc..) should set up the process up for profiling using the normal ICorProfiler environment variables:
 
 ```
 COR_ENABLE_PROFILING=1
@@ -110,18 +110,18 @@ Many profiler consumers will need callbacks when interesting events happen in th
         + Method Info
         * IL Graph
 4. OnClassLoad
-    * Intellitrace uses this callback which occurs every time a new class loads to update the type system. This callback MUST be optional as it incurs high overhead
+    * This occurs every time a new class loads to update the type system. This callback MUST be optional as it incurs high overhead
     * Parameters:
         * Method Info
         * Class Info?
         * IMetadataImport
 5. Function Enter / Function Exit
-    * These callbacks are issued every time a function is called and every time a function returns. Intellitrace and Production BPs don’t use these, but Tofino does. Note that these also incur large runtime overhead and use a naked calling convention making it difficult to multiplex
+    * These callbacks are issued every time a function is called and every time a function returns. Note that these also incur large runtime overhead and use a naked calling convention making it difficult to multiplex
 6. Inline tracking
-    * This allows components to track where a method has been inlined. Intellitrace turns inlining off globally today. Tofino allows inlining to occur.
-    * Inlining greatly complicates the way the profiler works. However, the increase in performance is likely worth building something into the high level structures to make it easy to go from a metadata token to its inline sites to allow consumers to easily rejit all of the parent function to undo inlining.
+    * This allows components to track where a method has been inlined.
+    * Inlining greatly complicates the way the profiler works and contains various limitations such as unloadable code. However, the increase in performance is likely worth building something into the high level structures to make it easy to go from a metadata token to its inline sites to allow consumers to easily rejit all of the parent function to undo inlining.
 
-Instrumentation Methods implements the ICorProfilerCallback interfaces (2, 3, 4, 5) to receive notifications of these events from the profiler manager. The profiler manager will expose the higher level api to allow the instrumentation methods to co-exist and make writing them easier. For instance, when receiving a jit callback, instrumentation methods can query the ProfilerManager to map MethodId to an instance of IMethodInfo and use that to get the instruction graph, examine metadata etc…
+Instrumentation Methods implements all of the ICorProfilerCallback interfaces to receive notifications of these events from the profiler manager. The profiler manager will expose the higher level api to allow the instrumentation methods to co-exist and make writing them easier. For instance, when receiving a jit callback, instrumentation methods can query the ProfilerManager to map MethodId to an instance of IMethodInfo and use that to get the instruction graph, examine metadata etc…
 
 ## <a name="infrastructure">Infrastructure Interfaces</a>
 
@@ -130,10 +130,7 @@ Apart from implementing the interesting ICorProfilerCallback interfaces, Instrum
 
 Instrumentation Methods should call `IProfilerManager::SetEventMask` to specify which events it would like to receive. This function takes the clsid of the InstrumentationMethod and the flags. Note that just like with the clr, this can be called to enable / disable callbacks anytime. The ProfilerManager will obtain the event flags from each instrumentation method and enable the union of them. However, an InstrumentationMethod will only receive the events for which is subscribes.
 
-In the current ICorProfiler design, there can only be one single function enter, function exit, and function tail call callback function. This is no longer the case with this new model. Instrumentation methods that wish to receive these callbacks can do so enabling the event mask on the Profiler Manager and then setting the callbacks passing the clsid of the instrumentation method. The ProfilerManager will multiplex the callbacks to each of the interesting calls. Similarly, each instrumentation method can register for the FunctionIDMapper  to allow them to disable the callback for a particular method. If no instrumentation method one states that the callback should occur, it is disabled. However, if at least one leaves it enabled, the callback will still occur but will filter out instrumentation methods that do not wish to receive it.
-
->In typical implementations, is this even possible for function enter / function exit / tailcall? Since these must be naked, it may not be possible for these to be multiplexed as registers will need to be saved, and the callbacks may depend on the value of those registers (example: value sitting in Eax, saved by multiplex implementation). One possible solution is to redefine the interface to not be naked, take more parameters, and and allow the values of the original registers to be obtained by the callbacks. Need to find out how profilers that actually use these calls use them. Intellitrace and production bps don’t currently consume these. MMA does.
-Note that the function enter/exit callbacks actually aren’t required as it is possible to achieve the same functionality by instrumenting the prolog and epilog. My current thoughts on this is the ProfilerManager should NOT expose this functionality. The profiler host may choose to pass it to a single implementation however.
+InstrumentationEngine doesn't support ELT (Enter/Leave/Tail). However the function enter/exit callbacks actually aren’t required as it is possible to achieve the same functionality by instrumenting the prolog and epilog.
 
 For scenarios involving IL Rewriting, the Instrumentation Methods will be given the opportunity to rewrite IL using the IL graph at two different callbacks: right before the CLR jits the method the first time, and after a rejit is request and the method is called again.  The instrumentation methods will be called in priority order first, and will perform their il manipulations using the il graph (see interface description below). Once the instrumentation methods have finished, the il, exception ranges, and localvar sigs will be rendered back to a byte stream and given the snapins to manipulate. Finally, the actual il method body will be given to the clr to finish the rewrite.
 
@@ -141,9 +138,9 @@ For scenarios involving IL Rewriting, the Instrumentation Methods will be given 
 
 ### <a name="dataitems">Data Items</a>
 One design point that has proven to be very useful in other diagnostic code base is the concept of data items and data containers. In the Data Container model, most system owned object derives from a hash table base class that implements the IDataContainer interface that holds instances of IDataItem. This allows consumers of the API to extend objects and add data within the object that makes sense.
-For example, If Intellitrace wants to extend the module info object, they can do so by placing an extension object into the data item collection for each module. This allows them to extend the object with Intellitrace specific data without having to create their own collection that maps ModuleInfo to ModuleInfoIntellitraceExtension.
+For example, If a profiler wants to extend the module info object, they can do so by placing an extension object into the data item collection for each module. This allows them to extend the object with profiler-specific data without having to create their own collection that maps ModuleInfo to a profiler-specific ModuleInfoExtension.
 
-Given that the object structure is loosely based on COM, it makes sense to use object guids as the key. I.E. the intellitrace instrumentation method will have a guid, as will the data item object they wish to store. So, the key would be the combination of IntellitraceInstrumentationMethod guid and the IntellitraceModuleItemExtension guid.
+Given that the object structure is loosely based on COM, it makes sense to use object guids as the key. ie. An instrumentation method will have a guid, as will the data item object they wish to store. So, the key would be the combination of the InstrumentationMethod guid and the profiler-specific ModuleItemExtension guid.
 
 ``` cpp
 IDataContainer : IUnknown
@@ -219,9 +216,9 @@ HRESULT MyInstrumentationMethod::OnBeforeJitComplete(IMethodInfo* pMethodInfo)
 
 ### <a name="instruction-graph">Instruction Graph</a>
 
-The instruction graph is a high level representation of the instructions in a method. It hangs off the MethodInfo object and is the core of how instrumentation happens in the profiler host model. Consumers of the instruction graph can insert, modify and remove instances of ILInstruction and its derived classes into the graph. The exception ranges also hang off the MethodInfo object and can be updated to reflect the new graph. The Cor IL Map is automatically generated from the modified offsets after the instrumentation methods have executed.
+The instruction graph is a high level representation of the instructions in a method. It is contained in the MethodInfo object and is the core of how instrumentation happens in the profiler host model. Consumers of the instruction graph can insert, modify and remove instances of ILInstruction and its derived classes into the graph. The exception ranges are also contained in the MethodInfo object and can be updated to reflect the new graph. The Cor IL Map is automatically generated from the modified offsets after the instrumentation methods have executed.
 
-IInstructionGraph  interface contains methods to consume and manipulate the graph.
+IInstructionGraph interface contains methods to consume and manipulate the graph.
 
 
 ### <a name="method">Method Info</a>
@@ -233,22 +230,17 @@ MethodInfo is an abstraction over a method. It contains the profiler runtime met
 
 Module info is an abstraction over a loaded managed module in the target process. It references the AssemblyInfo that contains the module, the containing appdomain, raw interface pointers to metadata import and export, and other helpers to make working with modules and metadata more efficient or easier.
 
-***NOTE:*** Intellitrace’s definition of ModuleInfo has the type system hanging off of it. The purpose of the type system is to allow native code to extract the necessary target application information at each intellitrace instrumentation point in order to store it into the collection plan. My current thoughts on the type system is it is intellitrace specific and should not be exposed in this API.
-
 ### <a name="assembly">Assembly Info</a>
 
 AssemblyInfo represents an assembly loaded in an AppDomain which is made up of a collection of modules.
 
 ### <a name="appdomain">AppDomain Info</a>
 
-This object was originally a single object in Intellitrace called AppDomainCollection. I think I would rather have an AppDomainInfo object for each Appdomain with the ability so search the appdomain collection.
+This object was originally a single object called AppDomainCollection. Currently an AppDomainInfo object is created for each Appdomain with the ability to search the appdomain collection.
 
 ### <a name="local-var">Local Variables</a>
 
 Local variables in the CLR are described by the LocalVarSig blob which is a compressed description of the local variable slots and their types. The CLR provides helpers to convert from this compressed blob to the corresponding tokens which can use IMetadataImport.
-
-In Intellitrace, Local Variable manipulation is performed using the local variable collection that hangs off of MethodInfo. Unfortunately, it is tightly coupled to the type system which I wasn’t currently planning to carry forward in this api.
-
 
 ## <a name="transformations">Single Ret and Other Automatic Transformations</a>
 
