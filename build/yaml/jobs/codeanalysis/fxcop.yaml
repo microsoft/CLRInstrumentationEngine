@@ -28,7 +28,7 @@ jobs:
     displayName: 'Run FxCop'
     inputs:
       inputType: Basic
-      targets: '$(Build.ArtifactStagingDirectory)/binaries-windows-Debug\AnyCPU\net462\ProductionDiagnosticsBootstrapper.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Debug\AnyCPU\net462\ProductionBreakpointsHostingObserver.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Debug\AnyCPU\net462\ProductionBreakpointsRuntime.dll'
+      targets: '$(Build.ArtifactStagingDirectory)/binaries-windows-Debug/AnyCPU/Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll'
     continueOnError: true
 
   # Publish SecurityAnalysis Logs

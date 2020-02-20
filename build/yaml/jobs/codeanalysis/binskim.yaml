@@ -28,7 +28,7 @@ jobs:
     displayName: 'Run BinSkim '
     inputs:
       InputType: Basic
-      AnalyzeTarget: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\DiagnosticsAgent.Core.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\DiagnosticsAgent.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\DiagnosticsAgent.Tests.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\net462\HostingObserver.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\netstandard2.0\HostingObserver.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\net462\ProductionBreakpointsRuntime.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\netstandard2.0\ProductionBreakpointsRuntime.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\net462\Bootstrapper.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\AnyCPU\netstandard2.0\Bootstrapper.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\x64\ProductionBreakpoints_x64.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\x86\ProductionBreakpoints_x86.dll;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\x64\SnapshotHolder_x64.exe;$(Build.ArtifactStagingDirectory)/binaries-windows-Release\x86\SnapshotHolder_x86.exe'
+      AnalyzeTarget: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release/AnyCPU/Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll;'
       AnalyzeVerbose: true
       AnalyzeHashes: true
     continueOnError: true
