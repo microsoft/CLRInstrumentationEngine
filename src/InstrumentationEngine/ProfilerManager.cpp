@@ -121,10 +121,22 @@ void CProfilerManager::FinalRelease()
 
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
 {
-    return E_NOTIMPL;
+    HRESULT hr = S_OK;
+    IfNullRetPointer(rgConfigPaths);
+
+    vector<CComPtr<CConfigurationSource>> configSources;
+    for (UINT i = 0; i < numConfigPaths; i++)
+    {
+        CComPtr<CConfigurationSource> pConfigSource;
+        pConfigSource.Attach(new CConfigurationSource(rgConfigPaths[i]));
+
+        configSources.push_back(pConfigSource.p);
+    }
+
+    return SetupInstrumentationMethods(configSources);
 }
 
-HRESULT CProfilerManager::SetupProfilingEnvironment(_In_ const vector<CComPtr<CConfigurationSource>>& configSources)
+HRESULT CProfilerManager::SetupInstrumentationMethods(_In_ const vector<CComPtr<CConfigurationSource>>& configSources)
 {
     HRESULT hr = S_OK;
 
@@ -148,12 +160,12 @@ HRESULT CProfilerManager::SetupProfilingEnvironment(_In_ const vector<CComPtr<CC
     DWORD retVal = WaitForSingleObject(hConfigThread, waitTime);
     if (retVal == WAIT_TIMEOUT)
     {
-        CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration timeout exceeded"));
+        CLogging::LogError(_T("CProfilerManager::SetupInstrumentationMethods - instrumentation method configuration timeout exceeded"));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
     if (retVal != WAIT_OBJECT_0)
     {
-        CLogging::LogError(_T("CProfilerManager::SetupProfilingEnvironment - instrumentation method configuration failed with error 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
+        CLogging::LogError(_T("CProfilerManager::SetupInstrumentationMethods - instrumentation method configuration failed with error 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
@@ -867,7 +879,7 @@ HRESULT CProfilerManager::InitializeCore(
 
     if (configSources.size() > 0)
     {
-        IfFailRet(SetupProfilingEnvironment(configSources));
+        IfFailRet(SetupInstrumentationMethods(configSources));
     }
     else
     {

@@ -398,7 +398,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
-        HRESULT SetupProfilingEnvironment(
+        HRESULT SetupInstrumentationMethods(
             _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources
             );
 

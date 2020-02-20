@@ -118,6 +118,7 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
+    // static
     HRESULT CConfigurationLocator::AddExpandedPath(
         _In_ SourceVector &sources,
         _In_ LPCWSTR wszPath
@@ -186,6 +187,7 @@ namespace MicrosoftInstrumentationEngine
     }
 #endif
 
+    // static
     HRESULT CConfigurationLocator::AddSource(
         _In_ SourceVector& sources,
         _In_ LPCWSTR wszConfigurationPath

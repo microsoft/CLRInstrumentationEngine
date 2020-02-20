@@ -122,7 +122,6 @@
     <ClCompile Include="CorMethodMalloc.cpp" />
     <ClCompile Include="CorProfilerFunctionControlWrapper.cpp" />
     <ClCompile Include="CorProfilerInfoWrapper.cpp" />
-    <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ExceptionClause.cpp" />
     <ClCompile Include="ExceptionSection.cpp" />
