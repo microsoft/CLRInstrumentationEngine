@@ -875,7 +875,7 @@ EXTERN_C const IID IID_IProfilerManager;
         virtual HRESULT STDMETHODCALLTYPE GetCorProfilerInfo( 
             /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler) = 0;
         
-        virtual HRESULT STDMETHODCALLTYPE GetProfilerHost( 
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE GetProfilerHost( 
             /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLoggingInstance( 
@@ -946,7 +946,7 @@ EXTERN_C const IID IID_IProfilerManager;
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler);
         
-        HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost);
         

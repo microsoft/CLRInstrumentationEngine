@@ -8,6 +8,10 @@ Please format the changes as follows:
 + Updates:
 
 # 1.0.32
++ New:
+  + Support loading and initializing Instrumentation Methods on profiler attach.
++ Updates:
+  + Deprecate IProfilerManager::GetProfilerHost(IProfilerManagerHost**) method.
 + BugFixes:
   + Fix RPH bug - Allow SetEventMask post initialization if not affecting immutable flags
   + Fix RPH bug - SetRejitMethodInfo with nullptr did not erase MethodInfo, causing AV

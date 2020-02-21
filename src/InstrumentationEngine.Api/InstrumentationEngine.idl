@@ -91,6 +91,7 @@ library MicrosoftInstrumentationEngine
         HRESULT GetCorProfilerInfo([out]IUnknown** ppCorProfiler);
 
         // return the profiler host instance
+        [helpstring("This method is deprecated as of 1.0.32 and will return E_NOTIMPL when called.")]
         HRESULT GetProfilerHost([out]IProfilerManagerHost** ppProfilerManagerHost);
 
         // Returns an instance of IProfilerManagerLogging which instrumentation methods can use

@@ -121,8 +121,9 @@ void CProfilerManager::FinalRelease()
 
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
 {
-    HRESULT hr = S_OK;
     IfNullRetPointer(rgConfigPaths);
+
+    HRESULT hr = S_OK;
 
     vector<CComPtr<CConfigurationSource>> configSources;
     for (UINT i = 0; i < numConfigPaths; i++)
@@ -290,10 +291,6 @@ HRESULT CProfilerManager::GetCorProfilerInfo(
 // return the profiler host instance
 HRESULT CProfilerManager::GetProfilerHost(_Out_ IProfilerManagerHost** ppProfilerManagerHost)
 {
-    IfNullRetPointer(ppProfilerManagerHost);
-
-    *ppProfilerManagerHost = nullptr;
-
     return E_NOTIMPL;
 }
 
