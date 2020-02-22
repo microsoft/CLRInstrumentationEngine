@@ -45,30 +45,35 @@
       <ZipItem Include="scmApplicationHost.xdt">
         <Destination>$(PackageVersion)</Destination>
       </ZipItem>
+      <!-- Tools -->
+      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
+               Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+        <Destination>$(PackageVersion)\Tools\Attach</Destination>
+      </ZipItem>
       <!-- Instrumentationx86Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x86\**\MicrosoftInstrumentationEngine_x86.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
         <Destination>$(PackageVersion)\Instrumentation32</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\**\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
         <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\**\Microsoft.InstrumentationEngine.Extensions.config">
+      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
         <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\**\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
         <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
       </ZipItem>
       <!-- Instrumentationx64Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x64\**\MicrosoftInstrumentationEngine_x64.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
         <Destination>$(PackageVersion)\Instrumentation64</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\**\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\**\Microsoft.InstrumentationEngine.Extensions.config">
+      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\**\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
         <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
       </ZipItem>
     </ItemGroup>
