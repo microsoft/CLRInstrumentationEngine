@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
 # Build Pipeline: Continuous Integration
 # Validates:
 # - binaries can be built for all platforms and configurations
