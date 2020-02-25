@@ -2809,7 +2809,7 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
     PROF_CALLBACK_BEGIN
 
     // Populate module, assembly, and app domain information.
-    CComQIPtr<ICorProfilerInfo3> pProfilerInfo3 = m_pRealProfilerInfo;
+    CComQIPtr<ICorProfilerInfo3> pProfilerInfo3 = m_pRealProfilerInfo.p;
     IfNullRet(pProfilerInfo3);
 
     CComPtr<ICorProfilerModuleEnum> pModuleEnum;
@@ -2822,7 +2822,8 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
         ModuleID moduleIds[1];
         IfFailRet(pModuleEnum->Next(1, moduleIds, &ulFetched));
 
-        if (fContinueModuleEnum = (S_OK == hr))
+        fContinueModuleEnum = (S_OK == hr);
+        if (fContinueModuleEnum)
         {
             // Constructing the module info will also construct the assembly
             // and app domain info associated with the module.

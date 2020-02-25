@@ -25,7 +25,6 @@ set(src_files
     ./CorMethodMalloc.cpp
     ./CorProfilerFunctionControlWrapper.cpp
     ./CorProfilerInfoWrapper.cpp
-    ./DataContainer.cpp
     ./dllmain.cpp
     ./ExceptionClause.cpp
     ./ExceptionSection.cpp
@@ -63,6 +62,7 @@ add_lib(${PROJECT_NAME}
     )
 
 # Force every object to be included even if it's unused.
+SET (ATL -Wl,--whole-archive atl -Wl,--no-whole-archive)
 SET (CORECLRPAL -Wl,--whole-archive coreclrpal -Wl,--no-whole-archive)
 SET (LINUXPAL -Wl,--whole-archive linux_pal -Wl,--no-whole-archive)
 #SET (LINUXPALRT -Wl,--whole-archive palrt -Wl,--no-whole-archive)
@@ -84,7 +84,7 @@ target_link_libraries(${PROJECT_NAME}
     ${LIBXML2_LIBRARIES}
     ${CORECLRPAL}
     ${LINUXPAL}
-    atl
+    ${ATL}
     palrt
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
@@ -94,4 +94,5 @@ target_link_libraries(${PROJECT_NAME}
     )
 
 #ensure that the linux pal gets built before this
+add_dependencies(${PROJECT_NAME} atl)
 add_dependencies(${PROJECT_NAME} linux_pal)
