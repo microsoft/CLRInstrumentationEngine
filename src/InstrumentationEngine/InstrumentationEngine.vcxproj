@@ -122,7 +122,6 @@
     <ClCompile Include="CorMethodMalloc.cpp" />
     <ClCompile Include="CorProfilerFunctionControlWrapper.cpp" />
     <ClCompile Include="CorProfilerInfoWrapper.cpp" />
-    <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ExceptionClause.cpp" />
     <ClCompile Include="ExceptionSection.cpp" />
@@ -154,9 +153,6 @@
   <ItemGroup>
     <ProjectReference Include="..\InstrumentationEngine.Lib\InstrumentationEngine.Lib.vcxproj">
       <Project>{7507e5dd-d4d8-4617-9124-a76341004aab}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ExtensionsHostLib\ExtensionsHostLib.vcxproj">
-      <Project>{80ECB05A-B90E-41E8-B9DD-5AFB14981891}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

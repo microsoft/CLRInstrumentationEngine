@@ -4,9 +4,7 @@
 #include "stdafx.h"
 #include "ModuleHandle.h"
 
-namespace Agent
-{
-namespace Io
+namespace CommonLib
 {
     CModuleHandle::CModuleHandle(const HMODULE hModule) noexcept
         : m_hModule(hModule)
@@ -37,5 +35,4 @@ namespace Io
 
         m_hModule = hModule;
     }
-}
 }

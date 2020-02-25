@@ -84,6 +84,8 @@ using namespace ATL;
 #endif
 
 #include "Logging.h"
+#include "ImplQueryInterface.h"
+#include "refcount.h"
 #include "SharedArray.h"
 
 #include "../Common.Lib/tstring.h"

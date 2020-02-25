@@ -9,11 +9,11 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace fs = std::experimental::filesystem;
 
-#include "ExtensionsCommon\Environment.h"
+#include "ConfigurationLocator.h"
 
-namespace TestsHostExtension
+namespace InstrumentationEngineLibTests
 {
-    TEST_CLASS(CEnvironmentTests)
+    TEST_CLASS(ConfigurationLocatorTests)
     {
     private:
 #ifdef _WIN64
@@ -33,8 +33,6 @@ namespace TestsHostExtension
             TEST_METHOD(TestGetConfigurationPaths)
         {
             _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-            std::vector<ATL::CComBSTR> files;
 
             // Create temporary files to use during test that will be deleted upon closing.
             auto filePath1 = fs::temp_directory_path() / L"config1.xml";
@@ -57,11 +55,21 @@ namespace TestsHostExtension
             std::unique_ptr<WCHAR[]> pszCurrentWorkingDirectory(_wgetcwd(nullptr, 0));
 
             HRESULT hr = S_OK;
-            Assert::AreEqual<HRESULT>(S_OK, hr = Agent::Settings::CEnvironment::GetConfigurationPaths(files, nullptr));
-            Assert::AreEqual<size_t>(3, files.size(), _T("Should return 3 paths."));
-            Assert::AreEqual(pszCurrentWorkingDirectory.get(), files[0], _T("'.' should be expanded to the CWD."));
-            Assert::AreEqual(filePath1.c_str(), files[1], _T("filePath1 should be expanded to its value."));
-            Assert::AreEqual(filePath2.c_str(), files[2], _T("filePath2 should be expanded to its value."));
+            std::vector<ATL::CComPtr<CConfigurationSource>> sources;
+            Assert::AreEqual<HRESULT>(S_OK, hr = CConfigurationLocator::GetFromEnvironment(sources));
+            Assert::AreEqual<size_t>(3, sources.size(), _T("Should return 3 paths."));
+
+            CComBSTR firstSourcePath;
+            Assert::AreEqual<HRESULT>(S_OK, hr = sources[0]->GetPath(&firstSourcePath));
+            Assert::AreEqual(pszCurrentWorkingDirectory.get(), firstSourcePath, _T("'.' should be expanded to the CWD."));
+
+            CComBSTR secondSourcePath;
+            Assert::AreEqual<HRESULT>(S_OK, hr = sources[1]->GetPath(&secondSourcePath));
+            Assert::AreEqual(filePath1.c_str(), secondSourcePath, _T("filePath1 should be expanded to its value."));
+
+            CComBSTR thirdSourcePath;
+            Assert::AreEqual<HRESULT>(S_OK, hr = sources[2]->GetPath(&thirdSourcePath));
+            Assert::AreEqual(filePath2.c_str(), thirdSourcePath, _T("filePath2 should be expanded to its value."));
         }
     };
 }
