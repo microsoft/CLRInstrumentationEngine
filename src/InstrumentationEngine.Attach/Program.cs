@@ -19,6 +19,13 @@ namespace Microsoft.InstrumentationEngine
         private const int ExitCodeSuccess = 0;
         private const int ExitCodeFailure = -1;
 
+        private const string Instrumentation32FolderName = "Instrumentation32";
+        private const string Instrumentation64FolderName = "Instrumentation64";
+
+        private const string InstrumentationEngineX64LinuxName = "libInstrumentationEngine.so";
+        private const string InstrumentationEngineX64WindowsName = "MicrosoftInstrumentationEngine_x64.dll";
+        private const string InstrumentationEngineX86WindowsName = "MicrosoftInstrumentationEngine_x86.dll";
+
         internal static int Main(string[] args)
         {
             // TODO: Parse command line for additional arguments such as configuration files
@@ -110,13 +117,17 @@ namespace Microsoft.InstrumentationEngine
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 enginePath = isTargetProcess32Bit ?
-                    Path.Combine(rootDirectory, "Instrumentation32", "MicrosoftInstrumentationEngine_x86.dll") :
-                    Path.Combine(rootDirectory, "Instrumentation64", "MicrosoftInstrumentationEngine_x64.dll");
+                    Path.Combine(rootDirectory, Instrumentation32FolderName, InstrumentationEngineX86WindowsName) :
+                    Path.Combine(rootDirectory, Instrumentation64FolderName, InstrumentationEngineX64WindowsName);
+            }
+            else if (!isTargetProcess32Bit)
+            {
+                enginePath = Path.Combine(rootDirectory, Instrumentation64FolderName, InstrumentationEngineX64LinuxName);
             }
             else
             {
-                Debug.Assert(!isTargetProcess32Bit, "Only 64 bit is supported on non-Windows platforms.");
-                enginePath = Path.Combine(rootDirectory, "Instrumentation64", "libInstrumentationEngine.so");
+                WriteError("Only the 64 bit engine is supported on non-Windows platforms.");
+                return ExitCodeFailure;
             }
 
             if (!File.Exists(enginePath))

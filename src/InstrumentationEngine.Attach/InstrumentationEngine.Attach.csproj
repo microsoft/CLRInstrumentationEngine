@@ -7,7 +7,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>attach</AssemblyName>
+    <AssemblyName>Microsoft.InstrumentationEngine.Attach</AssemblyName>
     <RootNamespace>Microsoft.InstrumentationEngine</RootNamespace>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
