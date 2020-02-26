@@ -65,6 +65,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.Profi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.ProfilerProxy.Lib", "src\InstrumentationEngine.ProfilerProxy.Lib\InstrumentationEngine.ProfilerProxy.Lib.vcxproj", "{DAB53F24-D55A-4759-B100-5B7FEFBF6D08}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Attach", "src\InstrumentationEngine.Attach\InstrumentationEngine.Attach.csproj", "{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{c1aaa703-5e32-45c0-a69d-f46d1c659ae4}*SharedItemsImports = 13
@@ -300,6 +302,14 @@ Global
 		{DAB53F24-D55A-4759-B100-5B7FEFBF6D08}.Release|x64.Build.0 = Release|x64
 		{DAB53F24-D55A-4759-B100-5B7FEFBF6D08}.Release|x86.ActiveCfg = Release|Win32
 		{DAB53F24-D55A-4759-B100-5B7FEFBF6D08}.Release|x86.Build.0 = Release|Win32
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Release|x64.ActiveCfg = Release|Any CPU
+		{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
