@@ -18,21 +18,24 @@ namespace Microsoft.InstrumentationEngine
     {
         private static readonly Guid InstrumentationEngineClsid = new Guid("324F817A-7420-4E6D-B3C1-143FBED6D855");
 
-        internal static void Main(string[] args)
+        private const int ExitCodeSuccess = 0;
+        private const int ExitCodeFailure = -1;
+
+        internal static int Main(string[] args)
         {
             // TODO: Parse command line for additional arguments such as configuration files
             if (args.Length != 1)
             {
-                WriteErrorJson("Expected single argument that represents the process ID to which the engine shall be attached.");
-                return;
+                WriteError("Expected single argument that represents the process ID to which the engine shall be attached.");
+                return ExitCodeFailure;
             }
 
             string processIdString = args[0];
 
             if (!Int32.TryParse(processIdString, out int processId))
             {
-                WriteErrorJson(Invariant($"Could not parse process ID argument '{processIdString}' to integer."));
-                return;
+                WriteError(Invariant($"Could not parse process ID argument '{processIdString}' to integer."));
+                return ExitCodeFailure;
             }
 
             Process process;
@@ -42,8 +45,8 @@ namespace Microsoft.InstrumentationEngine
             }
             catch (Exception ex)
             {
-                WriteErrorJson(ex.Message);
-                return;
+                WriteError(ex.Message);
+                return ExitCodeFailure;
             }
 
             // This executable should be in the [Root]\Tools\Attach directory. Get the root directory
@@ -56,63 +59,72 @@ namespace Microsoft.InstrumentationEngine
             string? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (null == attachDirectory || !Directory.Exists(attachDirectory))
             {
-                WriteErrorJson(Invariant($"Directory '{attachDirectory}' does not exist."));
-                return;
+                WriteError(Invariant($"Directory '{attachDirectory}' does not exist."));
+                return ExitCodeFailure;
             }
 
             string? toolsDirectory = Path.GetDirectoryName(attachDirectory);
             if (null == toolsDirectory || !Directory.Exists(toolsDirectory))
             {
-                WriteErrorJson(Invariant($"Directory '{toolsDirectory}' does not exist."));
-                return;
+                WriteError(Invariant($"Directory '{toolsDirectory}' does not exist."));
+                return ExitCodeFailure;
             }
 
             string? rootDirectory = Path.GetDirectoryName(toolsDirectory);
             if (null == rootDirectory || !Directory.Exists(rootDirectory))
             {
-                WriteErrorJson(Invariant($"Directory '{rootDirectory}' does not exist."));
-                return;
+                WriteError(Invariant($"Directory '{rootDirectory}' does not exist."));
+                return ExitCodeFailure;
+            }
+
+            bool isTargetProcess32Bit = true;
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
+            {
+                isTargetProcess32Bit = false;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    try
+                    {
+                        // Returns true for 32-bit applications running on a 64-bit OS
+                        if (!NativeMethods.IsWow64Process(process.Handle, out isTargetProcess32Bit))
+                        {
+                            Exception? ex = Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
+                            if (null != ex)
+                            {
+                                WriteError(Invariant($"Failed to check process bitness: {ex.Message}"));
+                            }
+                            else
+                            {
+                                WriteError(Invariant($"Failed to check process bitness."));
+                            }
+                            return ExitCodeFailure;
+                        }
+                    }
+                    catch (Win32Exception ex)
+                    {
+                        WriteError(Invariant($"Failed to check process bitness (code: {ex.NativeErrorCode}): {ex.Message}"));
+                        return ExitCodeFailure;
+                    }
+                }
             }
 
             string enginePath;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                enginePath = Path.Combine(rootDirectory, "Instrumentation64", "libInstrumentationEngine.so");
+                enginePath = isTargetProcess32Bit ?
+                    Path.Combine(rootDirectory, "Instrumentation32", "MicrosoftInstrumentationEngine_x86.dll") :
+                    Path.Combine(rootDirectory, "Instrumentation64", "MicrosoftInstrumentationEngine_x64.dll");
             }
             else
             {
-                bool isWow64;
-                try
-                {
-                    // isWow64 is true for 32-bit applications running on a 64-bit OS
-                    if (!NativeMethods.IsWow64Process(process.Handle, out isWow64))
-                    {
-                        Exception? ex = Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
-                        if (null != ex)
-                        {
-                            WriteErrorJson(Invariant($"Failed to check process bitness: {ex.Message}"));
-                        }
-                        else
-                        {
-                            WriteErrorJson(Invariant($"Failed to check process bitness."));
-                        }
-                    }
-                }
-                catch (Win32Exception ex)
-                {
-                    WriteErrorJson(Invariant($"Failed to check process bitness (code: {ex.NativeErrorCode}): {ex.Message}"));
-                    return;
-                }
-
-                enginePath = isWow64 ?
-                    Path.Combine(rootDirectory, "Instrumentation32", "MicrosoftInstrumentationEngine_x86.dll") :
-                    Path.Combine(rootDirectory, "Instrumentation64", "MicrosoftInstrumentationEngine_x64.dll");
+                Debug.Assert(!isTargetProcess32Bit, "Only 64 bit is supported on non-Windows platforms.");
+                enginePath = Path.Combine(rootDirectory, "Instrumentation64", "libInstrumentationEngine.so");
             }
 
             if (!File.Exists(enginePath))
             {
-                WriteErrorJson(Invariant($"Engine path '{enginePath}' does not exist."));
-                return;
+                WriteError(Invariant($"Engine path '{enginePath}' does not exist."));
+                return ExitCodeFailure;
             }
 
             // CONSIDER: Should the engine be validated before attempting to attach it to the CLR?
@@ -125,46 +137,16 @@ namespace Microsoft.InstrumentationEngine
             }
             catch (ServerErrorException ex)
             {
-                WriteErrorJson(Invariant($"Could not attach engine to process: '{ex.Message}'."));
-                return;
+                WriteError(Invariant($"Could not attach engine to process: '{ex.Message}'."));
+                return ExitCodeFailure;
             }
 
-            WriteSuccessJson();
+            return ExitCodeSuccess;
         }
 
-        private static void WriteErrorJson(string message)
+        private static void WriteError(string message)
         {
-            Console.WriteLine(CreateResultJson("Failed", message));
-        }
-
-        private static void WriteSuccessJson()
-        {
-            Console.WriteLine(CreateResultJson("Success"));
-        }
-
-        private static string CreateResultJson(string result, string? message = null)
-        {
-            if (string.IsNullOrEmpty(result))
-            {
-                throw new ArgumentNullException(nameof(result));
-            }
-
-            string content;
-            using (var stream = new MemoryStream())
-            using (var writer = new Utf8JsonWriter(stream))
-            {
-                writer.WriteStartObject();
-                writer.WriteString("Result", result);
-                if (!string.IsNullOrWhiteSpace(message))
-                {
-                    writer.WriteString("Message", message);
-                }
-                writer.WriteEndObject();
-                writer.Flush();
-
-                content = Encoding.UTF8.GetString(stream.ToArray());
-            }
-            return content;
+            Console.Error.WriteLine(message);
         }
     }
 }
