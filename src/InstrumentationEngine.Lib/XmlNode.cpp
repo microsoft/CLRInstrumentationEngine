@@ -119,11 +119,14 @@ HRESULT CXmlNode::GetAttribute(_In_ const WCHAR* wszAttributeName, _Out_ BSTR* p
     CComPtr<IXMLDOMNode> pAttributeNode;
     pAttributes->getNamedItem(const_cast<BSTR>(wszAttributeName), &pAttributeNode);
 
-    // Get the attribute value.
-    CComVariant varValueAttr;
-    pAttributeNode->get_nodeValue(&varValueAttr);
-    CComBSTR bstrAttrVal = varValueAttr.bstrVal;
-    *pValue = bstrAttrVal.Detach();
+    if (pAttributeNode != nullptr)
+    {
+        // Get the attribute value.
+        CComVariant varValueAttr;
+        pAttributeNode->get_nodeValue(&varValueAttr);
+        CComBSTR bstrAttrVal = varValueAttr.bstrVal;
+        *pValue = bstrAttrVal.Detach();
+    }
 
     return S_OK;
 #else

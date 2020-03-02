@@ -22,6 +22,8 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
+    const size_t WCharSizeInBytes = sizeof(WCHAR) / sizeof(byte);
+
     // This abstract class should be updated with new IProfilerManager interfaces.
     // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
     class IProfilerManagerContract :
@@ -249,8 +251,7 @@ namespace MicrosoftInstrumentationEngine
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
         HRESULT InitializeCore(
-            _In_ IUnknown* pCorProfilerInfoUnk,
-            _In_ const vector<CComPtr<CConfigurationSource>>& configSources
+            _In_ IUnknown* pCorProfilerInfoUnk
             );
 
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
