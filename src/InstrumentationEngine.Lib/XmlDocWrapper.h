@@ -11,7 +11,7 @@ class CXmlDocWrapper : CModuleRefCount
 public:
     CXmlDocWrapper();
 
-    HRESULT LoadContent(_In_ LPCWSTR wszValue, _In_ UINT cbValue);
+    HRESULT LoadContent(_In_ LPCWSTR wszValue);
     HRESULT GetRootNode(_Out_ CXmlNode** ppNode);
 
     DEFINE_DELEGATED_REFCOUNT_ADDREF(CXmlDocWrapper);

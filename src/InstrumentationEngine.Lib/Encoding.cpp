@@ -38,7 +38,7 @@ HRESULT CEncoding::ConvertUtf8ToUtf16(_In_ const char* utf8String, _Inout_ CAuto
 
     ++utf16BufLen;
     pUtf16String.Free();
-    IfFalseFail(pUtf16String.Allocate(utf16BufLen));
+    IfFalseRet(pUtf16String.Allocate(utf16BufLen), E_FAIL);
 
     if (pUtf16String == nullptr)
     {

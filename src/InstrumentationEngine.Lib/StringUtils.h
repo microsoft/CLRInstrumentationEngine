@@ -5,17 +5,6 @@
 
 #include <string>
 
-#ifdef PLATFORM_UNIX
-using tstring = std::basic_string<WCHAR, std::char_traits<WCHAR>, std::allocator<WCHAR>>;
-using tstringstream = std::basic_stringstream<WCHAR>;
-using tistringstream = std::basic_istringstream<WCHAR>;
-#else
-using tstring = std::wstring;
-using tstringstream = std::wstringstream;
-using tistringstream = std::wistringstream;
-#endif
-using tofstream = std::basic_ofstream<WCHAR, std::char_traits<WCHAR>>;
-
 class StringUtils
 {
 public:

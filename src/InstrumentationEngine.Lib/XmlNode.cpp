@@ -130,7 +130,6 @@ HRESULT CXmlNode::GetAttribute(_In_ const WCHAR* wszAttributeName, _Out_ BSTR* p
     CAutoVectorPtr<char> utf8AttrName;
     CEncoding::ConvertUtf16ToUtf8(wszAttributeName, utf8AttrName);
     xmlChar* utf8AttrValue = xmlGetProp(m_pNode, (const xmlChar *)utf8AttrName.m_p);
-    //xmlChar* utf8AttrValue = xmlGetProp(m_pNode, (const xmlChar *)CW2A(wszAttributeName, CP_UTF8));
 
     if (utf8AttrValue != nullptr)
     {

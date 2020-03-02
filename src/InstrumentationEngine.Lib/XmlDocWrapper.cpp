@@ -15,7 +15,7 @@ CXmlDocWrapper::CXmlDocWrapper()
 
 }
 
-HRESULT CXmlDocWrapper::LoadContent(_In_ LPCWSTR wszValue, _In_ UINT cbValue)
+HRESULT CXmlDocWrapper::LoadContent(_In_ LPCWSTR wszValue)
 {
     HRESULT hr = S_OK;
 
@@ -35,9 +35,9 @@ HRESULT CXmlDocWrapper::LoadContent(_In_ LPCWSTR wszValue, _In_ UINT cbValue)
         return E_FAIL;
     }
 
-    IfFailLogNoRet(pDocument->put_async(VARIANT_FALSE));
-    IfFailLogNoRet(pDocument->put_validateOnParse(VARIANT_FALSE));
-    IfFailLogNoRet(pDocument->put_resolveExternals(VARIANT_TRUE));
+    IfFailLog(pDocument->put_async(VARIANT_FALSE));
+    IfFailLog(pDocument->put_validateOnParse(VARIANT_FALSE));
+    IfFailLog(pDocument->put_resolveExternals(VARIANT_TRUE));
 
     VARIANT_BOOL vbResult = VARIANT_TRUE;
     hr = pDocument->loadXML(CComBSTR(wszValue), &vbResult);
@@ -102,10 +102,10 @@ HRESULT CXmlDocWrapper::LoadContent(_In_ LPCWSTR wszValue, _In_ UINT cbValue)
     // TODO: willxie Test Linux change
     xmlDoc* pDocument = xmlReadMemory(
         CW2A(wszValue, CP_UTF8),
-        cbValue + 1,    // size of the buffer
-        "",             // the base URL to use for the document
-        NULL,           // document encoding
-        0               // xmlParserOption
+        wcslen_s(wszValue), // size of the buffer
+        "",                 // the base URL to use for the document
+        NULL,               // document encoding
+        0                   // xmlParserOption
     );
 
     IfNullRet(pDocument);

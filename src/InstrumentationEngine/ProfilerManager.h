@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "stdafx.h"
 #include "InstrumentationMethod.h"
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
@@ -11,6 +12,7 @@
 #ifndef PLATFORM_UNIX
 #include "../Common.Lib/ModuleHandle.h"
 #endif
+#include <XmlDocWrapper.h>
 
 using namespace ATL;
 
@@ -79,9 +81,6 @@ namespace MicrosoftInstrumentationEngine
 
         // The configuration xml for profiler attach.
         LPCWSTR m_wszConfigXml;
-
-        // The size of the configuration xml
-        UINT m_cbConfigXml;
 
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;
@@ -266,9 +265,13 @@ namespace MicrosoftInstrumentationEngine
 
         // lpParameter points to the this pointer so m_wszConfigXml can be accessed. This is safe because the thread proc
         // blocks until this is complete.
-        static DWORD WINAPI InitializeForAttachThreadProc(
+        static DWORD WINAPI ParseAttachConfigurationThreadProc(
             _In_ LPVOID lpParameter
             );
+
+        static HRESULT ParseSettingsConfigurationNode(
+            _In_ const CComPtr<CXmlNode>& parentNode,
+            _Inout_ unordered_map<tstring, tstring>& settings);
 
         HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource);
 
@@ -411,7 +414,6 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
         HRESULT InvokeThreadRoutine(
-            _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources,
             _In_ LPTHREAD_START_ROUTINE threadRoutine
             );
 
