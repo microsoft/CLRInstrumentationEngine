@@ -96,6 +96,7 @@
     <ClInclude Include="ConfigurationLocator.h" />
     <ClInclude Include="ConfigurationSource.h" />
     <ClInclude Include="DataContainer.h" />
+    <ClInclude Include="Encoding.h" />
     <ClInclude Include="EnumeratorImpl.h" />
     <ClInclude Include="InstrumentationMethodAttachContext.h" />
     <ClInclude Include="InstrumentationMethodSetting.h" />
@@ -116,14 +117,18 @@
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="XmlDocWrapper.h" />
+    <ClInclude Include="XmlNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigurationLocator.cpp" />
     <ClCompile Include="ConfigurationSource.cpp" />
     <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="DebugLoggerSink.cpp" />
+    <ClCompile Include="Encoding.cpp" />
     <ClCompile Include="EventLoggerSink.cpp" />
     <ClCompile Include="ConfigurationLoader.cpp" />
     <ClCompile Include="ImplQueryInterface.cpp" />
@@ -141,6 +146,9 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringUtils.cpp" />
+    <ClCompile Include="XmlDocWrapper.cpp" />
+    <ClCompile Include="XmlNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">

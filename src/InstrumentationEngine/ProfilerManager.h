@@ -77,6 +77,12 @@ namespace MicrosoftInstrumentationEngine
         // list of instrumentation method configuration sources
         vector<CComPtr<CConfigurationSource>> m_configSources;
 
+        // The configuration xml for profiler attach.
+        LPCWSTR m_wszConfigXml;
+
+        // The size of the configuration xml
+        UINT m_cbConfigXml;
+
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;
 
@@ -252,10 +258,16 @@ namespace MicrosoftInstrumentationEngine
         // as that would screw up the com state for the application thread. This thread allows the profiler manager
         // to co create a free threaded version of msxml on a thread that it owns to avoid this.
         //
-        // lpParameter points to the this pointer so m_configFilePaths can be accessed. This is safe because the thread proc
+        // lpParameter points to the this pointer so m_configSources can be accessed. This is safe because the thread proc
         // blocks until this is complete.
         static DWORD WINAPI InstrumentationMethodThreadProc(
             _In_  LPVOID lpParameter
+            );
+
+        // lpParameter points to the this pointer so m_wszConfigXml can be accessed. This is safe because the thread proc
+        // blocks until this is complete.
+        static DWORD WINAPI InitializeForAttachThreadProc(
+            _In_ LPVOID lpParameter
             );
 
         HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource);
@@ -398,8 +410,9 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
-        HRESULT SetupInstrumentationMethods(
-            _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources
+        HRESULT InvokeThreadRoutine(
+            _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources,
+            _In_ LPTHREAD_START_ROUTINE threadRoutine
             );
 
 #ifndef PLATFORM_UNIX

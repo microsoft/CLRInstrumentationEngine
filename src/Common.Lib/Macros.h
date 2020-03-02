@@ -22,6 +22,12 @@
 #define __FUNCTIONT__
 #endif
 
+    // Log an error without returning.
+#ifndef IfFailLogNoRet
+#define IfFailLogNoRet(EXPR) \
+    do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailLogNoRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__ _T(": %d"), hr); } } while (false)
+#endif
+
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
@@ -41,6 +47,11 @@
 #ifndef IfFailRetNoLog
 #define IfFailRetNoLog(EXPR) \
     do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
+#endif
+
+#ifndef IfFalseFail
+#define IfFalseFail(EXPR) \
+    do { if (!(EXPR)) { CLogging::LogError(_T("IfFalseFail(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return E_FAIL; } } while (false)
 #endif
 
 // Treats errno 0 as severity=SUCCESS others to severity=ERROR, sets facility to null, and code to 16 least-significant bits of errno.
