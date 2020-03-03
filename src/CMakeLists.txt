@@ -340,7 +340,6 @@ add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libco
 add_subdirectory(unix/src)
 add_subdirectory(unix/src/atl)
 add_subdirectory(InstrumentationEngine.Api)
-add_subdirectory(ExtensionsHostLib)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine)
 

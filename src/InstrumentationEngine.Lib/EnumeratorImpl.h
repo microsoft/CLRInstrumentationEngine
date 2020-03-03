@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "DataContainer.h"
+
 using namespace ATL;
 
 namespace MicrosoftInstrumentationEngine

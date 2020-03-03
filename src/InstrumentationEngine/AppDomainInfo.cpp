@@ -221,7 +221,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetIsSystemDomain(_Out_ 
     CLogging::LogMessage(_T("Begin CAppDomainInfo::GetIsSystemDomain"));
 
     IfNullRetPointer(pbValue);
-    IfFalseRet(m_bIsInitialized);
+    IfFalseRet(m_bIsInitialized, E_FAIL);
 
     *pbValue = m_bIsSystemDomain;
 
@@ -235,7 +235,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetIsSharedDomain(_Out_ 
     CLogging::LogMessage(_T("Begin CAppDomainInfo::GetIsSharedDomain"));
 
     IfNullRetPointer(pbValue);
-    IfFalseRet(m_bIsInitialized);
+    IfFalseRet(m_bIsInitialized, E_FAIL);
 
     *pbValue = m_bIsSharedDomain;
 
@@ -249,7 +249,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetIsDefaultDomain(_Out_
     CLogging::LogMessage(_T("Begin CAppDomainInfo::GetIsDefaultDomain"));
 
     IfNullRetPointer(pbValue);
-    IfFalseRet(m_bIsInitialized);
+    IfFalseRet(m_bIsInitialized, E_FAIL);
 
     *pbValue = m_bIsDefaultDomain;
 
@@ -263,7 +263,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetName(_Out_ BSTR* pbst
     CLogging::LogMessage(_T("Begin CAppDomainInfo::GetName"));
 
     IfNullRetPointer(pbstrName);
-    IfFalseRet(m_bIsInitialized);
+    IfFalseRet(m_bIsInitialized, E_FAIL);
 
     CComBSTR bstrName = m_bstrAppDomainName;
     *pbstrName = bstrName.Detach();

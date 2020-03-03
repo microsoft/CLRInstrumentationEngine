@@ -13,10 +13,15 @@ build_init(CPP InstrumentationEngine.Lib)
 set(src_files
     ./stdafx.cpp
     ./ConfigurationLoader.cpp
+    ./ConfigurationLocator.cpp
+    ./ConfigurationSource.cpp
+    ./DataContainer.cpp
     ./FileLoggerSink.cpp
     ./HostLoggerSink.cpp
     ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
+    ./InstrumentationMethodAttachContext.cpp
+    ./InstrumentationMethodSetting.cpp
     ./LoggerService.cpp
     ./Logging.cpp
     ./refcount.cpp

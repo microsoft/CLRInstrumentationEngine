@@ -14,7 +14,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace InstrumentationEngineLibTests
 {
-    TEST_CLASS(CConfigurationLoaderTests)
+    TEST_CLASS(ConfigurationLoaderTests)
     {
     public:
 

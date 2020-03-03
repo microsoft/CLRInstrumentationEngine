@@ -65,8 +65,8 @@
 #endif
 
 #ifndef IfFalseRet
-#define IfFalseRet(EXPR) \
-    do { if (FALSE == (EXPR)) { CLogging::LogError(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return E_FAIL; } } while (false)
+#define IfFalseRet(EXPR, HR) \
+    do { if (FALSE == (EXPR)) { CLogging::LogError(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return (HR); } } while (false)
 #endif
 
 #ifndef IsFlagSet

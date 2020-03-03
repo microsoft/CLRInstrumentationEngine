@@ -4,11 +4,10 @@
 #include "stdafx.h"
 #include "RawProfilerHookLoader.h"
 
-using Agent::Diagnostics::Param;
+using namespace ATL;
+using namespace CommonLib;
 
-namespace Agent
-{
-namespace Host
+namespace MicrosoftInstrumentationEngine
 {
     typedef HRESULT (__stdcall *PfnDllGetClassObject)(
         _In_   REFCLSID rclsid,
@@ -23,30 +22,30 @@ namespace Host
     _Check_return_ HRESULT CRawProfilerHookLoader::LoadRawProfilerHookComponentFrom(
         _In_ const std::wstring& strModulePath,
         _In_ const GUID& clsidRawProfilerHook,
-        _Out_ IUnknownSptr& spRawProfilerHook,
-        _Out_ Io::CModuleHandle& hRawProfilerHookModule)
+        _Out_ CComPtr<IUnknown>& spRawProfilerHook,
+        _Out_ CModuleHandle& hRawProfilerHookModule)
     {
         IfFalseRet(strModulePath.size() >= 0, E_INVALIDARG);
 
-        TraceMsg(
-            L"Looking up RawProfilerHook component module",
-            Param(L"path", strModulePath));
+        HRESULT hr = S_OK;
+
+        CLogging::LogMessage(_T("Looking up RawProfilerHook component module '%s'"), strModulePath);
 
         // trying to obtain handle if a module is already loaded
         // call of GetModuleHandleEx with default (0) flags !increments! module ref count
         HMODULE hModule = 0;
         if (FALSE == ::GetModuleHandleEx(0, strModulePath.c_str(), &hModule))
         {
-            TraceMsg(L"RawProfilerHook component module not found in the process, attempting to load");
+            CLogging::LogMessage(_T("RawProfilerHook component module not found in the process, attempting to load"));
 
             hModule = ::LoadLibrary(strModulePath.c_str());
-            IfTrueRet(nullptr == hModule, HRESULT_FROM_WIN32(::GetLastError()));
+            IfFalseRet(nullptr != hModule, HRESULT_FROM_WIN32(::GetLastError()));
 
-            TraceMsg(L"RawProfilerHook component module load complete");
+            CLogging::LogMessage(_T("RawProfilerHook component module load complete"));
         }
         else
         {
-            TraceMsg(L"RawProfilerHook component module already loaded");
+            CLogging::LogMessage(_T("RawProfilerHook component module already loaded"));
         }
 
         hRawProfilerHookModule.Reset(hModule);
@@ -55,7 +54,7 @@ namespace Host
             ::GetProcAddress(
                 hRawProfilerHookModule,
                 "DllGetClassObject"));
-        IfTrueRet(nullptr == pfnDllGetClassObject, HRESULT_FROM_WIN32(::GetLastError()));
+        IfFalseRet(nullptr != pfnDllGetClassObject, HRESULT_FROM_WIN32(::GetLastError()));
 
         ATL::CComPtr<IClassFactory> spClassFactory;
         IfFailRet(
@@ -71,5 +70,4 @@ namespace Host
 
         return S_OK;
     }
-} // Host
-} // Agent
+}

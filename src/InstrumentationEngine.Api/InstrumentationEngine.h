@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
-    protocol : all , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0622 
+    protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -416,6 +416,34 @@ typedef interface IInstrumentationMethodJitEvents2 IInstrumentationMethodJitEven
 #endif 	/* __IInstrumentationMethodJitEvents2_FWD_DEFINED__ */
 
 
+#ifndef __IInstrumentationMethodSetting_FWD_DEFINED__
+#define __IInstrumentationMethodSetting_FWD_DEFINED__
+typedef interface IInstrumentationMethodSetting IInstrumentationMethodSetting;
+
+#endif 	/* __IInstrumentationMethodSetting_FWD_DEFINED__ */
+
+
+#ifndef __IEnumInstrumentationMethodSettings_FWD_DEFINED__
+#define __IEnumInstrumentationMethodSettings_FWD_DEFINED__
+typedef interface IEnumInstrumentationMethodSettings IEnumInstrumentationMethodSettings;
+
+#endif 	/* __IEnumInstrumentationMethodSettings_FWD_DEFINED__ */
+
+
+#ifndef __IInstrumentationMethodAttachContext_FWD_DEFINED__
+#define __IInstrumentationMethodAttachContext_FWD_DEFINED__
+typedef interface IInstrumentationMethodAttachContext IInstrumentationMethodAttachContext;
+
+#endif 	/* __IInstrumentationMethodAttachContext_FWD_DEFINED__ */
+
+
+#ifndef __IInstrumentationMethodAttach_FWD_DEFINED__
+#define __IInstrumentationMethodAttach_FWD_DEFINED__
+typedef interface IInstrumentationMethodAttach IInstrumentationMethodAttach;
+
+#endif 	/* __IInstrumentationMethodAttach_FWD_DEFINED__ */
+
+
 /* header files for imported files */
 #include "ocidl.h"
 #include "corprof.h"
@@ -469,7 +497,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 5 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 6 )
 
 
 enum LoggingFlags
@@ -847,7 +875,7 @@ EXTERN_C const IID IID_IProfilerManager;
         virtual HRESULT STDMETHODCALLTYPE GetCorProfilerInfo( 
             /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler) = 0;
         
-        virtual HRESULT STDMETHODCALLTYPE GetProfilerHost( 
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE GetProfilerHost( 
             /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLoggingInstance( 
@@ -918,7 +946,7 @@ EXTERN_C const IID IID_IProfilerManager;
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler);
         
-        HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost);
         
@@ -8932,6 +8960,388 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents2;
 
 
 #endif 	/* __IInstrumentationMethodJitEvents2_INTERFACE_DEFINED__ */
+
+
+#ifndef __IInstrumentationMethodSetting_INTERFACE_DEFINED__
+#define __IInstrumentationMethodSetting_INTERFACE_DEFINED__
+
+/* interface IInstrumentationMethodSetting */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IInstrumentationMethodSetting;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("EF0B0C79-08E7-4C3A-A4C5-02A9C9CE8809")
+    IInstrumentationMethodSetting : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetName( 
+            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetValue( 
+            /* [out] */ __RPC__deref_out_opt BSTR *pbstrValue) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IInstrumentationMethodSettingVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IInstrumentationMethodSetting * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IInstrumentationMethodSetting * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IInstrumentationMethodSetting * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetName )( 
+            __RPC__in IInstrumentationMethodSetting * This,
+            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetValue )( 
+            __RPC__in IInstrumentationMethodSetting * This,
+            /* [out] */ __RPC__deref_out_opt BSTR *pbstrValue);
+        
+        END_INTERFACE
+    } IInstrumentationMethodSettingVtbl;
+
+    interface IInstrumentationMethodSetting
+    {
+        CONST_VTBL struct IInstrumentationMethodSettingVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IInstrumentationMethodSetting_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IInstrumentationMethodSetting_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IInstrumentationMethodSetting_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IInstrumentationMethodSetting_GetName(This,pbstrName)	\
+    ( (This)->lpVtbl -> GetName(This,pbstrName) ) 
+
+#define IInstrumentationMethodSetting_GetValue(This,pbstrValue)	\
+    ( (This)->lpVtbl -> GetValue(This,pbstrValue) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IInstrumentationMethodSetting_INTERFACE_DEFINED__ */
+
+
+#ifndef __IEnumInstrumentationMethodSettings_INTERFACE_DEFINED__
+#define __IEnumInstrumentationMethodSettings_INTERFACE_DEFINED__
+
+/* interface IEnumInstrumentationMethodSettings */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IEnumInstrumentationMethodSettings;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("9B03D87E-72F0-4D8E-A4B1-15BCD8227073")
+    IEnumInstrumentationMethodSettings : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE Next( 
+            /* [in] */ ULONG celt,
+            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstrumentationMethodSetting **rgelt,
+            /* [out] */ __RPC__out ULONG *pceltFetched) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Skip( 
+            /* [in] */ ULONG celt) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Reset( void) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE Clone( 
+            /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppenum) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE GetCount( 
+            /* [out] */ __RPC__out DWORD *pLength) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IEnumInstrumentationMethodSettingsVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Next )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This,
+            /* [in] */ ULONG celt,
+            /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstrumentationMethodSetting **rgelt,
+            /* [out] */ __RPC__out ULONG *pceltFetched);
+        
+        HRESULT ( STDMETHODCALLTYPE *Skip )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This,
+            /* [in] */ ULONG celt);
+        
+        HRESULT ( STDMETHODCALLTYPE *Reset )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *Clone )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This,
+            /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppenum);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetCount )( 
+            __RPC__in IEnumInstrumentationMethodSettings * This,
+            /* [out] */ __RPC__out DWORD *pLength);
+        
+        END_INTERFACE
+    } IEnumInstrumentationMethodSettingsVtbl;
+
+    interface IEnumInstrumentationMethodSettings
+    {
+        CONST_VTBL struct IEnumInstrumentationMethodSettingsVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IEnumInstrumentationMethodSettings_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IEnumInstrumentationMethodSettings_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IEnumInstrumentationMethodSettings_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IEnumInstrumentationMethodSettings_Next(This,celt,rgelt,pceltFetched)	\
+    ( (This)->lpVtbl -> Next(This,celt,rgelt,pceltFetched) ) 
+
+#define IEnumInstrumentationMethodSettings_Skip(This,celt)	\
+    ( (This)->lpVtbl -> Skip(This,celt) ) 
+
+#define IEnumInstrumentationMethodSettings_Reset(This)	\
+    ( (This)->lpVtbl -> Reset(This) ) 
+
+#define IEnumInstrumentationMethodSettings_Clone(This,ppenum)	\
+    ( (This)->lpVtbl -> Clone(This,ppenum) ) 
+
+#define IEnumInstrumentationMethodSettings_GetCount(This,pLength)	\
+    ( (This)->lpVtbl -> GetCount(This,pLength) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IEnumInstrumentationMethodSettings_INTERFACE_DEFINED__ */
+
+
+#ifndef __IInstrumentationMethodAttachContext_INTERFACE_DEFINED__
+#define __IInstrumentationMethodAttachContext_INTERFACE_DEFINED__
+
+/* interface IInstrumentationMethodAttachContext */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IInstrumentationMethodAttachContext;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("2C37B76C-B350-4738-8B29-B92C7ED6C522")
+    IInstrumentationMethodAttachContext : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE EnumSettings( 
+            /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppEnum) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IInstrumentationMethodAttachContextVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IInstrumentationMethodAttachContext * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IInstrumentationMethodAttachContext * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IInstrumentationMethodAttachContext * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *EnumSettings )( 
+            __RPC__in IInstrumentationMethodAttachContext * This,
+            /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppEnum);
+        
+        END_INTERFACE
+    } IInstrumentationMethodAttachContextVtbl;
+
+    interface IInstrumentationMethodAttachContext
+    {
+        CONST_VTBL struct IInstrumentationMethodAttachContextVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IInstrumentationMethodAttachContext_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IInstrumentationMethodAttachContext_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IInstrumentationMethodAttachContext_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IInstrumentationMethodAttachContext_EnumSettings(This,ppEnum)	\
+    ( (This)->lpVtbl -> EnumSettings(This,ppEnum) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IInstrumentationMethodAttachContext_INTERFACE_DEFINED__ */
+
+
+#ifndef __IInstrumentationMethodAttach_INTERFACE_DEFINED__
+#define __IInstrumentationMethodAttach_INTERFACE_DEFINED__
+
+/* interface IInstrumentationMethodAttach */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IInstrumentationMethodAttach;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("3BD6C171-4F3C-45C3-8CB9-BC8C337D1683")
+    IInstrumentationMethodAttach : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE InitializeForAttach( 
+            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager,
+            /* [in] */ __RPC__in_opt IInstrumentationMethodAttachContext *pContext) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE AttachComplete( void) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IInstrumentationMethodAttachVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IInstrumentationMethodAttach * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IInstrumentationMethodAttach * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IInstrumentationMethodAttach * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *InitializeForAttach )( 
+            __RPC__in IInstrumentationMethodAttach * This,
+            /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager,
+            /* [in] */ __RPC__in_opt IInstrumentationMethodAttachContext *pContext);
+        
+        HRESULT ( STDMETHODCALLTYPE *AttachComplete )( 
+            __RPC__in IInstrumentationMethodAttach * This);
+        
+        END_INTERFACE
+    } IInstrumentationMethodAttachVtbl;
+
+    interface IInstrumentationMethodAttach
+    {
+        CONST_VTBL struct IInstrumentationMethodAttachVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IInstrumentationMethodAttach_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IInstrumentationMethodAttach_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IInstrumentationMethodAttach_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IInstrumentationMethodAttach_InitializeForAttach(This,pProfilerManager,pContext)	\
+    ( (This)->lpVtbl -> InitializeForAttach(This,pProfilerManager,pContext) ) 
+
+#define IInstrumentationMethodAttach_AttachComplete(This)	\
+    ( (This)->lpVtbl -> AttachComplete(This) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IInstrumentationMethodAttach_INTERFACE_DEFINED__ */
 
 #endif /* __MicrosoftInstrumentationEngine_LIBRARY_DEFINED__ */
 
