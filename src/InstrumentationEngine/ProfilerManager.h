@@ -22,7 +22,7 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
-    const size_t WCharSizeInBytes = sizeof(WCHAR) / sizeof(byte);
+    const size_t WCharSizeInBytes = sizeof(WCHAR) / sizeof(BYTE);
 
     // This abstract class should be updated with new IProfilerManager interfaces.
     // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
@@ -270,6 +270,16 @@ namespace MicrosoftInstrumentationEngine
             _In_ LPVOID lpParameter
             );
 
+        /* Parses the following XML block of <Setting /> nodes into map of key-value pairs.
+         * Name and Value attributes for <Setting /> nodes are required.
+         * Duplicates are ignored.
+         *  <Settings>
+         *      <Setting Name="Key1" Value="Val1" />
+         *      <Setting Name="Key2" Value="Val2" />
+         *      <Setting Name="Key3" Value="Val3" />
+         *      ...
+         *  </Settings>
+         */
         static HRESULT ParseSettingsConfigurationNode(
             _In_ const CComPtr<CXmlNode>& parentNode,
             _Inout_ unordered_map<tstring, tstring>& settings);

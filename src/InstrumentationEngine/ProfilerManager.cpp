@@ -481,7 +481,7 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
                     for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
                         it != settingsMap.end();
-                        it++)
+                        ++it)
                     {
                         if (wcscmp(it->first.c_str(), _T("LogLevel")) == 0)
                         {
@@ -534,7 +534,7 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
                             for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
                                  it != settingsMap.end();
-                                 it++)
+                                 ++it)
                             {
                                 IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
                             }
@@ -593,7 +593,7 @@ HRESULT CProfilerManager::ParseSettingsConfigurationNode(
 
         if (settings.find(bstrSettingName.m_str) == settings.end())
         {
-            settings.insert(std::pair<tstring, tstring>(bstrSettingName, bstrSettingValue));
+            settings.insert(std::pair<tstring, tstring>(bstrSettingName.m_str, bstrSettingValue.m_str));
         }
 
         CXmlNode* nextSetting = pSettingNode->Next();
@@ -2967,7 +2967,7 @@ HRESULT CProfilerManager::InitializeForAttach(
         cbClientData == 0)
     {
         // No configuration provided
-        return S_FALSE;
+        return E_FAIL;
     }
 
     UINT charCount = cbClientData / WCharSizeInBytes;

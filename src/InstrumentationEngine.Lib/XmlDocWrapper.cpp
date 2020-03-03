@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "XmlDocWrapper.h"
+#include "Encoding.h"
+#include "StringUtils.h"
 
 using namespace ATL;
 
@@ -99,13 +101,18 @@ HRESULT CXmlDocWrapper::LoadContent(_In_ LPCWSTR wszValue)
 #else
     LIBXML_TEST_VERSION
 
-    // TODO: willxie Test Linux change
+    CAutoVectorPtr<char> utf8Value;
+    CEncoding::ConvertUtf16ToUtf8(wszValue, utf8Value);
+
+    size_t utf8BufLen = 0;
+    IfFailRet(StringUtils::StringLen(utf8Value.m_p, utf8BufLen));
+
     xmlDoc* pDocument = xmlReadMemory(
-        CW2A(wszValue, CP_UTF8),
-        wcslen_s(wszValue), // size of the buffer
-        "",                 // the base URL to use for the document
-        NULL,               // document encoding
-        0                   // xmlParserOption
+        utf8Value.m_p,  // buffer
+        utf8BufLen,     // size of the buffer
+        "",             // the base URL to use for the document
+        NULL,           // document encoding
+        0               // xmlParserOption
     );
 
     IfNullRet(pDocument);
