@@ -55,6 +55,7 @@ using namespace ATL;
 // pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
 // in CMakeFile.txt
 #define wcsstr        PAL_wcsstr
+#define wcscmp        PAL_wcscmp
 #endif
 
 #include <vector>

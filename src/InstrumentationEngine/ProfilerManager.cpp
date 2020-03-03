@@ -22,6 +22,7 @@
 #include "../Common.Lib/PathUtils.h"
 #endif
 #include <algorithm>
+#include <XmlDocWrapper.h>
 
 using namespace ATL;
 
@@ -118,7 +119,6 @@ void CProfilerManager::FinalRelease()
 
 }
 
-
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
 {
     IfNullRetPointer(rgConfigPaths);
@@ -135,19 +135,18 @@ HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) B
         configSources.push_back(pConfigSource.p);
     }
 
-    return SetupInstrumentationMethods(configSources);
+    m_configSources = configSources;
+    return InvokeThreadRoutine(InstrumentationMethodThreadProc);
 }
 
-HRESULT CProfilerManager::SetupInstrumentationMethods(_In_ const vector<CComPtr<CConfigurationSource>>& configSources)
+HRESULT CProfilerManager::InvokeThreadRoutine(_In_ LPTHREAD_START_ROUTINE threadRoutine)
 {
     HRESULT hr = S_OK;
-
-    m_configSources = configSources;
 
     // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
     // as that would screw up the com state for the application thread. This thread allows the profiler manager
     // to co create a free threaded version of msxml on a thread that it owns to avoid this.
-    CHandle hConfigThread(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
+    CHandle hConfigThread(CreateThread(NULL, 0, threadRoutine, this, 0, NULL));
 
     DWORD waitTime = 60 * 1000; // Wait 1 minute for loading instrumentation methods
 
@@ -158,16 +157,15 @@ HRESULT CProfilerManager::SetupInstrumentationMethods(_In_ const vector<CComPtr<
     }
 #endif
 
-
     DWORD retVal = WaitForSingleObject(hConfigThread, waitTime);
     if (retVal == WAIT_TIMEOUT)
     {
-        CLogging::LogError(_T("CProfilerManager::SetupInstrumentationMethods - instrumentation method configuration timeout exceeded"));
+        CLogging::LogError(_T("CProfilerManager::InvokeThreadRoutine - ThreadRoutine timeout exceeded"));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
     if (retVal != WAIT_OBJECT_0)
     {
-        CLogging::LogError(_T("CProfilerManager::SetupInstrumentationMethods - instrumentation method configuration failed with error 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
+        CLogging::LogError(_T("CProfilerManager::InvokeThreadRoutine - ThreadRoutine failed with error 0x%08X"), HRESULT_FROM_WIN32(GetLastError()));
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
@@ -381,6 +379,7 @@ HRESULT CProfilerManager::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
 // as that would screw up the com state for the application thread. This thread allows the profiler manager
 // to co create a free threaded version of msxml on a thread that it owns to avoid this.
+//static
 DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     _In_  LPVOID lpParameter
 )
@@ -398,7 +397,7 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     }
 #endif
 
-    CProfilerManager* pProfilerManager = (CProfilerManager*)lpParameter;
+    CProfilerManager* pProfilerManager = static_cast<CProfilerManager*>(lpParameter);
     if (pProfilerManager == NULL)
     {
         CLogging::LogError(_T("CProfilerManager::InstrumentationMethodThreadProc - Invalid parameter"));
@@ -417,6 +416,192 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     CLogging::LogMessage(_T("End CProfilerManager::InstrumentationMethodThreadProc"));
 
     return 0;
+}
+
+//static
+DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
+    _In_ LPVOID lpParameter
+    )
+{
+    HRESULT hr = S_OK;
+
+    CLogging::LogMessage(_T("Starting CConfigurationLocator::ParseAttachConfigurationThreadProc"));
+
+#ifndef PLATFORM_UNIX
+    hr = CoInitialize(NULL);
+    if (FAILED(hr))
+    {
+        CLogging::LogError(_T("CConfigurationLocator::ParseAttachConfigurationThreadProc - CoInitializeEx failed"));
+        return 1;
+    }
+#endif
+
+    CProfilerManager* pProfilerManager = static_cast<CProfilerManager*>(lpParameter);
+    if (pProfilerManager == NULL)
+    {
+        CLogging::LogError(_T("CConfigurationLocator::ParseAttachConfigurationThreadProc - Invalid parameter"));
+        return 1;
+    }
+
+    CComPtr<CXmlDocWrapper> pDocument;
+    pDocument.Attach(new CXmlDocWrapper());
+    IfFailRet(pDocument->LoadContent(pProfilerManager->m_wszConfigXml));
+
+    CComPtr<CXmlNode> pDocumentNode;
+    IfFailRet(pDocument->GetRootNode(&pDocumentNode));
+
+    CComPtr<CXmlNode> pCurrChildNode;
+    IfFailRet(pDocumentNode->GetChildNode(&pCurrChildNode));
+
+    CComBSTR bstrCurrChildNodeName;
+    IfFailRet(pDocumentNode->GetName(&bstrCurrChildNodeName));
+
+    if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngineConfiguration")) != 0)
+    {
+        CLogging::LogError(_T("CConfigurationLocator::ParseAttachConfigurationThreadProc - Invalid configuration. Root element should be InstrumentationEngineConfiguration"));
+        return E_FAIL;
+    }
+
+    while (pCurrChildNode != nullptr)
+    {
+        IfFailRet(pCurrChildNode->GetName(&bstrCurrChildNodeName));
+        if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngine")) == 0)
+        {
+            CComPtr<CXmlNode> pSettingsNode;
+            IfFailRet(pCurrChildNode->GetChildNode(&pSettingsNode));
+            if (pSettingsNode != nullptr)
+            {
+                CComBSTR bstrSettingsNodeName;
+                IfFailRet(pSettingsNode->GetName(&bstrSettingsNodeName));
+
+                if (wcscmp(bstrSettingsNodeName, _T("Settings")) == 0)
+                {
+                    unordered_map<tstring, tstring> settingsMap;
+                    IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
+
+                    for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
+                        it != settingsMap.end();
+                        ++it)
+                    {
+                        if (wcscmp(it->first.c_str(), _T("LogLevel")) == 0)
+                        {
+                            CLogging::SetLoggingFlags(CLoggerService::ExtractLoggingFlags(it->second.c_str()));
+                        }
+                        else if (wcscmp(it->first.c_str(), _T("LogFileLevel")) == 0)
+                        {
+                            ::SetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), it->second.c_str());
+                        }
+                        else if (wcscmp(it->first.c_str(), _T("LogFilePath")) == 0)
+                        {
+                            ::SetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), it->second.c_str());
+                        }
+                    }
+                }
+            }
+        }
+        else if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationMethods")) == 0)
+        {
+            CComPtr<CXmlNode> pInstrumentationMethodNode;
+            IfFailRet(pCurrChildNode->GetChildNode(&pInstrumentationMethodNode));
+
+            while (pInstrumentationMethodNode != nullptr)
+            {
+                CComBSTR bstrInstrumentationMethodNodeName;
+                IfFailRet(pInstrumentationMethodNode->GetName(&bstrInstrumentationMethodNodeName));
+
+                if (wcscmp(bstrInstrumentationMethodNodeName, _T("AddInstrumentationMethod")) == 0)
+                {
+                    CComBSTR bstrConfigPath;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), &bstrConfigPath));
+                    IfFalseRet(bstrConfigPath.Length() != 0, E_FAIL);
+
+                    CComPtr<CConfigurationSource> pSource;
+                    pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
+                    IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
+
+                    CComPtr<CXmlNode> pInstrumentationMethodChildNode;
+                    IfFailRet(pInstrumentationMethodNode->GetChildNode(&pInstrumentationMethodChildNode));
+
+                    while (pInstrumentationMethodChildNode != nullptr)
+                    {
+                        CComBSTR bstrInstrumentationMethodChildNodeName;
+                        IfFailRet(pInstrumentationMethodChildNode->GetName(&bstrInstrumentationMethodChildNodeName));
+
+                        if (wcscmp(bstrInstrumentationMethodChildNodeName, _T("Settings")) == 0)
+                        {
+                            unordered_map<tstring, tstring> settingsMap;
+                            IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
+
+                            for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
+                                 it != settingsMap.end();
+                                 ++it)
+                            {
+                                IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
+                            }
+                        }
+
+                        CXmlNode* nextInstrumentationMethod = pInstrumentationMethodChildNode->Next();
+                        pInstrumentationMethodChildNode.Release();
+                        pInstrumentationMethodChildNode.Attach(nextInstrumentationMethod);
+                    }
+
+                    pProfilerManager->m_configSources.push_back(pSource.p);
+                }
+
+                CXmlNode* next = pInstrumentationMethodNode->Next();
+                pInstrumentationMethodNode.Release();
+                pInstrumentationMethodNode.Attach(next);
+            }
+        }
+
+        CXmlNode* next = pCurrChildNode->Next();
+        pCurrChildNode.Release();
+        pCurrChildNode.Attach(next);
+    }
+
+#ifndef PLATFORM_UNIX
+    CoUninitialize();
+#endif
+
+    CLogging::LogMessage(_T("End CConfigurationLocator::ParseAttachConfigurationThreadProc"));
+
+    return 0;
+}
+
+//static
+HRESULT CProfilerManager::ParseSettingsConfigurationNode(
+    _In_ const CComPtr<CXmlNode>& parentNode,
+    _Inout_ unordered_map<tstring, tstring>& settings)
+{
+    HRESULT hr = S_OK;
+    CComPtr<CXmlNode> pSettingNode;
+    IfFailRet(parentNode->GetChildNode(&pSettingNode));
+    while (pSettingNode != nullptr)
+    {
+        CComBSTR bstrSettingNodeName;
+        IfFailRet(pSettingNode->GetName(&bstrSettingNodeName));
+
+        IfFalseRet(wcscmp(bstrSettingNodeName, _T("Setting")) == 0, E_FAIL);
+
+        CComBSTR bstrSettingName;
+        IfFailRet(pSettingNode->GetAttribute(_T("Name"), &bstrSettingName));
+        IfFalseRet(bstrSettingName.Length() != 0, E_FAIL);
+
+        CComBSTR bstrSettingValue;
+        IfFailRet(pSettingNode->GetAttribute(_T("Value"), &bstrSettingValue));
+        IfFalseRet(bstrSettingValue.Length() != 0, E_FAIL);
+
+        if (settings.find(bstrSettingName.m_str) == settings.end())
+        {
+            settings.insert(std::pair<tstring, tstring>(bstrSettingName.m_str, bstrSettingValue.m_str));
+        }
+
+        CXmlNode* nextSetting = pSettingNode->Next();
+        pSettingNode.Release();
+        pSettingNode.Attach(nextSetting);
+    }
+
+    return S_OK;
 }
 
 HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource)
@@ -710,21 +895,19 @@ HRESULT CProfilerManager::Initialize(
 
     PROF_CALLBACK_BEGIN
 
-    vector<CComPtr<CConfigurationSource>> configSources;
-
     // Try to get instrumentation methods from environment variables
-    IfFailRet(CConfigurationLocator::GetFromEnvironment(configSources));
+    IfFailRet(CConfigurationLocator::GetFromEnvironment(m_configSources));
 #ifndef PLATFORM_UNIX
-    if (0 == configSources.size())
+    if (0 == m_configSources.size())
     {
-        IfFailRet(CConfigurationLocator::GetFromFilesystem(configSources));
+        IfFailRet(CConfigurationLocator::GetFromFilesystem(m_configSources));
     }
 #endif
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
     CInitializeHolder initHolder(this);
 
-    IfFailRet(InitializeCore(pICorProfilerInfoUnk, configSources));
+    IfFailRet(InitializeCore(pICorProfilerInfoUnk));
 
     if (m_bProfilingDisabled)
     {
@@ -855,8 +1038,7 @@ DWORD CProfilerManager::CalculateEventMask(DWORD dwAdditionalFlags)
 }
 
 HRESULT CProfilerManager::InitializeCore(
-    _In_ IUnknown* pCorProfilerInfoUnk,
-    _In_ const vector<CComPtr<CConfigurationSource>>& configSources
+    _In_ IUnknown* pCorProfilerInfoUnk
     )
 {
     IfNullRetPointer(pCorProfilerInfoUnk);
@@ -872,9 +1054,9 @@ HRESULT CProfilerManager::InitializeCore(
 
     m_pWrappedProfilerInfo = (ICorProfilerInfo*)(new CCorProfilerInfoWrapper(this, m_pRealProfilerInfo));
 
-    if (configSources.size() > 0)
+    if (m_configSources.size() > 0)
     {
-        IfFailRet(SetupInstrumentationMethods(configSources));
+        IfFailRet(InvokeThreadRoutine(InstrumentationMethodThreadProc));
     }
     else
     {
@@ -2781,21 +2963,43 @@ HRESULT CProfilerManager::InitializeForAttach(
 
     m_bAttach = true;
 
-    vector<CComPtr<CConfigurationSource>> configSources;
+    if (pvClientData == nullptr ||
+        cbClientData == 0)
+    {
+        // No configuration provided
+        return E_FAIL;
+    }
 
-    // TODO: Parse configuration information from pvClientData.
+    UINT charCount = cbClientData / WCharSizeInBytes;
+    UINT bufferSize = charCount + 1; // add room for null terminator.
+    unique_ptr<WCHAR[]> wszConfigXml = make_unique<WCHAR[]>(bufferSize);
+
+    LPCWSTR pData = reinterpret_cast<LPCWSTR>(pvClientData);
+    IfFailRetErrno(
+        memcpy_s(
+            wszConfigXml.get(),                 // Destination buffer
+            bufferSize * WCharSizeInBytes,      // Destination buffer size in Bytes
+            pData,                              // Source buffer
+            cbClientData                        // Source buffer size in Bytes
+        ));
+
+    m_wszConfigXml = wszConfigXml.release();
+
+    IfFailRet(InvokeThreadRoutine(ParseAttachConfigurationThreadProc));
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
     CInitializeHolder initHolder(this);
 
-    IfFailRet(InitializeCore(pCorProfilerInfoUnk, configSources));
+    // m_configSources should be populated by ParseAttachConfigurationThreadProc.
+    IfFailRet(InitializeCore(pCorProfilerInfoUnk));
 
     if (m_bProfilingDisabled)
     {
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::InitializeForAttach, pCorProfilerInfoUnk, pvClientData, cbClientData));
+    // TODO: The ClientData for RawProfilerHook should be a subset of the ClientData parameter (which includes instrumentationmethods).
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::InitializeForAttach, pCorProfilerInfoUnk, (void*)nullptr, 0U));
 
     PROF_CALLBACK_END
 

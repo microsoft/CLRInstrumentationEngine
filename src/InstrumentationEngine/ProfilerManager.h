@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "stdafx.h"
 #include "InstrumentationMethod.h"
 #include "AppDomainCollection.h"
 #include "ClrVersion.h"
@@ -11,6 +12,7 @@
 #ifndef PLATFORM_UNIX
 #include "../Common.Lib/ModuleHandle.h"
 #endif
+#include <XmlDocWrapper.h>
 
 using namespace ATL;
 
@@ -19,6 +21,8 @@ namespace MicrosoftInstrumentationEngine
     typedef vector<pair<shared_ptr<CInstrumentationMethod>, DWORD>> TInstrumentationMethodsCollection;
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
+
+    const size_t WCharSizeInBytes = sizeof(WCHAR) / sizeof(BYTE);
 
     // This abstract class should be updated with new IProfilerManager interfaces.
     // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
@@ -76,6 +80,9 @@ namespace MicrosoftInstrumentationEngine
 
         // list of instrumentation method configuration sources
         vector<CComPtr<CConfigurationSource>> m_configSources;
+
+        // The configuration xml for profiler attach.
+        LPCWSTR m_wszConfigXml;
 
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;
@@ -244,19 +251,38 @@ namespace MicrosoftInstrumentationEngine
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
         HRESULT InitializeCore(
-            _In_ IUnknown* pCorProfilerInfoUnk,
-            _In_ const vector<CComPtr<CConfigurationSource>>& configSources
+            _In_ IUnknown* pCorProfilerInfoUnk
             );
 
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
         // as that would screw up the com state for the application thread. This thread allows the profiler manager
         // to co create a free threaded version of msxml on a thread that it owns to avoid this.
         //
-        // lpParameter points to the this pointer so m_configFilePaths can be accessed. This is safe because the thread proc
+        // lpParameter points to the this pointer so m_configSources can be accessed. This is safe because the thread proc
         // blocks until this is complete.
         static DWORD WINAPI InstrumentationMethodThreadProc(
             _In_  LPVOID lpParameter
             );
+
+        // lpParameter points to the this pointer so m_wszConfigXml can be accessed. This is safe because the thread proc
+        // blocks until this is complete.
+        static DWORD WINAPI ParseAttachConfigurationThreadProc(
+            _In_ LPVOID lpParameter
+            );
+
+        /* Parses the following XML block of <Setting /> nodes into map of key-value pairs.
+         * Name and Value attributes for <Setting /> nodes are required.
+         * Duplicates are ignored.
+         *  <Settings>
+         *      <Setting Name="Key1" Value="Val1" />
+         *      <Setting Name="Key2" Value="Val2" />
+         *      <Setting Name="Key3" Value="Val3" />
+         *      ...
+         *  </Settings>
+         */
+        static HRESULT ParseSettingsConfigurationNode(
+            _In_ const CComPtr<CXmlNode>& parentNode,
+            _Inout_ unordered_map<tstring, tstring>& settings);
 
         HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource);
 
@@ -398,8 +424,8 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId);
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
-        HRESULT SetupInstrumentationMethods(
-            _In_ const std::vector<CComPtr<CConfigurationSource>>& configSources
+        HRESULT InvokeThreadRoutine(
+            _In_ LPTHREAD_START_ROUTINE threadRoutine
             );
 
 #ifndef PLATFORM_UNIX
