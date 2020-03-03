@@ -21,7 +21,7 @@
   <system.webServer>
     <runtime xdt:Transform="InsertIfMissing">
       <environmentVariables xdt:Transform="InsertIfMissing">
-        <add name="MicrosoftInstrumentationEngine_AttachPath" value="%XDT_EXTENSIONPATH%\Tools\Attach\Microsoft.InstrumentationEngine.Attach.exe" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        <add name="MicrosoftInstrumentationEngine_InstallationRoot" value="%XDT_EXTENSIONPATH%" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
         <!-- EXPERIMENTAL: Uncomment the following to enable snapshot debugging of WebJobs -->
         <!-- <add name="COR_ENABLE_PROFILING" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
         <add name="COR_PROFILER" value="{324F817A-7420-4E6D-B3C1-143FBED6D855}" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
