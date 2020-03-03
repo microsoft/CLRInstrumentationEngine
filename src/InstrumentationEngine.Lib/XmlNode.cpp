@@ -109,6 +109,8 @@ HRESULT CXmlNode::GetAttribute(_In_ const WCHAR* wszAttributeName, _Out_ BSTR* p
     IfNullRet(pValue);
     IfNullRet(m_pNode);
 
+    *pValue = nullptr;
+
 #ifndef PLATFORM_UNIX
 
     // Get attributes
