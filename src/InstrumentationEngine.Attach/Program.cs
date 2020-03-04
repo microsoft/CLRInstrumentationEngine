@@ -117,14 +117,14 @@ namespace Microsoft.InstrumentationEngine
             #endregion
 
             #region RootPath
-                        // This executable should be in the [Root]\Tools\Attach directory. Get the root directory
-                        // and build back to the instrumentation engine file path.
+            // This executable should be in the [Root]\Tools\Attach directory. Get the root directory
+            // and build back to the instrumentation engine file path.
 
-                        // CONSIDER: Is there a better way to get the engine path instead of building the path
-                        // relative to the current executable? For example, requiring the root path of the engine
-                        // to be passed as a parameter (which increases the difficulty of using this executable).
+            // CONSIDER: Is there a better way to get the engine path instead of building the path
+            // relative to the current executable? For example, requiring the root path of the engine
+            // to be passed as a parameter (which increases the difficulty of using this executable).
 
-                        string ? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string ? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (null == attachDirectory || !Directory.Exists(attachDirectory))
             {
                 WriteError(Invariant($"Directory '{attachDirectory}' does not exist."));
@@ -149,7 +149,7 @@ namespace Microsoft.InstrumentationEngine
 
             #region Target Process Architecture
 
-                        bool isTargetProcess32Bit = true;
+            bool isTargetProcess32Bit = true;
             if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 isTargetProcess32Bit = false;
