@@ -480,8 +480,8 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                     IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
 
                     for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
-                        it != settingsMap.end();
-                        ++it)
+                         it != settingsMap.end();
+                         ++it)
                     {
                         if (wcscmp(it->first.c_str(), _T("LogLevel")) == 0)
                         {
@@ -509,50 +509,43 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                 CComBSTR bstrInstrumentationMethodNodeName;
                 IfFailRet(pInstrumentationMethodNode->GetName(&bstrInstrumentationMethodNodeName));
 
-                if (wcscmp(bstrInstrumentationMethodNodeName, _T("InstrumentationMethod")) == 0)
+                if (wcscmp(bstrInstrumentationMethodNodeName, _T("AddInstrumentationMethod")) == 0)
                 {
-                    CComBSTR bstrInstrumentationMethodType;
-                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("xsi:type"), &bstrInstrumentationMethodType));
-                    IfFalseRet(bstrInstrumentationMethodType.Length() != 0, E_FAIL);
+                    CComBSTR bstrConfigPath;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), &bstrConfigPath));
+                    IfFalseRet(bstrConfigPath.Length() != 0, E_FAIL);
 
-                    if (wcscmp(bstrInstrumentationMethodType, _T("AddInstrumentationMethod")) == 0)
+                    CComPtr<CConfigurationSource> pSource;
+                    pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
+                    IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
+
+                    CComPtr<CXmlNode> pInstrumentationMethodChildNode;
+                    IfFailRet(pInstrumentationMethodNode->GetChildNode(&pInstrumentationMethodChildNode));
+
+                    while (pInstrumentationMethodChildNode != nullptr)
                     {
-                        CComBSTR bstrConfigPath;
-                        IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), &bstrConfigPath));
-                        IfFalseRet(bstrConfigPath.Length() != 0, E_FAIL);
+                        CComBSTR bstrInstrumentationMethodChildNodeName;
+                        IfFailRet(pInstrumentationMethodChildNode->GetName(&bstrInstrumentationMethodChildNodeName));
 
-                        CComPtr<CConfigurationSource> pSource;
-                        pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
-                        IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
-
-                        CComPtr<CXmlNode> pInstrumentationMethodChildNode;
-                        IfFailRet(pInstrumentationMethodNode->GetChildNode(&pInstrumentationMethodChildNode));
-
-                        while (pInstrumentationMethodChildNode != nullptr)
+                        if (wcscmp(bstrInstrumentationMethodChildNodeName, _T("Settings")) == 0)
                         {
-                            CComBSTR bstrInstrumentationMethodChildNodeName;
-                            IfFailRet(pInstrumentationMethodChildNode->GetName(&bstrInstrumentationMethodChildNodeName));
+                            unordered_map<tstring, tstring> settingsMap;
+                            IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
 
-                            if (wcscmp(bstrInstrumentationMethodChildNodeName, _T("Settings")) == 0)
+                            for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
+                                 it != settingsMap.end();
+                                 ++it)
                             {
-                                unordered_map<tstring, tstring> settingsMap;
-                                IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
-
-                                for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
-                                    it != settingsMap.end();
-                                    ++it)
-                                {
-                                    IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
-                                }
+                                IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
                             }
-
-                            CXmlNode* nextInstrumentationMethod = pInstrumentationMethodChildNode->Next();
-                            pInstrumentationMethodChildNode.Release();
-                            pInstrumentationMethodChildNode.Attach(nextInstrumentationMethod);
                         }
 
-                        pProfilerManager->m_configSources.push_back(pSource.p);
+                        CXmlNode* nextInstrumentationMethod = pInstrumentationMethodChildNode->Next();
+                        pInstrumentationMethodChildNode.Release();
+                        pInstrumentationMethodChildNode.Attach(nextInstrumentationMethod);
                     }
+
+                    pProfilerManager->m_configSources.push_back(pSource.p);
                 }
 
                 CXmlNode* next = pInstrumentationMethodNode->Next();

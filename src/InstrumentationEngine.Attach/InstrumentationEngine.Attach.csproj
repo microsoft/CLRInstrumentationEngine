@@ -20,10 +20,20 @@
       <Namespace>Microsoft.InstrumentationEngine</Namespace>
       <SubType>Designer</SubType>
       <Visible>False</Visible>
+      <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
+      <Language>CS</Language>
+    </XsdSchemaFile>
+    <XsdSchemaFile Include="EngineConfiguration.xsd">
+      <Namespace>Microsoft.InstrumentationEngine</Namespace>
+      <SubType>Designer</SubType>
+      <Visible>False</Visible>
+      <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
+      <Language>CS</Language>
     </XsdSchemaFile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="InstrumentationConfigurationSources.xsd" />
+    <EmbeddedResource Include="EngineConfiguration.xsd" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.61701" />
@@ -31,23 +41,8 @@
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
-  <Target Name="PrepareXsdGeneration" Condition="'@(XsdSchemaFile)' != ''">
-    <PropertyGroup>
-      <FullIntermediateOutputPath>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</FullIntermediateOutputPath>
-    </PropertyGroup>
-    <ItemGroup>
-      <XsdSchemaFile>
-        <OutputFile>$(FullIntermediateOutputPath)%(FileName).cs</OutputFile>
-        <Language>CS</Language>
-      </XsdSchemaFile>
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Condition="'%(XsdSchemaFile.OutputFile)' != ''" Include="%(XsdSchemaFile.OutputFile)" />
-    </ItemGroup>
-    <Error Condition="'%(XsdSchemaFile.Language)' == ''" Text="Project type is expected to by one of 'CSharp' or 'VisualBasic' for file %(XsdSchemaFile.FullPath)" />
-  </Target>
-  <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" DependsOnTargets="PrepareXsdGeneration" Condition="'@(XsdSchemaFile)' != ''">
+  <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
-    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(IntermediateOutputPath)" />
+    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
 </Project>

@@ -124,7 +124,7 @@ namespace Microsoft.InstrumentationEngine
             // relative to the current executable? For example, requiring the root path of the engine
             // to be passed as a parameter (which increases the difficulty of using this executable).
 
-            string ? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (null == attachDirectory || !Directory.Exists(attachDirectory))
             {
                 WriteError(Invariant($"Directory '{attachDirectory}' does not exist."));
@@ -193,20 +193,10 @@ namespace Microsoft.InstrumentationEngine
                 return ExitCodeFailure;
             }
 
-
-            XmlSerializer ser = new XmlSerializer(
-                typeof(InstrumentationEngineConfiguration),
-                new Type[]
-                {
-                    typeof(InstrumentationMethod),
-                    typeof(AddInstrumentationMethod)
-                });
-            MemoryStream m = new MemoryStream();
-            ser.Serialize(m, engineConfig);
-
-            // reset to 0 so we start reading from the beginning of the stream
-            m.Position = 0;
-            byte[] bytes = System.Text.Encoding.Unicode.GetBytes(new StreamReader(m).ReadToEnd());
+            XmlSerializer engineConfigSerializer = new XmlSerializer(typeof(InstrumentationEngineConfiguration));
+            MemoryStream memStream = new MemoryStream();
+            engineConfigSerializer.Serialize(memStream, engineConfig);
+            byte[] bytes = memStream.ToArray();
 
             #endregion
 
@@ -267,55 +257,58 @@ namespace Microsoft.InstrumentationEngine
             Chip targetChip,
             out InstrumentationEngineConfiguration configuration)
         {
-            configuration = new InstrumentationEngineConfiguration();
-            configuration.InstrumentationEngine = new InstrumentationEngine()
+            var engineSection = new InstrumentationEngineConfigurationInstrumentationEngine();
+            var methodsSection = new List<instrumentationMethodsTypeAddInstrumentationMethod>();
+
+            // Parse engine settings
+            var engineSettings = new List<settingsTypeSetting>()
             {
-                Settings = new Setting[]
+                new settingsTypeSetting()
                 {
-                    new Setting()
-                    {
-                        Name="LogLevel",
-                        Value="Errors"
-                    }
+                    Name = "LogLevel",
+                    Value = "Errors"
                 }
             };
+            engineSection.Settings = engineSettings.ToArray();
 
-            var methodsList = new List<InstrumentationMethod>();
+            // Parse methods section
             foreach (var source in sources.InstrumentationConfigurationSource)
             {
-                var addMethodList = new List<AddInstrumentationMethod>(sources.InstrumentationConfigurationSource.Length);
                 foreach (var platform in source.Platforms)
                 {
-                    AddInstrumentationMethod method;
                     if (platform.Chip.Equals(targetChip.ToString("G"), StringComparison.OrdinalIgnoreCase))
                     {
-                        method = new AddInstrumentationMethod()
+                        var methodSettings = new List<settingsTypeSetting>();
+                        var methodSection = new instrumentationMethodsTypeAddInstrumentationMethod()
                         {
                             ConfigPath = platform.Path
                         };
 
-                        List<Setting> settingsList = new List<Setting>(source.Settings.Length);
                         foreach (var setting in source.Settings)
                         {
-                            settingsList.Add(new Setting()
+                            methodSettings.Add(new settingsTypeSetting()
                             {
                                 Name = setting.Name,
                                 Value = setting.Value
                             });
-
                         }
-                        method.Settings = settingsList.ToArray();
-                        addMethodList.Add(method);
+
+                        methodSection.Settings = methodSettings.ToArray();
+                        methodsSection.Add(methodSection);
                     }
                     else
                     {
                         continue;
                     }
                 }
-                methodsList.AddRange(addMethodList);
             }
 
-            configuration.InstrumentationMethods = methodsList.ToArray();
+            configuration = new InstrumentationEngineConfiguration()
+            {
+                InstrumentationEngine = engineSection,
+                InstrumentationMethods = methodsSection.ToArray()
+            };
+
             return true;
         }
     }

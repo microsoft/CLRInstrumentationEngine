@@ -2,52 +2,59 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- root type -->
     <xs:element name="InstrumentationConfigurationSources">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="InstrumentationConfigurationSource" maxOccurs="10">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="Platforms">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="Platform" minOccurs="1" maxOccurs="10">
-                                            <xs:complexType>
-                                                <xs:attribute name="Chip" use="required">
-                                                    <xs:simpleType>
-                                                        <xs:restriction base="xs:string">
-                                                            <xs:pattern value="x86|x64" />
-                                                        </xs:restriction>
-                                                    </xs:simpleType>
-                                                </xs:attribute>
-                                                <xs:attribute name="Path" use="required">
-                                                    <xs:simpleType>
-                                                        <xs:restriction base="xs:string">
-                                                            <xs:maxLength value="260" />
-                                                        </xs:restriction>
-                                                    </xs:simpleType>
-                                                </xs:attribute>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                            <xs:element name="Settings" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="Setting" maxOccurs="10" >
-                                            <xs:complexType>
-                                                <xs:attribute name="Name" type="xs:string" use="required" />
-                                                <xs:attribute name="Value" type="xs:string" use="required" />
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="InstrumentationConfigurationSource" maxOccurs="unbounded" type="instrumentationConfigurationSourceType" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <!-- level 1 types -->
+    <xs:complexType name="instrumentationConfigurationSourceType">
+        <xs:sequence>
+            <xs:element name="Platforms" type="platformsType" />
+            <xs:element name="Settings" minOccurs="0" type="settingsType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- level 2 types -->
+    <xs:complexType name="platformsType">
+        <xs:sequence>
+            <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded" type="platformType">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="settingsType">
+        <xs:sequence>
+            <xs:element name="Setting" maxOccurs="unbounded" type="settingType" >
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- level 3 types -->
+    <xs:complexType name="platformType">
+        <xs:attribute name="Chip" use="required" type="chipType" />
+        <xs:attribute name="Path" use="required" type="pathType" />
+    </xs:complexType>
+
+    <xs:complexType name="settingType">
+        <xs:attribute name="Name" type="xs:string" use="required" />
+        <xs:attribute name="Value" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <!-- level 4 types -->
+    <xs:simpleType name="chipType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="x86|x64" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="pathType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="260" />
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
