@@ -78,7 +78,7 @@ namespace Microsoft.InstrumentationEngine
 
             // Read schema file
             using (Stream? schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(schemaResourceName))
-            using (XmlReader schemaReader = XmlReader.Create(schemaStream, new XmlReaderSettings() { XmlResolver = null }))
+            using (XmlReader schemaReader = XmlReader.Create(schemaStream, new XmlReaderSettings() { XmlResolver = null, DtdProcessing = DtdProcessing.Prohibit }))
             {
                 // Create reader settings that conducts validation
                 XmlReaderSettings readerSettings = new XmlReaderSettings();
