@@ -6,53 +6,54 @@
     <xs:element name="InstrumentationConfigurationSources">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="InstrumentationConfigurationSource" maxOccurs="unbounded" type="instrumentationConfigurationSourceType" />
+                <xs:element name="InstrumentationConfigurationSource" maxOccurs="unbounded" type="InstrumentationConfigurationSourceType" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
     <!-- level 1 types -->
-    <xs:complexType name="instrumentationConfigurationSourceType">
+    <xs:complexType name="InstrumentationConfigurationSourceType">
         <xs:sequence>
-            <xs:element name="Platforms" type="platformsType" />
-            <xs:element name="Settings" minOccurs="0" type="settingsType" />
+            <xs:element name="Platforms" type="PlatformsType" />
+            <xs:element name="Settings" minOccurs="0" type="SettingsType" />
         </xs:sequence>
     </xs:complexType>
 
     <!-- level 2 types -->
-    <xs:complexType name="platformsType">
+    <xs:complexType name="PlatformsType">
         <xs:sequence>
-            <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded" type="platformType">
+            <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded" type="PlatformType">
             </xs:element>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="settingsType">
+    <xs:complexType name="SettingsType">
         <xs:sequence>
-            <xs:element name="Setting" maxOccurs="unbounded" type="settingType" >
+            <xs:element name="Setting" maxOccurs="unbounded" type="SettingType" >
             </xs:element>
         </xs:sequence>
     </xs:complexType>
 
     <!-- level 3 types -->
-    <xs:complexType name="platformType">
-        <xs:attribute name="Chip" use="required" type="chipType" />
-        <xs:attribute name="Path" use="required" type="pathType" />
+    <xs:complexType name="PlatformType">
+        <xs:attribute name="Chip" use="required" type="ChipType" />
+        <xs:attribute name="Path" use="required" type="PathType" />
     </xs:complexType>
 
-    <xs:complexType name="settingType">
+    <xs:complexType name="SettingType">
         <xs:attribute name="Name" type="xs:string" use="required" />
         <xs:attribute name="Value" type="xs:string" use="required" />
     </xs:complexType>
 
     <!-- level 4 types -->
-    <xs:simpleType name="chipType">
+    <xs:simpleType name="ChipType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="x86|x64" />
+            <xs:enumeration value="x86"/>
+            <xs:enumeration value="x64"/>
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="pathType">
+    <xs:simpleType name="PathType">
         <xs:restriction base="xs:string">
             <xs:maxLength value="260" />
         </xs:restriction>

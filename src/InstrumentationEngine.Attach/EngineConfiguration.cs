@@ -26,7 +26,7 @@ namespace Microsoft.InstrumentationEngine {
         
         private InstrumentationEngineConfigurationInstrumentationEngine instrumentationEngineField;
         
-        private instrumentationMethodsTypeAddInstrumentationMethod[] instrumentationMethodsField;
+        private InstrumentationMethodsTypeAddInstrumentationMethod[] instrumentationMethodsField;
         
         /// <remarks/>
         public InstrumentationEngineConfigurationInstrumentationEngine InstrumentationEngine {
@@ -40,7 +40,7 @@ namespace Microsoft.InstrumentationEngine {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("AddInstrumentationMethod", IsNullable=false)]
-        public instrumentationMethodsTypeAddInstrumentationMethod[] InstrumentationMethods {
+        public InstrumentationMethodsTypeAddInstrumentationMethod[] InstrumentationMethods {
             get {
                 return this.instrumentationMethodsField;
             }
@@ -58,11 +58,11 @@ namespace Microsoft.InstrumentationEngine {
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
     public partial class InstrumentationEngineConfigurationInstrumentationEngine {
         
-        private settingsTypeSetting[] settingsField;
+        private SettingsTypeSetting[] settingsField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("Setting", IsNullable=false)]
-        public settingsTypeSetting[] Settings {
+        public SettingsTypeSetting[] Settings {
             get {
                 return this.settingsField;
             }
@@ -78,7 +78,7 @@ namespace Microsoft.InstrumentationEngine {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-    public partial class settingsTypeSetting {
+    public partial class SettingsTypeSetting {
         
         private string nameField;
         
@@ -113,15 +113,15 @@ namespace Microsoft.InstrumentationEngine {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
-    public partial class instrumentationMethodsTypeAddInstrumentationMethod {
+    public partial class InstrumentationMethodsTypeAddInstrumentationMethod {
         
-        private settingsTypeSetting[] settingsField;
+        private SettingsTypeSetting[] settingsField;
         
         private string configPathField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("Setting", IsNullable=false)]
-        public settingsTypeSetting[] Settings {
+        public SettingsTypeSetting[] Settings {
             get {
                 return this.settingsField;
             }

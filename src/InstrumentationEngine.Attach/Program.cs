@@ -16,12 +16,6 @@ using static System.FormattableString;
 
 namespace Microsoft.InstrumentationEngine
 {
-    internal enum Chip
-    {
-        x86,
-        x64
-    }
-
     internal sealed class Program
     {
         private static readonly Guid InstrumentationEngineClsid = new Guid("324F817A-7420-4E6D-B3C1-143FBED6D855");
@@ -186,7 +180,7 @@ namespace Microsoft.InstrumentationEngine
             // Create CLRIE configuration object for XML serialziation
             if (!TryParseEngineConfiguration(
                     configSources,
-                    isTargetProcess32Bit ? Chip.x86 : Chip.x64,
+                    isTargetProcess32Bit ? ChipType.x86 : ChipType.x64,
                     out InstrumentationEngineConfiguration engineConfig))
             {
                 WriteError("Unable to parse Engine Configuration from configuration sources.");
@@ -254,60 +248,92 @@ namespace Microsoft.InstrumentationEngine
 
         private static bool TryParseEngineConfiguration(
             InstrumentationConfigurationSources sources,
-            Chip targetChip,
+            ChipType targetChip,
             out InstrumentationEngineConfiguration configuration)
         {
             var engineSection = new InstrumentationEngineConfigurationInstrumentationEngine();
-            var methodsSection = new List<instrumentationMethodsTypeAddInstrumentationMethod>();
+            var methodsSection = new List<InstrumentationMethodsTypeAddInstrumentationMethod>();
+            configuration = new InstrumentationEngineConfiguration();
 
             // Parse engine settings
-            var engineSettings = new List<settingsTypeSetting>()
+            var engineSettings = new List<SettingsTypeSetting>()
             {
-                new settingsTypeSetting()
+                new SettingsTypeSetting()
                 {
                     Name = "LogLevel",
                     Value = "Errors"
                 }
             };
             engineSection.Settings = engineSettings.ToArray();
+            configuration.InstrumentationEngine = engineSection;
 
             // Parse methods section
-            foreach (var source in sources.InstrumentationConfigurationSource)
+            if (sources == null)
             {
-                foreach (var platform in source.Platforms)
+                // Short-cirtcuit here, we don't have sources to parse.
+                return true;
+            }
+
+            if (sources.InstrumentationConfigurationSource != null)
+            {
+                foreach (var source in sources.InstrumentationConfigurationSource)
                 {
-                    if (platform.Chip.Equals(targetChip.ToString("G"), StringComparison.OrdinalIgnoreCase))
+                    if (source.Platforms != null)
                     {
-                        var methodSettings = new List<settingsTypeSetting>();
-                        var methodSection = new instrumentationMethodsTypeAddInstrumentationMethod()
+                        foreach (var platform in source.Platforms)
                         {
-                            ConfigPath = platform.Path
-                        };
-
-                        foreach (var setting in source.Settings)
-                        {
-                            methodSettings.Add(new settingsTypeSetting()
+                            if (platform.Chip.Equals(targetChip))
                             {
-                                Name = setting.Name,
-                                Value = setting.Value
-                            });
-                        }
+                                string configFullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), platform.Path));
+                                var methodSettings = new List<SettingsTypeSetting>();
+                                var methodSection = new InstrumentationMethodsTypeAddInstrumentationMethod();
+                                if (File.Exists(configFullPath))
+                                {
+                                    methodSection.ConfigPath = configFullPath;
+                                }
+                                else
+                                {
+                                    WriteError($"Config file was not found at {configFullPath}.");
+                                    return false;
+                                }
 
-                        methodSection.Settings = methodSettings.ToArray();
-                        methodsSection.Add(methodSection);
+                                // Allow methods without any settings.
+                                if (source.Settings != null)
+                                {
+                                    foreach (var setting in source.Settings)
+                                    {
+                                        methodSettings.Add(new SettingsTypeSetting()
+                                        {
+                                            Name = setting.Name,
+                                            Value = setting.Value
+                                        });
+                                    }
+
+                                    methodSection.Settings = methodSettings.ToArray();
+                                }
+
+                                methodsSection.Add(methodSection);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
                     }
                     else
                     {
-                        continue;
+                        WriteError($"No platforms found for ConfigurationSource.");
+                        return false;
                     }
                 }
             }
-
-            configuration = new InstrumentationEngineConfiguration()
+            else
             {
-                InstrumentationEngine = engineSection,
-                InstrumentationMethods = methodsSection.ToArray()
-            };
+                WriteError("No ConfigurationSources provided.");
+                return false;
+            }
+
+            configuration.InstrumentationMethods = methodsSection.ToArray();
 
             return true;
         }

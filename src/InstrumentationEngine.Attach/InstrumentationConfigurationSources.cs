@@ -24,11 +24,11 @@ namespace Microsoft.InstrumentationEngine {
     [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
     public partial class InstrumentationConfigurationSources {
         
-        private instrumentationConfigurationSourceType[] instrumentationConfigurationSourceField;
+        private InstrumentationConfigurationSourceType[] instrumentationConfigurationSourceField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("InstrumentationConfigurationSource")]
-        public instrumentationConfigurationSourceType[] InstrumentationConfigurationSource {
+        public InstrumentationConfigurationSourceType[] InstrumentationConfigurationSource {
             get {
                 return this.instrumentationConfigurationSourceField;
             }
@@ -43,15 +43,15 @@ namespace Microsoft.InstrumentationEngine {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class instrumentationConfigurationSourceType {
+    public partial class InstrumentationConfigurationSourceType {
         
-        private platformType[] platformsField;
+        private PlatformType[] platformsField;
         
-        private settingType[] settingsField;
+        private SettingType[] settingsField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("Platform", IsNullable=false)]
-        public platformType[] Platforms {
+        public PlatformType[] Platforms {
             get {
                 return this.platformsField;
             }
@@ -62,7 +62,7 @@ namespace Microsoft.InstrumentationEngine {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItemAttribute("Setting", IsNullable=false)]
-        public settingType[] Settings {
+        public SettingType[] Settings {
             get {
                 return this.settingsField;
             }
@@ -77,15 +77,15 @@ namespace Microsoft.InstrumentationEngine {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class platformType {
+    public partial class PlatformType {
         
-        private string chipField;
+        private ChipType chipField;
         
         private string pathField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string Chip {
+        public ChipType Chip {
             get {
                 return this.chipField;
             }
@@ -109,9 +109,21 @@ namespace Microsoft.InstrumentationEngine {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
     [System.SerializableAttribute()]
+    public enum ChipType {
+        
+        /// <remarks/>
+        x86,
+        
+        /// <remarks/>
+        x64,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
+    [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class settingType {
+    public partial class SettingType {
         
         private string nameField;
         
