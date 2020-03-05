@@ -80,12 +80,12 @@ namespace Microsoft.InstrumentationEngine
             using (Stream? schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(schemaResourceName))
             using (XmlReader schemaReader = XmlReader.Create(schemaStream, new XmlReaderSettings() { XmlResolver = null }))
             {
-                // Create reader settings that validate description file
+                // Create reader settings that conducts validation
                 XmlReaderSettings readerSettings = new XmlReaderSettings();
                 readerSettings.Schemas.Add(string.Empty, schemaReader);
                 readerSettings.ValidationType = ValidationType.Schema;
 
-                // Read description file
+                // Read configuration source file
                 using (XmlReader reader = XmlReader.Create(configFilePath, readerSettings))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(InstrumentationConfigurationSources));
@@ -271,7 +271,8 @@ namespace Microsoft.InstrumentationEngine
             if (sources == null)
             {
                 // Short-cirtcuit here, we don't have sources to parse.
-                return true;
+                WriteError("Missing configuration sources.");
+                return false;
             }
 
             if (sources.InstrumentationConfigurationSource != null)
