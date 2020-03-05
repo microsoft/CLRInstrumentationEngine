@@ -2967,7 +2967,7 @@ HRESULT CProfilerManager::InitializeForAttach(
         cbClientData == 0)
     {
         // No configuration provided
-        return E_FAIL;
+        return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
     UINT charCount = cbClientData / WCharSizeInBytes;
