@@ -118,21 +118,26 @@ namespace Microsoft.InstrumentationEngine
             // relative to the current executable? For example, requiring the root path of the engine
             // to be passed as a parameter (which increases the difficulty of using this executable).
 
-            string? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (null == attachDirectory || !Directory.Exists(attachDirectory))
+            string? rootDirectory = Environment.GetEnvironmentVariable("MicrosoftInstrumentationEngine_InstallationRoot");
+            if (string.IsNullOrEmpty(rootDirectory))
             {
-                WriteError(Invariant($"Directory '{attachDirectory}' does not exist."));
-                return ExitCodeFailure;
+                string? attachDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if (null == attachDirectory || !Directory.Exists(attachDirectory))
+                {
+                    WriteError(Invariant($"Directory '{attachDirectory}' does not exist."));
+                    return ExitCodeFailure;
+                }
+
+                string? toolsDirectory = Path.GetDirectoryName(attachDirectory);
+                if (null == toolsDirectory || !Directory.Exists(toolsDirectory))
+                {
+                    WriteError(Invariant($"Directory '{toolsDirectory}' does not exist."));
+                    return ExitCodeFailure;
+                }
+
+                rootDirectory = Path.GetDirectoryName(toolsDirectory);
             }
 
-            string? toolsDirectory = Path.GetDirectoryName(attachDirectory);
-            if (null == toolsDirectory || !Directory.Exists(toolsDirectory))
-            {
-                WriteError(Invariant($"Directory '{toolsDirectory}' does not exist."));
-                return ExitCodeFailure;
-            }
-
-            string? rootDirectory = Path.GetDirectoryName(toolsDirectory);
             if (null == rootDirectory || !Directory.Exists(rootDirectory))
             {
                 WriteError(Invariant($"Directory '{rootDirectory}' does not exist."));
