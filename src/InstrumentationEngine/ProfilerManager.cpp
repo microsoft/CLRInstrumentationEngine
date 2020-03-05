@@ -480,8 +480,8 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                     IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
 
                     for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
-                        it != settingsMap.end();
-                        ++it)
+                         it != settingsMap.end();
+                         ++it)
                     {
                         if (wcscmp(it->first.c_str(), _T("LogLevel")) == 0)
                         {

@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- root type -->
+    <xs:element name="InstrumentationConfigurationSources">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="InstrumentationConfigurationSource" maxOccurs="unbounded" type="InstrumentationConfigurationSourceType" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- level 1 types -->
+    <xs:complexType name="InstrumentationConfigurationSourceType">
+        <xs:sequence>
+            <xs:element name="Platforms" type="PlatformsType" />
+            <xs:element name="Settings" minOccurs="0" type="SettingsType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- level 2 types -->
+    <xs:complexType name="PlatformsType">
+        <xs:sequence>
+            <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded" type="PlatformType">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SettingsType">
+        <xs:sequence>
+            <xs:element name="Setting" maxOccurs="unbounded" type="SettingType" >
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- level 3 types -->
+    <xs:complexType name="PlatformType">
+        <xs:attribute name="Chip" use="required" type="ChipType" />
+        <xs:attribute name="Path" use="required" type="PathType" />
+    </xs:complexType>
+
+    <xs:complexType name="SettingType">
+        <xs:attribute name="Name" type="xs:string" use="required" />
+        <xs:attribute name="Value" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <!-- level 4 types -->
+    <xs:simpleType name="ChipType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="x86"/>
+            <xs:enumeration value="x64"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PathType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="260" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,4 +1,6 @@
 ﻿<Project>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
   <PropertyGroup>
     <SubComponent>Tools\Attach</SubComponent>
   </PropertyGroup>
@@ -14,9 +16,33 @@
     <Nullable>Enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <XsdSchemaFile Include="InstrumentationConfigurationSources.xsd">
+      <Namespace>Microsoft.InstrumentationEngine</Namespace>
+      <SubType>Designer</SubType>
+      <Visible>False</Visible>
+      <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
+      <Language>CS</Language>
+    </XsdSchemaFile>
+    <XsdSchemaFile Include="EngineConfiguration.xsd">
+      <Namespace>Microsoft.InstrumentationEngine</Namespace>
+      <SubType>Designer</SubType>
+      <Visible>False</Visible>
+      <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
+      <Language>CS</Language>
+    </XsdSchemaFile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="InstrumentationConfigurationSources.xsd" />
+    <EmbeddedResource Include="EngineConfiguration.xsd" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.61701" />
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
+  <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
+    <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
+    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
+  </Target>
 </Project>
