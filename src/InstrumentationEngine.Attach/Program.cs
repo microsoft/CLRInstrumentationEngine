@@ -87,7 +87,7 @@ namespace Microsoft.InstrumentationEngine
             using (XmlReader schemaReader = XmlReader.Create(schemaStream, new XmlReaderSettings() { XmlResolver = null, DtdProcessing = DtdProcessing.Prohibit }))
             {
                 // Create reader settings that conducts validation
-                XmlReaderSettings readerSettings = new XmlReaderSettings();
+                XmlReaderSettings readerSettings = new XmlReaderSettings() { XmlResolver = null, DtdProcessing = DtdProcessing.Prohibit };
                 readerSettings.Schemas.Add(string.Empty, schemaReader);
                 readerSettings.ValidationType = ValidationType.Schema;
 
