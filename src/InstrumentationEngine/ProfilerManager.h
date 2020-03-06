@@ -22,8 +22,6 @@ namespace MicrosoftInstrumentationEngine
 
     const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
 
-    const size_t WCharSizeInBytes = sizeof(WCHAR) / sizeof(BYTE);
-
     // This abstract class should be updated with new IProfilerManager interfaces.
     // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
     class IProfilerManagerContract :
@@ -82,7 +80,7 @@ namespace MicrosoftInstrumentationEngine
         vector<CComPtr<CConfigurationSource>> m_configSources;
 
         // The configuration xml for profiler attach.
-        LPCWSTR m_wszConfigXml;
+        tstring m_tstrConfigXml;
 
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;

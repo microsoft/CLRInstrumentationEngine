@@ -21,6 +21,7 @@
 #include "RawProfilerHookSettingsReader.h"
 #include "../Common.Lib/PathUtils.h"
 #endif
+#include "../InstrumentationEngine.Lib/Encoding.h"
 #include <algorithm>
 #include <XmlDocWrapper.h>
 
@@ -445,7 +446,7 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
     CComPtr<CXmlDocWrapper> pDocument;
     pDocument.Attach(new CXmlDocWrapper());
-    IfFailRet(pDocument->LoadContent(pProfilerManager->m_wszConfigXml));
+    IfFailRet(pDocument->LoadContent(pProfilerManager->m_tstrConfigXml.c_str()));
 
     CComPtr<CXmlNode> pDocumentNode;
     IfFailRet(pDocument->GetRootNode(&pDocumentNode));
@@ -2970,20 +2971,29 @@ HRESULT CProfilerManager::InitializeForAttach(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    UINT charCount = cbClientData / WCharSizeInBytes;
-    UINT bufferSize = charCount + 1; // add room for null terminator.
-    unique_ptr<WCHAR[]> wszConfigXml = make_unique<WCHAR[]>(bufferSize);
+    // Copy data to new buffer to ensure that it is null terminated.
 
-    LPCWSTR pData = reinterpret_cast<LPCWSTR>(pvClientData);
+    // Add one more to make room for null terminator.
+    size_t bufferSize = cbClientData + 1;
+    unique_ptr<char[]> pszConfigXml = make_unique<char[]>(bufferSize);
     IfFailRetErrno(
         memcpy_s(
-            wszConfigXml.get(),                 // Destination buffer
-            bufferSize * WCharSizeInBytes,      // Destination buffer size in Bytes
-            pData,                              // Source buffer
-            cbClientData                        // Source buffer size in Bytes
+            pszConfigXml.get(), // Destination buffer
+            bufferSize,         // Destination buffer size in Bytes
+            pvClientData,       // Source buffer
+            cbClientData        // Source buffer size in Bytes
+            ));
+    // Ensure that the data is null terminated.
+    pszConfigXml[bufferSize - 1] = 0;
+
+    // The data is UTF8 encoded; convert it to UTF16
+    CAutoVectorPtr<WCHAR> pwszConfigXml;
+    IfFailRet(CEncoding::ConvertUtf8ToUtf16(
+        pszConfigXml.get(),
+        pwszConfigXml
         ));
 
-    m_wszConfigXml = wszConfigXml.release();
+    m_tstrConfigXml = pwszConfigXml.m_p;
 
     IfFailRet(InvokeThreadRoutine(ParseAttachConfigurationThreadProc));
 
