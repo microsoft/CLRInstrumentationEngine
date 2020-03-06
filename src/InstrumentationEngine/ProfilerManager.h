@@ -82,7 +82,7 @@ namespace MicrosoftInstrumentationEngine
         vector<CComPtr<CConfigurationSource>> m_configSources;
 
         // The configuration xml for profiler attach.
-        LPCWSTR m_wszConfigXml;
+        tstring m_tstrConfigXml;
 
         // list of loaded instrumentation method guids
         std::vector<GUID> m_instrumentationMethodGuids;
