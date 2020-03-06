@@ -67,6 +67,12 @@ namespace Microsoft.InstrumentationEngine
                 WriteError(Invariant($"Could not find file '{configFilePath}'."));
                 return ExitCodeFailure;
             }
+            string? configFileDirectory = Path.GetDirectoryName(configFilePath);
+            if (null == configFileDirectory || !Directory.Exists(configFileDirectory))
+            {
+                WriteError(Invariant($"Could not find directory '{configFileDirectory}'."));
+                return ExitCodeFailure;
+            }
 
             #endregion
 
@@ -184,6 +190,7 @@ namespace Microsoft.InstrumentationEngine
             #region Generate Engine Configuration
             // Create CLRIE configuration object for XML serialziation
             if (!TryParseEngineConfiguration(
+                    configFileDirectory,
                     configSources,
                     isTargetProcess32Bit ? ChipType.x86 : ChipType.x64,
                     out InstrumentationEngineConfiguration engineConfig))
@@ -252,6 +259,7 @@ namespace Microsoft.InstrumentationEngine
         }
 
         private static bool TryParseEngineConfiguration(
+            string configSourceDirectory,
             InstrumentationConfigurationSources sources,
             ChipType targetChip,
             out InstrumentationEngineConfiguration configuration)
@@ -290,7 +298,7 @@ namespace Microsoft.InstrumentationEngine
                         {
                             if (platform.Chip.Equals(targetChip))
                             {
-                                string configFullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), platform.Path));
+                                string configFullPath = Path.GetFullPath(Path.Combine(configSourceDirectory, platform.Path));
                                 var methodSettings = new List<SettingsTypeSetting>();
                                 var methodSection = new InstrumentationMethodsTypeAddInstrumentationMethod();
                                 if (File.Exists(configFullPath))
