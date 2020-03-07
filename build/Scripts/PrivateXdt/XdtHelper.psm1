@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-function Get-ClrieXmlEntries {
+function Get-ClrieXmlEntriesToAdd {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$false)]
@@ -12,6 +12,34 @@ function Get-ClrieXmlEntries {
         [Switch]
         $DisableSignatureValidation
     )
+
+    Write-Output @{
+        element     = 'add'
+        name        = 'COR_ENABLE_PROFILING'
+        transform   = 'RemoveAll'
+        destination = "configuration.'system.webServer'.runtime.environmentVariables"
+    }
+
+    Write-Output @{
+        element     = 'add'
+        name        = 'COR_PROFILER'
+        transform   = 'RemoveAll'
+        destination = "configuration.'system.webServer'.runtime.environmentVariables"
+    }
+
+    Write-Output @{
+        element     = 'add'
+        name        = 'COR_PROFILER_PATH_32'
+        transform   = 'RemoveAll'
+        destination = "configuration.'system.webServer'.runtime.environmentVariables"
+    }
+
+    Write-Output @{
+        element     = 'add'
+        name        = 'COR_PROFILER_PATH_64'
+        transform   = 'RemoveAll'
+        destination = "configuration.'system.webServer'.runtime.environmentVariables"
+    }
 
     Write-Output @{
         element     = 'add'
@@ -43,30 +71,19 @@ function Get-ClrieXmlEntries {
 
     Write-Output @{
         element     = 'add'
-        name        = 'COR_ENABLE_PROFILING'
+        name        = 'MicrosoftInstrumentationEngine_IsPreinstalled'
         transform   = 'RemoveAll'
         destination = "configuration.'system.webServer'.runtime.environmentVariables"
     }
 
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER_PATH_32'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER_PATH_64'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
+    if ($DebugWait) {
+        Write-Output @{
+            element     = 'add'
+            name        = 'MicrosoftInstrumentationEngine_DebugWait'
+            value       = '1'
+            transform   = 'InsertIfMissing'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
     }
 
     if ($DisableSignatureValidation) {
@@ -78,15 +95,26 @@ function Get-ClrieXmlEntries {
             destination = "configuration.'system.webServer'.runtime.environmentVariables"
         }
     }
+}
 
-    if ($DebugWait) {
-        Write-Output @{
-            element     = 'add'
-            name        = 'MicrosoftInstrumentationEngine_DebugWait'
-            value       = '1'
-            transform   = 'InsertIfMissing'
-            destination = "configuration.'system.webServer'.runtime.environmentVariables"
-        }
+function Get-ClrieXmlEntriesToRemove {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$false)]
+        [Switch]
+        $ForAttach
+    )
+
+    if ($ForAttach) {
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_ENABLE_PROFILING']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER_PATH_32']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER_PATH_64']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_ENABLE_PROFILING']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_32']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_64']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='MicrosoftInstrumentationEngine_IsPreinstalled']"
     }
 }
 
@@ -101,10 +129,23 @@ function Edit-XdtContent {
         [Parameter(Mandatory=$true)]
         [ValidateNotNull()]
         [Object[]]
-        $XmlEntries
+        $XmlEntriesToAdd,
+
+        [Parameter(Mandatory=$false)]
+        [string[]]
+        $XmlEntriesToRemove
     )
 
-    foreach ($entry in $XmlEntries) {
+    foreach ($entry in $XmlEntriesToRemove) {
+        $elem = $XdtFile.SelectSingleNode($entry)
+        [void]$elem.ParentNode.RemoveChild($elem)
+    }
+
+    # These elements are prepended to the first child element of their destination.
+    # Reverse the array in order to maintain the declared order of the elements.
+    [array]::Reverse($XmlEntriesToAdd)
+
+    foreach ($entry in $XmlEntriesToAdd) {
         $elem = $XdtFile.CreateElement($entry.element)
         if ($entry.name) {
             [void]$elem.SetAttribute("name", $entry.name)

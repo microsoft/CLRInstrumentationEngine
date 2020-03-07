@@ -27,7 +27,11 @@ param(
 
     [Parameter(Mandatory=$false)]
     [Switch]
-    $DisableSignatureValidation
+    $DisableSignatureValidation,
+
+    [Parameter(Mandatory=$false)]
+    [Switch]
+    $ForAttach
 )
 
 Import-Module "$PSScriptRoot\XdtHelper.psm1" -Force
@@ -38,11 +42,15 @@ $ErrorActionPreference = 'Stop'
 [xml]$xdtFile = Get-Content $InputXdtFilePath -Raw
 
 Write-Host "Applying changes..."
-$params = @{
+$addParams = @{
     DisableSignatureValidation = $DisableSignatureValidation
     DebugWait                  = $DebugWait
 }
-Edit-XdtContent -XdtFile $xdtFile -XmlEntries (Get-ClrieXmlEntries @params)
+$removeParams = @{
+    ForAttach = $ForAttach
+}
+
+Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams) -XmlEntriesToRemove (Get-ClrieXmlEntriesToRemove @removeParams)
 
 Write-Host "Saving changes..."
 # This nicely formats the XML
