@@ -91,6 +91,13 @@ function Get-ClrieXmlEntriesToAdd {
             destination = "configuration.'system.webServer'.runtime.environmentVariables"
         }
 
+        Write-Output @{
+            element     = 'add'
+            name        = 'MicrosoftInstrumentationEngine_LogLevel'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
         if ($DebugWait) {
             Write-Output @{
                 element     = 'add'
@@ -136,6 +143,7 @@ function Get-ClrieXmlEntriesToRemove {
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_32']"
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_64']"
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='MicrosoftInstrumentationEngine_IsPreinstalled']"
+        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='MicrosoftInstrumentationEngine_LogLevel']"
     }
 }
 
