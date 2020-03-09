@@ -31,7 +31,11 @@ param(
 
     [Parameter(Mandatory=$false)]
     [Switch]
-    $ForAttach
+    $Attach,
+
+    [Parameter(Mandatory=$false)]
+    [Switch]
+    $Scm
 )
 
 Import-Module "$PSScriptRoot\XdtHelper.psm1" -Force
@@ -45,9 +49,11 @@ Write-Host "Applying changes..."
 $addParams = @{
     DisableSignatureValidation = $DisableSignatureValidation
     DebugWait                  = $DebugWait
+    Scm                        = $Scm
 }
 $removeParams = @{
-    ForAttach = $ForAttach
+    Attach = $Attach
+    Scm    = $Scm
 }
 
 Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams) -XmlEntriesToRemove (Get-ClrieXmlEntriesToRemove @removeParams)

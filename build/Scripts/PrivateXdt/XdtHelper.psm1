@@ -10,91 +10,108 @@ function Get-ClrieXmlEntriesToAdd {
 
         [Parameter(Mandatory=$false)]
         [Switch]
-        $DisableSignatureValidation
+        $DisableSignatureValidation,
+
+        [Parameter(Mandatory=$false)]
+        [Switch]
+        $Scm
     )
 
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_ENABLE_PROFILING'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER_PATH_32'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'COR_PROFILER_PATH_64'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'CORECLR_ENABLE_PROFILING'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'CORECLR_PROFILER'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'CORECLR_PROFILER_PATH_32'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'CORECLR_PROFILER_PATH_64'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    Write-Output @{
-        element     = 'add'
-        name        = 'MicrosoftInstrumentationEngine_IsPreinstalled'
-        transform   = 'RemoveAll'
-        destination = "configuration.'system.webServer'.runtime.environmentVariables"
-    }
-
-    if ($DebugWait) {
+    if ($Scm)
+    {
         Write-Output @{
             element     = 'add'
-            name        = 'MicrosoftInstrumentationEngine_DebugWait'
-            value       = '1'
-            transform   = 'InsertIfMissing'
+            name        = 'MicrosoftInstrumentationEngine_InstallationRoot'
+            transform   = 'RemoveAll'
             destination = "configuration.'system.webServer'.runtime.environmentVariables"
         }
     }
-
-    if ($DisableSignatureValidation) {
+    else
+    {
         Write-Output @{
             element     = 'add'
-            name        = 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation'
-            value       = '1'
-            transform   = 'InsertIfMissing'
+            name        = 'COR_ENABLE_PROFILING'
+            transform   = 'RemoveAll'
             destination = "configuration.'system.webServer'.runtime.environmentVariables"
         }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'COR_PROFILER'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'COR_PROFILER_PATH_32'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'COR_PROFILER_PATH_64'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'CORECLR_ENABLE_PROFILING'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'CORECLR_PROFILER'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'CORECLR_PROFILER_PATH_32'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'CORECLR_PROFILER_PATH_64'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        Write-Output @{
+            element     = 'add'
+            name        = 'MicrosoftInstrumentationEngine_IsPreinstalled'
+            transform   = 'RemoveAll'
+            destination = "configuration.'system.webServer'.runtime.environmentVariables"
+        }
+
+        if ($DebugWait) {
+            Write-Output @{
+                element     = 'add'
+                name        = 'MicrosoftInstrumentationEngine_DebugWait'
+                value       = '1'
+                transform   = 'InsertIfMissing'
+                destination = "configuration.'system.webServer'.runtime.environmentVariables"
+            }
+        }
+
+        if ($DisableSignatureValidation) {
+            Write-Output @{
+                element     = 'add'
+                name        = 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation'
+                value       = '1'
+                transform   = 'InsertIfMissing'
+                destination = "configuration.'system.webServer'.runtime.environmentVariables"
+            }
+        }
     }
+
 }
 
 function Get-ClrieXmlEntriesToRemove {
@@ -102,10 +119,14 @@ function Get-ClrieXmlEntriesToRemove {
     param (
         [Parameter(Mandatory=$false)]
         [Switch]
-        $ForAttach
+        $Attach,
+
+        [Parameter(Mandatory=$false)]
+        [Switch]
+        $Scm
     )
 
-    if ($ForAttach) {
+    if ($Attach -and -not $Scm) {
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_ENABLE_PROFILING']"
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER']"
         Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER_PATH_32']"
