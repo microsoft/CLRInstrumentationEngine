@@ -122,6 +122,9 @@ namespace MicrosoftInstrumentationEngine
         HRESULT SetLoggingFlags(_In_ LoggingFlags loggingFlags);
         HRESULT UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
+        HRESULT SetLogFilePath(_In_ LPCWSTR wszLogFilePath);
+        HRESULT SetLogFileLevel(_In_ LoggingFlags fileLogFlags);
+
         HRESULT Shutdown();
 
     protected:

@@ -490,11 +490,11 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                         }
                         else if (wcscmp(it->first.c_str(), _T("LogFileLevel")) == 0)
                         {
-                            ::SetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLog"), it->second.c_str());
+                            CLogging::SetLogFileLevel(CLoggerService::ExtractLoggingFlags(it->second.c_str()));
                         }
                         else if (wcscmp(it->first.c_str(), _T("LogFilePath")) == 0)
                         {
-                            ::SetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_FileLogPath"), it->second.c_str());
+                            CLogging::SetLogFilePath(it->second.c_str());
                         }
                     }
                 }

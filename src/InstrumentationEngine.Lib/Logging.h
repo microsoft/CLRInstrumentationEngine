@@ -80,6 +80,9 @@ namespace MicrosoftInstrumentationEngine
 
         static HRESULT Shutdown();
 
+        static HRESULT SetLogFilePath(_In_ LPCWSTR wszLogFilePath);
+        static HRESULT SetLogFileLevel(_In_ LoggingFlags fileLogFlags);
+
     private:
         static HRESULT InitializeCore();
     };
