@@ -235,8 +235,10 @@ HRESULT CFileLoggerSink::GetPathAndFlags(_Out_ tstring* ptsPath, _Out_ LoggingFl
 
 HRESULT CFileLoggerSink::SetLogFilePath(_In_ LPCWSTR wszLogFilePath)
 {
-    m_pOutputFile = nullptr; // resets the pointer & releases the FILE object.
     m_tsPathCandidate = wszLogFilePath;
+
+    m_pOutputFile = nullptr; // resets the pointer & releases the FILE 
+    m_tsPathActual.clear();
 
     return S_OK;
 }
@@ -244,6 +246,9 @@ HRESULT CFileLoggerSink::SetLogFilePath(_In_ LPCWSTR wszLogFilePath)
 HRESULT CFileLoggerSink::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
 {
     m_flags = fileLogFlags;
+
+    m_pOutputFile = nullptr; // resets the pointer & releases the FILE object
+    m_tsPathActual.clear();
  
     return S_OK;
 }
