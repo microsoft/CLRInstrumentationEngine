@@ -237,7 +237,7 @@ HRESULT CFileLoggerSink::SetLogFilePath(_In_ LPCWSTR wszLogFilePath)
 {
     m_tsPathCandidate = wszLogFilePath;
 
-    m_pOutputFile = nullptr; // resets the pointer & releases the FILE 
+    m_pOutputFile = nullptr; // resets the pointer & releases the FILE object
     m_tsPathActual.clear();
 
     return S_OK;
