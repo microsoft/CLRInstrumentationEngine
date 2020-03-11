@@ -129,6 +129,10 @@ namespace Microsoft.InstrumentationEngine {
         
         private string valueField;
         
+        private bool isPathField;
+        
+        private bool isPathFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
         public string Name {
@@ -148,6 +152,28 @@ namespace Microsoft.InstrumentationEngine {
             }
             set {
                 this.valueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool IsPath {
+            get {
+                return this.isPathField;
+            }
+            set {
+                this.isPathField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool IsPathSpecified {
+            get {
+                return this.isPathFieldSpecified;
+            }
+            set {
+                this.isPathFieldSpecified = value;
             }
         }
     }

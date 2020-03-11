@@ -316,11 +316,25 @@ namespace Microsoft.InstrumentationEngine
                                 {
                                     foreach (var setting in source.Settings)
                                     {
-                                        methodSettings.Add(new SettingsTypeSetting()
+                                        if (setting.IsPathSpecified &&
+                                            setting.IsPath)
                                         {
-                                            Name = setting.Name,
-                                            Value = setting.Value
-                                        });
+                                            // Assumes path is relative, however Path.Combine will ignore all arguments left of one that is absolute.
+                                            string fullPath = Path.Combine(configSourceDirectory, setting.Value);
+                                            methodSettings.Add(new SettingsTypeSetting()
+                                            {
+                                                Name = setting.Name,
+                                                Value = fullPath
+                                            });
+                                        }
+                                        else
+                                        {
+                                            methodSettings.Add(new SettingsTypeSetting()
+                                            {
+                                                Name = setting.Name,
+                                                Value = setting.Value
+                                            });
+                                        }
                                     }
 
                                     methodSection.Settings = methodSettings.ToArray();
