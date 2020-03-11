@@ -316,25 +316,23 @@ namespace Microsoft.InstrumentationEngine
                                 {
                                     foreach (var setting in source.Settings)
                                     {
+                                        string settingValue;
                                         if (setting.IsPathSpecified &&
                                             setting.IsPath)
                                         {
                                             // Assumes path is relative, however Path.Combine will ignore all arguments left of one that is absolute.
-                                            string fullPath = Path.Combine(configSourceDirectory, setting.Value);
-                                            methodSettings.Add(new SettingsTypeSetting()
-                                            {
-                                                Name = setting.Name,
-                                                Value = fullPath
-                                            });
+                                            settingValue = Path.Combine(configSourceDirectory, setting.Value);
                                         }
                                         else
                                         {
-                                            methodSettings.Add(new SettingsTypeSetting()
-                                            {
-                                                Name = setting.Name,
-                                                Value = setting.Value
-                                            });
+                                            settingValue = setting.Value;
                                         }
+
+                                        methodSettings.Add(new SettingsTypeSetting()
+                                        {
+                                            Name = setting.Name,
+                                            Value = settingValue
+                                        });
                                     }
 
                                     methodSection.Settings = methodSettings.ToArray();
