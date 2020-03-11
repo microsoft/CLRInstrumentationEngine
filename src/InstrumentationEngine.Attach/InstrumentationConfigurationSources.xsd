@@ -43,6 +43,7 @@
     <xs:complexType name="SettingType">
         <xs:attribute name="Name" type="xs:string" use="required" />
         <xs:attribute name="Value" type="xs:string" use="required" />
+        <xs:attribute name="IsPath" type="xs:boolean" use="optional" />
     </xs:complexType>
 
     <!-- level 4 types -->
