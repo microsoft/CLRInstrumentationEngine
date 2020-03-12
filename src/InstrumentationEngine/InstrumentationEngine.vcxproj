@@ -148,7 +148,7 @@
     <ClCompile Include="TokenType.cpp" />
     <ClCompile Include="Type.cpp" />
     <ClCompile Include="TypeCreator.cpp" />
-    <ClInclude Include="ProfilerManagerForInstrumentationMethod.h" />
+    <ClInclude Include="*.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InstrumentationEngine.Lib\InstrumentationEngine.Lib.vcxproj">

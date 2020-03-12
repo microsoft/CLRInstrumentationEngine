@@ -16,6 +16,19 @@
 
 using namespace ATL;
 
+// The following fixes Error C2280 'std::_Uhash_compare<_Kty,_Hasher,_Keyeq>::_Uhash_compare(const std::_Uhash_compare<_Kty,_Hasher,_Keyeq> &)': attempting to reference a deleted function
+// which occurs when compiling using GUID key for std::unordered_map
+namespace std {
+    template<> struct hash<GUID>
+    {
+        size_t operator()(const GUID& guid) const noexcept {
+            const std::uint64_t* p = reinterpret_cast<const std::uint64_t*>(&guid);
+            std::hash<std::uint64_t> hash;
+            return hash(p[0]) ^ hash(p[1]);
+        }
+    };
+}
+
 namespace MicrosoftInstrumentationEngine
 {
     typedef vector<pair<shared_ptr<CInstrumentationMethod>, DWORD>> TInstrumentationMethodsCollection;
@@ -111,10 +124,14 @@ namespace MicrosoftInstrumentationEngine
         // If flag set - only trusted instrumentation methods can be loaded
         bool m_bValidateCodeSignature;
 
-        // Map of method infos by function id. This is needed becasue some raw profiler
+        // Map of method infos by function id. This is needed because some raw profiler
         // callbacks only take a FunctionID instead of a moduleid / functionid
         // these are cleaned up after instrumentation for the method is over.
         std::unordered_map<FunctionID, CComPtr<CMethodInfo>> m_methodInfos;
+
+        // Map of method id to loglevel.
+        std::unordered_map<GUID, LoggingFlags> m_methodLogLevel;
+
 
         // private nested class for holding the raw pointers to the callbacks.
         // This just makes it easy to have the destructor do Release while allowing for
@@ -223,6 +240,9 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
         HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
         HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
+
+        HRESULT GetInstrumentationMethodLogLevel(_In_ GUID guidMethod, _Out_ LoggingFlags* pLoggingFlag);
+
         // IUnknown
     public:
         BEGIN_COM_MAP(CProfilerManager)

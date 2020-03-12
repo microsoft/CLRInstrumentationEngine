@@ -537,6 +537,27 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                                  it != settingsMap.end();
                                  ++it)
                             {
+                                if (wcsncmp(it->first.c_str(), _T("MicrosoftInstrumentationEngine_LogLevel_"), 40) == 0)
+                                {
+                                    // Parse the GUID
+                                    GUID guidMethod;
+                                    hr = IIDFromString(it->first.c_str(), (LPCLSID)&guidMethod);
+
+                                    // Store the {GUID, LogLevel} pair
+                                    if (SUCCEEDED(hr))
+                                    {
+                                        unordered_map<GUID, LoggingFlags>::iterator itMethodLogLevel = pProfilerManager->m_methodLogLevel.find(guidMethod);
+                                        if (itMethodLogLevel != pProfilerManager->m_methodLogLevel.end())
+                                        {
+                                            pProfilerManager->m_methodLogLevel.insert({ guidMethod, CLoggerService::ExtractLoggingFlags(it->second.c_str()) });
+                                        }
+                                        else
+                                        {
+                                            pProfilerManager->m_methodLogLevel[guidMethod] = CLoggerService::ExtractLoggingFlags(it->second.c_str());
+                                        }
+                                    }
+                                }
+
                                 IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
                             }
                         }
@@ -1221,6 +1242,21 @@ DWORD CProfilerManager::GetDefaultEventMask()
         COR_PRF_MONITOR_JIT_COMPILATION |
         COR_PRF_ENABLE_REJIT
         ;
+}
+
+HRESULT CProfilerManager::GetInstrumentationMethodLogLevel(_In_ GUID guidMethod, _Out_ LoggingFlags* pLoggingFlag)
+{
+    HRESULT hr = S_OK;
+    IfNullRetPointer(pLoggingFlag);
+
+    unordered_map<GUID, LoggingFlags>::iterator it = m_methodLogLevel.find(guidMethod);
+    if (it != m_methodLogLevel.end())
+    {
+        *pLoggingFlag = it->second;
+        return S_OK;
+    }
+
+    return TYPE_E_ELEMENTNOTFOUND;
 }
 
 HRESULT CProfilerManager::Shutdown()

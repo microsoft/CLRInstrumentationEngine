@@ -29,7 +29,13 @@ CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMeth
         // Get InstrumentationMethod-specific LogLevel Environment Variable
         tstring wszInstrumentationMethodLogLevelEnvVar = _T("MicrosoftInstrumentationEngine_LogLevel_") + m_wszInstrumentationMethodGuid;
         WCHAR wszEnvVar[MAX_PATH];
-        if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
+        LoggingFlags flags;
+
+        if (SUCCEEDED(pProfilerManager->GetInstrumentationMethodLogLevel(instrumentationMethodGuid, &flags)))
+        {
+            m_flags = flags;
+        }
+        else if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
         {
             m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
         }
