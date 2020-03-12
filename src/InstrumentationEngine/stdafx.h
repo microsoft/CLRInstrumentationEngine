@@ -56,6 +56,7 @@ using namespace ATL;
 // in CMakeFile.txt
 #define wcsstr        PAL_wcsstr
 #define wcscmp        PAL_wcscmp
+#define wcsncmp       PAL_wcsncmp
 #endif
 
 #include <vector>

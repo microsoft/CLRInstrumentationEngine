@@ -541,7 +541,8 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                                 {
                                     // Parse the GUID
                                     GUID guidMethod;
-                                    hr = IIDFromString(it->first.c_str(), (LPCLSID)&guidMethod);
+                                    CComBSTR bstrMethodGuid = it->first.c_str();
+                                    hr = IIDFromString(bstrMethodGuid, (LPCLSID)&guidMethod);
 
                                     // Store the {GUID, LogLevel} pair
                                     if (SUCCEEDED(hr))
@@ -1256,7 +1257,7 @@ HRESULT CProfilerManager::GetInstrumentationMethodLogLevel(_In_ GUID guidMethod,
         return S_OK;
     }
 
-    return TYPE_E_ELEMENTNOTFOUND;
+    return E_FAIL;
 }
 
 HRESULT CProfilerManager::Shutdown()
