@@ -537,12 +537,16 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                                  it != settingsMap.end();
                                  ++it)
                             {
+                                // Assume format is:
+                                // MicrosoftInstrumentationEngine_LogLevel_12341234-1234-1234-1234-123412341234
                                 if (wcsncmp(it->first.c_str(), _T("MicrosoftInstrumentationEngine_LogLevel_"), 40) == 0)
                                 {
-                                    // Parse the GUID
+                                    // Parse the GUID, IIDFromString requires curly brackets around GUID.
                                     GUID guidMethod;
-                                    CComBSTR bstrMethodGuid = it->first.c_str();
-                                    hr = IIDFromString(bstrMethodGuid, (LPCLSID)&guidMethod);
+                                    tstring tsGuid = _T("{");
+                                    tsGuid.append(it->first.substr(40, 36));
+                                    tsGuid.append(_T("}"));
+                                    hr = IIDFromString(tsGuid.c_str(), (LPCLSID)&guidMethod);
 
                                     // Store the {GUID, LogLevel} pair
                                     if (SUCCEEDED(hr))
