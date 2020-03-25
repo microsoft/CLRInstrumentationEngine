@@ -31,10 +31,6 @@ param(
 
     [Parameter(Mandatory=$false)]
     [Switch]
-    $Attach,
-
-    [Parameter(Mandatory=$false)]
-    [Switch]
     $Scm
 )
 
@@ -51,12 +47,8 @@ $addParams = @{
     DebugWait                  = $DebugWait
     Scm                        = $Scm
 }
-$removeParams = @{
-    Attach = $Attach
-    Scm    = $Scm
-}
 
-Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams) -XmlEntriesToRemove (Get-ClrieXmlEntriesToRemove @removeParams)
+Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams)
 
 Write-Host "Saving changes..."
 # This nicely formats the XML

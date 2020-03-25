@@ -99,12 +99,9 @@
       <XdtCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)applicationHost.xdt&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</XdtCommonArguments>
       <XdtScmCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)scmApplicationHost.xdt&apos; -Scm</XdtScmCommonArguments>
       <XdtOutputDir>$(OutDir)Xdt\InstrumentationEngine</XdtOutputDir>
-      <XdtAttachOutputDir>$(OutDir)Xdt\InstrumentationEngine\Attach</XdtAttachOutputDir>
     </PropertyGroup>
     <MakeDir Directories="$(XdtOutputDir);$(XdtAttachOutputDir)" />
     <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\applicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath &apos;$(XdtAttachOutputDir)\applicationhost.xdt&apos; -Attach } &quot;" />
     <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\scmApplicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath &apos;$(XdtAttachOutputDir)\scmApplicationhost.xdt&apos; -Attach } &quot;" />
   </Target>
 </Project>
