@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Modul
 		{1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD} = {1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.SiteExtensionTestHelper", "InstrumentationEngine.SiteExtensionTestHelper\InstrumentationEngine.SiteExtensionTestHelper.csproj", "{1F780CEA-27DD-44CE-91AA-B6728D3051AB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,18 +125,6 @@ Global
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x64.ActiveCfg = Release|x64
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x64.Build.0 = Release|x64
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x86.ActiveCfg = Release|x64
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x64.Build.0 = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x86.Build.0 = Debug|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x64.ActiveCfg = Release|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x64.Build.0 = Release|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x86.ActiveCfg = Release|Any CPU
-		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
