@@ -23,7 +23,6 @@
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="extension.xml" />
     <None Include="scmApplicationHost.xdt" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
@@ -35,8 +34,6 @@
   </PropertyGroup>
   <Target Name="ZipFiles">
     <ItemGroup>
-      <!-- extension.xml -->
-      <ZipItem Include="extension.xml" />
       <!-- xdt files -->
       <ZipItem Include="scmApplicationHost.xdt">
         <Destination>$(PackageVersion)</Destination>
