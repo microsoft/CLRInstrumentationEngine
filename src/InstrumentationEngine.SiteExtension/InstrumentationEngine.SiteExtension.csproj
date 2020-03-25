@@ -99,10 +99,7 @@
       <ApplicationHostCommonParams>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)applicationHost.xdt&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</ApplicationHostCommonParams>
       <ScmApplicationHostCommonParams>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)scmApplicationHost.xdt&apos; -Scm</ScmApplicationHostCommonParams>
     </PropertyGroup>
-    <MakeDir Directories="$(OutDir)AttachXdt" />
     <Exec Command="$(GenerationPowerShellCommand) &quot;&amp; { &amp; $(GenerationScriptPath) $(ApplicationHostCommonParams) -OutputXdtFilePath &apos;$(OutDir)applicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(GenerationPowerShellCommand) &quot;&amp; { &amp; $(GenerationScriptPath) $(ApplicationHostCommonParams) -OutputXdtFilePath &apos;$(OutDir)AttachXdt\applicationhost.xdt&apos; -Attach } &quot;" />
     <Exec Command="$(GenerationPowerShellCommand) &quot;&amp; { &amp; $(GenerationScriptPath) $(ScmApplicationHostCommonParams) -OutputXdtFilePath &apos;$(OutDir)scmApplicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(GenerationPowerShellCommand) &quot;&amp; { &amp; $(GenerationScriptPath) $(ScmApplicationHostCommonParams) -OutputXdtFilePath &apos;$(OutDir)AttachXdt\scmApplicationhost.xdt&apos; -Attach } &quot;" />
   </Target>
 </Project>

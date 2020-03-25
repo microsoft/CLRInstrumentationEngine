@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29407.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Preinstall", "InstrumentationEngine.Preinstall\InstrumentationEngine.Preinstall.csproj", "{0CA8A56A-B19D-4B69-82A2-3DCBD95F8A05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.SiteExtension", "InstrumentationEngine.SiteExtension\InstrumentationEngine.SiteExtension.csproj", "{0CA8A56A-B19D-4B69-82A2-3DCBD95F8A05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Nuget.Headers", "InstrumentationEngine.NuGet.Headers\InstrumentationEngine.Nuget.Headers.csproj", "{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}"
 EndProject
@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Modul
 	ProjectSection(ProjectDependencies) = postProject
 		{1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD} = {1224C7A6-57C8-4758-8FE8-C8AF4A3DA2AD}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.SiteExtensionTestHelper", "InstrumentationEngine.SiteExtensionTestHelper\InstrumentationEngine.SiteExtensionTestHelper.csproj", "{1F780CEA-27DD-44CE-91AA-B6728D3051AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x64.ActiveCfg = Release|x64
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x64.Build.0 = Release|x64
 		{59CC768D-2E07-4FD9-8013-2EBC3898FEED}.Release|x86.ActiveCfg = Release|x64
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x64.Build.0 = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x64.ActiveCfg = Release|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x64.Build.0 = Release|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F780CEA-27DD-44CE-91AA-B6728D3051AB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
