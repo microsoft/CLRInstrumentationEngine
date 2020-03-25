@@ -121,32 +121,6 @@ function Get-ClrieXmlEntriesToAdd {
 
 }
 
-function Get-ClrieXmlEntriesToRemove {
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory=$false)]
-        [Switch]
-        $Attach,
-
-        [Parameter(Mandatory=$false)]
-        [Switch]
-        $Scm
-    )
-
-    if ($Attach -and -not $Scm) {
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_ENABLE_PROFILING']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER_PATH_32']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='CORECLR_PROFILER_PATH_64']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_ENABLE_PROFILING']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_32']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='COR_PROFILER_PATH_64']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='MicrosoftInstrumentationEngine_IsPreinstalled']"
-        Write-Output "/configuration/system.webServer/runtime/environmentVariables/add[@name='MicrosoftInstrumentationEngine_LogLevel']"
-    }
-}
-
 function Edit-XdtContent {
     [CmdletBinding()]
     param (
@@ -158,17 +132,8 @@ function Edit-XdtContent {
         [Parameter(Mandatory=$true)]
         [ValidateNotNull()]
         [Object[]]
-        $XmlEntriesToAdd,
-
-        [Parameter(Mandatory=$false)]
-        [string[]]
-        $XmlEntriesToRemove
+        $XmlEntriesToAdd
     )
-
-    foreach ($entry in $XmlEntriesToRemove) {
-        $elem = $XdtFile.SelectSingleNode($entry)
-        [void]$elem.ParentNode.RemoveChild($elem)
-    }
 
     # These elements are prepended to the first child element of their destination.
     # Reverse the array in order to maintain the declared order of the elements.
