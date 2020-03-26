@@ -164,6 +164,10 @@ namespace Microsoft.InstrumentationEngine
 
                 rootDirectory = Path.GetDirectoryName(toolsDirectory);
             }
+            else
+            {
+                rootDirectory = Environment.ExpandEnvironmentVariables(rootDirectory);
+            }
 
             if (null == rootDirectory || !Directory.Exists(rootDirectory))
             {
