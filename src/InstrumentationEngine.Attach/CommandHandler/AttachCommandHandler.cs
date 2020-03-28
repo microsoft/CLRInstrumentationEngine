@@ -261,6 +261,9 @@ namespace Microsoft.InstrumentationEngine
                 WriteError(Invariant($"Engine path '{enginePath}' does not exist."));
                 return ExitCodeFailure;
             }
+
+            WriteMessage($"Engine path: {enginePath}");
+
             #endregion
 
             #region Profiler Attach
@@ -278,12 +281,18 @@ namespace Microsoft.InstrumentationEngine
             }
             #endregion
 
+            WriteMessage($"Successfully attached the engine.");
             return ExitCodeSuccess;
         }
 
         private static void WriteError(string message)
         {
             Console.Error.WriteLine(message);
+        }
+
+        private static void WriteMessage(FormattableString formattable)
+        {
+            Console.WriteLine(Invariant(formattable));
         }
 
         private static InstrumentationEngineConfigurationInstrumentationEngine GenerateEngineConfiguration(
