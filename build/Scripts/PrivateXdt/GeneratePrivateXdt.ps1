@@ -19,7 +19,7 @@ param(
     [ValidateNotNullOrEmpty()]
     [ValidateScript({ Test-Path $_ })]
     [String]
-    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.Preinstall\applicationHost.xdt",
+    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.SiteExtension\applicationHost.xdt",
 
     [Parameter(Mandatory=$false)]
     [Switch]
@@ -48,7 +48,7 @@ $addParams = @{
     Scm                        = $Scm
 }
 
-Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams)
+Edit-XdtContent -XdtFile $xdtFile -XmlEntryOperations (Get-ClrieXmlEntryOperations @addParams)
 
 Write-Host "Saving changes..."
 # This nicely formats the XML

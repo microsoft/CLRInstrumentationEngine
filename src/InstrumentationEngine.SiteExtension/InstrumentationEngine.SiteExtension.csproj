@@ -46,8 +46,7 @@
         <Destination>$(PackageVersion)</Destination>
       </ZipItem>
       <!-- Tools -->
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
-               Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*" Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
         <Destination>$(PackageVersion)\Tools\Attach</Destination>
       </ZipItem>
       <!-- Instrumentationx86Files -->
@@ -78,15 +77,13 @@
       </ZipItem>
     </ItemGroup>
 
-    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipFileName)"
-                    Files="@(ZipItem)" />
+    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipFileName)" Files="@(ZipItem)" />
 
     <ItemGroup>
       <FileWrites Include="$(IntermediateOutputPath)\$(ZipFileName)" />
     </ItemGroup>
 
-    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName)"
-          DestinationFolder="$(OutDir)">
+    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName)" DestinationFolder="$(OutDir)">
       <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
     </Copy>
   </Target>
@@ -96,12 +93,12 @@
       <XdtGenerationScriptPath>$(BuildFilesDir)\Scripts\PrivateXdt\GeneratePrivateXdt.ps1</XdtGenerationScriptPath>
       <XDT_DISABLESIGNATUREVALIDATION Condition=" '$(XDT_DISABLESIGNATUREVALIDATION)'=='' ">$True</XDT_DISABLESIGNATUREVALIDATION>
       <XDT_DEBUGWAIT Condition=" '$(XDT_DEBUGWAIT)'=='' ">$False</XDT_DEBUGWAIT>
-      <XdtCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)applicationHost.xdt&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</XdtCommonArguments>
-      <XdtScmCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)scmApplicationHost.xdt&apos; -Scm</XdtScmCommonArguments>
+      <XdtCommonArguments>-InputXdtFilePath '$(MSBuildThisFileDirectory)applicationHost.xdt' -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</XdtCommonArguments>
+      <XdtScmCommonArguments>-InputXdtFilePath '$(MSBuildThisFileDirectory)scmApplicationHost.xdt' -Scm</XdtScmCommonArguments>
       <XdtOutputDir>$(OutDir)Xdt\InstrumentationEngine</XdtOutputDir>
     </PropertyGroup>
     <MakeDir Directories="$(XdtOutputDir);$(XdtAttachOutputDir)" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\applicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\scmApplicationhost.xdt&apos; } &quot;" />
+    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath '$(XdtOutputDir)\applicationhost.xdt' } &quot;" />
+    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath '$(XdtOutputDir)\scmApplicationhost.xdt' } &quot;" />
   </Target>
 </Project>
