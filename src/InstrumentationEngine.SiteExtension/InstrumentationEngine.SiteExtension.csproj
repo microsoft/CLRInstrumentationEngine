@@ -27,6 +27,9 @@
     <None Include="applicationHost.xdt" />
     <None Include="scmApplicationHost.xdt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InstrumentationEngine.XdtExtensions\XdtExtensions.csproj" />
+  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <PropertyGroup>
