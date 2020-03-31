@@ -1,6 +1,73 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
+function Get-EnvironmentVariableAddInfo {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $EnvironmentVariable,
+
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('prepend', 'append')]
+        [string]
+        $Operation,
+
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Transform
+    )
+
+    # Operation affects the placement of this element.
+    # <add name="$EnvironmentVariable" xdt:Locator="Match(name)" xdt:Transform="$Transform" />
+    Write-Output @{
+        destination = '/configuration/system.webServer/runtime/environmentVariables'
+        operation = $Operation
+        element = 'add'
+        attributes = [ordered] @{
+            name = $EnvironmentVariable
+            'xdt:Locator' = 'Match(name)'
+            'xdt:Transform' = $Transform
+        }
+    }
+}
+
+function Get-EnvironmentVariableUpdateInfo {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $EnvironmentVariable
+    )
+
+    $formattableXPath = '/configuration/system.webServer/runtime/environmentVariables/add[@name="{0}" and @xdt:Transform="InsertIfMissing"]'
+
+    # The XPath expressions below effectively returns a node if the conditional expression in '[]' is true and null if the conditional expression is false.
+    # The conditional expression checks whether the environment variable is set and/or if the variable value equals 'disabled'
+    # The conditional expression will be transformed by:
+    # 1. Expand any environment variable (ie. resolve %variable% to their values). If the variable is not set, then no changes occur.
+    # 2. Resolve character codes (ie. decode 0x25 to '%' character). This avoids expanding environment variables on both sides of the equality check.
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is set to ~1, the expression will evaluate to true:
+    #       '~1' != '%InstrumentationEngine_EXTENSION_VERSION%' and '~1' != 'disabled'
+    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is not set, the expression will evaluate to false:
+    #       '%InstrumentationEngine_EXTENSION_VERSION%' != '%InstrumentationEngine_EXTENSION_VERSION%' and '%InstrumentationEngine_EXTENSION_VERSION%' != 'disabled' ### false
+    $XPathExpression_IsAppSettingEnabled = "//*['%InstrumentationEngine_EXTENSION_VERSION%'!='0x25InstrumentationEngine_EXTENSION_VERSION0x25' and '%InstrumentationEngine_EXTENSION_VERSION%'!='disabled']"
+
+    # Update Nodes
+    # Change xdt:Transform="InsertIfMissing" to xdt:Transform="InsertIfMissingAndXPathAny(EXPRESSION)"
+    Write-Output @{
+        destination = $formattableXPath -f $EnvironmentVariable
+        operation = 'update'
+        attributes = [ordered] @{
+            'xdt:Transform' = "InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
+        }
+    }
+}
+
 function Get-ClrieXmlEntryOperations {
     [CmdletBinding()]
     param(
@@ -17,28 +84,11 @@ function Get-ClrieXmlEntryOperations {
         $Scm
     )
 
-    # The XPath expressions below effectively returns a node if the conditional expression in '[]' is true and null if the conditional expression is false.
-    # The conditional expression checks whether the environment variable is set and/or if the variable value equals 'disabled'
-    # The conditional expression will be transformed by:
-    # 1. Expand any environment variable (ie. resolve %variable% to their values). If the variable is not set, then no changes occur.
-    # 2. Resolve character codes (ie. decode 0x25 to '%' character). This avoids expanding environment variables on both sides of the equality check.
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is set to ~1, the expression will evaluate to true:
-    #       '~1' != '%InstrumentationEngine_EXTENSION_VERSION%' and '~1' != 'disabled'
-    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is not set, the expression will evaluate to false:
-    #       '%InstrumentationEngine_EXTENSION_VERSION%' != '%InstrumentationEngine_EXTENSION_VERSION%' and '%InstrumentationEngine_EXTENSION_VERSION%' != 'disabled' ### false
-    $XPathExpression_IsAppSettingEnabled = "//*['%InstrumentationEngine_EXTENSION_VERSION%'!='0x25InstrumentationEngine_EXTENSION_VERSION0x25' and '%InstrumentationEngine_EXTENSION_VERSION%'!='disabled']"
-
     if ($Scm)
     {
         # Prepend remove preinstalled extension's environment variables
         # <add name="MicrosoftInstrumentationEngine_InstallationRoot" xdt:Locator="Match(name)" xdt:Transform="RemoveAll" />
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='MicrosoftInstrumentationEngine_InstallationRoot'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_InstallationRoot' -Operation 'prepend' -Transform 'RemoveAll'
     }
     else
     {
@@ -56,87 +106,27 @@ function Get-ClrieXmlEntryOperations {
             <add name="MicrosoftInstrumentationEngine_IsPreinstalled" xdt:Locator="Match(name)" xdt:Transform="RemoveAll" />
             <add name="MicrosoftInstrumentationEngine_LogLevel" xdt:Locator="Match(name)" xdt:Transform="RemoveAll" />
         #>
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='COR_ENABLE_PROFILING'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='COR_PROFILER'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='COR_PROFILER_PATH_32'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='COR_PROFILER_PATH_64'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='CORECLR_ENABLE_PROFILING'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='CORECLR_PROFILER'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='CORECLR_PROFILER_PATH_32'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='CORECLR_PROFILER_PATH_64'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='MicrosoftInstrumentationEngine_IsPreinstalled'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-            attributes = [ordered] @{
-                name='MicrosoftInstrumentationEngine_LogLevel'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="RemoveAll"
-            }
-        }
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'COR_ENABLE_PROFILING' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'COR_PROFILER' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'COR_PROFILER_PATH_32' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'COR_PROFILER_PATH_64' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'CORECLR_ENABLE_PROFILING' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'CORECLR_PROFILER' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'CORECLR_PROFILER_PATH_32' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'CORECLR_PROFILER_PATH_64' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_IsPreinstalled' -Operation 'prepend' -Transform 'RemoveAll'
+        Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_LogLevel' -Operation 'prepend' -Transform 'RemoveAll'
 
         if ($DebugWait) {
             # Append insert environment variable
             # <add name="MicrosoftInstrumentationEngine_DebugWait" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
-            Write-Output @{
-                destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-                attributes = [ordered] @{
-                    name='MicrosoftInstrumentationEngine_DebugWait'; value='1'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="InsertIfMissing"
-                }
-            }
+            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DebugWait' -Operation 'append' -Transform 'InsertIfMissing'
         }
 
         if ($DisableSignatureValidation) {
             # Append insert environment variable
             # <add name="MicrosoftInstrumentationEngine_DisableCodeSignatureValidation" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
-            Write-Output @{
-                destination = '/configuration/system.webServer/runtime/environmentVariables'; operation = 'prepend'; element = 'add'
-                attributes = [ordered] @{
-                    name='MicrosoftInstrumentationEngine_DisableCodeSignatureValidation'; value='1'; 'xdt:Locator'='Match(name)'; 'xdt:Transform'="InsertIfMissing"
-                }
-            }
+            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation' -Operation 'append' -Transform 'InsertIfMissing'
         }
 
         # Prepend Import XdtExtensions
@@ -162,68 +152,17 @@ function Get-ClrieXmlEntryOperations {
             MicrosoftInstrumentationEngine_IsPreinstalled
             MicrosoftInstrumentationEngine_LogLevel
         #>
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="COR_ENABLE_PROFILING" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="COR_PROFILER" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="COR_PROFILER_PATH_32" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="COR_PROFILER_PATH_64" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="CORECLR_ENABLE_PROFILING" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="CORECLR_PROFILER" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="CORECLR_PROFILER_PATH_32" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="CORECLR_PROFILER_PATH_64" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="MicrosoftInstrumentationEngine_IsPreinstalled" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables/add[@name="MicrosoftInstrumentationEngine_LogLevel" and @xdt:Transform="InsertIfMissing"]'; operation = 'update'
-            attributes = [ordered] @{
-                'xdt:Transform'="InsertIfMissingAndXPathAny($XPathExpression_IsAppSettingEnabled)"
-            }
-        }
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'COR_ENABLE_PROFILING'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'COR_PROFILER'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'COR_PROFILER_PATH_32'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'COR_PROFILER_PATH_64'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'CORECLR_ENABLE_PROFILING'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'CORECLR_PROFILER'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'CORECLR_PROFILER_PATH_32'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'CORECLR_PROFILER_PATH_64'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_IsPreinstalled'
+        Get-EnvironmentVariableUpdateInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_LogLevel'
     }
-
 }
 
 function Edit-XdtContent {
