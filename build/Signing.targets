@@ -8,6 +8,7 @@
        is set to ensure that this task runs after the specified targets. -->
   <Target Name="VerifyFilesToSignExist"
     Inputs="@(FilesToSign)"
+    Outputs="@(FilesToSign->'%(FullPath)'"
     Condition="'@(FilesToSign)' != ''"
     DependsOnTargets="@(VerifyFilesToSignExistDependsOn)"
     AfterTargets="CopyFilesToOutputDirectory">
