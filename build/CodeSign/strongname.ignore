@@ -4,3 +4,5 @@ bin\*\instrenginetests_anycpu.dll, Ignore test assembly
 bin\*\intercept.2.0.1.tests\*, Ignore test folder
 bin\*\intercept.latest.tests\*, Ignore test folder
 bin\*\rawprofilerhook.tests\*, Ignore test folder
+
+bin\*\xdtextensions.dll, Ignore test assembly
