@@ -45,18 +45,6 @@ function Get-EnvironmentVariableUpdateInfo {
 
     $formattableXPath = '/configuration/system.webServer/runtime/environmentVariables/add[@name="{0}" and @xdt:Transform="InsertIfMissing"]'
 
-    # The XPath expressions below effectively returns a node if the conditional expression in '[]' is true and null if the conditional expression is false.
-    # The conditional expression checks whether the environment variable is set and/or if the variable value equals 'disabled'
-    # The conditional expression will be transformed by:
-    # 1. Expand any environment variable (ie. resolve %variable% to their values). If the variable is not set, then no changes occur.
-    # 2. Resolve character codes (ie. decode 0x25 to '%' character). This avoids expanding environment variables on both sides of the equality check.
-    # ------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is set to ~1, the expression will evaluate to true:
-    #       '~1' != '%InstrumentationEngine_EXTENSION_VERSION%' and '~1' != 'disabled'
-    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is not set, the expression will evaluate to false:
-    #       '%InstrumentationEngine_EXTENSION_VERSION%' != '%InstrumentationEngine_EXTENSION_VERSION%' and '%InstrumentationEngine_EXTENSION_VERSION%' != 'disabled' ### false
-    $XPathExpression_IsAppSettingEnabled = "//*['%InstrumentationEngine_EXTENSION_VERSION%'!='0x25InstrumentationEngine_EXTENSION_VERSION0x25' and '%InstrumentationEngine_EXTENSION_VERSION%'!='disabled']"
-
     # Update Nodes
     # Change xdt:Transform="InsertIfMissing" to xdt:Transform="InsertIfMissingAndXPathAny(EXPRESSION)"
     Write-Output @{
@@ -83,6 +71,19 @@ function Get-ClrieXmlEntryOperations {
         [Switch]
         $Scm
     )
+
+    # The XPath expressions below effectively returns a node if the conditional expression in '[]' is true and null if the conditional expression is false.
+    # The conditional expression checks whether the environment variable is set and/or if the variable value equals 'disabled'
+    # The conditional expression will be transformed by:
+    # 1. Expand any environment variable (ie. resolve %variable% to their values). If the variable is not set, then no changes occur.
+    # 2. Resolve character codes (ie. decode 0x25 to '%' character). This avoids expanding environment variables on both sides of the equality check.
+    # ------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is set to ~1, the expression will evaluate to true:
+    #       '~1' != '%InstrumentationEngine_EXTENSION_VERSION%' and '~1' != 'disabled'
+    # Assuming %InstrumentationEngine_EXTENSION_VERSION% is not set, the expression will evaluate to false:
+    #       '%InstrumentationEngine_EXTENSION_VERSION%' != '%InstrumentationEngine_EXTENSION_VERSION%' and '%InstrumentationEngine_EXTENSION_VERSION%' != 'disabled' ### false
+    $XPathExpression_IsAppSettingEnabled = "//*['%InstrumentationEngine_EXTENSION_VERSION%'!='0x25InstrumentationEngine_EXTENSION_VERSION0x25' and '%InstrumentationEngine_EXTENSION_VERSION%'!='disabled']"
+
 
     if ($Scm)
     {
