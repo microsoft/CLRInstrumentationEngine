@@ -16,7 +16,7 @@
 
        SUMMARY: The preinstalled InstrumentationEngine must omit the <location /> attribute in this file in order to not be overwritten by private
                 site extensions that do not provide an scmApplicationHost.xdt file but do provide an applicationHost.xdt file that omits <location /> and
-                provides system.webServer/runtime/environmentVaraibles. This will cause the overriding behavior for kudu environment variables.
+                provides system.webServer/runtime/environmentVariables. This will cause the overriding behavior for kudu environment variables.
   -->
   <system.webServer>
     <runtime xdt:Transform="InsertIfMissing">
