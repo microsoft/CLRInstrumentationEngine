@@ -48,7 +48,7 @@
     <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
   <ItemGroup>
-    <!-- dotnet core 3.1 produces both a dll and exe; project references only pick up the dll so this explicitly adds the exe for signing -->
+    <!-- dotnet core 3.1 produces both a dll and exe -->
     <FilesToSign Include="$(OutputPath)\Microsoft.InstrumentationEngine.Attach.exe"/>
   </ItemGroup>
 </Project>

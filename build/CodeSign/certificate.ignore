@@ -16,5 +16,3 @@ bin\*\*.wixpdb, Ignore wix artifact
 bin\*\*.msidir\*.cab, Ignore embedded cab files
 
 binaries-windows-release\*, Ignore downloaded binary artifacts
-
-bin\*\xdtextensions.dll, Ignore test assembly
