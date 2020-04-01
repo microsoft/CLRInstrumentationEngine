@@ -42,30 +42,24 @@ function Get-EnvironmentVariableAddInfo {
 
     # Operation affects the placement of this element.
     # <add name="$EnvironmentVariable" xdt:Locator="Match(name)" xdt:Transform="$Transform" />
-    if ($Value) {
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'
-            operation = $Operation
-            element = 'add'
-            attributes = [ordered] @{
-                name = $EnvironmentVariable
-                value = $Value
-                'xdt:Locator' = 'Match(name)'
-                'xdt:Transform' = $Transform
-            }
-        }
-    } else {
-        Write-Output @{
-            destination = '/configuration/system.webServer/runtime/environmentVariables'
-            operation = $Operation
-            element = 'add'
-            attributes = [ordered] @{
-                name = $EnvironmentVariable
-                'xdt:Locator' = 'Match(name)'
-                'xdt:Transform' = $Transform
-            }
+    # or
+    # <add name="$EnvironmentVariable" value=$Value xdt:Locator="Match(name)" xdt:Transform="$Transform" />
+    $node = @{
+        destination = '/configuration/system.webServer/runtime/environmentVariables'
+        operation = $Operation
+        element = 'add'
+        attributes = [ordered] @{
+            name = $EnvironmentVariable
+            'xdt:Locator' = 'Match(name)'
+            'xdt:Transform' = $Transform
         }
     }
+
+    if ($Value) {
+        $node.attributes.value = $Value
+    }
+
+    Write-Output $node
 }
 
 function Get-EnvironmentVariableUpdateInfo {
