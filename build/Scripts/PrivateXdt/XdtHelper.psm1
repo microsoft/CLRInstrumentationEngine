@@ -32,12 +32,19 @@ function Get-EnvironmentVariableAddInfo {
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Transform
+        $Transform,
+
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Value
     )
 
     # Operation affects the placement of this element.
     # <add name="$EnvironmentVariable" xdt:Locator="Match(name)" xdt:Transform="$Transform" />
-    Write-Output @{
+    # or
+    # <add name="$EnvironmentVariable" value=$Value xdt:Locator="Match(name)" xdt:Transform="$Transform" />
+    $node = @{
         destination = '/configuration/system.webServer/runtime/environmentVariables'
         operation = $Operation
         element = 'add'
@@ -47,6 +54,12 @@ function Get-EnvironmentVariableAddInfo {
             'xdt:Transform' = $Transform
         }
     }
+
+    if ($Value) {
+        $node.attributes.value = $Value
+    }
+
+    Write-Output $node
 }
 
 function Get-EnvironmentVariableUpdateInfo {
@@ -123,13 +136,13 @@ function Get-ClrieXmlEntryOperations {
         if ($DebugWait) {
             # Append insert environment variable
             # <add name="MicrosoftInstrumentationEngine_DebugWait" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
-            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DebugWait' -Operation 'append' -Transform 'InsertIfMissing'
+            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DebugWait' -Value '1' -Operation 'append' -Transform 'InsertIfMissing'
         }
 
         if ($DisableSignatureValidation) {
             # Append insert environment variable
             # <add name="MicrosoftInstrumentationEngine_DisableCodeSignatureValidation" value="1" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
-            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation' -Operation 'append' -Transform 'InsertIfMissing'
+            Get-EnvironmentVariableAddInfo -EnvironmentVariable 'MicrosoftInstrumentationEngine_DisableCodeSignatureValidation' -Value '1' -Operation 'append' -Transform 'InsertIfMissing'
         }
 
         # Prepend Import XdtExtensions
