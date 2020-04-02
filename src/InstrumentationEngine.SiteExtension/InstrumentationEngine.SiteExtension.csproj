@@ -18,6 +18,7 @@
     <ProjectGuid>0CA8A56A-B19D-4B69-82A2-3DCBD95F8A05</ProjectGuid>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -34,62 +35,93 @@
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <PropertyGroup>
     <ZipFileName>$(Title).$(PackageVersion).zip</ZipFileName>
+    <ZipTestFileName>Test$(ZipFileName)</ZipTestFileName>
     <!-- Required after imports to sufficiently apply this property. -->
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles;GeneratePrivateXdt</PrepareForRunDependsOn>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);GeneratePrivateXdt;ZipFiles</PrepareForRunDependsOn>
   </PropertyGroup>
   <Target Name="ZipFiles">
     <ItemGroup>
+      <!-- Tools -->
+      <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
+               Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+        <RootPath>Tools\Attach</RootPath>
+      </CommonItem>
+      <!-- Instrumentationx86Files -->
+      <CommonItem Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
+        <RootPath>Instrumentation32</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
+        <RootPath>Instrumentation32\base</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
+        <RootPath>Instrumentation32\base</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+        <RootPath>Instrumentation32\base</RootPath>
+      </CommonItem>
+      <!-- Instrumentationx64Files -->
+      <CommonItem Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
+        <RootPath>Instrumentation64</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
+        <RootPath>Instrumentation64\base</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
+        <RootPath>Instrumentation64\base</RootPath>
+      </CommonItem>
+      <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+        <RootPath>Instrumentation64\base</RootPath>
+      </CommonItem>
+    </ItemGroup>
+
+    <!-- Release Zip -->
+    <PropertyGroup>
+      <RootFolder>$(PackageVersion)</RootFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <ZipItem Include="@(CommonItem)">
+        <Destination>$(RootFolder)\%(RootPath)\%(RecursiveDir)</Destination>
+      </ZipItem>
       <!-- extension.xml -->
       <ZipItem Include="extension.xml" />
       <!-- xdt files -->
       <ZipItem Include="applicationHost.xdt">
-        <Destination>$(PackageVersion)</Destination>
+        <Destination>$(RootFolder)</Destination>
       </ZipItem>
       <ZipItem Include="scmApplicationHost.xdt">
-        <Destination>$(PackageVersion)</Destination>
-      </ZipItem>
-      <!-- Tools -->
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
-               Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
-        <Destination>$(PackageVersion)\Tools\Attach</Destination>
-      </ZipItem>
-      <!-- Instrumentationx86Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
-        <Destination>$(PackageVersion)\Instrumentation32</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <!-- Instrumentationx64Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
-        <Destination>$(PackageVersion)\Instrumentation64</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
+        <Destination>$(RootFolder)</Destination>
       </ZipItem>
     </ItemGroup>
 
     <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipFileName)"
                     Files="@(ZipItem)" />
 
+    <!-- Test Zip -->
+    <PropertyGroup>
+      <RootFolder>$(Title)</RootFolder>
+    </PropertyGroup>
     <ItemGroup>
-      <FileWrites Include="$(IntermediateOutputPath)\$(ZipFileName)" />
+      <ZipTestItem Include="@(CommonItem)">
+        <Destination>$(RootFolder)\%(RootPath)\%(RecursiveDir)</Destination>
+      </ZipTestItem>
+      <ZipTestItem Include="$(InputBinCfgRoot)\AnyCPU\XdtExtensions.*">
+        <Destination>$(RootFolder)\XdtExtensions</Destination>
+      </ZipTestItem>
+      <ZipTestItem Include="$(OutputPath)\Xdt\$(Title)\*.xdt">
+        <Destination>$(RootFolder)</Destination>
+      </ZipTestItem>
     </ItemGroup>
 
-    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName)"
-          DestinationFolder="$(OutDir)">
+    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipTestFileName)"
+                    Files="@(ZipTestItem)" />
+
+    <ItemGroup>
+      <FileWrites Include="$(IntermediateOutputPath)\$(ZipFileName)" />
+      <FileWrites Include="$(IntermediateOutputPath)\$(ZipTestFileName)" />
+    </ItemGroup>
+
+    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName);$(IntermediateOutputPath)\$(ZipTestFileName)"
+          DestinationFolder="$(OutputPath)">
       <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
     </Copy>
   </Target>
