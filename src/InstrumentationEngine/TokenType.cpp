@@ -40,14 +40,44 @@ HRESULT MicrosoftInstrumentationEngine::CTokenType::GetName(_Out_ BSTR* pbstrNam
 
         if (TypeFromToken(m_token) == mdtTypeDef)
         {
+            mdTypeDef tkEnclosing = mdTokenNil;
+            mdTypeDef tkCurrent = m_token;
+            tstring fullName;
+            vector<WCHAR> nameBuffer(100);
             ULONG cchLength = 0;
+            while ((pImport->GetNestedClassProps(tkCurrent, &tkEnclosing) == S_OK) && (tkEnclosing != mdTokenNil))
+            {
+                IfFailRet(pImport->GetTypeDefProps(tkEnclosing, nullptr, 0, &cchLength, nullptr, nullptr));
+                if (nameBuffer.size() < cchLength)
+                {
+                    nameBuffer.resize(cchLength);
+                }
+
+                // Add nested class names separated by a "/".
+                IfFailRet(pImport->GetTypeDefProps(tkEnclosing, nameBuffer.data(), cchLength, &cchLength, nullptr, nullptr));
+                fullName.insert(0, _T("/"));
+                fullName.insert(0, nameBuffer.data());
+
+                tkCurrent = tkEnclosing;
+            }
+
             IfFailRet(pImport->GetTypeDefProps(m_token, nullptr, 0, &cchLength, nullptr, nullptr));
-            std::vector<WCHAR> nameBuffer(cchLength);
+            if (nameBuffer.size() < cchLength)
+            {
+                nameBuffer.resize(cchLength);
+            }
+
             IfFailRet(pImport->GetTypeDefProps(m_token, nameBuffer.data(), cchLength, &cchLength, nullptr, nullptr));
-            m_name = CComBSTR(cchLength, nameBuffer.data());
+            fullName += nameBuffer.data();
+
+            m_name = CComBSTR(static_cast<ULONG>(fullName.length()+1), fullName.c_str());
         }
         else if (TypeFromToken(m_token) == mdtTypeRef)
         {
+            // Note: there are no public apis to get the outer classes for a nested
+            // type ref. We don't want to attempt to resolve the type ref though, because
+            // that could cause a module load at a time when such an operation is not
+            // allowed.
             ULONG cchLength = 0;
             IfFailRet(pImport->GetTypeRefProps(m_token, nullptr, nullptr, 0, &cchLength));
             std::vector<WCHAR> nameBuffer(cchLength);
