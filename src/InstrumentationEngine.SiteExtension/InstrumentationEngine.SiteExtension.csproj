@@ -18,6 +18,7 @@
     <ProjectGuid>0CA8A56A-B19D-4B69-82A2-3DCBD95F8A05</ProjectGuid>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -32,79 +33,48 @@
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
+  <!--
+    The following Property and ItemGroups are used to produce Zip Files
+  -->
   <PropertyGroup>
     <ZipFileName>$(Title).$(PackageVersion).zip</ZipFileName>
-    <!-- Required after imports to sufficiently apply this property. -->
-    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);ZipFiles;GeneratePrivateXdt</PrepareForRunDependsOn>
+    <ZipTestFileName>Test$(ZipFileName)</ZipTestFileName>
+    <IncludeXdtExtensions>true</IncludeXdtExtensions>
   </PropertyGroup>
-  <Target Name="ZipFiles">
-    <ItemGroup>
-      <!-- extension.xml -->
-      <ZipItem Include="extension.xml" />
-      <!-- xdt files -->
-      <ZipItem Include="applicationHost.xdt">
-        <Destination>$(PackageVersion)</Destination>
-      </ZipItem>
-      <ZipItem Include="scmApplicationHost.xdt">
-        <Destination>$(PackageVersion)</Destination>
-      </ZipItem>
-      <!-- Tools -->
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
-               Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
-        <Destination>$(PackageVersion)\Tools\Attach</Destination>
-      </ZipItem>
-      <!-- Instrumentationx86Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
-        <Destination>$(PackageVersion)\Instrumentation32</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-        <Destination>$(PackageVersion)\Instrumentation32\base</Destination>
-      </ZipItem>
-      <!-- Instrumentationx64Files -->
-      <ZipItem Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
-        <Destination>$(PackageVersion)\Instrumentation64</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
-      </ZipItem>
-      <ZipItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-        <Destination>$(PackageVersion)\Instrumentation64\base</Destination>
-      </ZipItem>
-    </ItemGroup>
 
-    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipFileName)"
-                    Files="@(ZipItem)" />
-
-    <ItemGroup>
-      <FileWrites Include="$(IntermediateOutputPath)\$(ZipFileName)" />
-    </ItemGroup>
-
-    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName)"
-          DestinationFolder="$(OutDir)">
-      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
-    </Copy>
-  </Target>
-  <Target Name="GeneratePrivateXdt">
-    <PropertyGroup>
-      <XdtGenerationPowerShellCommand>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Unrestricted -Command</XdtGenerationPowerShellCommand>
-      <XdtGenerationScriptPath>$(BuildFilesDir)\Scripts\PrivateXdt\GeneratePrivateXdt.ps1</XdtGenerationScriptPath>
-      <XDT_DISABLESIGNATUREVALIDATION Condition=" '$(XDT_DISABLESIGNATUREVALIDATION)'=='' ">$True</XDT_DISABLESIGNATUREVALIDATION>
-      <XDT_DEBUGWAIT Condition=" '$(XDT_DEBUGWAIT)'=='' ">$False</XDT_DEBUGWAIT>
-      <XdtCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)applicationHost.xdt&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</XdtCommonArguments>
-      <XdtScmCommonArguments>-InputXdtFilePath &apos;$(MSBuildThisFileDirectory)scmApplicationHost.xdt&apos; -Scm</XdtScmCommonArguments>
-      <XdtOutputDir>$(OutDir)Xdt\InstrumentationEngine</XdtOutputDir>
-    </PropertyGroup>
-    <MakeDir Directories="$(XdtOutputDir);$(XdtAttachOutputDir)" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\applicationhost.xdt&apos; } &quot;" />
-    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\scmApplicationhost.xdt&apos; } &quot;" />
-  </Target>
+  <!-- Common Files -->
+  <ItemGroup>
+    <!-- Tools -->
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
+                           Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+      <RootPath>Tools\Attach</RootPath>
+    </SiteExtensionContents>
+    <!-- Instrumentationx86Files -->
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
+      <RootPath>Instrumentation32</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
+      <RootPath>Instrumentation32\base</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
+      <RootPath>Instrumentation32\base</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+      <RootPath>Instrumentation32\base</RootPath>
+    </SiteExtensionContents>
+    <!-- Instrumentationx64Files -->
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
+      <RootPath>Instrumentation64</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
+      <RootPath>Instrumentation64\base</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
+      <RootPath>Instrumentation64\base</RootPath>
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+      <RootPath>Instrumentation64\base</RootPath>
+    </SiteExtensionContents>
+  </ItemGroup>
+  <Import Project="$(EnlistmentRoot)\build\SiteExtensions.targets" />
 </Project>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PrepareForRunDependsOn>$(PrepareForRunDependsOn);GeneratePrivateXdts;ZipFiles</PrepareForRunDependsOn>
+  </PropertyGroup>
+  <ItemGroup>
+    <XdtFile Include="applicationHost.xdt">
+      <IsScm>false</IsScm>
+    </XdtFile>
+    <XdtFile Include="scmApplicationHost.xdt">
+      <IsScm>true</IsScm>
+    </XdtFile>
+  </ItemGroup>
+  <PropertyGroup>
+    <XdtGenerationPowerShellCommand>%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Unrestricted -Command</XdtGenerationPowerShellCommand>
+    <XdtGenerationScriptPath>$(BuildFilesDir)\Scripts\PrivateXdt\GeneratePrivateXdt.ps1</XdtGenerationScriptPath>
+    <XDT_DISABLESIGNATUREVALIDATION Condition=" '$(XDT_DISABLESIGNATUREVALIDATION)'=='' ">$True</XDT_DISABLESIGNATUREVALIDATION>
+    <XDT_DEBUGWAIT Condition=" '$(XDT_DEBUGWAIT)'=='' ">$False</XDT_DEBUGWAIT>
+    <XdtSourcePath>$(MSBuildProjectDirectory)\applicationHost.xdt</XdtSourcePath>
+    <XdtScmSourcePath>$(MSBuildProjectDirectory)\scmApplicationHost.xdt</XdtScmSourcePath>
+    <XdtCommonArguments>-InputXdtFilePath &apos;$(XdtSourcePath)&apos; -DebugWait:$(XDT_DEBUGWAIT) -DisableSignatureValidation:$(XDT_DISABLESIGNATUREVALIDATION)</XdtCommonArguments>
+    <XdtScmCommonArguments>-InputXdtFilePath &apos;$(XdtScmSourcePath)&apos; -Scm</XdtScmCommonArguments>
+    <XdtOutputDir>$(OutDir)Xdt\InstrumentationEngine</XdtOutputDir>
+  </PropertyGroup>
+  <Target Name="GeneratePrivateXdts">
+    <MakeDir Directories="$(XdtOutputDir);$(XdtAttachOutputDir)" />
+    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\applicationhost.xdt&apos; } &quot;" />
+    <Exec Command="$(XdtGenerationPowerShellCommand) &quot;&amp; { &amp; $(XdtGenerationScriptPath) $(XdtScmCommonArguments) -OutputXdtFilePath &apos;$(XdtOutputDir)\scmApplicationhost.xdt&apos; } &quot;" />
+  </Target>
+  <Target Name="ZipFiles">
+    <!-- Release Zip -->
+    <ItemGroup>
+      <ZipItem Include="@(SiteExtensionContents)">
+        <Destination>$(PackageVersion)\%(RootPath)\%(RecursiveDir)</Destination>
+      </ZipItem>
+      <!-- extension.xml -->
+      <ZipItem Include="$(MSBuildProjectDirectory)\extension.xml" />
+      <!-- xdt files -->
+      <ZipItem Include="$(MSBuildProjectDirectory)\*.xdt">
+        <Destination>$(PackageVersion)</Destination>
+      </ZipItem>
+    </ItemGroup>
+
+    <!-- Test Zip -->
+    <ItemGroup>
+      <ZipTestItem Include="@(SiteExtensionContents)">
+        <Destination>$(Title)\%(RootPath)\%(RecursiveDir)</Destination>
+      </ZipTestItem>
+      <ZipTestItem Include="$(InputBinCfgRoot)\AnyCPU\XdtExtensions.*"
+                   Condition="'$(IncludeXdtExtensions)' == 'true'">
+        <Destination>$(Title)\XdtExtensions</Destination>
+      </ZipTestItem>
+      <ZipTestItem Include="$(OutputPath)\Xdt\$(Title)\*.xdt">
+        <Destination>$(Title)</Destination>
+      </ZipTestItem>
+    </ItemGroup>
+    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipFileName)"
+                    Files="@(ZipItem)" />
+
+    <ZipArchiveTask OutputPath="$(IntermediateOutputPath)\$(ZipTestFileName)"
+                    Files="@(ZipTestItem)" />
+
+    <ItemGroup>
+      <FileWrites Include="$(IntermediateOutputPath)\$(ZipFileName)" />
+      <FileWrites Include="$(IntermediateOutputPath)\$(ZipTestFileName)" />
+    </ItemGroup>
+
+    <Copy SourceFiles="$(IntermediateOutputPath)\$(ZipFileName);$(IntermediateOutputPath)\$(ZipTestFileName)"
+          DestinationFolder="$(OutputPath)">
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+
+    <!-- Write package version to file. -->
+    <MakeDir Directories="$(OutputPath)" />
+    <WriteLinesToFile File="$(OutputPath)$(PackageId).version" Lines="$(PackageVersion)" Overwrite="true" Encoding="Unicode" />
+    <WriteLinesToFile File="$(OutputPath)Test$(PackageId).version" Lines="$(PackageVersion)" Overwrite="true" Encoding="Unicode" />
+  </Target>
+</Project>
