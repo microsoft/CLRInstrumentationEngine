@@ -39,70 +39,42 @@
   <PropertyGroup>
     <ZipFileName>$(Title).$(PackageVersion).zip</ZipFileName>
     <ZipTestFileName>Test$(ZipFileName)</ZipTestFileName>
+    <IncludeXdtExtensions>true</IncludeXdtExtensions>
   </PropertyGroup>
 
   <!-- Common Files -->
   <ItemGroup>
     <!-- Tools -->
-    <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
-              Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
+                           Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
       <RootPath>Tools\Attach</RootPath>
-    </CommonItem>
+    </SiteExtensionContents>
     <!-- Instrumentationx86Files -->
-    <CommonItem Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\MicrosoftInstrumentationEngine_x86.dll">
       <RootPath>Instrumentation32</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.Base_x86.dll">
       <RootPath>Instrumentation32\base</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
       <RootPath>Instrumentation32\base</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <RootPath>Instrumentation32\base</RootPath>
-    </CommonItem>
+    </SiteExtensionContents>
     <!-- Instrumentationx64Files -->
-    <CommonItem Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\MicrosoftInstrumentationEngine_x64.dll">
       <RootPath>Instrumentation64</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.Base_x64.dll">
       <RootPath>Instrumentation64\base</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
       <RootPath>Instrumentation64\base</RootPath>
-    </CommonItem>
-    <CommonItem Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    </SiteExtensionContents>
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <RootPath>Instrumentation64\base</RootPath>
-    </CommonItem>
-  </ItemGroup>
-
-  <!-- Release Zip -->
-  <ItemGroup>
-    <ZipItem Include="@(CommonItem)">
-      <Destination>$(PackageVersion)\%(RootPath)\%(RecursiveDir)</Destination>
-    </ZipItem>
-    <!-- extension.xml -->
-    <ZipItem Include="extension.xml" />
-    <!-- xdt files -->
-    <ZipItem Include="applicationHost.xdt">
-      <Destination>$(PackageVersion)</Destination>
-    </ZipItem>
-    <ZipItem Include="scmApplicationHost.xdt">
-      <Destination>$(PackageVersion)</Destination>
-    </ZipItem>
-  </ItemGroup>
-
-  <!-- Test Zip -->
-  <ItemGroup>
-    <ZipTestItem Include="@(CommonItem)">
-      <Destination>$(Title)\%(RootPath)\%(RecursiveDir)</Destination>
-    </ZipTestItem>
-    <ZipTestItem Include="$(InputBinCfgRoot)\AnyCPU\XdtExtensions.*">
-      <Destination>$(Title)\XdtExtensions</Destination>
-    </ZipTestItem>
-    <ZipTestItem Include="$(OutputPath)\Xdt\$(Title)\*.xdt">
-      <Destination>$(Title)</Destination>
-    </ZipTestItem>
+    </SiteExtensionContents>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\SiteExtensions.targets" />
 </Project>
