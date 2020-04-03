@@ -7,6 +7,17 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+# 1.0.32
++ New:
+  + Support loading and initializing Instrumentation Methods on profiler attach.
++ Updates:
+  + Deprecate IProfilerManager::GetProfilerHost(IProfilerManagerHost**) method.
++ BugFixes:
+  + Fix RPH bug - Allow SetEventMask post initialization if not affecting immutable flags
+  + Fix RPH bug - SetRejitMethodInfo with nullptr did not erase MethodInfo, causing AV
+  + Fix RPH bug - GetILFunctionBody allows NULL for out params if more than one
+  + Fix incorrect naming of nested types
+
 # 1.0.31
 + BugFixes:
   + Avoid deadlock within ProxyLogging when terminating logging.

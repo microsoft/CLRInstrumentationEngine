@@ -92,7 +92,7 @@ HRESULT CConfigurationLoaderHelper::LoadConfiguration(_In_ BSTR bstrConfigPath, 
         IfFailRet(ProcessInstrumentationMethodNode(wszConfigFolder, pCurrChildNode, methods));
     }
 
-	return hr;
+    return hr;
 }
 
 HRESULT CConfigurationLoaderHelper::ProcessInstrumentationMethodNode(_In_ BSTR bstrInstrumentationMethodFolder, _In_ IXMLDOMNode* pNode, _In_ std::vector<CInstrumentationMethod*>& methods)

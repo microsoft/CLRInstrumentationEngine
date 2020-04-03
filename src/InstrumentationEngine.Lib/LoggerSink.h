@@ -33,4 +33,14 @@ namespace MicrosoftInstrumentationEngine
         // Called when the sink will no longer be used and can release resources.
         virtual HRESULT Shutdown() { return S_OK; };
     };
+
+    class IFileLoggerSink
+    {
+        friend CLoggerService;
+
+    protected:
+        virtual HRESULT SetLogFilePath(_In_ LPCWSTR wszLogFilePath) = 0;
+
+        virtual HRESULT SetLogFileLevel(_In_ LoggingFlags fileLogFlags) = 0;
+    };
 }

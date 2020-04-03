@@ -165,8 +165,8 @@ namespace MicrosoftInstrumentationEngine
         HRESULT CreateILFunctionBody();
 
         HRESULT GetIntermediateRenderedFunctionBody(
-            _Out_ LPCBYTE* ppMethodHeader,
-            _Out_ ULONG* pcbMethodSize
+            _Out_opt_ LPCBYTE* ppMethodHeader,
+            _Out_opt_ ULONG* pcbMethodSize
             );
 
         // Called after the raw profiler hook has instrumented the function. Sets the IL transformation

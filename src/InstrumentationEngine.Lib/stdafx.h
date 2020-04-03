@@ -49,6 +49,9 @@ using namespace ATL;
 #ifndef PLATFORM_UNIX
 #include <msxml6.h>
 #include <Pathcch.h>
+#else
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 #endif
 
 
@@ -59,7 +62,10 @@ using namespace ATL;
 #ifdef PLATFORM_UNIX
 // pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
 // in CMakeFile.txt
+#define PAL_wcsnlen_s(a, b) (a != nullptr) ? PAL_wcsnlen(a, b) : 0
 #define wcsstr        PAL_wcsstr
+#define wcslen        PAL_wcslen
+#define wcsnlen_s     PAL_wcsnlen_s
 #endif
 
 #include <queue>
@@ -84,6 +90,8 @@ using namespace ATL;
 #endif
 
 #include "Logging.h"
+#include "ImplQueryInterface.h"
+#include "refcount.h"
 #include "SharedArray.h"
 
 #include "../Common.Lib/tstring.h"

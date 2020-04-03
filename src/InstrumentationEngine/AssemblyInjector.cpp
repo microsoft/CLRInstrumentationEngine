@@ -37,12 +37,12 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportAll(bool importC
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(m_pProfilerInfo != nullptr);
-    IfFalseRet(m_pSourceImport != nullptr);
-    IfFalseRet(m_pSourceImageBaseAddress != nullptr);
-    IfFalseRet(m_pTargetImport != nullptr);
-    IfFalseRet(m_pTargetEmit != nullptr);
-    IfFalseRet(m_pTargetMethodMalloc != nullptr);
+    IfFalseRet(m_pProfilerInfo != nullptr, E_FAIL);
+    IfFalseRet(m_pSourceImport != nullptr, E_FAIL);
+    IfFalseRet(m_pSourceImageBaseAddress != nullptr, E_FAIL);
+    IfFalseRet(m_pTargetImport != nullptr, E_FAIL);
+    IfFalseRet(m_pTargetEmit != nullptr, E_FAIL);
+    IfFalseRet(m_pTargetMethodMalloc != nullptr, E_FAIL);
 
     CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n<ImportModule>\r\n"));
 
@@ -78,7 +78,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportTypeDef(_In_ mdT
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceTypeDef != mdTokenNil && sourceTypeDef != mdTypeDefNil);
+    IfFalseRet(sourceTypeDef != mdTokenNil && sourceTypeDef != mdTypeDefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_typeDefMap.find(sourceTypeDef);
     if (itr != m_typeDefMap.end())
@@ -266,7 +266,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportTypeRef(_In_ mdT
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceTypeRef != mdTokenNil && sourceTypeRef != mdTypeRefNil);
+    IfFalseRet(sourceTypeRef != mdTokenNil && sourceTypeRef != mdTypeRefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_typeRefMap.find(sourceTypeRef);
     if (itr != m_typeRefMap.end())
@@ -330,7 +330,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportAssemblyRef(_In_
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceAssemblyRef != mdTokenNil && sourceAssemblyRef != mdAssemblyRefNil);
+    IfFalseRet(sourceAssemblyRef != mdTokenNil && sourceAssemblyRef != mdAssemblyRefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_assemblyRefMap.find(sourceAssemblyRef);
     if (itr != m_assemblyRefMap.end())
@@ -460,7 +460,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportFieldDef(_In_ md
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceFieldDef != mdTokenNil && sourceFieldDef != mdFieldDefNil);
+    IfFalseRet(sourceFieldDef != mdTokenNil && sourceFieldDef != mdFieldDefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_fieldDefMap.find(sourceFieldDef);
     if (itr != m_fieldDefMap.end())
@@ -529,7 +529,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportMethodDef(_In_ m
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceMethodDef != mdTokenNil && sourceMethodDef != mdMethodDefNil);
+    IfFalseRet(sourceMethodDef != mdTokenNil && sourceMethodDef != mdMethodDefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_methodDefMap.find(sourceMethodDef);
     if (itr != m_methodDefMap.end())
@@ -789,7 +789,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportMemberRef(_In_ c
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceMemberRef != mdTokenNil && sourceMemberRef != mdMemberRefNil);
+    IfFalseRet(sourceMemberRef != mdTokenNil && sourceMemberRef != mdMemberRefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_memberRefMap.find(sourceMemberRef);
     if (itr != m_memberRefMap.end())
@@ -853,7 +853,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportString(_In_ mdSt
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceString != mdTokenNil && sourceString != mdStringNil);
+    IfFalseRet(sourceString != mdTokenNil && sourceString != mdStringNil, E_FAIL);
 
     //check the cache
     TokenMap::const_iterator itr = m_stringMap.find(sourceString);
@@ -885,7 +885,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportProperty(_In_ md
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceProperty != mdTokenNil && sourceProperty != mdPropertyNil);
+    IfFalseRet(sourceProperty != mdTokenNil && sourceProperty != mdPropertyNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_propertyMap.find(sourceProperty);
     if (itr != m_propertyMap.end())
@@ -966,7 +966,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportEvent(_In_ mdEve
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceEvent != mdTokenNil && sourceEvent != mdEventNil);
+    IfFalseRet(sourceEvent != mdTokenNil && sourceEvent != mdEventNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_eventMap.find(sourceEvent);
     if (itr != m_eventMap.end())
@@ -1041,7 +1041,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportCustomAttribute(
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceCustomAttribute != mdTokenNil && sourceCustomAttribute != mdCustomAttributeNil);
+    IfFalseRet(sourceCustomAttribute != mdTokenNil && sourceCustomAttribute != mdCustomAttributeNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_eventMap.find(sourceCustomAttribute);
     if (itr != m_eventMap.end())
@@ -1101,7 +1101,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportParam(_In_ mdPar
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceParam != mdTokenNil && sourceParam != mdParamDefNil);
+    IfFalseRet(sourceParam != mdTokenNil && sourceParam != mdParamDefNil, E_FAIL);
 
     CLogging::XmlDumpHelper dumpLogHelper(L"ImportParam", 1);
     dumpLogHelper.WriteUlongNode(L"token", sourceParam);
@@ -1145,7 +1145,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportModuleRef(_In_ m
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceModuleRef != mdTokenNil && sourceModuleRef != mdModuleRefNil);
+    IfFalseRet(sourceModuleRef != mdTokenNil && sourceModuleRef != mdModuleRefNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_moduleRefMap.find(sourceModuleRef);
     if (itr != m_moduleRefMap.end())
@@ -1194,7 +1194,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportTypeSpec(_In_ md
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceTypeSpec != mdTokenNil && sourceTypeSpec != mdTypeSpecNil);
+    IfFalseRet(sourceTypeSpec != mdTokenNil && sourceTypeSpec != mdTypeSpecNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_typeSpecMap.find(sourceTypeSpec);
     if (itr != m_typeSpecMap.end())
@@ -1222,7 +1222,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportGenericParam(_In
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceGenericParam != mdTokenNil && sourceGenericParam != mdGenericParamNil);
+    IfFalseRet(sourceGenericParam != mdTokenNil && sourceGenericParam != mdGenericParamNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_genericParamMap.find(sourceGenericParam);
     if (itr != m_genericParamMap.end())
@@ -1292,7 +1292,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportMethodSpec(_In_ 
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(sourceMethodSpec != mdTokenNil && sourceMethodSpec != mdMethodSpecNil);
+    IfFalseRet(sourceMethodSpec != mdTokenNil && sourceMethodSpec != mdMethodSpecNil, E_FAIL);
 
     TokenMap::const_iterator itr = m_methodSpecMap.find(sourceMethodSpec);
     if (itr != m_methodSpecMap.end())
@@ -1537,7 +1537,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ConvertNonTypeSignatur
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(ppSignature != nullptr && pcbSignature != nullptr);
+    IfFalseRet(ppSignature != nullptr && pcbSignature != nullptr, E_FAIL);
     CComPtr<ISignatureBuilder> sigTargetSignature = nullptr;
     TSignatureMap::const_iterator itr = m_sigToConvertedSigMap.find(*ppSignature);
     if (itr == m_sigToConvertedSigMap.end())
@@ -1562,7 +1562,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ConvertTypeSignatureCa
 {
     HRESULT hr = S_OK;
 
-    IfFalseRet(ppSignature != nullptr && pcbSignature != nullptr);
+    IfFalseRet(ppSignature != nullptr && pcbSignature != nullptr, E_FAIL);
 
     CComPtr<ISignatureBuilder> sigTargetSignature;
     TSignatureMap::const_iterator itr = m_sigToConvertedSigMap.find(*ppSignature);

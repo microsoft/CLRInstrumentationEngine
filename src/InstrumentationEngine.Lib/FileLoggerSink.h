@@ -10,7 +10,8 @@
 namespace MicrosoftInstrumentationEngine
 {
     class CFileLoggerSink :
-        public ILoggerSink
+        public ILoggerSink,
+        public IFileLoggerSink
     {
     private:
 #ifdef PLATFORM_UNIX
@@ -47,6 +48,12 @@ namespace MicrosoftInstrumentationEngine
         HRESULT Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlags* pEffectiveFlags) override;
 
         HRESULT Shutdown() override;
+
+        // IFileLoggerSink Members
+    protected:
+        HRESULT SetLogFilePath(_In_ LPCWSTR wszLogFilePath) override;
+
+        HRESULT SetLogFileLevel(_In_ LoggingFlags fileLogFlags) override;
 
     private:
         void CloseLogFile();

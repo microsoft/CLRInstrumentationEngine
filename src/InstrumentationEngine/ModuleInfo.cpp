@@ -907,14 +907,22 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::SetRejitMethodInfo(_In_ mdT
     if (pMethodInfo != nullptr)
     {
         std::unordered_map<mdMethodDef, CComPtr<CMethodInfo>>::iterator iter = m_methodInfosByToken.find(methodToken);
-
         if (iter != m_methodInfosByToken.end())
         {
             CLogging::LogMessage(_T("CModuleInfo::SetRejitMethodInfo - method token already exists %04x. Overwriting"), methodToken);
         }
-    }
+        else
+        {
+            CLogging::LogMessage(_T("CModuleInfo::SetRejitMethodInfo - adding new method token %04x."), methodToken);
+        }
 
-    m_methodInfosByToken[methodToken] = pMethodInfo;
+        m_methodInfosByToken[methodToken] = pMethodInfo;
+    }
+    else
+    {
+        CLogging::LogMessage(_T("CModuleInfo::SetRejitMethodInfo - erasing existing method token %04x."), methodToken);
+        m_methodInfosByToken.erase(methodToken);
+    }
 
     return S_OK;
 }

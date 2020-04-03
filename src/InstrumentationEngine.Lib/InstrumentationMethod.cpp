@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "InstrumentationMethod.h"
+#include "InstrumentationMethodAttachContext.h"
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
@@ -21,8 +22,50 @@ MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
 
 }
 
+HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(
+    _In_ IProfilerManager* pProfilerManager,
+    _In_ bool validateCodeSignature
+    )
+{
+    HRESULT hr = S_OK;
 
-HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager, bool validateCodeSignature)
+    IfFailRet(InitializeCore(validateCodeSignature));
+
+    hr = m_pInstrumentationMethod->Initialize(pProfilerManager);
+    if (FAILED(hr))
+    {
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - failed to initialize instrumentation method PID: %u hr: %x name: %s"), GetCurrentProcessId(), hr, m_bstrName.m_str);
+        return hr;
+    }
+
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeForAttach(
+    _In_ IProfilerManager* pProfilerManager,
+    _In_ IEnumInstrumentationMethodSettings* pSettingsEnum,
+    _In_ bool validateCodeSignature
+    )
+{
+    HRESULT hr = S_OK;
+
+    IfFailRet(InitializeCore(validateCodeSignature));
+
+    CComQIPtr<IInstrumentationMethodAttach> pInstrumentationMethodAttach(m_pInstrumentationMethod);
+    IfNullRet(pInstrumentationMethodAttach);
+
+    CComPtr<IInstrumentationMethodAttachContext> pContext;
+    pContext.Attach(new (nothrow) CInstrumentationMethodAttachContext(pSettingsEnum));
+    IfFalseRet(nullptr != pContext, E_OUTOFMEMORY);
+
+    IfFailRet(pInstrumentationMethodAttach->InitializeForAttach(pProfilerManager, pContext));
+
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
+    _In_ bool validateCodeSignature
+    )
 {
     HRESULT hr = S_OK;
 
@@ -90,12 +133,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(_In_ 
         return hr;
     }
 
-    hr = m_pInstrumentationMethod->Initialize(pProfilerManager);
-    if (FAILED(hr))
-    {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - failed to initialize instrumentation method PID: %u hr: %x name: %s"), GetCurrentProcessId(), hr, m_bstrName.m_str);
-        return hr;
-    }
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::AttachComplete()
+{
+    HRESULT hr = S_OK;
+
+    CComQIPtr<IInstrumentationMethodAttach> pInstrumentationMethodAttach(m_pInstrumentationMethod);
+    IfNullRet(pInstrumentationMethodAttach);
+
+    IfFailRet(pInstrumentationMethodAttach->AttachComplete());
 
     return S_OK;
 }

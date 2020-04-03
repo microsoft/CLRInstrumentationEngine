@@ -32,7 +32,6 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentTests.cpp" />
     <ClCompile Include="InteropInstrumentationHandlerTests.cpp" />
     <ClCompile Include="MethodInfoDataContainerAdatpter.cpp" />
     <ClCompile Include="MethodInfoMock.cpp" />
