@@ -60,6 +60,7 @@ jobs:
         **\*.msm
         **\*.guids
         **\*.xdt
+        **\XdtExtensions.*
       TargetFolder: '$(Build.ArtifactStagingDirectory)\packages'
       CleanTargetFolder: true
     continueOnError: true

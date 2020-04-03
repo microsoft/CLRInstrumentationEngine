@@ -22,14 +22,15 @@
 #define __FUNCTIONT__
 #endif
 
+    // Log an error without returning.
+#ifndef IfFailLog
+#define IfFailLog(EXPR) \
+    do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailLog(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__ _T(": %d"), hr); } } while (false)
+#endif
+
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
     do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
-#endif
-
-#ifndef IfFailRetNoLog
-#define IfFailRetNoLog(EXPR) \
-    do { if (FAILED(hr = (EXPR))) { return hr; } } while (false)
 #endif
 
 // Wrap errno_t result of EXPR in HRESULT and then IfFailRet.
@@ -65,8 +66,8 @@
 #endif
 
 #ifndef IfFalseRet
-#define IfFalseRet(EXPR) \
-    do { if (FALSE == (EXPR)) { CLogging::LogError(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return E_FAIL; } } while (false)
+#define IfFalseRet(EXPR, HR) \
+    do { if (FALSE == (EXPR)) { CLogging::LogError(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return (HR); } } while (false)
 #endif
 
 #ifndef IsFlagSet

@@ -1257,15 +1257,13 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeGenericParameters
 
 // Called by the profiler info wrapper when a raw callback requests a function's il
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetIntermediateRenderedFunctionBody(
-        _Out_ LPCBYTE* ppMethodHeader,
-        _Out_ ULONG* pcbMethodSize
+        _Out_opt_ LPCBYTE* ppMethodHeader,
+        _Out_opt_ ULONG* pcbMethodSize
         )
 {
     HRESULT hr = S_OK;
 
     CLogging::LogMessage(_T("Start CMethodInfo::GetIntermediateRenderedFunctionBody"));
-    IfNullRetPointer(ppMethodHeader);
-    IfNullRetPointer(pcbMethodSize);
 
     if (!this->IsInstrumented() || m_pIntermediateRenderedMethod == nullptr)
     {
@@ -1273,8 +1271,15 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetIntermediateRenderedFunc
         return E_FAIL;
     }
 
-    *ppMethodHeader = (LPCBYTE)m_pIntermediateRenderedMethod;
-    *pcbMethodSize = m_cbIntermediateRenderedMethod;
+    if (ppMethodHeader != nullptr)
+    {
+        *ppMethodHeader = (LPCBYTE)m_pIntermediateRenderedMethod;
+    }
+
+    if (pcbMethodSize != nullptr)
+    {
+        *pcbMethodSize = m_cbIntermediateRenderedMethod;
+    }
 
     CLogging::LogMessage(_T("End CMethodInfo::GetIntermediateRenderedFunctionBody"));
 
