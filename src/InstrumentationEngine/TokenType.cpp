@@ -53,9 +53,9 @@ HRESULT MicrosoftInstrumentationEngine::CTokenType::GetName(_Out_ BSTR* pbstrNam
                     nameBuffer.resize(cchLength);
                 }
 
-                // Add nested class names separated by a "/".
+                // Add nested class names separated by a "+".
                 IfFailRet(pImport->GetTypeDefProps(tkEnclosing, nameBuffer.data(), cchLength, &cchLength, nullptr, nullptr));
-                fullName.insert(0, _T("/"));
+                fullName.insert(0, _T("+"));
                 fullName.insert(0, nameBuffer.data());
 
                 tkCurrent = tkEnclosing;
