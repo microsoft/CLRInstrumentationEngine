@@ -46,7 +46,7 @@
       <ZipTestItem Include="@(SiteExtensionContents)">
         <Destination>$(Title)\%(RootPath)\%(RecursiveDir)</Destination>
       </ZipTestItem>
-      <ZipTestItem Include="$(InputBinCfgRoot)\AnyCPU\XdtExtensions.*"
+      <ZipTestItem Include="$(OutputPath)\XdtExtensions.*"
                    Condition="'$(IncludeXdtExtensions)' == 'true'">
         <Destination>$(Title)\XdtExtensions</Destination>
       </ZipTestItem>
