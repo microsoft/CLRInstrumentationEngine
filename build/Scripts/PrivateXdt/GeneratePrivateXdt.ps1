@@ -19,7 +19,7 @@ param(
     [ValidateNotNullOrEmpty()]
     [ValidateScript({ Test-Path $_ })]
     [String]
-    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.Preinstall\applicationHost.xdt",
+    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.SiteExtension\applicationHost.xdt",
 
     [Parameter(Mandatory=$false)]
     [Switch]
@@ -27,7 +27,11 @@ param(
 
     [Parameter(Mandatory=$false)]
     [Switch]
-    $DisableSignatureValidation
+    $DisableSignatureValidation,
+
+    [Parameter(Mandatory=$false)]
+    [Switch]
+    $Scm
 )
 
 Import-Module "$PSScriptRoot\XdtHelper.psm1" -Force
@@ -38,11 +42,13 @@ $ErrorActionPreference = 'Stop'
 [xml]$xdtFile = Get-Content $InputXdtFilePath -Raw
 
 Write-Host "Applying changes..."
-$params = @{
+$addParams = @{
     DisableSignatureValidation = $DisableSignatureValidation
     DebugWait                  = $DebugWait
+    Scm                        = $Scm
 }
-Edit-XdtContent -XdtFile $xdtFile -XmlEntries (Get-ClrieXmlEntries @params)
+
+Edit-XdtContent -XdtFile $xdtFile -XmlEntryOperations (Get-ClrieXmlEntryOperations @addParams)
 
 Write-Host "Saving changes..."
 # This nicely formats the XML

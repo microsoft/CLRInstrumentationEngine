@@ -16,6 +16,7 @@ set(src_files
     ./ConfigurationLocator.cpp
     ./ConfigurationSource.cpp
     ./DataContainer.cpp
+    ./Encoding.cpp
     ./FileLoggerSink.cpp
     ./HostLoggerSink.cpp
     ./ImplQueryInterface.cpp
@@ -25,6 +26,9 @@ set(src_files
     ./LoggerService.cpp
     ./Logging.cpp
     ./refcount.cpp
+    ./StringUtils.cpp
+    ./XmlDocWrapper.cpp
+    ./XmlNode.cpp
 )
 
 add_lib(${PROJECT_NAME}
