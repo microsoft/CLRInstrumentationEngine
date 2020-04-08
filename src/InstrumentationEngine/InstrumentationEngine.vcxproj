@@ -148,12 +148,59 @@
     <ClCompile Include="TokenType.cpp" />
     <ClCompile Include="Type.cpp" />
     <ClCompile Include="TypeCreator.cpp" />
-    <ClInclude Include="*.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InstrumentationEngine.Lib\InstrumentationEngine.Lib.vcxproj">
       <Project>{7507e5dd-d4d8-4617-9124-a76341004aab}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AppDomainCollection.h" />
+    <ClInclude Include="AppDomainInfo.h" />
+    <ClInclude Include="ArrayType.h" />
+    <ClInclude Include="AssemblyInfo.h" />
+    <ClInclude Include="AssemblyInjector.h" />
+    <ClInclude Include="AtlModule.h" />
+    <ClInclude Include="CachedILMethodBody.h" />
+    <ClInclude Include="ClrVersion.h" />
+    <ClInclude Include="CompositeType.h" />
+    <ClInclude Include="CorHeaders.h" />
+    <ClInclude Include="CorMethodMalloc.h" />
+    <ClInclude Include="CorProfilerFunctionControlWrapper.h" />
+    <ClInclude Include="CorProfilerInfoWrapper.h" />
+    <ClInclude Include="ExceptionClause.h" />
+    <ClInclude Include="ExceptionSection.h" />
+    <ClInclude Include="FunctionType.h" />
+    <ClInclude Include="GenericInstanceType.h" />
+    <ClInclude Include="GenericParameterType.h" />
+    <ClInclude Include="InlineSite.h" />
+    <ClInclude Include="InlineSiteMap.h" />
+    <ClInclude Include="Instruction.h" />
+    <ClInclude Include="InstructionFactory.h" />
+    <ClInclude Include="InstructionGraph.h" />
+    <ClInclude Include="InstrumentationMethodEvents.h" />
+    <ClInclude Include="LocalVariableCollection.h" />
+    <ClInclude Include="LoggingWrapper.h" />
+    <ClInclude Include="MethodInfo.h" />
+    <ClInclude Include="MethodInfoCleanup.h" />
+    <ClInclude Include="MethodJitInfo.h" />
+    <ClInclude Include="MethodLocal.h" />
+    <ClInclude Include="MethodParameter.h" />
+    <ClInclude Include="ModifierType.h" />
+    <ClInclude Include="ModuleInfo.h" />
+    <ClInclude Include="ProfilerManager.h" />
+    <ClInclude Include="ProfilerManagerForInstrumentationMethod.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SignatureBuilder.h" />
+    <ClInclude Include="SigParser.h" />
+    <ClInclude Include="SimpleType.h" />
+    <ClInclude Include="SingleRetDefaultInstrumentation.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StrongName.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TokenType.h" />
+    <ClInclude Include="Type.h" />
+    <ClInclude Include="TypeCreator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />

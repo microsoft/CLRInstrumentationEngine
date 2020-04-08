@@ -520,6 +520,34 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                     pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
                     IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
+                    CComBSTR bstrMethodGuid;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("MethodGuid"), &bstrMethodGuid));
+
+                    CComBSTR bstrLogLevel;
+                    if (SUCCEEDED(pInstrumentationMethodNode->GetAttribute(_T("LogLevel"), &bstrLogLevel)))
+                    {
+                        GUID guidMethod;
+                        hr = IIDFromString(bstrMethodGuid, (LPCLSID)&guidMethod);
+
+                        // Store the {GUID, LogLevel} pair
+                        if (SUCCEEDED(hr))
+                        {
+                            unordered_map<GUID, LoggingFlags>::iterator itMethodLogLevel = pProfilerManager->m_methodLogLevel.find(guidMethod);
+                            if (itMethodLogLevel != pProfilerManager->m_methodLogLevel.end())
+                            {
+                                pProfilerManager->m_methodLogLevel.insert({ guidMethod, CLoggerService::ExtractLoggingFlags(bstrLogLevel) });
+                            }
+                            else
+                            {
+                                pProfilerManager->m_methodLogLevel[guidMethod] = CLoggerService::ExtractLoggingFlags(bstrLogLevel);
+                            }
+                        }
+                        else
+                        {
+                            CLogging::LogError(_T("ParseAttachConfigurationThreadProc - Unable to parse Method Guid %s"), bstrMethodGuid);
+                        }
+                    }
+
                     CComPtr<CXmlNode> pInstrumentationMethodChildNode;
                     IfFailRet(pInstrumentationMethodNode->GetChildNode(&pInstrumentationMethodChildNode));
 
@@ -537,32 +565,6 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                                  it != settingsMap.end();
                                  ++it)
                             {
-                                // Assume format is:
-                                // MicrosoftInstrumentationEngine_LogLevel_12341234-1234-1234-1234-123412341234
-                                if (wcsncmp(it->first.c_str(), _T("MicrosoftInstrumentationEngine_LogLevel_"), 40) == 0)
-                                {
-                                    // Parse the GUID, IIDFromString requires curly brackets around GUID.
-                                    GUID guidMethod;
-                                    tstring tsGuid = _T("{");
-                                    tsGuid.append(it->first.substr(40, 36));
-                                    tsGuid.append(_T("}"));
-                                    hr = IIDFromString(tsGuid.c_str(), (LPCLSID)&guidMethod);
-
-                                    // Store the {GUID, LogLevel} pair
-                                    if (SUCCEEDED(hr))
-                                    {
-                                        unordered_map<GUID, LoggingFlags>::iterator itMethodLogLevel = pProfilerManager->m_methodLogLevel.find(guidMethod);
-                                        if (itMethodLogLevel != pProfilerManager->m_methodLogLevel.end())
-                                        {
-                                            pProfilerManager->m_methodLogLevel.insert({ guidMethod, CLoggerService::ExtractLoggingFlags(it->second.c_str()) });
-                                        }
-                                        else
-                                        {
-                                            pProfilerManager->m_methodLogLevel[guidMethod] = CLoggerService::ExtractLoggingFlags(it->second.c_str());
-                                        }
-                                    }
-                                }
-
                                 IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
                             }
                         }

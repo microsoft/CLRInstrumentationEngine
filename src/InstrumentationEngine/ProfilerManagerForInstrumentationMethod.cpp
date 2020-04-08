@@ -35,15 +35,18 @@ CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMeth
         {
             m_flags = flags;
         }
-        else if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
-        {
-            m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
-        }
         else
         {
-            // We want to pick up the global logging level if no log level for the instrumentation method is set.
-            // If this fails, there's not much we can do.
-            CLogging::GetLoggingFlags(&m_flags);
+            if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
+            {
+                m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
+            }
+            else
+            {
+                // We want to pick up the global logging level if no log level for the instrumentation method is set.
+                // If this fails, there's not much we can do.
+                CLogging::GetLoggingFlags(&m_flags);
+            }
         }
     }
     else

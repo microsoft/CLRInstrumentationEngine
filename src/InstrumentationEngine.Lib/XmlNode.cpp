@@ -119,15 +119,20 @@ HRESULT CXmlNode::GetAttribute(_In_ const WCHAR* wszAttributeName, _Out_ BSTR* p
 
     // Get specific attribute by name.
     CComPtr<IXMLDOMNode> pAttributeNode;
-    pAttributes->getNamedItem(const_cast<BSTR>(wszAttributeName), &pAttributeNode);
+    hr = pAttributes->getNamedItem(const_cast<BSTR>(wszAttributeName), &pAttributeNode);
 
-    if (pAttributeNode != nullptr)
+    if (S_OK == hr && pAttributeNode != nullptr)
     {
         // Get the attribute value.
         CComVariant varValueAttr;
         pAttributeNode->get_nodeValue(&varValueAttr);
         CComBSTR bstrAttrVal = varValueAttr.bstrVal;
         *pValue = bstrAttrVal.Detach();
+    }
+    else
+    {
+        // attribute not found.
+        return E_FAIL;
     }
 
     return S_OK;
@@ -144,7 +149,6 @@ HRESULT CXmlNode::GetAttribute(_In_ const WCHAR* wszAttributeName, _Out_ BSTR* p
     }
     else
     {
-        // TODO: willxie do something better than this if no attribute found (ie. xmlGetProp() returns NULL)
         return E_FAIL;
     }
 #endif
