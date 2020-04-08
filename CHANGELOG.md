@@ -16,6 +16,7 @@ Please format the changes as follows:
   + Fix RPH bug - Allow SetEventMask post initialization if not affecting immutable flags
   + Fix RPH bug - SetRejitMethodInfo with nullptr did not erase MethodInfo, causing AV
   + Fix RPH bug - GetILFunctionBody allows NULL for out params if more than one
+  + Fix incorrect naming of nested types
 
 # 1.0.31
 + BugFixes:

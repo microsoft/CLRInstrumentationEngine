@@ -14,6 +14,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>Enable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <XsdSchemaFile Include="InstrumentationConfigurationSources.xsd">
@@ -38,6 +39,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.61701" />
     <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20104.2" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
@@ -45,4 +47,8 @@
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
     <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
+  <ItemGroup>
+    <!-- dotnet core 3.1 produces both a dll and exe -->
+    <FilesToSign Include="$(OutputPath)\Microsoft.InstrumentationEngine.Attach.exe"/>
+  </ItemGroup>
 </Project>

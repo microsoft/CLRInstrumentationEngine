@@ -19,7 +19,7 @@ param(
     [ValidateNotNullOrEmpty()]
     [ValidateScript({ Test-Path $_ })]
     [String]
-    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.Preinstall\applicationHost.xdt",
+    $InputXdtFilePath = "$PSScriptRoot\..\..\..\src\InstrumentationEngine.SiteExtension\applicationHost.xdt",
 
     [Parameter(Mandatory=$false)]
     [Switch]
@@ -28,10 +28,6 @@ param(
     [Parameter(Mandatory=$false)]
     [Switch]
     $DisableSignatureValidation,
-
-    [Parameter(Mandatory=$false)]
-    [Switch]
-    $Attach,
 
     [Parameter(Mandatory=$false)]
     [Switch]
@@ -51,12 +47,8 @@ $addParams = @{
     DebugWait                  = $DebugWait
     Scm                        = $Scm
 }
-$removeParams = @{
-    Attach = $Attach
-    Scm    = $Scm
-}
 
-Edit-XdtContent -XdtFile $xdtFile -XmlEntriesToAdd (Get-ClrieXmlEntriesToAdd @addParams) -XmlEntriesToRemove (Get-ClrieXmlEntriesToRemove @removeParams)
+Edit-XdtContent -XdtFile $xdtFile -XmlEntryOperations (Get-ClrieXmlEntryOperations @addParams)
 
 Write-Host "Saving changes..."
 # This nicely formats the XML
