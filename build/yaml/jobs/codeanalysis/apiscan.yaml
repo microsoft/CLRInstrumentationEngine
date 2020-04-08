@@ -1,0 +1,57 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Run APIScan Code Analysis
+# Invokes APIScan analysis
+
+jobs:
+- job: CodeAnaysis_APIScan
+  displayName: Code Analysis - APIScan
+
+  timeoutInMinutes: 360
+
+  # No dependencies. Requires Build Stages to ensure that binaries are built
+
+  pool:
+    name: VSEng-MicroBuildVS2019
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: none
+
+  - task: DownloadBuildArtifacts@0
+    displayName: Download Windows Files (Release)
+    inputs:
+      downloadType: single
+      artifactName: binaries-windows-Release
+      downloadPath: $(Build.ArtifactStagingDirectory)
+
+  # Run API Scan
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@1
+    displayName: 'Run APIScan'
+    inputs:
+      softwareFolder: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release'
+      softwareName: Aerobee
+      softwareVersionNum: '$(Build.BuildNumber)'
+      symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/binaries-windows-Release'
+      isLargeApp: false
+      verbosityLevel: none
+    continueOnError: true
+
+  # Publish SecurityAnalysis Logs
+  - template: ../../steps/codeanalysis/publishlogs.yaml
+
+  # TSA Upload to CodeBase: Aerobee
+  - template: ../../steps/codeanalysis/tsaupload.yaml
+    parameters:
+      APIScan: true
+
+  # Post Analysis
+  - template: ../../steps/codeanalysis/postanalysis.yaml
+    parameters:
+      APIScan: true
+
+  # Microbuild Cleanup
+  - template: ../../steps/microbuild/cleanup.yaml
