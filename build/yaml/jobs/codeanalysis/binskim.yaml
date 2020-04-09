@@ -1,0 +1,53 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Run BinSkim Code Analysis
+# Invokes BinSkim analysis
+
+jobs:
+- job: CodeAnaysis_BinSkim
+  displayName: Code Analysis - BinSkim
+
+  # No dependencies. Requires Build Stages to ensure that binaries are built
+
+  pool:
+    name: VSEng-MicroBuildVS2019
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: none
+
+  - task: DownloadBuildArtifacts@0
+    displayName: Download Windows Files (Release)
+    inputs:
+      downloadType: single
+      artifactName: binaries-windows-Release
+      downloadPath: $(Build.ArtifactStagingDirectory)
+
+  # Run BinSkim
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@3
+    displayName: 'Run BinSkim '
+    inputs:
+      InputType: Basic
+      AnalyzeTarget: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release/AnyCPU/Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll;'
+      AnalyzeVerbose: true
+      AnalyzeHashes: true
+    continueOnError: true
+
+  # Publish SecurityAnalysis Logs
+  - template: ../../steps/codeanalysis/publishlogs.yaml
+
+  # TSA Upload to CodeBase: Aerobee
+  - template: ../../steps/codeanalysis/tsaupload.yaml
+    parameters:
+      BinSkim: true
+
+  # Post Analysis
+  - template: ../../steps/codeanalysis/postanalysis.yaml
+    parameters:
+      BinSkim: true
+
+  # Microbuild Cleanup
+  - template: ../../steps/microbuild/cleanup.yaml

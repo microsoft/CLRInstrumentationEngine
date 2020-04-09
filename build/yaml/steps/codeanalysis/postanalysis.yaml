@@ -1,0 +1,23 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Post Analysis
+
+parameters:
+  APIScan: false
+  BinSkim: false
+  FxCop: false
+  PoliCheck: false
+  PREFast: false
+
+steps:
+# Post Analysis
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
+  displayName: 'Post Analysis'
+  inputs:
+    APIScan: ${{ parameters.APIScan }}
+    BinSkim: ${{ parameters.BinSkim }}
+    FxCop: ${{ parameters.FxCop }}
+    FxCopBreakOn: CriticalError
+    SDLNativeRules: ${{ parameters.PREFast }}
+  continueOnError: true

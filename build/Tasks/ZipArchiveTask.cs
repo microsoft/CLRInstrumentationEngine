@@ -45,7 +45,7 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                         string type = fileItem.GetMetadata("Type");
                         if (!string.IsNullOrEmpty(destinationFolder))
                         {
-                            destinationFileName  = Path.Combine(destinationFolder, destinationFileName);
+                            destinationFileName  = Path.Combine(destinationFolder.TrimEnd('/', '\\'), destinationFileName);
                         }
 
                         // Prevent duplicate files from getting zipped.
@@ -59,7 +59,7 @@ namespace Microsoft.VisualStudio.ProductionDiagnostics.BuildTasks
                         // Create directories
                         if (!string.IsNullOrEmpty(type) && type.Equals("Directory"))
                         {
-                            ZipArchiveEntry entry = archive.CreateEntry(destinationFileName.TrimEnd('/') + '/');
+                            ZipArchiveEntry entry = archive.CreateEntry(destinationFileName.TrimEnd('/', '\\') + '/');
                         }
                         else
                         {
