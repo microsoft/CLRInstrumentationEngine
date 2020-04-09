@@ -1,0 +1,51 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Run FxCop Code Analysis
+# Invokes FxCop analysis
+
+jobs:
+- job: CodeAnaysis_FxCop
+  displayName: Code Analysis - FxCop
+
+  # No dependencies. Requires Build Stages to ensure that binaries are built
+
+  pool:
+    name: VSEng-MicroBuildVS2019
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: none
+
+  - task: DownloadBuildArtifacts@0
+    displayName: Download Windows Files (Debug)
+    inputs:
+      downloadType: single
+      artifactName: binaries-windows-Debug
+      downloadPath: $(Build.ArtifactStagingDirectory)
+
+  # Run FxCop
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-fxcop.FxCop@2
+    displayName: 'Run FxCop'
+    inputs:
+      inputType: Basic
+      targets: '$(Build.ArtifactStagingDirectory)/binaries-windows-Debug/AnyCPU/Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll'
+    continueOnError: true
+
+  # Publish SecurityAnalysis Logs
+  - template: ../../steps/codeanalysis/publishlogs.yaml
+
+  # TSA Upload to CodeBase: Aerobee
+  - template: ../../steps/codeanalysis/tsaupload.yaml
+    parameters:
+      FxCop: true
+
+  # Post Analysis
+  - template: ../../steps/codeanalysis/postanalysis.yaml
+    parameters:
+      FxCop: true
+
+  # Microbuild Cleanup
+  - template: ../../steps/microbuild/cleanup.yaml
