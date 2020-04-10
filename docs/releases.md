@@ -4,7 +4,7 @@ The below links provide the latest released packages for CLRIE. Some Azure platf
 
 ## Current Release - 1.0.31
 
-|Platform|Links|
+|Platform|Installer|Merge Module|
 |-|-|-|
-|Windows (x64)|[Installer (.msi)](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x64.1.0.31.msi)<br/>[Merge Module (.msm)](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x64.1.0.31.msm)
-|Windows (x86)|[Installer (.msi)](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x86.1.0.31.msi)<br/>[Merge Module (.msm)](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x86.1.0.31.msm)
+|Windows (x64)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x64.1.0.31.msi)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x64.1.0.31.msm)
+|Windows (x86)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x86.1.0.31.msi)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x86.1.0.31.msm)
