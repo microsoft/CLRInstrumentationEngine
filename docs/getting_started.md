@@ -65,12 +65,6 @@ The Instrumentation Engine supports both x86 and x64 configurations.
 
 See [CLRIE in Azure](scenarios/azure.md) for details about leveraging CLRIE on supported Azure platforms and products.
 
-#### Required Dlls
-The Instrumentation Engine supports both x86 and x64 configurations.
-
-* MicrosoftInstrumentationEngine_x86.dll
-* MicrosoftInstrumentationEngine_x64.dll
-
 ### How do I write an Instrumentation Method?
 
 A simple example of an InstrumentationMethod can be found in

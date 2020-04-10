@@ -158,6 +158,22 @@ HRESULT CLogging::Shutdown()
     return S_OK;
 }
 
+// static
+HRESULT CLogging::SetLogFilePath(_In_ LPCWSTR wszLogFilePath)
+{
+    IfNotInitRetUnexpected(s_initialize);
+
+    return s_loggerService.Get()->SetLogFilePath(wszLogFilePath);
+}
+
+// static
+HRESULT CLogging::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
+{
+    IfNotInitRetUnexpected(s_initialize);
+
+    return s_loggerService.Get()->SetLogFileLevel(fileLogFlags);
+}
+
 CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int indent)
 {
     if (!AllowLogEntry(LoggingFlags_InstrumentationResults))

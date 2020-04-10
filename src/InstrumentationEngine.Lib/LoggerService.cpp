@@ -449,3 +449,35 @@ HRESULT CLoggerService::UpdateInstrumentationMethodFlagsInternal(_In_ GUID class
 
     return S_OK;
 }
+
+HRESULT CLoggerService::SetLogFilePath(_In_ LPCWSTR wszLogFilePath)
+{
+    HRESULT hr = S_OK;
+
+    for (shared_ptr<ILoggerSink>& pSink : m_allSinks)
+    {
+        IFileLoggerSink* pFileSink = dynamic_cast<IFileLoggerSink*>(pSink.get());
+        if (pFileSink)
+        {
+            IfFailRetNoLog(pFileSink->SetLogFilePath(wszLogFilePath));
+        }
+    }
+
+    return RecalculateLoggingFlags();
+}
+
+HRESULT CLoggerService::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
+{
+    HRESULT hr = S_OK;
+
+    for (shared_ptr<ILoggerSink>& pSink : m_allSinks)
+    {
+        IFileLoggerSink* pFileSink = dynamic_cast<IFileLoggerSink*>(pSink.get());
+        if (pFileSink)
+        {
+            IfFailRetNoLog(pFileSink->SetLogFileLevel(fileLogFlags));
+        }
+    }
+
+    return RecalculateLoggingFlags();
+}
