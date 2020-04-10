@@ -1,6 +1,6 @@
 # CLR Instrumentation Engine Releases
 
-The below links provide the latest released packages for CLRIE. Some Azure platforms already support CLRIE as a first part extension. (see [here](scenarios/azure.md) for details).
+The below links provide the latest released packages for CLRIE. Some Azure platforms already support CLRIE as a first party extension. (see [here](scenarios/azure.md) for details).
 
 ## Current Release - 1.0.31
 
