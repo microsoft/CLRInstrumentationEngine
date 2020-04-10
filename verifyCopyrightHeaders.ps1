@@ -63,6 +63,8 @@ $excludedFiles = @(
     'RawProfilerHook_i.h'
     'dlldata.c'
     'build.sem'
+    'EngineConfiguration.cs'
+    'InstrumentationConfigurationSources.cs'
 
     # the license itself
     'LICENSE'
@@ -98,10 +100,16 @@ Get-ChildItem -Path $PSScriptRoot -Recurse -File |
                 $mitLicenseIndex = $i + 2
             }
 
-            if (!$lines[$copyrightIndex].ToString().Contains($copyrightHeader) -or
-                !$lines[$mitLicenseIndex].ToString().Contains($mitLicenseHeader))
+            if (!$lines[$copyrightIndex].ToString().Contains($copyrightHeader))
             {
-                Write-Warning "$($_.FullName) is missing OSS header."
+                Write-Warning "$($_.FullName) is missing OSS header: $copyrightHeader"
+                Write-Warning "> $($lines[$copyrightIndex])"
+            }
+
+            if (!$lines[$mitLicenseIndex].ToString().Contains($mitLicenseHeader))
+            {
+                Write-Warning "$($_.FullName) is missing OSS header: $mitLicenseHeader"
+                Write-Warning "> $($lines[$mitLicenseIndex])"
             }
         }
         else
