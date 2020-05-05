@@ -244,12 +244,6 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     m_profilerCallbackHolder = std::move(profilerCallbackHolder);
 
-    if (FAILED(hr))
-    {
-        CLogging::LogError(_T("Raw profiler hook returned failure"));
-        return E_FAIL;
-    }
-
     return S_OK;
 }
 
