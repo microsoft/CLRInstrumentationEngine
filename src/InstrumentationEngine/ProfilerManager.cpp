@@ -922,6 +922,12 @@ HRESULT CProfilerManager::Initialize(
         }
     }
 
+    if (FAILED(hr))
+    {
+        CLogging::LogError(_T("Raw profiler hook initialization failed with 0x%x"), hr);
+        return E_FAIL;
+    }
+
     PROF_CALLBACK_END
 
     return S_OK;
