@@ -244,22 +244,6 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     m_profilerCallbackHolder = std::move(profilerCallbackHolder);
 
-    if (m_attachedClrVersion != ClrVersion_2)
-    {
-        hr = pCorProfilerCallback->Initialize(m_pWrappedProfilerInfo);
-    }
-    else
-    {
-        hr = pCorProfilerCallback->Initialize(m_pRealProfilerInfo);
-    }
-
-    if (FAILED(hr))
-    {
-        CLogging::LogError(_T("Raw profiler hook returned failure"));
-        return E_FAIL;
-    }
-
-
     return S_OK;
 }
 
@@ -924,11 +908,11 @@ HRESULT CProfilerManager::Initialize(
         CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
         if (m_attachedClrVersion != ClrVersion_2)
         {
-            hr = pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
+            IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
         }
         else
         {
-            hr = pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
+            IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
         }
     }
 
