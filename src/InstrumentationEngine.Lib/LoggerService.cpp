@@ -72,7 +72,7 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
     // is primarily meant for consumers external of the Instrumentation Engine
     // assembly to determine which flags are supported rather than literally
     // reporting what the default was or what was set by SetLoggingFlags.
-    *pLoggingFlags = (LoggingFlags)m_effectiveFlags.load(std::memory_order_acquire);
+    *pLoggingFlags = m_effectiveFlags.load();
 
     return S_OK;
 }
@@ -357,8 +357,7 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
         effectiveFlags = static_cast<LoggingFlags>(effectiveFlags | sinkFlags);
     }
 
-    //m_effectiveFlags = effectiveFlags;
-    m_effectiveFlags.store((int)effectiveFlags, std::memory_order_release);
+    m_effectiveFlags = effectiveFlags;
 
     return S_OK;
 }
