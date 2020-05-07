@@ -67,14 +67,12 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 
     IfNotInitRetUnexpected(m_initialize);
 
-    CCriticalSectionHolder holder(&m_cs);
-
     // Intentionally returning the effective flags instead of the default flags
     // (ones set by default or by SetLoggingFlags). The GetLoggingFlags method
     // is primarily meant for consumers external of the Instrumentation Engine
     // assembly to determine which flags are supported rather than literally
     // reporting what the default was or what was set by SetLoggingFlags.
-    *pLoggingFlags = m_effectiveFlags;
+    *pLoggingFlags = (LoggingFlags)m_effectiveFlags.load(std::memory_order_acquire);
 
     return S_OK;
 }
@@ -359,7 +357,8 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
         effectiveFlags = static_cast<LoggingFlags>(effectiveFlags | sinkFlags);
     }
 
-    m_effectiveFlags = effectiveFlags;
+    //m_effectiveFlags = effectiveFlags;
+    m_effectiveFlags.store((int)effectiveFlags, std::memory_order_release);
 
     return S_OK;
 }
