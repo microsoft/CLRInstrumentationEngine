@@ -72,7 +72,7 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
     // is primarily meant for consumers external of the Instrumentation Engine
     // assembly to determine which flags are supported rather than literally
     // reporting what the default was or what was set by SetLoggingFlags.
-    *pLoggingFlags = m_effectiveFlags.load();
+    *pLoggingFlags = m_effectiveFlags;
 
     return S_OK;
 }
