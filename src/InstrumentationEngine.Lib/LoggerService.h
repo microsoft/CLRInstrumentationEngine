@@ -53,7 +53,7 @@ namespace MicrosoftInstrumentationEngine
         // each of the logger sinks. This is updated each time a logger sink dependency is changed
         // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
         //
-        // We're using atomic_int here to avoid a critical section in GetLoggingFlags.
+        // We're using atomic here to avoid a critical section in GetLoggingFlags.
         std::atomic<LoggingFlags> m_effectiveFlags;
         // This is the cumulative LoggingFlags for all InstrumentationMethods
         LoggingFlags m_instrumentationMethodFlags;
