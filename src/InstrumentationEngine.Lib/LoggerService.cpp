@@ -67,8 +67,6 @@ HRESULT CLoggerService::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 
     IfNotInitRetUnexpected(m_initialize);
 
-    CCriticalSectionHolder holder(&m_cs);
-
     // Intentionally returning the effective flags instead of the default flags
     // (ones set by default or by SetLoggingFlags). The GetLoggingFlags method
     // is primarily meant for consumers external of the Instrumentation Engine
