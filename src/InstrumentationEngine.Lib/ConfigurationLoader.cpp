@@ -219,6 +219,7 @@ HRESULT CConfigurationLoaderHelper::ProcessInstrumentationMethodNode(_In_ BSTR b
 #else
 
 #include <string.h>
+#include <iconv.h>
 
 HRESULT CConfigurationLoaderHelper::LoadConfiguration(_In_ BSTR bstrConfigPath, _In_ std::vector<CInstrumentationMethod*>& methods)
 {
