@@ -149,6 +149,7 @@ macro (build_init build_language build_type)
     add_compile_options(-Wno-new-returns-null)
     add_compile_options(-Wno-deprecated-declarations)
     add_compile_options(-Wno-delete-incomplete)
+    add_compile_options(-Wno-pragma-pack)
 
     # Turn all enabled warnings into errors
     add_compile_options(-Werror)
