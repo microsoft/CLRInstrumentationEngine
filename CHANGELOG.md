@@ -7,6 +7,11 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.33
++ New:
++ BugFixes:
++ Updates:
+
 # 1.0.32
 + New:
   + Support loading and initializing Instrumentation Methods on profiler attach.

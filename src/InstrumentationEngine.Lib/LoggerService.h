@@ -52,7 +52,9 @@ namespace MicrosoftInstrumentationEngine
         // The effective set of flags (flags that are in actual use) as determined by querying
         // each of the logger sinks. This is updated each time a logger sink dependency is changed
         // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
-        LoggingFlags m_effectiveFlags;
+        //
+        // We're using atomic here to avoid a critical section in GetLoggingFlags.
+        std::atomic<LoggingFlags> m_effectiveFlags;
         // This is the cumulative LoggingFlags for all InstrumentationMethods
         LoggingFlags m_instrumentationMethodFlags;
 
