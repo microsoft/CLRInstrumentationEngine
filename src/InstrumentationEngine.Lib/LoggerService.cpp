@@ -358,6 +358,7 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     }
 
     m_effectiveFlags = effectiveFlags;
+    CLogging::SetCachedLoggingFlag(effectiveFlags);
 
     return S_OK;
 }
