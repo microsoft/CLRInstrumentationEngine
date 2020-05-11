@@ -242,7 +242,7 @@ namespace MicrosoftInstrumentationEngine
 
     ULONG CModuleRefCount::GetModuleUsage(void)
     {
-        return (ULONG)_InterlockedOr((volatile PLONG)&s_ulcModuleRef, 0);
+        return (ULONG)_InterlockedOr((PLONG)&s_ulcModuleRef, 0);
     }
 
 }
