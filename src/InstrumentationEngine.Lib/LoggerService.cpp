@@ -133,8 +133,9 @@ void CLoggerService::SetLogToDebugPort(_In_ bool enable)
     RecalculateLoggingFlags();
 }
 
-HRESULT CLoggerService::Initialize()
+HRESULT CLoggerService::Initialize(_In_ std::function<void(const LoggingFlags&)> loggingFlagsCallback)
 {
+    m_LoggingFlagsCallback = loggingFlagsCallback;
     return m_initialize.Get();
 }
 
@@ -358,6 +359,10 @@ HRESULT CLoggerService::RecalculateLoggingFlags()
     }
 
     m_effectiveFlags = effectiveFlags;
+    if (m_LoggingFlagsCallback != nullptr)
+    {
+        m_LoggingFlagsCallback(effectiveFlags);
+    }
 
     return S_OK;
 }

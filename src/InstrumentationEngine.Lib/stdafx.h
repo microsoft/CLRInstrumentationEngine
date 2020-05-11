@@ -89,6 +89,8 @@ using namespace ATL;
 #include <ctime>
 #endif
 
+#include <functional>
+
 #include "Logging.h"
 #include "ImplQueryInterface.h"
 #include "refcount.h"

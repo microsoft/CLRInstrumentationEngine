@@ -10,6 +10,7 @@ using namespace std;
 CInitOnce CLogging::s_initialize([]() { return InitializeCore(); });
 CSingleton<CLoggerService> CLogging::s_loggerService;
 atomic_size_t CLogging::s_initCount(0);
+atomic<LoggingFlags> CLogging::s_cachedFlags(LoggingFlags_None);
 
 // static
 bool CLogging::AllowLogEntry(_In_ LoggingFlags flags)
@@ -24,7 +25,10 @@ HRESULT CLogging::GetLoggingFlags(_Out_ LoggingFlags* pLoggingFlags)
 {
     IfNotInitRetUnexpected(s_initialize);
 
-    return s_loggerService.Get()->GetLoggingFlags(pLoggingFlags);
+    IfNullRetPointerNoLog(pLoggingFlags);
+
+    *pLoggingFlags = s_cachedFlags;
+    return S_OK;
 }
 
 // static
@@ -80,7 +84,6 @@ void CLogging::LogDumpMessage(_In_ const WCHAR* wszMessage, ...)
     }
 }
 
-
 // static
 void CLogging::VLogMessage(_In_ const WCHAR* wszMessage, _In_ va_list argptr)
 {
@@ -118,7 +121,7 @@ HRESULT CLogging::Initialize()
 // static
 HRESULT CLogging::InitializeCore()
 {
-    return s_loggerService.Get()->Initialize();
+    return s_loggerService.Get()->Initialize(OnLoggingFlagsUpdated);
 }
 
 // static
@@ -172,6 +175,12 @@ HRESULT CLogging::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
     IfNotInitRetUnexpected(s_initialize);
 
     return s_loggerService.Get()->SetLogFileLevel(fileLogFlags);
+}
+
+// static
+void CLogging::OnLoggingFlagsUpdated(_In_ const LoggingFlags& flags)
+{
+    s_cachedFlags = flags;
 }
 
 CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int indent)

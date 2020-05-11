@@ -66,6 +66,9 @@ namespace MicrosoftInstrumentationEngine
         // the version of Clang, consider refactoring this vector of GUIDs to a set.
         std::unordered_map<LoggingFlags, std::vector<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
 
+        // This function type will get invoked when the effective flags gets updated.
+        std::function<void(const LoggingFlags&)> m_LoggingFlagsCallback;
+
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
         ATL::CComPtr<IProfilerManagerLoggingHost> m_pLoggingHost;
@@ -105,7 +108,7 @@ namespace MicrosoftInstrumentationEngine
 
         static LoggingFlags ExtractLoggingFlags(_In_ LPCWSTR wszRequestedFlagNames);
 
-        HRESULT Initialize();
+        HRESULT Initialize(_In_ std::function<void(const LoggingFlags&)> loggingFlagsCallback = nullptr);
 
         void LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogMessage(_In_ LPCWSTR wszMessage, ...);
