@@ -86,9 +86,10 @@ namespace MicrosoftInstrumentationEngine
         static HRESULT SetLogFilePath(_In_ LPCWSTR wszLogFilePath);
         static HRESULT SetLogFileLevel(_In_ LoggingFlags fileLogFlags);
 
-        static HRESULT SetCachedLoggingFlag(_In_ LoggingFlags flags);
-
     private:
         static HRESULT InitializeCore();
+
+        // Callback Handler
+        static void OnLoggingFlagsUpdated(_In_ const LoggingFlags& flags);
     };
 }

@@ -121,7 +121,7 @@ HRESULT CLogging::Initialize()
 // static
 HRESULT CLogging::InitializeCore()
 {
-    return s_loggerService.Get()->Initialize();
+    return s_loggerService.Get()->Initialize(OnLoggingFlagsUpdated);
 }
 
 // static
@@ -178,12 +178,9 @@ HRESULT CLogging::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
 }
 
 // static
-HRESULT CLogging::SetCachedLoggingFlag(_In_ LoggingFlags flags)
+void CLogging::OnLoggingFlagsUpdated(_In_ const LoggingFlags& flags)
 {
-    // Do not check initialization as that can cause an infinite loop.
-
     s_cachedFlags = flags;
-    return S_OK;
 }
 
 CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int indent)
