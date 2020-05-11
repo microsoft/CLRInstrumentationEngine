@@ -108,7 +108,7 @@ namespace MicrosoftInstrumentationEngine
 
         static LoggingFlags ExtractLoggingFlags(_In_ LPCWSTR wszRequestedFlagNames);
 
-        HRESULT Initialize(_In_ std::function<void(const LoggingFlags&)> callback = nullptr);
+        HRESULT Initialize(_In_ std::function<void(const LoggingFlags&)> loggingFlagsCallback = nullptr);
 
         void LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogMessage(_In_ LPCWSTR wszMessage, ...);
