@@ -166,9 +166,9 @@ if [[ -z "$__DockerImage" || "$__DockerImage" == "-h" || "$__DockerImage" == "--
     exit 1
 fi
 if [ "$__DockerImage" == "ubuntu" ]; then
-    __DockerImage=proddiagbuild.azurecr.io/clrie-build-ubuntu:latest
+    __DockerImage=proddiagbuild.azurecr.io/clrie-build-ubuntu-jander:latest
 elif [ "$__DockerImage" == "alpine" ]; then
-    __DockerImage=proddiagbuild.azurecr.io/clrie-build-alpine:latest
+    __DockerImage=proddiagbuild.azurecr.io/clrie-build-alpine-jander:latest
 fi
 
 shift

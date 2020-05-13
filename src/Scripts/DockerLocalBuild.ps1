@@ -37,11 +37,11 @@ $ErrorActionPreference = "Stop"
 
 if ($CLib -eq "gnu")
 {
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu-jander:latest"
 }
 elseif ($CLib -eq "musl")
 {
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
+    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine-jander:latest"
 }
 else
 {
