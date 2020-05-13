@@ -6,22 +6,21 @@
 FROM microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
 
 # Install .NET Core 2.1 SDK
-# REFERENCE: https://github.com/dotnet/dotnet-docker/blob/master/2.1/sdk/alpine3.7/amd64/Dockerfile
+# REFERENCE: https://github.com/dotnet/dotnet-docker/blob/master/2.1/sdk/alpine3.10/amd64/Dockerfile
 
 # Disable the invariant mode (set in base image)
 RUN apk add --no-cache icu-libs
-
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8
 
 # Install .NET Core SDK
-ENV DOTNET_SDK_VERSION 2.1.403
+ENV DOTNET_SDK_VERSION 2.1.805
 
 RUN apk add --no-cache --virtual .build-deps \
         openssl \
     && wget -O dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-musl-x64.tar.gz \
-    && dotnet_sha512='620f091eba8d111b13d440c20926f60919e64dd421c6cbf2696b6f3f643a3d654b7dc394e6e84b1c4bef6ff872c754a7317e9b94977cbcb93b5d0fdfe08d8b55' \
+    && dotnet_sha512='6eb76f405c339d8d662ad152b9cd9d0a77957f5538d44bbdc0d2c66f5923bd3064ea9fddcd20e2c2e4a7a051f97e0e99fa0a30ca1649f2c0c6ddbfaaf11831d2' \
     && echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
     && tar -C /usr/share/dotnet -xzf dotnet.tar.gz \

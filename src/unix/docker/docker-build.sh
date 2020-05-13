@@ -71,6 +71,9 @@ invoke_build()
 
     echo "Commencing build inside $__DockerImage"
 
+    # Refresh build image
+    docker pull $__DockerImage
+
     docker inspect clrie-build &>/dev/null
     if [ $? -eq 0 ]; then
         docker stop -t 0 clrie-build

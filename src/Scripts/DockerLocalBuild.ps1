@@ -14,15 +14,15 @@
 
 param
 (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({$_ -and (Test-Path $_)})]
-    [String] $EnlistmentRoot,
+    [String] $EnlistmentRoot = $(Resolve-Path -Path "$PSScriptRoot\..\.."),
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('gnu', 'musl')]
-    [String] $CLib,
+    [String] $CLib = 'gnu',
 
     [Parameter()]
     [ValidateNotNullOrEmpty()]
