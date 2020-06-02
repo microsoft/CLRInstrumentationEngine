@@ -21,10 +21,10 @@
 
 using namespace CommonLib;
 
-// Fixes the error "implicit instantiation of undefined template 'std::hash<LoggingFlags>'"
-// when building gnu with Clang 3.5 by supplying a full template specialization.
 namespace std
 {
+    // Fixes the error "implicit instantiation of undefined template 'std::hash<LoggingFlags>'"
+    // when building gnu with Clang 3.5 by supplying a full template specialization.
     template<>
     class hash<LoggingFlags> {
     public:

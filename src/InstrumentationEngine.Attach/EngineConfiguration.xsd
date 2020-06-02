@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:common="http://CommonNamespace/CommonTypes">
+    <xs:import namespace="http://CommonNamespace/CommonTypes" schemaLocation="CommonTypes.xsd" />
     <!-- root type -->
     <xs:element name="InstrumentationEngineConfiguration">
         <xs:complexType>
@@ -26,7 +30,9 @@
                     <xs:sequence>
                         <xs:element name="Settings" minOccurs="0" type="SettingsType" />
                     </xs:sequence>
+                    <xs:attribute name="MethodGuid" type="GuidType" use="required" />
                     <xs:attribute name="ConfigPath" type="xs:string" use="required" />
+                    <xs:attribute name="LogLevel" type="common:LoggingFlagsType" />
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -44,4 +50,10 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="GuidType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
 </xs:schema>

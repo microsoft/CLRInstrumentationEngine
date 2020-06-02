@@ -18,18 +18,20 @@
   </PropertyGroup>
   <ItemGroup>
     <XsdSchemaFile Include="InstrumentationConfigurationSources.xsd">
-      <Namespace>Microsoft.InstrumentationEngine</Namespace>
+      <Namespace>$(RootNamespace).SourceConfig</Namespace>
       <SubType>Designer</SubType>
       <Visible>False</Visible>
       <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
       <Language>CS</Language>
+      <DependsOn>CommonTypes.xsd</DependsOn>
     </XsdSchemaFile>
     <XsdSchemaFile Include="EngineConfiguration.xsd">
-      <Namespace>Microsoft.InstrumentationEngine</Namespace>
+      <Namespace>$(RootNamespace).EngineConfig</Namespace>
       <SubType>Designer</SubType>
       <Visible>False</Visible>
       <OutputFile>$(MSBuildThisFileDirectory)\%(FileName).cs</OutputFile>
       <Language>CS</Language>
+      <DependsOn>CommonTypes.xsd</DependsOn>
     </XsdSchemaFile>
   </ItemGroup>
   <ItemGroup>
@@ -45,7 +47,7 @@
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
   <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
-    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
+    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.DependsOn)&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
   <ItemGroup>
     <!-- dotnet core 3.1 produces both a dll and exe -->

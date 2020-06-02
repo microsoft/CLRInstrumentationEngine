@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<xs:schema targetNamespace="http://CommonNamespace/CommonTypes"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="LoggingFlagsType">
+        <!-- These should match the LoggingFlags enum defined in InstrumentationEngine.idl -->
+        <xs:list>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                <xs:enumeration value="None" />
+                <xs:enumeration value="Errors" />
+                <xs:enumeration value="Messages" />
+                <xs:enumeration value="Dumps" />
+            </xs:restriction>
+            </xs:simpleType>
+        </xs:list>
+    </xs:simpleType>
+</xs:schema>

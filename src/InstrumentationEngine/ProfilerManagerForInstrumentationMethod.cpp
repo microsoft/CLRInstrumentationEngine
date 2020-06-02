@@ -29,15 +29,24 @@ CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMeth
         // Get InstrumentationMethod-specific LogLevel Environment Variable
         tstring wszInstrumentationMethodLogLevelEnvVar = _T("MicrosoftInstrumentationEngine_LogLevel_") + m_wszInstrumentationMethodGuid;
         WCHAR wszEnvVar[MAX_PATH];
-        if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
+        LoggingFlags flags;
+
+        if (SUCCEEDED(pProfilerManager->GetInstrumentationMethodLogLevel(instrumentationMethodGuid, &flags)))
         {
-            m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
+            m_flags = flags;
         }
         else
         {
-            // We want to pick up the global logging level if no log level for the instrumentation method is set.
-            // If this fails, there's not much we can do.
-            CLogging::GetLoggingFlags(&m_flags);
+            if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)
+            {
+                m_flags = CLoggerService::ExtractLoggingFlags(wszEnvVar);
+            }
+            else
+            {
+                // We want to pick up the global logging level if no log level for the instrumentation method is set.
+                // If this fails, there's not much we can do.
+                CLogging::GetLoggingFlags(&m_flags);
+            }
         }
     }
     else

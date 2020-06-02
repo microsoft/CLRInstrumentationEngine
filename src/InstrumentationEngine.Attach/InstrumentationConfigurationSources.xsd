@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:common="http://CommonNamespace/CommonTypes">
+    <xs:import namespace="http://CommonNamespace/CommonTypes" schemaLocation="CommonTypes.xsd" />
     <!-- root type -->
     <xs:element name="InstrumentationConfigurationSources">
         <xs:complexType>
@@ -15,6 +19,7 @@
     <xs:complexType name="InstrumentationConfigurationSourceType">
         <xs:sequence>
             <xs:element name="Platforms" type="PlatformsType" />
+            <xs:element name="Configuration" minOccurs="0" type="ConfigurationType" />
             <xs:element name="Settings" minOccurs="0" type="SettingsType" />
         </xs:sequence>
     </xs:complexType>
@@ -30,6 +35,13 @@
     <xs:complexType name="SettingsType">
         <xs:sequence>
             <xs:element name="Setting" maxOccurs="unbounded" type="SettingType" >
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ConfigurationType">
+        <xs:sequence>
+            <xs:element name="LogLevel" maxOccurs="1" type="common:LoggingFlagsType">
             </xs:element>
         </xs:sequence>
     </xs:complexType>

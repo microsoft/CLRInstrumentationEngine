@@ -2,18 +2,20 @@
 // Licensed under the MIT License.
 
 using Microsoft.Diagnostics.NETCore.Client;
+using Microsoft.InstrumentationEngine.EngineConfig;
+using Microsoft.InstrumentationEngine.SourceConfig;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Serialization;
 using static System.FormattableString;
+using LoggingFlagsType = Microsoft.InstrumentationEngine.EngineConfig.LoggingFlagsType;
 
 namespace Microsoft.InstrumentationEngine
 {
@@ -27,15 +29,6 @@ namespace Microsoft.InstrumentationEngine
         public string? ConfigSourceDirectory { get; set; }
 
         public string? ConfigSourceFilePath { get; set; }
-    }
-
-    [Flags]
-    internal enum LoggingFlags
-    {
-        None = 0,
-        Errors = 1,
-        Messages = 2,
-        Dumps = 4
     }
 
     internal class AttachCommandHandler
@@ -57,8 +50,8 @@ namespace Microsoft.InstrumentationEngine
         #region Methods
         private static int Attach(int processId,
             FileInfo[] configs,
-            LoggingFlags logLevel,
-            LoggingFlags logFileLevel,
+            LoggingFlagsType logLevel,
+            LoggingFlagsType logFileLevel,
             FileSystemInfo? logFilePath)
         {
             #region Target Process
@@ -296,8 +289,8 @@ namespace Microsoft.InstrumentationEngine
         }
 
         private static InstrumentationEngineConfigurationInstrumentationEngine GenerateEngineConfiguration(
-            LoggingFlags logLevel,
-            LoggingFlags logFileLevel,
+            LoggingFlagsType logLevel,
+            LoggingFlagsType logFileLevel,
             FileSystemInfo? logFilePath)
         {
             var engine = new InstrumentationEngineConfigurationInstrumentationEngine();
@@ -384,7 +377,25 @@ namespace Microsoft.InstrumentationEngine
                                         return false;
                                     }
 
-                                    // Allow methods without any settings.
+                                    // This assumes each config file only contains a single InstrumentationMethod.
+                                    XmlDocument xmlDocument = new XmlDocument();
+                                    using (FileStream fStream = new FileStream(configFullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                    using (XmlReader xmlReader = XmlReader.Create(fStream, new XmlReaderSettings { XmlResolver = null, DtdProcessing = DtdProcessing.Prohibit }))
+                                    {
+                                        xmlDocument.Load(xmlReader);
+                                        var node = xmlDocument.SelectSingleNode("InstrumentationEngineConfiguration/InstrumentationMethod/ClassGuid/text()");
+                                        methodSection.MethodGuid = node.Value.ToUpperInvariant();
+                                    }
+
+                                    // Configurations are optional
+                                    if (source.Configuration != null)
+                                    {
+                                        // This conversion is necessary since LoggingFlagsType comes from the CommonTypes.XSD and
+                                        // due to xsd.exe limitations, the type is generated in the target namespace of each consuming xsd
+                                        methodSection.LogLevel = (LoggingFlagsType)source.Configuration.LogLevel;
+                                    }
+
+                                    // settings are optional.
                                     if (source.Settings != null)
                                     {
                                         foreach (var setting in source.Settings)
@@ -443,8 +454,8 @@ namespace Microsoft.InstrumentationEngine
         delegate int AttachDelegate(
             int processId,
             FileInfo[] configs,
-            LoggingFlags logLevel,
-            LoggingFlags logFileLevel,
+            LoggingFlagsType logLevel,
+            LoggingFlagsType logFileLevel,
             FileSystemInfo logFilePath);
 
         /// <summary>
@@ -500,7 +511,7 @@ namespace Microsoft.InstrumentationEngine
                 aliases: new[] { "--log-level" },
                 description: "The overall log level used by all engine log sinks. Use comma to delimit multiple values.")
             {
-                Argument = new Argument<LoggingFlags>(),
+                Argument = new Argument<LoggingFlagsType>(),
                 Required = false
             };
 
@@ -513,7 +524,7 @@ namespace Microsoft.InstrumentationEngine
                 aliases: new[] { "--log-file-level" },
                 description: "The log level for the engine log file sink. Use comma to delimit multiple values.")
             {
-                Argument = new Argument<LoggingFlags>(),
+                Argument = new Argument<LoggingFlagsType>(),
                 Required = false
             };
 

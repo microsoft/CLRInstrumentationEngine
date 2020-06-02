@@ -504,6 +504,34 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                     pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
                     IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
+                    CComBSTR bstrMethodGuid;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("MethodGuid"), &bstrMethodGuid));
+
+                    CComBSTR bstrLogLevel;
+                    if (SUCCEEDED(pInstrumentationMethodNode->GetAttribute(_T("LogLevel"), &bstrLogLevel)))
+                    {
+                        GUID guidMethod;
+                        hr = IIDFromString(bstrMethodGuid, (LPCLSID)&guidMethod);
+
+                        // Store the {GUID, LogLevel} pair
+                        if (SUCCEEDED(hr))
+                        {
+                            unordered_map<GUID, LoggingFlags>::iterator itMethodLogLevel = pProfilerManager->m_methodLogLevel.find(guidMethod);
+                            if (itMethodLogLevel != pProfilerManager->m_methodLogLevel.end())
+                            {
+                                pProfilerManager->m_methodLogLevel.insert({ guidMethod, CLoggerService::ExtractLoggingFlags(bstrLogLevel) });
+                            }
+                            else
+                            {
+                                pProfilerManager->m_methodLogLevel[guidMethod] = CLoggerService::ExtractLoggingFlags(bstrLogLevel);
+                            }
+                        }
+                        else
+                        {
+                            CLogging::LogError(_T("ParseAttachConfigurationThreadProc - Unable to parse Method Guid %s"), bstrMethodGuid);
+                        }
+                    }
+
                     CComPtr<CXmlNode> pInstrumentationMethodChildNode;
                     IfFailRet(pInstrumentationMethodNode->GetChildNode(&pInstrumentationMethodChildNode));
 
@@ -1205,6 +1233,21 @@ DWORD CProfilerManager::GetDefaultEventMask()
         COR_PRF_MONITOR_JIT_COMPILATION |
         COR_PRF_ENABLE_REJIT
         ;
+}
+
+HRESULT CProfilerManager::GetInstrumentationMethodLogLevel(_In_ GUID guidMethod, _Out_ LoggingFlags* pLoggingFlag)
+{
+    HRESULT hr = S_OK;
+    IfNullRetPointer(pLoggingFlag);
+
+    unordered_map<GUID, LoggingFlags>::iterator it = m_methodLogLevel.find(guidMethod);
+    if (it != m_methodLogLevel.end())
+    {
+        *pLoggingFlag = it->second;
+        return S_OK;
+    }
+
+    return E_FAIL;
 }
 
 HRESULT CProfilerManager::Shutdown()
