@@ -50,8 +50,10 @@ The RawProfilerHook allows one additional profiler that has not yet on-boarded t
 
 | Variable | Value | Description |
 |-|-|-|
-MicrosoftInstrumentationEngine_RawProfilerHook|"{GUID}"|This would be the value set to CORECLR/COR_PROFILER.
-MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64|"[FULL PATH TO raw profiler dll]"|This would be the value set to CORECLR/COR_PROFILER_PATH_32/64.
+MicrosoftInstrumentationEngine_RawProfilerHook|"{GUID}"|This would be the value set to COR_PROFILER.
+MicrosoftInstrumentationEngine_CoreRawProfilerHook|"{GUID}"|This would be the value set to CORECLR_PROFILER. Falls back to MicrosoftInstrumentationEngine_RawProfilerHook if this is not set.
+MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64|"[FULL PATH TO raw profiler dll]"|This would be the value set to COR_PROFILER_PATH_32/64.
+MicrosoftInstrumentationEngine_CoreRawProfilerHookPath_32/64|"[FULL PATH TO raw profiler dll]"|This would be the value set to CORECLR_PROFILER_PATH_32/64. Only checked if MicrosoftInstrumentationEngine_CoreRawProfilerHook is set.
 
 ## Deprecated as of Version 1.0.22
 The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting

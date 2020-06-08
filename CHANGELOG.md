@@ -9,7 +9,10 @@ Please format the changes as follows:
 
 ## 1.0.33
 + New:
+  + Update Ubuntu build image to 18.04 and use Clang 3.9 on Ubuntu
+  + Add support for specifying a coreCLR-specific RawProfilerHook
 + BugFixes:
+  + Improve performance with logging by caching logging flags as an atomic bool in CLoggerService
 + Updates:
 
 # 1.0.32
