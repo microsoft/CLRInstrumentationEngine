@@ -1064,7 +1064,7 @@ HRESULT CProfilerManager::SetupRawProfiler()
     wstring wstrRawProfilerModulePath;
 
     CRawProfilerHookSettingsReader rawProfilerHookSettingsReader;
-    IfFailRet(rawProfilerHookSettingsReader.ReadSettings(guidRawProfilerClsid, wstrRawProfilerModulePath));
+    IfFailRet(rawProfilerHookSettingsReader.ReadSettings(m_runtimeType, guidRawProfilerClsid, wstrRawProfilerModulePath));
 
     if (S_OK == hr)
     {

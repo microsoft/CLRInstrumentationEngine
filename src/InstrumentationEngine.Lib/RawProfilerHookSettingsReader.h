@@ -12,11 +12,14 @@ namespace MicrosoftInstrumentationEngine
     public:
         CRawProfilerHookSettingsReader() noexcept;
 
+        HRESULT ReadSettings(COR_PRF_RUNTIME_TYPE runtimeType, GUID& clsidRawProfilerHookComponent, std::wstring& strRawProfilerHookModulePath);
+
         HRESULT ReadSettings(
+            _In_ COR_PRF_RUNTIME_TYPE runtimeType,
             _Out_ GUID& clsidRawProfilerHookComponent,
             _Inout_ std::wstring& strRawProfilerHookModulePath);
     private:
-        HRESULT GetEnvironmentVariable(
+        HRESULT GetEnvironmentVariableWrapper(
             _In_ const std::wstring& strVariableName,
             _Out_ std::wstring& strVariableValue);
     }; // CRawProfilerHookLoader

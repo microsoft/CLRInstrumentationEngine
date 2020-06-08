@@ -6,12 +6,17 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-    LPCWSTR cszRawProfilerHookVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHook";
-    LPCWSTR cszRawProfilerHookPathVariableNameNoBitness = L"MicrosoftInstrumentationEngine_RawProfilerHookPath";
+    LPCWSTR cszRawProfilerHookVarName = L"MicrosoftInstrumentationEngine_RawProfilerHook";
+    LPCWSTR cszRawProfilerHookPathVarNameNoBitness = L"MicrosoftInstrumentationEngine_RawProfilerHookPath";
+
+    LPCWSTR cszCoreRawProfilerHookVarName = L"MicrosoftInstrumentationEngine_CoreRawProfilerHook";
+    LPCWSTR cszCoreRawProfilerHookPathVarNameNoBitness = L"MicrosoftInstrumentationEngine_CoreRawProfilerHookPath";
 #ifdef X86
-    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
+    LPCWSTR cszRawProfilerHookPathVarName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
+    LPCWSTR cszCoreRawProfilerHookPathVarName = L"MicrosoftInstrumentationEngine_CoreRawProfilerHookPath_32";
 #else
-    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
+    LPCWSTR cszRawProfilerHookPathVarName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
+    LPCWSTR cszCoreRawProfilerHookPathVarName = L"MicrosoftInstrumentationEngine_CoreRawProfilerHookPath_64";
 #endif
 
     CRawProfilerHookSettingsReader::CRawProfilerHookSettingsReader() noexcept
@@ -19,6 +24,7 @@ namespace MicrosoftInstrumentationEngine
     }
 
     HRESULT CRawProfilerHookSettingsReader::ReadSettings(
+        _In_ COR_PRF_RUNTIME_TYPE runtimeType,
         _Out_ GUID& clsidRawProfilerHookComponent,
         _Inout_ std::wstring& strRawProfilerHookModulePath)
     {
@@ -27,37 +33,67 @@ namespace MicrosoftInstrumentationEngine
 
         std::wstring strRawProfilerHookClsid;
 
-        CLogging::LogMessage(_T("Examining environment variable: %s"), cszRawProfilerHookVariableName);
-
-        IfFailRet(GetEnvironmentVariable(cszRawProfilerHookVariableName, strRawProfilerHookClsid));
-        if (S_FALSE == hr)
+        // If CoreCLR RPH variable is not set, fallback to the desktop one if it exists.
+        // We only want to use the CoreCLR RPH path variable if the CoreCLR classId was set.
+        bool fUseCoreClrPath; 
+        if (runtimeType == COR_PRF_RUNTIME_TYPE::COR_PRF_CORE_CLR)
         {
-            CLogging::LogMessage(_T("RawProfilerHookComponent is not set"));
-            return hr;
+            fUseCoreClrPath = true;
+            CLogging::LogMessage(_T("Examining coreCLR environment variable: %s"), cszCoreRawProfilerHookVarName);
+            IfFailRet(GetEnvironmentVariableWrapper(cszCoreRawProfilerHookVarName, strRawProfilerHookClsid));
+        }
+
+        if (runtimeType == COR_PRF_RUNTIME_TYPE::COR_PRF_DESKTOP_CLR ||
+            S_FALSE == hr)
+        {
+            fUseCoreClrPath = false; // either we're in desktop CLR or coreCLR RPH variable was not found.
+            CLogging::LogMessage(_T("Examining desktop CLR environment variable: %s"), cszRawProfilerHookVarName);
+            IfFailRet(GetEnvironmentVariableWrapper(cszRawProfilerHookVarName, strRawProfilerHookClsid));
+
+            if (S_FALSE == hr)
+            {
+                CLogging::LogMessage(_T("RawProfilerHookComponent is not set"));
+                return hr;
+            }
         }
 
         IfFalseRet(strRawProfilerHookClsid.size() > 0, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));
-
         CLogging::LogMessage(_T("RawProfilerHookComponent specified, CLSID = %s"), strRawProfilerHookClsid);
-
         IfFailRet(CLSIDFromString(strRawProfilerHookClsid.c_str(), &clsidRawProfilerHookComponent));
 
-        CLogging::LogMessage(_T("Examining environment variable: %s"), cszRawProfilerHookPathVariableName);
-
-        IfFailRet(GetEnvironmentVariable(cszRawProfilerHookPathVariableName, strRawProfilerHookModulePath));
-
-        // This is for backwards compatibility; fall back to the no-bitness environment variable
-        //    MicrosoftInstrumentationEngine_RawProfilerHookPath
-        if (S_FALSE == hr)
+        if (fUseCoreClrPath)
         {
-            CLogging::LogMessage(_T("Examining environment variable: %s"), cszRawProfilerHookPathVariableNameNoBitness);
+            CLogging::LogMessage(_T("Examining coreCLR path environment variable: %s"), cszCoreRawProfilerHookPathVarName);
+            IfFailRet(GetEnvironmentVariableWrapper(cszCoreRawProfilerHookPathVarName, strRawProfilerHookModulePath));
 
-            IfFailRet(GetEnvironmentVariable(cszRawProfilerHookPathVariableNameNoBitness, strRawProfilerHookModulePath));
+            // This is for backwards compatibility; fall back to the no-bitness environment variable
+            //    MicrosoftInstrumentationEngine_CoreRawProfilerHookPath
+            if (S_FALSE == hr)
+            {
+                CLogging::LogMessage(_T("Examining coreCLR path environment variable (no bitness): %s"), cszCoreRawProfilerHookPathVarNameNoBitness);
+                IfFailRet(GetEnvironmentVariableWrapper(cszCoreRawProfilerHookPathVarNameNoBitness, strRawProfilerHookModulePath));
+            }
         }
 
-        CLogging::LogMessage(_T("RawProfilerHookModulePath specified, path = %s"), strRawProfilerHookModulePath);
+        if (!fUseCoreClrPath ||
+            S_FALSE == hr)
+        {
+            CLogging::LogMessage(_T("Examining desktop CLR path environment variable: %s"), cszRawProfilerHookPathVarName);
+            IfFailRet(GetEnvironmentVariableWrapper(cszRawProfilerHookPathVarName, strRawProfilerHookModulePath));
 
-        // if cszRawProfilerHookPathVariableName and cszRawProfilerHookPathVariableNameNoBitness are not set then we consider it as error;
+            // This is for backwards compatibility; fall back to the no-bitness environment variable
+            //    MicrosoftInstrumentationEngine_RawProfilerHookPath
+            if (S_FALSE == hr)
+            {
+                CLogging::LogMessage(_T("Examining desktop CLR path environment variable (no bitness): %s"), cszRawProfilerHookPathVarNameNoBitness);
+
+                IfFailRet(GetEnvironmentVariableWrapper(cszRawProfilerHookPathVarNameNoBitness, strRawProfilerHookModulePath));
+            }
+        }
+
+        CLogging::LogMessage(_T("RawProfilerHook ModulePath specified, path = %s"), strRawProfilerHookModulePath);
+
+        // if cszRawProfilerHookPathVarName and cszRawProfilerHookPathVarNameNoBitness are not set then we consider it as error;
         // there's no path to the component module to load
         IfFalseRet(S_FALSE != hr, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));
         IfFalseRet(strRawProfilerHookModulePath.size() > 0, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));
@@ -65,15 +101,15 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
-    HRESULT CRawProfilerHookSettingsReader::GetEnvironmentVariable(
-        _In_ const std::wstring& strVariableName,
+    HRESULT CRawProfilerHookSettingsReader::GetEnvironmentVariableWrapper(
+        _In_ const std::wstring& strVarName,
         _Out_ std::wstring& strVariableValue)
     {
         const int MaxVariableSize = 1024;
         std::wstring strVariableValueTemp(1024, L'\n');
 
         auto dwCount = ::GetEnvironmentVariable(
-            strVariableName.c_str(),
+            strVarName.c_str(),
             &strVariableValueTemp[0],
             MaxVariableSize);
 
