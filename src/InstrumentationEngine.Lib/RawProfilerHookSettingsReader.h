@@ -12,8 +12,6 @@ namespace MicrosoftInstrumentationEngine
     public:
         CRawProfilerHookSettingsReader() noexcept;
 
-        HRESULT ReadSettings(COR_PRF_RUNTIME_TYPE runtimeType, GUID& clsidRawProfilerHookComponent, std::wstring& strRawProfilerHookModulePath);
-
         HRESULT ReadSettings(
             _In_ COR_PRF_RUNTIME_TYPE runtimeType,
             _Out_ GUID& clsidRawProfilerHookComponent,

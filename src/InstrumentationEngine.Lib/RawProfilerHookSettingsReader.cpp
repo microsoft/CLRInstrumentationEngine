@@ -86,7 +86,6 @@ namespace MicrosoftInstrumentationEngine
             if (S_FALSE == hr)
             {
                 CLogging::LogMessage(_T("Examining desktop CLR path environment variable (no bitness): %s"), cszRawProfilerHookPathVarNameNoBitness);
-
                 IfFailRet(GetEnvironmentVariableWrapper(cszRawProfilerHookPathVarNameNoBitness, strRawProfilerHookModulePath));
             }
         }
@@ -102,14 +101,14 @@ namespace MicrosoftInstrumentationEngine
     }
 
     HRESULT CRawProfilerHookSettingsReader::GetEnvironmentVariableWrapper(
-        _In_ const std::wstring& strVarName,
+        _In_ const std::wstring& strVariableName,
         _Out_ std::wstring& strVariableValue)
     {
         const int MaxVariableSize = 1024;
         std::wstring strVariableValueTemp(1024, L'\n');
 
         auto dwCount = ::GetEnvironmentVariable(
-            strVarName.c_str(),
+            strVariableName.c_str(),
             &strVariableValueTemp[0],
             MaxVariableSize);
 
