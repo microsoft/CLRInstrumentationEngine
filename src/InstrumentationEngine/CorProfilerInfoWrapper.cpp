@@ -382,9 +382,9 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
     else
     {
         // If this CorProfilerInfoWrapper::GetILFunctionBody() is called during OnModuleLoadFinished
-        // instead of ModuleAttachedToAssembly callback (which can happen for Raw profilers, the 
+        // instead of ModuleAttachedToAssembly callback (which can happen for raw profilers), the 
         // assembly information does not yet exist and the ModuleInfo is not yet constructed. We will
-        // not hit our cached map of ModuleId to CModuleInfo and instead call the real profiler intead.
+        // not hit our cached map of ModuleId to CModuleInfo and instead call the real profiler.
         IfFailRet(m_pRealCorProfilerInfo->GetILFunctionBody(moduleId, methodToken, (LPCBYTE*)&pMethodHeader, &cbMethodSize));
     }
 
