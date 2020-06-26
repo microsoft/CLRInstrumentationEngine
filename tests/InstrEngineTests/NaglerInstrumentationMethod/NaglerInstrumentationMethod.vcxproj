@@ -108,8 +108,16 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="*.cpp" Exclude="stdafx.cpp" />
-    <ClInclude Include="*.h" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="NaglerInstrumentationMethod.cpp" />
+    <ClCompile Include="NaglerInstrumentationMethodHost.cpp" />
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="NaglerInstrumentationMethod.h" />
+    <ClInclude Include="NaglerInstrumentMethodEntry.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NaglerInstrumentationMethod_x64.xml">
