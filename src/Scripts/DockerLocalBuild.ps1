@@ -30,7 +30,10 @@ param
     [String] $Type="Debug",
 
     [Parameter()]
-    [Switch] $CreateSemaphore
+    [Switch] $CreateSemaphore,
+
+    [Parameter()]
+    [Switch] $TranslateHostPathsToTarget
 )
 
 $ErrorActionPreference = "Stop"
@@ -51,19 +54,26 @@ else
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
 
 $pathInfo = resolve-path $EnlistmentRoot
-# This ToLowerInvariant is a workaround to a problem Wiktor has where Docker gets confused
-# about drive letter 'd' and drive letter 'D'. If the mount step in 'docker run' fails for
-# you then you may want to comment this line out and email wiktork and nbilling to figure
-# out a permanent fix.
-$driveLetter = $pathInfo.Drive.ToString().ToLowerInvariant()
-$relativePath = $pathInfo.Path.Substring(3).Replace('\', '/')
-$EnlistmentMountPath = "//$driveLetter/$relativePath"
-
-if (-not $CreateSemaphore)
+if ($TranslateHostPathsToTarget)
 {
-    docker run --rm --name $containerName -v $EnlistmentMountPath`:/root/ClrInstrumentationEngine --net=host $BaseImage /root/ClrInstrumentationEngine/src/build.sh $Type clean
+    # This ToLowerInvariant is a workaround to a problem Wiktor has where Docker gets confused
+    # about drive letter 'd' and drive letter 'D'. If the mount step in 'docker run' fails for
+    # you then you may want to comment this line out and email wiktork and nbilling to figure
+    # out a permanent fix.
+    $driveLetter = $pathInfo.Drive.ToString().ToLowerInvariant()
+    $relativePath = $pathInfo.Path.Substring(3).Replace('\', '/')
+    $EnlistmentMountPath = "//$driveLetter/$relativePath"
 }
 else
 {
-    docker run --rm --name $containerName -v $EnlistmentMountPath`:/root/ClrInstrumentationEngine --net=host $BaseImage /bin/bash -c "/root/ClrInstrumentationEngine/src/build.sh $Type clean && touch /root/ClrInstrumentationEngine/build.sem"
+    $EnlistmentMountPath = $EnlistmentRoot
+}
+
+if (-not $CreateSemaphore)
+{
+    docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /root/ClrInstrumentationEngine/src/build.sh $Type clean
+}
+else
+{
+    docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /bin/bash -c "/root/ClrInstrumentationEngine/src/build.sh $Type clean && touch /root/ClrInstrumentationEngine/build.sem"
 }
