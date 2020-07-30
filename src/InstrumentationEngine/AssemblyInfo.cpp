@@ -168,6 +168,9 @@ HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::GetModules(_In_ ULONG cMo
 
     pEnumerator->Initialize(vecModules);
 
+    *ppModuleInfos = (IEnumModuleInfo*)pEnumerator;
+    (*ppModuleInfos)->AddRef();
+
     CLogging::LogMessage(_T("End CAssemblyInfo::GetModules"));
 
     return hr;
