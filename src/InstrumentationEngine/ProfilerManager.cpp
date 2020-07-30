@@ -1563,7 +1563,13 @@ HRESULT CProfilerManager::AssemblyLoadFinished(
     IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
-    IfFailRet(ConstructAssemblyInfo(assemblyId, &pAssemblyInfo));
+    hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
+    if (FAILED(hr))
+    {
+        // Assembly was previously created in ConstructModuleInfo during ModuleAttachedToAssembly.
+        // NOTE: This is very common as modules often load before the assembly load finishes callback
+        IfFailRet(ConstructAssemblyInfo(assemblyId, &pAssemblyInfo));
+    }
 
     // Send event to instrumentation methods
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAssemblyLoaded, (IAssemblyInfo*)(pAssemblyInfo)));
