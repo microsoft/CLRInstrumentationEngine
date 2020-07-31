@@ -52,7 +52,9 @@ namespace MicrosoftInstrumentationEngine
         // The effective set of flags (flags that are in actual use) as determined by querying
         // each of the logger sinks. This is updated each time a logger sink dependency is changed
         // e.g. calling SetLoggingFlags, SetLoggingHost, and SetLogToDebugPort.
-        LoggingFlags m_effectiveFlags;
+        //
+        // We're using atomic here to avoid a critical section in GetLoggingFlags.
+        std::atomic<LoggingFlags> m_effectiveFlags;
         // This is the cumulative LoggingFlags for all InstrumentationMethods
         LoggingFlags m_instrumentationMethodFlags;
 
@@ -63,6 +65,9 @@ namespace MicrosoftInstrumentationEngine
         // the following error: "error: debug information for auto is not yet supported". Once we update
         // the version of Clang, consider refactoring this vector of GUIDs to a set.
         std::unordered_map<LoggingFlags, std::vector<GUID>> m_loggingFlagsToInstrumentationMethodsMap;
+
+        // This function type will get invoked when the effective flags gets updated.
+        std::function<void(const LoggingFlags&)> m_LoggingFlagsCallback;
 
         bool m_fLogToDebugPort;
         CInitOnce m_initialize;
@@ -103,7 +108,7 @@ namespace MicrosoftInstrumentationEngine
 
         static LoggingFlags ExtractLoggingFlags(_In_ LPCWSTR wszRequestedFlagNames);
 
-        HRESULT Initialize();
+        HRESULT Initialize(_In_ std::function<void(const LoggingFlags&)> loggingFlagsCallback = nullptr);
 
         void LogMessage(_In_ LPCWSTR wszMessage, _In_ va_list argptr);
         void LogMessage(_In_ LPCWSTR wszMessage, ...);

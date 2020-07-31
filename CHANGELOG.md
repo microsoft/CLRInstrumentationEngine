@@ -7,6 +7,12 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.33
++ New:
++ BugFixes:
+  + Fix GetILFunctionBody call for RawProfilerHook during OnModuleLoadFinished
++ Updates:
+
 # 1.0.32
 + New:
   + Support loading and initializing Instrumentation Methods on profiler attach.

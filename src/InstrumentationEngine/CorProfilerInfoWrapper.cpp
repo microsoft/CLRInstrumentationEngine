@@ -364,6 +364,10 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
 
     CComPtr<CModuleInfo> pModuleInfo;
     CComPtr<CMethodInfo> pMethodInfo;
+
+    IMAGE_COR_ILMETHOD* pMethodHeader = nullptr;
+    ULONG cbMethodSize = 0;
+
     if (SUCCEEDED(pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
     {
         hr = pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo);
@@ -371,14 +375,18 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILFunctionBo
         {
             return pMethodInfo->GetIntermediateRenderedFunctionBody(ppMethodHeader, pcbMethodSize);
         }
+        // Method info wasn't instrumented by an instrumentation method. Ask the module info for the il.
+        // This will properly manage the cache of original il bytes.
+        IfFailRet(pModuleInfo->GetMethodIl(m_pRealCorProfilerInfo, methodToken, (IMAGE_COR_ILMETHOD**)&pMethodHeader, &cbMethodSize));
     }
-
-    IMAGE_COR_ILMETHOD* pMethodHeader = nullptr;
-    ULONG cbMethodSize = 0;
-
-    // Method info wasn't instrumented by an instrumentation method. Ask the module info for the il.
-    // This will properly manage the cache of original il bytes.
-    IfFailRet(pModuleInfo->GetMethodIl(m_pRealCorProfilerInfo, methodToken, (IMAGE_COR_ILMETHOD**)&pMethodHeader, &cbMethodSize));
+    else
+    {
+        // If this CorProfilerInfoWrapper::GetILFunctionBody() is called during OnModuleLoadFinished
+        // instead of ModuleAttachedToAssembly callback (which can happen for raw profilers), the 
+        // assembly information does not yet exist and the ModuleInfo is not yet constructed. We will
+        // not hit our cached map of ModuleId to CModuleInfo and instead call the real profiler.
+        IfFailRet(m_pRealCorProfilerInfo->GetILFunctionBody(moduleId, methodToken, (LPCBYTE*)&pMethodHeader, &cbMethodSize));
+    }
 
     if (ppMethodHeader != nullptr)
     {
