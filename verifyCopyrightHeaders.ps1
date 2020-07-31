@@ -40,6 +40,7 @@ $excludedExtensions = @(
     '.snk'
     '.txt'
     '.user'
+    '.ignore'
 )
 
 $excludedFiles = @(
@@ -62,6 +63,8 @@ $excludedFiles = @(
     'RawProfilerHook_i.h'
     'dlldata.c'
     'build.sem'
+    'EngineConfiguration.cs'
+    'InstrumentationConfigurationSources.cs'
 
     # the license itself
     'LICENSE'
@@ -74,34 +77,44 @@ Write-Verbose "    $mitLicenseHeader"
 Write-Verbose ""
 
 Write-Verbose "Checking files under directory '$PSScriptRoot' ..."
-Write-Verbose "Non-compliant files will be stored in $resultFile"
 
 Get-ChildItem -Path $PSScriptRoot -Recurse -File |
     Where-Object { $_.PSParentPath -notmatch "\\$([String]::Join('|', $excludedDirs))" } |
     Where-Object { -not $excludedFiles.Contains($_.Name) } |
     Where-Object { -not $excludedExtensions.Contains($_.Extension) } |
     ForEach-Object {
-        $lines = Get-Content $_.FullName -First 3
-        $copyrightIndex = 0
-        $mitLicenseIndex = 1
+        # Assume the Copyright headers are within 5 lines of the file.
+        $lines = Get-Content $_.FullName -First 5
         if ($lines)
         {
-            if ($lines[0].ToString().Contains($xmlHeader) -or
-                $lines[0].ToString().Contains($shellHeader))
+            # Skip any whitespace at the beginning of the file.
+            $i = 0
+            while ([string]::IsNullOrWhiteSpace($lines[$i]) -and ($i -lt $lines.Length - 2)) { $i++ }
+
+            $copyrightIndex = $i
+            $mitLicenseIndex = $i + 1
+            if ($lines[$i].ToString().Contains($xmlHeader) -or
+                $lines[$i].ToString().Contains($shellHeader))
             {
-                $copyrightIndex = 1
-                $mitLicenseIndex = 2
+                $copyrightIndex = $i + 1
+                $mitLicenseIndex = $i + 2
             }
 
-            if (!$lines[$copyrightIndex].ToString().Contains($copyrightHeader) -or
-                !$lines[$mitLicenseIndex].ToString().Contains($mitLicenseHeader))
+            if (!$lines[$copyrightIndex].ToString().Contains($copyrightHeader))
             {
-                Write-Error "$($_.FullName) is missing OSS header."
+                Write-Warning "$($_.FullName) is missing OSS header: $copyrightHeader"
+                Write-Warning "> $($lines[$copyrightIndex])"
+            }
+
+            if (!$lines[$mitLicenseIndex].ToString().Contains($mitLicenseHeader))
+            {
+                Write-Warning "$($_.FullName) is missing OSS header: $mitLicenseHeader"
+                Write-Warning "> $($lines[$mitLicenseIndex])"
             }
         }
         else
         {
-            Write-Error "$($_.FullName) is empty."
+            Write-Warning "$($_.FullName) is empty."
         }
     }
 
