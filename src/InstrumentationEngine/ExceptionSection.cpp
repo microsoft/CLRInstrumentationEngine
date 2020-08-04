@@ -275,6 +275,8 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::AddNewExceptionClause
     IfFailRet(FindExceptionClauseInsertionPoint(pExceptionClause, iter));
     m_exceptionClauses.insert(iter, (IExceptionClause*)pExceptionClause);
 
+    *ppExceptionClause = pExceptionClause.Detach();
+
     CLogging::LogMessage(_T("End CExceptionSection::CreateExceptionClause"));
 
     return hr;
