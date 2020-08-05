@@ -14,6 +14,8 @@ The most direct way to stop CLRIE and all Instrumentation Methods is to remove t
 
 Alternatively, if the user cannot modify the ICorProfiler environment variable, they may be able to at least remove the dlls which are pointed to by the COR_PROFILER_PATH/CORECLR_PROFILER_PATH environment variables. A process restart will still be required.
 
+For Azure VM/VMSS, the Visual Studio Production Diagnostics team ships a CLRIE-hosted MSI in the Microsoft.Insights.VMDiagnosticsSettings extension (Type: Microsoft.Azure.Diagnostics.IaaSDiagnostics). This extension will apply the ICorProfiler variables to the registry for IIS at `HKLM\SYSTEM\CurrentControlSet\Services\W3SVC` and `HKLM\SYSTEM\CurrentControlSet\Services\WAS`. In order to disable CLRIE, you will need to remove the VM extension entirely. You can do so either from the Azure Portal or via Azure PowerShell cmdlet `Remove-AzVMExtension`.
+
 ### Remove Instrumentation Methods
 
 Currently this feature is not supported. We could potentially create a tool that supports an allow/block list of InstrumentationMethods that CLRIE uses to ignore environment variables on startup. Concerns of this implementation involve security implications of file-on-disk or require privileged user access.
@@ -75,3 +77,9 @@ Setting a breakpoint inside `CProfilerManager::Initialize()` provides the earlie
 `CProfilerManager::AddInstrumentationMethod()` provides the logic for loading each InstrumentationMethod and calling Initialize() on them.
 
 CLRIE's main purpose is to coordinate instrumentation, so callbacks such as `CProfilerManager::JITCompilationStarted()` and `CProfilerManager::GetReJITParameters()` are also good places to inspect.
+
+#### Loading Symbols for CLR/.NET modules
+
+In order to debug issues, it is pertinent to have symbols (ie. pdb files) for the modules/assemblies that the process is using. This will aid in investigating IL issues at the point of failure (eg. ProgramInvalidException).
+
+If you are debugging with Visual Studio, make sure you have "Microsoft Symbol Server" enabled for symbol loading in *Tools > Options > Debugging > Symbols > Symbol file locations*. Symbols for both managed modules such as clr.dll and native modules like kernel32.dll are available to be loaded.
