@@ -15,7 +15,7 @@ schedules:
   displayName: Weekly Static Analysis
   branches:
     include:
-    - master
+    - main
 
 variables:
   TeamName: ClrInstrumentationEngine
