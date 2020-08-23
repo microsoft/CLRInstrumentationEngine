@@ -53,6 +53,7 @@ namespace MicrosoftInstrumentationEngine
                 {
                     return E_OUTOFMEMORY;
                 }
+                m_dwLength = dwLength;
 
                 for (DWORD i = 0; i < m_dwLength; i++)
                 {
