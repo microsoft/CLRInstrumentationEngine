@@ -60,6 +60,10 @@ namespace MicrosoftInstrumentationEngine
                     m_members[i] = members[i];
                 }
             }
+            else
+            {
+                return E_INVALIDARG;
+            }
 
             return hr;
         }
@@ -85,6 +89,10 @@ namespace MicrosoftInstrumentationEngine
                     m_members[i] = pItem;
                     i++;
                 }
+            }
+            else
+            {
+                return E_INVALIDARG;
             }
 
             return hr;
