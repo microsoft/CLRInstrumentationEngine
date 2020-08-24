@@ -46,7 +46,7 @@ namespace MicrosoftInstrumentationEngine
         {
             HRESULT hr = S_OK;
 
-            if (dwLength != 0)
+            if (dwLength > 0)
             {
                 m_members.Attach(new CComPtr<ENUM_ITEM_TYPE>[dwLength]);
                 if (!m_members)
