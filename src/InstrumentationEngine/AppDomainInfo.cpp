@@ -294,7 +294,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetAssemblies(_Out_ IEnu
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(vecAssemblies);
+    IfFailRet(pEnumerator->Initialize(vecAssemblies));
 
     *ppAssemblyInfos = (IEnumAssemblyInfo*)pEnumerator;
     (*ppAssemblyInfos)->AddRef();
@@ -327,7 +327,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetModules(_Out_ IEnumMo
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(vecModules);
+    IfFailRet(pEnumerator->Initialize(vecModules));
 
     *ppModuleInfos = (IEnumModuleInfo*)pEnumerator;
     (*ppModuleInfos)->AddRef();

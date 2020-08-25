@@ -151,7 +151,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetAppDomains(_Out
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(vecAppDomains);
+    IfFailRet(pEnumerator->Initialize(vecAppDomains));
 
     *ppEnumAppDomains = (IEnumAppDomainInfo*)pEnumerator;
     (*ppEnumAppDomains)->AddRef();

@@ -160,7 +160,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::GetExceptionClauses(_
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(m_exceptionClauses);
+    IfFailRet(pEnumerator->Initialize(m_exceptionClauses));
 
     *ppEnumExceptionClauses = pEnumerator.Detach();
 
