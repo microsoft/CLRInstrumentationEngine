@@ -75,45 +75,55 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
             wszExtension,
             _MAX_EXT);
 
-        tstring tsFile(wszFile);
-        tstring tsExtension(wszExtension);
-
-        // The file name is empty if (a) the last character in the path is a path separator
-        // or (b) if no file name is given e.g. the file starts with a period.
-        // Generate a file name if the file name is empty and the ext is either empty or "."
-        if (tsFile.empty() && (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T(""))))
+        // Try to create log directory if it doesn't exist
+        BOOL fDirectoryExists = PathFileExists(wszDirectory);
+        if (!fDirectoryExists)
         {
-            tsFile.assign(_T("ProfilerLog_"));
-
-            WCHAR szPid[MAX_PATH];
-            swprintf_s(szPid, MAX_PATH, _T("%u"), GetCurrentProcessId());
-            tsFile.append(szPid);
-
-            tsExtension.clear();
-            tsExtension.assign(_T(".txt"));
+            fDirectoryExists = CreateDirectory(wszDirectory, nullptr);
         }
 
-        // Combine path parts together for overall path
-        WCHAR wszFilePath[MAX_PATH];
-        _wmakepath_s(
-            wszFilePath,
-            MAX_PATH,
-            wszDrive,
-            wszDirectory,
-            tsFile.c_str(),
-            tsExtension.c_str());
+        if (fDirectoryExists)
+        {
+            tstring tsFile(wszFile);
+            tstring tsExtension(wszExtension);
 
-        // _wfsopen just returns nullptr on PLATFORM_UNIX
+            // The file name is empty if (a) the last character in the path is a path separator
+            // or (b) if no file name is given e.g. the file starts with a period.
+            // Generate a file name if the file name is empty and the ext is either empty or "."
+            if (tsFile.empty() && (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T(""))))
+            {
+                tsFile.assign(_T("ProfilerLog_"));
+
+                WCHAR szPid[MAX_PATH];
+                swprintf_s(szPid, MAX_PATH, _T("%u"), GetCurrentProcessId());
+                tsFile.append(szPid);
+
+                tsExtension.clear();
+                tsExtension.assign(_T(".txt"));
+            }
+
+            // Combine path parts together for overall path
+            WCHAR wszFilePath[MAX_PATH];
+            _wmakepath_s(
+                wszFilePath,
+                MAX_PATH,
+                wszDrive,
+                wszDirectory,
+                tsFile.c_str(),
+                tsExtension.c_str());
+
+            // _wfsopen just returns nullptr on PLATFORM_UNIX
 #ifdef PLATFORM_UNIX
-        m_pOutputFile.reset(_wfopen(wszFilePath, _T("a")));
+            m_pOutputFile.reset(_wfopen(wszFilePath, _T("a")));
 #else
-        m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR));
+            m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR));
 #endif
 
-        m_tsPathActual.clear();
-        if (m_pOutputFile)
-        {
-            m_tsPathActual = wszFilePath;
+            m_tsPathActual.clear();
+            if (m_pOutputFile)
+            {
+                m_tsPathActual = wszFilePath;
+            }
         }
     }
 
