@@ -47,6 +47,7 @@ Details for CLR Instrumentation Engine environment variables can be found at [En
 
 #### As a Preinstalled Site Extension
 
+##### Via App Setting
 In order to enable the CLR Instrumentation Engine preinstalled site extension, go to your Azure App Service resource in the Azure Portal and
 add the below setting to the Application Settings (Currently there's a bug where different components set the key with different casings and
 producing 409 conflict errors):
@@ -60,10 +61,49 @@ Please see [Kudu Site Extensions](https://github.com/projectkudu/kudu/wiki/Azure
 
 Please note that applicationHost.xdt files for enabled preinstalled site extension are processed before any private site extension.
 
+##### Via ApplicationHost.XDT
+
+If you ship a private site extension and want to use Instrumentation Engine cooperatively, the following environment variable in Azure App Service will be enabled in ANT91 (2020, late-Oct/early-Nov):
+
+`MicrosoftInstrumentationEngine_LatestPath` = `D:\Program Files (x86)\SiteExtensions\InstrumentationEngine\[LATEST VERSION]`
+
+Where [LATEST VERSION] represents the latest available version of the InstrumentationEngine preinstalled site extension.
+
+In the private site extension's applicationHost.xdt, you can leverage this environment variable in the following way, note that each of these are set as `InsertIfMissing` to avoid conflicts if the InstrumentationEngine preinstalled site extension is enabled.
+
+```
+<!-- .NET Framework -->
+<add name="COR_ENABLE_PROFILING" value="1"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="COR_PROFILER" value="{324F817A-7420-4E6D-B3C1-143FBED6D855}"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="COR_PROFILER_PATH_64" value="%MicrosoftInstrumentationEngine_LatestPath%\Instrumentation64\MicrosoftInstrumentationEngine_x64.dll"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="COR_PROFILER_PATH_32" value="%MicrosoftInstrumentationEngine_LatestPath%\Instrumentation32\MicrosoftInstrumentationEngine_x86.dll"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+
+<!-- .NET Core -->
+<add name="CORECLR_ENABLE_PROFILING" value="1"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="CORECLR_PROFILER" value="{324F817A-7420-4E6D-B3C1-143FBED6D855}"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="CORECLR_PROFILER_PATH_64" value="%MicrosoftInstrumentationEngine_LatestPath%\Instrumentation64\MicrosoftInstrumentationEngine_x64.dll"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+<add name="CORECLR_PROFILER_PATH_32" value="%MicrosoftInstrumentationEngine_LatestPath%\Instrumentation32\MicrosoftInstrumentationEngine_x86.dll"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+```
+
+We also recommend enabling Error logging. These will report to D:\Home\LogFiles\EventLog.xml.
+
+```
+<add name="MicrosoftInstrumentationEngine_LogLevel" value="Errors"
+     xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+```
+
 #### As a Private Site Extension
 
-The CLR Instrumentation Engine is not shipped as a standalone private site extension. Instead it is available as part of the Application
-Insights private site extension and will be enabled as part of the Application Insights applicationHost.xdt file.
+The CLR Instrumentation Engine is not shipped as a standalone private site extension. Instead it is currently available as part of the Application
+Insights **private** site extension and will be enabled as part of the Application Insights applicationHost.xdt file.
 
 #### Configuring your Instrumentation Method
 
