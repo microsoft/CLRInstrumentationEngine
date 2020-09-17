@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestLoggerService.h" />
     <ClInclude Include="TestLoggingHost.h" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +102,6 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestLoggerService.h" />
     <ClCompile Include="utiltests.cpp" />
   </ItemGroup>
   <ItemGroup>
