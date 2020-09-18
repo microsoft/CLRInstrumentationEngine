@@ -196,50 +196,106 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     unique_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
 
-    CComPtr<ICorProfilerCallback> pCorProfilerCallback;
-    IfFailRet(pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback), (LPVOID*)&pCorProfilerCallback));
-    profilerCallbackHolder->m_CorProfilerCallback = pCorProfilerCallback;
+    // Follow the implementation set by the CLR at
+    // https://github.com/dotnet/runtime/blob/cf6b06b1d36d545e37b00bf1a6311b7fff33ff4e/src/coreclr/src/vm/eetoprofinterfaceimpl.cpp#L613
+    // where due to interface inheritance, higher numbered ICorProfilerCallback## are static-casted to lower numbered ICorProfilerCallback##
 
-    CComPtr<ICorProfilerCallback2> pCorProfilerCallback2;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback2), (LPVOID*)&pCorProfilerCallback2);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback2 = pCorProfilerCallback2;
-    }
-
-    CComPtr<ICorProfilerCallback3> pCorProfilerCallback3;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback3), (LPVOID*)&pCorProfilerCallback3);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback3 = pCorProfilerCallback3;
-    }
-
-    CComPtr<ICorProfilerCallback4> pCorProfilerCallback4;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback4), (LPVOID*)&pCorProfilerCallback4);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback4 = pCorProfilerCallback4;
-    }
-
-    CComPtr<ICorProfilerCallback5> pCorProfilerCallback5;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback5), (LPVOID*)&pCorProfilerCallback5);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback5 = pCorProfilerCallback5;
-    }
-
-    CComPtr<ICorProfilerCallback6> pCorProfilerCallback6;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback6), (LPVOID*)&pCorProfilerCallback6);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback6 = pCorProfilerCallback6;
-    }
-
+    // ICorProfilerCallback7
     CComPtr<ICorProfilerCallback7> pCorProfilerCallback7;
     hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback7), (LPVOID*)&pCorProfilerCallback7);
     if (SUCCEEDED(hr))
     {
         profilerCallbackHolder->m_CorProfilerCallback7 = pCorProfilerCallback7;
+    }
+
+    // ICorProfilerCallback6
+    if (profilerCallbackHolder->m_CorProfilerCallback7)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback6 = static_cast<CComPtr<ICorProfilerCallback6>>(profilerCallbackHolder->m_CorProfilerCallback7);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback6;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback6), (LPVOID*)&pCorProfilerCallback6);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback6 = pCorProfilerCallback6;
+        }
+    }
+
+    // ICorProfilerCallback5
+    if (profilerCallbackHolder->m_CorProfilerCallback6)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback5 = static_cast<CComPtr<ICorProfilerCallback5>>(profilerCallbackHolder->m_CorProfilerCallback6);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback5;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback5), (LPVOID*)&pCorProfilerCallback5);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback5 = pCorProfilerCallback5;
+        }
+    }
+
+    // ICorProfilerCallback4
+    if (profilerCallbackHolder->m_CorProfilerCallback5)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback4 = static_cast<CComPtr<ICorProfilerCallback4>>(profilerCallbackHolder->m_CorProfilerCallback5);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback4;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback4), (LPVOID*)&pCorProfilerCallback4);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback4 = pCorProfilerCallback4;
+        }
+    }
+
+    // ICorProfilerCallback3
+    if (profilerCallbackHolder->m_CorProfilerCallback4)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback3 = static_cast<CComPtr<ICorProfilerCallback3>>(profilerCallbackHolder->m_CorProfilerCallback4);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback3;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback3), (LPVOID*)&pCorProfilerCallback3);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback3 = pCorProfilerCallback3;
+        }
+    }
+
+    // ICorProfilerCallback2
+    if (profilerCallbackHolder->m_CorProfilerCallback3)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback2 = static_cast<CComPtr<ICorProfilerCallback2>>(profilerCallbackHolder->m_CorProfilerCallback3);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback2;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback2), (LPVOID*)&pCorProfilerCallback2);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback2 = pCorProfilerCallback2;
+        }
+    }
+
+    // ICorProfilerCallback
+    if (profilerCallbackHolder->m_CorProfilerCallback2)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback = static_cast<CComPtr<ICorProfilerCallback>>(profilerCallbackHolder->m_CorProfilerCallback2);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback), (LPVOID*)&pCorProfilerCallback);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback = pCorProfilerCallback;
+        }
     }
 
     m_profilerCallbackHolder = std::move(profilerCallbackHolder);
@@ -905,14 +961,17 @@ HRESULT CProfilerManager::Initialize(
 
     if (m_profilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
-        if (m_attachedClrVersion != ClrVersion_2)
+        CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
+        if (pCallback)
         {
-            IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
-        }
-        else
-        {
-            IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+            if (m_attachedClrVersion != ClrVersion_2)
+            {
+                IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+            }
+            else
+            {
+                IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+            }
         }
     }
 

@@ -12,6 +12,7 @@ Please format the changes as follows:
 + BugFixes:
   + Fix GetILFunctionBody call for RawProfilerHook during OnModuleLoadFinished
   + Fix building with MSVC v14.28 by moving .h headers from ClCompile to ClInclude
+  + Fix RawProfilerHook QI to match CLR behavior (cast interfaces downward)
 + Updates:
 
 # 1.0.32
