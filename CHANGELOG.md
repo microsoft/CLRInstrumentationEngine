@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.34
+
 ## 1.0.33
 + New:
 + BugFixes:
