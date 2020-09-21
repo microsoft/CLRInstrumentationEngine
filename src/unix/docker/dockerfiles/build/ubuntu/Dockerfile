@@ -1,8 +1,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# This image is based on the public Ubuntu 16.04 LTS image
-FROM ubuntu:16.04
+# This image is based on the public Ubuntu 18.04 LTS image
+FROM ubuntu:18.04
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -10,8 +10,8 @@ RUN apt-get update \
         curl
 
 # Install .NET Core 2.1 SDK
-# REFERENCE: https://www.microsoft.com/net/download/linux-package-manager/ubuntu16-04/sdk-2.1.403
-RUN curl -SL --output packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb \
+# https://www.microsoft.com/net/download/linux-package-manager/ubuntu18-04/sdk-2.1.403
+RUN curl -SL --output packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb \
     && rm packages-microsoft-prod.deb
 
@@ -25,7 +25,7 @@ RUN dotnet help
 # CLR Instrumentation Engine Build Prerequisites
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        clang-3.5 \
+        clang-3.9 \
         cmake \
         git \
         libunwind8-dev \

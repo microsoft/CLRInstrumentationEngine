@@ -2,7 +2,7 @@
 
 Develop Branch: [![Build Status](https://dev.azure.com/ms/CLRInstrumentationEngine/_apis/build/status/CI-Yaml?branchName=develop)](https://dev.azure.com/ms/CLRInstrumentationEngine/_build/latest?definitionId=275&branchName=develop)
 
-Master Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=master)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=master)
+Main Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=main)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=main)
 
 ## Overview
 
@@ -19,6 +19,7 @@ The CLR Instrumentation Engine is a profiler implementation and is enabled and c
 * [Getting Started](docs/getting_started.md) for details on how use the CLR Instrumentation Engine.
 * [Environment Variables](docs/environment_variables.md)
 * [Configure Instrumentation Methods](docs/configuration.md)
+* [CLRIE Releases](docs/releases.md)
 
 ## Contributing
 

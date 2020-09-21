@@ -46,18 +46,23 @@ namespace MicrosoftInstrumentationEngine
         {
             HRESULT hr = S_OK;
 
-            if (dwLength != 0)
+            if (dwLength >= 0)
             {
                 m_members.Attach(new CComPtr<ENUM_ITEM_TYPE>[dwLength]);
                 if (!m_members)
                 {
                     return E_OUTOFMEMORY;
                 }
+                m_dwLength = dwLength;
 
                 for (DWORD i = 0; i < m_dwLength; i++)
                 {
                     m_members[i] = members[i];
                 }
+            }
+            else
+            {
+                return E_INVALIDARG;
             }
 
             return hr;
@@ -69,7 +74,7 @@ namespace MicrosoftInstrumentationEngine
         {
             HRESULT hr = S_OK;
 
-            if (members.size() > 0)
+            if (members.size() >= 0)
             {
                 m_members.Attach(new CComPtr<ENUM_ITEM_TYPE>[members.size()]);
                 if (!m_members)
@@ -84,6 +89,10 @@ namespace MicrosoftInstrumentationEngine
                     m_members[i] = pItem;
                     i++;
                 }
+            }
+            else
+            {
+                return E_INVALIDARG;
             }
 
             return hr;

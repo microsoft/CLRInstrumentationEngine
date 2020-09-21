@@ -45,7 +45,7 @@ HRESULT MicrosoftInstrumentationEngine::CTokenType::GetName(_Out_ BSTR* pbstrNam
             tstring fullName;
             vector<WCHAR> nameBuffer(100);
             ULONG cchLength = 0;
-            while ((pImport->GetNestedClassProps(tkCurrent, &tkEnclosing) == S_OK) && (tkEnclosing != mdTokenNil))
+            while (!IsNilToken(tkCurrent) && (pImport->GetNestedClassProps(tkCurrent, &tkEnclosing) == S_OK) && (tkEnclosing != mdTokenNil))
             {
                 IfFailRet(pImport->GetTypeDefProps(tkEnclosing, nullptr, 0, &cchLength, nullptr, nullptr));
                 if (nameBuffer.size() < cchLength)

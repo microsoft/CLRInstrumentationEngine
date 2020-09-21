@@ -160,7 +160,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::GetExceptionClauses(_
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(m_exceptionClauses);
+    IfFailRet(pEnumerator->Initialize(m_exceptionClauses));
 
     *ppEnumExceptionClauses = pEnumerator.Detach();
 
@@ -274,6 +274,8 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::AddNewExceptionClause
     vector<CComPtr<IExceptionClause>>::iterator iter;
     IfFailRet(FindExceptionClauseInsertionPoint(pExceptionClause, iter));
     m_exceptionClauses.insert(iter, (IExceptionClause*)pExceptionClause);
+
+    *ppExceptionClause = pExceptionClause.Detach();
 
     CLogging::LogMessage(_T("End CExceptionSection::CreateExceptionClause"));
 

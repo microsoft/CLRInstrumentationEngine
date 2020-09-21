@@ -13,7 +13,7 @@ print_install_instructions()
         echo "  Follow the instructions here: https://docs.microsoft.com/dotnet/core/linux-prerequisites?tabs=netcore2x"
         echo ""
         echo "  # Install required packages"
-        echo "  sudo apt-get install cmake clang-3.5 libunwind8 libunwind8-dev uuid-dev"
+        echo "  sudo apt-get install cmake clang-4.0 libunwind8 libunwind8-dev uuid-dev"
         echo ""
     elif [ "$OSName" == "Darwin" ]; then
         echo ""
@@ -80,9 +80,6 @@ check_prereqs()
     # Check presence of CMake on the path
     hash cmake 2>/dev/null || { echo >&2 "Please install cmake before running this script"; print_install_instructions; exit 1; }
 
-    # Check for clang
-    hash clang-$__ClangMajorVersion.$__ClangMinorVersion 2>/dev/null ||  hash clang$__ClangMajorVersion$__ClangMinorVersion 2>/dev/null ||  hash clang 2>/dev/null || { echo >&2 "Please install clang before running this script"; print_install_instructions; exit 1; }
-
     # Check for dotnet
     hash dotnet 2>/dev/null || { echo >&2 "Please install dotnet before running this script"; print_install_instructions; exit 1; }
 
@@ -115,23 +112,6 @@ locate_llvm_exec()
 
 locate_build_tools()
 {
-    if which "clang-$__ClangMajorVersion.$__ClangMinorVersion" > /dev/null 2>&1
-        then
-            export CC="$(which clang-$__ClangMajorVersion.$__ClangMinorVersion)"
-            export CXX="$(which clang++-$__ClangMajorVersion.$__ClangMinorVersion)"
-    elif which "clang$__ClangMajorVersion$__ClangMinorVersion" > /dev/null 2>&1
-        then
-            export CC="$(which clang$__ClangMajorVersion$__ClangMinorVersion)"
-            export CXX="$(which clang++$__ClangMajorVersion$__ClangMinorVersion)"
-    elif which clang > /dev/null 2>&1
-        then
-            export CC="$(which clang)"
-            export CXX="$(which clang++)"
-    else
-        echo "Unable to find Clang Compiler"
-        exit 1
-    fi
-
     desired_llvm_major_version=$__ClangMajorVersion
     desired_llvm_minor_version=$__ClangMinorVersion
     if [ $OSName == "FreeBSD" ]; then
@@ -336,6 +316,90 @@ restore_build_dependencies()
     fi
 }
 
+# Set default clang version
+set_clang_path_and_version()
+{
+    if [[ $__ClangMajorVersion == 0 && $__ClangMinorVersion == 0 ]]; then
+        # If the version is not specified, search for one
+
+        local ClangVersion=""
+        for ver in "3.6" "3.9" "4.0"; do
+            hash "clang-$ver" 2>/dev/null
+            if [ $? == 0 ]; then
+               ClangVersion=$ver
+            fi
+        done
+
+        if [ -z "$ClangVersion" ]; then
+            # If the 'clang-<ver>' commands weren't installed, scrape version info from the 'clang' command
+            hash clang 2>/dev/null
+            if [ $? != 0 ]; then
+                print_install_instructions
+                exit 1
+            fi
+            ClangVersion=$(clang --version | head -n 1 | grep -o -E "[[:digit:]].[[:digit:]].[[:digit:]]" | uniq)
+        fi
+
+        local ClangVersionArray=(${ClangVersion//./ })
+        __ClangMajorVersion="${ClangVersionArray[0]}"
+        __ClangMinorVersion="${ClangVersionArray[1]}"
+
+        if hash "clang-$__ClangMajorVersion.$__ClangMinorVersion" 2>/dev/null
+            then
+                export CC="$(command -v clang-$__ClangMajorVersion.$__ClangMinorVersion)"
+        elif hash clang 2>/dev/null
+            then
+                export CC="$(command -v clang)"
+        else
+            echo "Unable to find Clang compiler"
+            exit 1
+        fi
+
+        if hash "clang++-$__ClangMajorVersion.$__ClangMinorVersion" 2>/dev/null
+            then
+                export CXX="$(command -v clang++-$__ClangMajorVersion.$__ClangMinorVersion)"
+        elif hash clang 2>/dev/null
+            then
+                export CXX="$(command -v clang++)"
+        else
+            echo "Unable to find clang++ compiler"
+            exit 1
+        fi
+    else
+        # If the version is specified, we require the strongly-versioned executables
+
+        hash "clang-$__ClangMajorVersion.$__ClangMinorVersion" 2>/dev/null
+        if [ $? != 0 ]; then
+            echo "Specified clang version ($__ClangMajorVersion.$__ClangMinorVersion) was not found"
+            exit 1
+        fi
+        export CC="$(command -v clang-$__ClangMajorVersion.$__ClangMinorVersion)"
+
+        hash "clang++-$__ClangMajorVersion.$__ClangMinorVersion" 2>/dev/null
+        if [ $? != 0 ]; then
+            echo "Specified clang++ version ($__ClangMajorVersion.$__ClangMinorVersion) was not found"
+            exit 1
+        fi
+        export CXX="$(command -v clang++-$__ClangMajorVersion.$__ClangMinorVersion)"
+    fi
+
+    # Clang 3.6 is required at minimum
+    if ! [[ "$__ClangMajorVersion" -gt "3" || ( $__ClangMajorVersion == 3 && $__ClangMinorVersion -gt 5 ) ]]; then
+        echo "Please install clang 3.6 or later"
+        exit 1
+    fi
+
+    if [ ! -f "$CC" ]; then
+        echo "clang path $CC does not exist"
+        exit 1
+    fi
+
+    if [ ! -f "$CXX" ]; then
+        echo "clang++ path $CXX does not exist"
+        exit 1
+    fi
+}
+
 # Set the root of the enlisment
 pushd $script_dir/.. > /dev/null
 EnlistmentRoot=$(pwd)
@@ -389,8 +453,8 @@ __UnprocessedBuildArgs=
 __MSBCleanBuildArgs=
 __CleanBuild=false
 __VerboseBuild=false
-__ClangMajorVersion=3
-__ClangMinorVersion=5
+__ClangMajorVersion=0
+__ClangMinorVersion=0
 __NuGetConfigPath="$EnlistmentRoot/src/unix/dependencies/nuget.config"
 # Package name is used in file system and "dotnet restore" will restore packages using lowercase characters in the filesystem.
 __CoreCLRPALPackageId="microsoft.visualstudio.debugger.coreclrpal"
@@ -418,17 +482,13 @@ for i in "$@"
         verbose)
         __VerboseBuild=1
         ;;
-        clang3.5)
+        clang3.9)
         __ClangMajorVersion=3
-        __ClangMinorVersion=5
+        __ClangMinorVersion=9
         ;;
-        clang3.6)
-        __ClangMajorVersion=3
-        __ClangMinorVersion=6
-        ;;
-        clang3.7)
-        __ClangMajorVersion=3
-        __ClangMinorVersion=7
+        clang4.0)
+        __ClangMajorVersion=4
+        __ClangMinorVersion=0
         ;;
         build-only|no-clr-restore)
         # These modes are now always on, so ignore them if they are passed, but do nothing.
@@ -455,6 +515,8 @@ fi
 if [ $__VerboseBuild == 1 ]; then
     export VERBOSE=1
 fi
+
+set_clang_path_and_version
 
 # Make the directories necessary for build if they don't exist
 

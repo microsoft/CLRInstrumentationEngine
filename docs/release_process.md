@@ -1,6 +1,6 @@
 # Releasing the CLR Instrumentation Engine
 
-Release occurs from the Master branch. Please notify clrieowners@microsoft.com to initiate the release process.
+Release occurs from the `main` branch. Please notify clrieowners@microsoft.com to initiate the release process.
 
 ## Microsoft Internal Process
 
@@ -16,8 +16,8 @@ automatically publishes artifacts to the internal NuGet feed with a preview vers
 Based on the changes and targeted platform releases, impacted scenarios and partner teams should be involved in testing for regressions.
 
 ### Release Phase
-1.  Once testing completes, PR to merge develop branch to master branch
-2.  Manually run the [Master-Signed](https://devdiv.visualstudio.com/DevDiv/_build/index?context=allDefinitions&path=%5CClrInstrumentationEngine%5CGitHub&definitionId=10055&_a=completed) build to create release artifacts
+1.  Once testing completes, PR to merge develop branch to main branch
+2.  Manually run the [Signed](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11311) build to create release artifacts
 3.  Manually run the
 [CLR Instrumentation Engine Release](https://devdiv.visualstudio.com/DevDiv/_releases2?view=all&definitionId=901)
 pipeline which publishes artifacts with release version (eg. 1.0.15)

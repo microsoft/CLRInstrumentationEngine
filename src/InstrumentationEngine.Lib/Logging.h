@@ -52,6 +52,9 @@ namespace MicrosoftInstrumentationEngine
         static CSingleton<CLoggerService> s_loggerService;
         static std::atomic_size_t s_initCount;
 
+        // This caches the effective loggingflag of s_loggerService for performance
+        static std::atomic<LoggingFlags> s_cachedFlags;
+
     public:
         // Call this to determine if logging should be allowed for a specific log type.
         static bool AllowLogEntry(_In_ LoggingFlags flags);
@@ -85,5 +88,8 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         static HRESULT InitializeCore();
+
+        // Callback Handler
+        static void OnLoggingFlagsUpdated(_In_ const LoggingFlags& flags);
     };
 }

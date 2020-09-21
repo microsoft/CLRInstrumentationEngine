@@ -24,7 +24,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 Active development is happening in `develop` branch.
 
-Last released version is in `master` branch.
+Last released version is in `main` branch.
 
 ## Submitting your Pull Request:
 

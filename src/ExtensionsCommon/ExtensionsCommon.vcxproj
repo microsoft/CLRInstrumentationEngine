@@ -37,6 +37,7 @@
     <ClInclude Include="FormatMessage.h" />
     <ClInclude Include="ICodeInjector.h" />
     <ClInclude Include="ICodeInjectorFwd.h" />
+    <ClInclude Include="INativeMethodsStubs.h" />
     <ClInclude Include="InstructionDefineExtensions.h" />
     <ClInclude Include="InstrumentationEngineDefs.h" />
     <ClInclude Include="InstrumentationEngineInfraPointerDefs.h" />
@@ -75,7 +76,6 @@
     <ClCompile Include="DecorationCallbacksInfoReader.cpp" />
     <ClCompile Include="DecorationCallbacksInfoStaticReader.cpp" />
     <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="INativeMethodsStubs.h" />
     <ClCompile Include="InstrumentationMethodBase.cpp" />
     <ClCompile Include="InteropInstrumentationHandler.cpp" />
     <ClCompile Include="LoadArgumentsHelper.cpp" />

@@ -196,45 +196,13 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     unique_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
 
-    CComPtr<ICorProfilerCallback> pCorProfilerCallback;
-    IfFailRet(pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback), (LPVOID*)&pCorProfilerCallback));
-    profilerCallbackHolder->m_CorProfilerCallback = pCorProfilerCallback;
+    // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
+    // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
+    // and raw profilers QI can just return the highest supported version (they must still provide implementation for all lower versioned callbacks).
+    //
+    // See https://github.com/dotnet/runtime/blob/cf6b06b1d36d545e37b00bf1a6311b7fff33ff4e/src/coreclr/src/vm/eetoprofinterfaceimpl.cpp#L613
 
-    CComPtr<ICorProfilerCallback2> pCorProfilerCallback2;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback2), (LPVOID*)&pCorProfilerCallback2);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback2 = pCorProfilerCallback2;
-    }
-
-    CComPtr<ICorProfilerCallback3> pCorProfilerCallback3;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback3), (LPVOID*)&pCorProfilerCallback3);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback3 = pCorProfilerCallback3;
-    }
-
-    CComPtr<ICorProfilerCallback4> pCorProfilerCallback4;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback4), (LPVOID*)&pCorProfilerCallback4);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback4 = pCorProfilerCallback4;
-    }
-
-    CComPtr<ICorProfilerCallback5> pCorProfilerCallback5;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback5), (LPVOID*)&pCorProfilerCallback5);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback5 = pCorProfilerCallback5;
-    }
-
-    CComPtr<ICorProfilerCallback6> pCorProfilerCallback6;
-    hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback6), (LPVOID*)&pCorProfilerCallback6);
-    if (SUCCEEDED(hr))
-    {
-        profilerCallbackHolder->m_CorProfilerCallback6 = pCorProfilerCallback6;
-    }
-
+    // ICorProfilerCallback7
     CComPtr<ICorProfilerCallback7> pCorProfilerCallback7;
     hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback7), (LPVOID*)&pCorProfilerCallback7);
     if (SUCCEEDED(hr))
@@ -242,23 +210,97 @@ HRESULT CProfilerManager::AddRawProfilerHook(
         profilerCallbackHolder->m_CorProfilerCallback7 = pCorProfilerCallback7;
     }
 
-    m_profilerCallbackHolder = std::move(profilerCallbackHolder);
-
-    if (m_attachedClrVersion != ClrVersion_2)
+    // ICorProfilerCallback6
+    if (profilerCallbackHolder->m_CorProfilerCallback7)
     {
-        hr = pCorProfilerCallback->Initialize(m_pWrappedProfilerInfo);
+        profilerCallbackHolder->m_CorProfilerCallback6 = static_cast<ICorProfilerCallback6*>(profilerCallbackHolder->m_CorProfilerCallback7);
     }
     else
     {
-        hr = pCorProfilerCallback->Initialize(m_pRealProfilerInfo);
+        CComPtr<ICorProfilerCallback6> pCorProfilerCallback6;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback6), (LPVOID*)&pCorProfilerCallback6);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback6 = pCorProfilerCallback6;
+        }
     }
 
-    if (FAILED(hr))
+    // ICorProfilerCallback5
+    if (profilerCallbackHolder->m_CorProfilerCallback6)
     {
-        CLogging::LogError(_T("Raw profiler hook returned failure"));
-        return E_FAIL;
+        profilerCallbackHolder->m_CorProfilerCallback5 = static_cast<ICorProfilerCallback5*>(profilerCallbackHolder->m_CorProfilerCallback6);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback5> pCorProfilerCallback5;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback5), (LPVOID*)&pCorProfilerCallback5);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback5 = pCorProfilerCallback5;
+        }
     }
 
+    // ICorProfilerCallback4
+    if (profilerCallbackHolder->m_CorProfilerCallback5)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback4 = static_cast<ICorProfilerCallback4*>(profilerCallbackHolder->m_CorProfilerCallback5);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback4> pCorProfilerCallback4;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback4), (LPVOID*)&pCorProfilerCallback4);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback4 = pCorProfilerCallback4;
+        }
+    }
+
+    // ICorProfilerCallback3
+    if (profilerCallbackHolder->m_CorProfilerCallback4)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback3 = static_cast<ICorProfilerCallback3*>(profilerCallbackHolder->m_CorProfilerCallback4);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback3> pCorProfilerCallback3;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback3), (LPVOID*)&pCorProfilerCallback3);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback3 = pCorProfilerCallback3;
+        }
+    }
+
+    // ICorProfilerCallback2
+    if (profilerCallbackHolder->m_CorProfilerCallback3)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback2 = static_cast<ICorProfilerCallback2*>(profilerCallbackHolder->m_CorProfilerCallback3);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback2> pCorProfilerCallback2;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback2), (LPVOID*)&pCorProfilerCallback2);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback2 = pCorProfilerCallback2;
+        }
+    }
+
+    // ICorProfilerCallback
+    if (profilerCallbackHolder->m_CorProfilerCallback2)
+    {
+        profilerCallbackHolder->m_CorProfilerCallback = static_cast<ICorProfilerCallback*>(profilerCallbackHolder->m_CorProfilerCallback2);
+    }
+    else
+    {
+        CComPtr<ICorProfilerCallback> pCorProfilerCallback;
+        hr = pUnkProfilerCallback->QueryInterface(__uuidof(ICorProfilerCallback), (LPVOID*)&pCorProfilerCallback);
+        if (SUCCEEDED(hr))
+        {
+            profilerCallbackHolder->m_CorProfilerCallback = pCorProfilerCallback;
+        }
+    }
+
+    m_profilerCallbackHolder = std::move(profilerCallbackHolder);
 
     return S_OK;
 }
@@ -921,14 +963,17 @@ HRESULT CProfilerManager::Initialize(
 
     if (m_profilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback;
-        if (m_attachedClrVersion != ClrVersion_2)
+        CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
+        if (pCallback)
         {
-            hr = pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p));
-        }
-        else
-        {
-            hr = pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p));
+            if (m_attachedClrVersion != ClrVersion_2)
+            {
+                IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+            }
+            else
+            {
+                IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+            }
         }
     }
 
@@ -1579,7 +1624,13 @@ HRESULT CProfilerManager::AssemblyLoadFinished(
     IGNORE_IN_NET20_BEGIN
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
-    IfFailRet(ConstructAssemblyInfo(assemblyId, &pAssemblyInfo));
+    hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
+    if (FAILED(hr))
+    {
+        // Assembly was previously created in ConstructModuleInfo during ModuleAttachedToAssembly.
+        // NOTE: This is very common as modules often load before the assembly load finishes callback
+        IfFailRet(ConstructAssemblyInfo(assemblyId, &pAssemblyInfo));
+    }
 
     // Send event to instrumentation methods
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnAssemblyLoaded, (IAssemblyInfo*)(pAssemblyInfo)));

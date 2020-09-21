@@ -166,7 +166,10 @@ HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::GetModules(_In_ ULONG cMo
         return E_OUTOFMEMORY;
     }
 
-    pEnumerator->Initialize(vecModules);
+    IfFailRet(pEnumerator->Initialize(vecModules));
+
+    *ppModuleInfos = (IEnumModuleInfo*)pEnumerator;
+    (*ppModuleInfos)->AddRef();
 
     CLogging::LogMessage(_T("End CAssemblyInfo::GetModules"));
 
