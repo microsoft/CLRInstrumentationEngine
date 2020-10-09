@@ -3,17 +3,17 @@
 
 # Step Template: Build Windows Binaries
 
+parameters:
+  Platform: 'Any CPU'
+  Configuraton: 'Release'
+
 steps:
-# nuget restore InstrumentationEngine.sln
-- template: nugetrestore.yaml
-  parameters:
-    Solution: InstrumentationEngine.sln
 
 # msbuild InstrumentationEngine.sln
 - task: MSBuild@1
-  displayName: 'Build solution InstrumentationEngine.sln'
+  displayName: 'Build solution InstrumentationEngine.sln ${{ parameters.Configuration }}/${{ parameters.Platform }}'
   inputs:
     solution: InstrumentationEngine.sln
     msbuildVersion: 16.0
-    platform: $(Platform)
-    configuration: $(Configuration)
+    platform: ${{ parameters.Platform }}
+    configuration: ${{ parameters.Configuration }}

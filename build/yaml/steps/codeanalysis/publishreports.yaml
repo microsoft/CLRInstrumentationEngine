@@ -1,0 +1,45 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Publish code analysis reports.
+
+parameters:
+  ArtifactName: CodeAnalysisLogs
+
+steps:
+
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@2
+    displayName: 'Create Security Analysis Report'
+    inputs:
+      GdnExportTsvFile: true
+      GdnExportHtmlFile: true
+      GdnExportOutputBaselineFile: MyNewBL
+      GdnExportOutputBaseline: myBL
+      GdnExportOutputSuppressionFile: MyNewSupp
+      GdnExportOutputSuppressionSet: MySupp
+      GdnExportGdnToolApiScanSeverity: Warning
+      GdnExportGdnToolArmorySeverity: Warning
+      GdnExportGdnToolBanditSeverity: Warning
+      GdnExportGdnToolBinSkimSeverity: Warning
+      GdnExportGdnToolCodesignValidationSeverity: Warning
+      GdnExportGdnToolCredScanSeverity: Warning
+      GdnExportGdnToolESLintSeverity: Warning
+      GdnExportGdnToolFlawfinderSeverity: Warning
+      GdnExportGdnToolFortifyScaSeverity: Warning
+      GdnExportGdnToolFxCopSeverity: Warning
+      GdnExportGdnToolModernCopSeverity: Warning
+      GdnExportGdnToolPoliCheckSeverity: Warning
+      GdnExportGdnToolRoslynAnalyzersSeverity: Warning
+      GdnExportGdnToolSDLNativeRulesSeverity: Warning
+      GdnExportGdnToolSemmleSeverity: Warning
+      GdnExportGdnToolSpotBugsSeverity: Warning
+      GdnExportGdnToolTSLintSeverity: Warning
+      GdnExportPolicyMinSev: Warning
+    continueOnError: true
+    condition: succeededOrFailed()
+
+  - template: publishlogs.yaml
+    parameters:
+      ArtifactName: ${{ parameters.ArtifactName }}
+
+  - template: postanalysis.yaml

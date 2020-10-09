@@ -1,0 +1,15 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Run roslyn code analysis
+
+steps:
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: 'Run Roslyn Analyzers'
+  inputs:
+    continueOnError: true
+    rulesetName: Custom
+    msBuildArchitecture: x86
+    customRuleset: DevDivRoslynRequired.ruleset
+    msBuildCommandline: msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /p:Platform="$(Platform)" /p:Configuration=$(Configuration)
+    suppressionFileForCompilerWarnings: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\csharpsuppressions.txt
