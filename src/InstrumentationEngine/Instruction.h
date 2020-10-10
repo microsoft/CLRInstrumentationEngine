@@ -144,6 +144,8 @@ namespace MicrosoftInstrumentationEngine
         HRESULT LogInstruction(_In_ BOOL ignoreTest);
 
     private:
+        // If the callee token is a MethodSpec (generic method), the parameter count and signature returned
+        // will represent the parent method declaration/reference, not the generic parameters or generic signature.
         HRESULT GetSignatureInfoFromCallToken(
             _In_ IMethodInfo* pMethodInfo,
             _Out_ PCCOR_SIGNATURE* ppSig,
