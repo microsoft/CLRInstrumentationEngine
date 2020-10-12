@@ -4,7 +4,6 @@
 # Job Template: Run Roslyn Analyzers
 
 parameters:
-  SignType: None
   Platform: AnyCPU
   Analyzer: csharp
   PublishReport: true
