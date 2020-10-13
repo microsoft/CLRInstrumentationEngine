@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -75,7 +76,7 @@ namespace InstrEngineTests
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
-            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B"));
+            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
             psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
 
             if (!TestParameters.DisableLogLevel)
@@ -169,14 +170,14 @@ namespace InstrEngineTests
             List<string> docs = new List<string>();
             const string xmlDeclarationString = "<?xml version=\"1.0\"?>";
             int idx = 0;
-            int iNext = content.IndexOf(xmlDeclarationString, idx + 1);
+            int iNext = content.IndexOf(xmlDeclarationString, idx + 1, StringComparison.Ordinal);
 
             while (iNext != -1)
             {
                 string doc = content.Substring(idx, iNext - idx);
                 docs.Add(doc);
                 idx = iNext;
-                iNext = content.IndexOf(xmlDeclarationString, idx + 1);
+                iNext = content.IndexOf(xmlDeclarationString, idx + 1, StringComparison.Ordinal);
             }
 
             iNext = content.Length;

@@ -1,0 +1,55 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Run Roslyn Analyzers
+
+parameters:
+  Platform: AnyCPU
+  Analyzer: csharp
+  PublishReport: true
+
+jobs:
+- job: BuildAnalyzer_${{ parameters.Analyzer }}_${{ parameters.Platform }}
+  displayName: Run build analyzer (-${{ parameters.Analyzer }}, ${{ parameters.Platform }})
+
+  pool:
+      name: VSEng-MicroBuildVS2019
+      demands:
+      - msbuild
+      - vstest
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - powershell: |
+      write-host "##vso[task.setvariable variable=Platform]${{ parameters.Platform }}"
+    displayName: Set Platform and Configuration
+
+  - ${{ if in(parameters.Analyzer, 'cpp', 'prefast') }}:
+    - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Native"
+      displayName: Set Configuration for Native Code
+
+  - ${{ if eq(parameters.Analyzer, 'csharp') }}:
+    - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Managed"
+      displayName: Set Configuration for Managed Code
+
+  - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
+    - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
+      displayName: Set Platform for Any CPU
+
+  - template: ../../steps/windows/nugetrestore.yaml
+    parameters:
+      Solution: InstrumentationEngine.sln
+
+  - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml
+
+  - ${{ if eq(parameters.PublishReport, true) }}:
+    - template: ../../steps/codeanalysis/publishreports.yaml
+      parameters:
+        ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
+
+  - template: ../../steps/microbuild/cleanup.yaml

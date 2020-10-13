@@ -9,6 +9,12 @@
          The Windows SDK does not include all of the definitions supported by coreclr. The corprof.h
          Included in this directory has a version that can support CoreClr and desktop Clr. -->
        <AdditionalIncludeDirectories>$(EnlistmentRoot)\inc\clr\prof;$(EnlistmentRoot)\inc\clr\extra;$(NETFXKitsDir)\Include\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+       <ControlFlowGuard Condition="'$(Configuration)'=='Release'">Guard</ControlFlowGuard>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile Condition="'$(Configuration)'=='Release'">true</Profile>
+      <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
 </Project>

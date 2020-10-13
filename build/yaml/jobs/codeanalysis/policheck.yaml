@@ -27,12 +27,9 @@ jobs:
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishlogs.yaml
-
-  # TSA Upload to CodeBase: Aerobee
-  - template: ../../steps/codeanalysis/tsaupload.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
-      PoliCheck: true
+      ArtifactName: PoliCheck
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

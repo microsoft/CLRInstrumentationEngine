@@ -11,9 +11,9 @@ steps:
 
 # msbuild InstrumentationEngine.sln
 - task: MSBuild@1
-  displayName: 'Build solution InstrumentationEngine.sln $(Platform)'
+  displayName: 'Build solution InstrumentationEngine.sln'
   inputs:
     solution: InstrumentationEngine.sln
-    msbuildVersion: 15.0
+    msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)

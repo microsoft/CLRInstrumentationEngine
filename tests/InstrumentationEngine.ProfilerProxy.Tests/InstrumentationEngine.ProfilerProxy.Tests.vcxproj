@@ -44,9 +44,6 @@
   <ImportGroup>
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup>
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.ProfilerProxy.Lib;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;$(VCInstallDir)Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

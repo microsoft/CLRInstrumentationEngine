@@ -27,27 +27,19 @@ jobs:
       downloadPath: $(Build.ArtifactStagingDirectory)
 
   # Run BinSkim
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@3
-    displayName: 'Run BinSkim '
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+    displayName: 'Run BinSkim'
     inputs:
       InputType: Basic
-      AnalyzeTarget: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release/AnyCPU/Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll;'
+      AnalyzeTarget: '$(Build.ArtifactStagingDirectory)\binaries-windows-Release\**\*.dll;$(Build.ArtifactStagingDirectory)\binaries-windows-Release\**\*.exe;'
       AnalyzeVerbose: true
       AnalyzeHashes: true
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishlogs.yaml
-
-  # TSA Upload to CodeBase: Aerobee
-  - template: ../../steps/codeanalysis/tsaupload.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
-      BinSkim: true
-
-  # Post Analysis
-  - template: ../../steps/codeanalysis/postanalysis.yaml
-    parameters:
-      BinSkim: true
+      ArtifactName: BinSkim
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

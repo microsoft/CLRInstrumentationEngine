@@ -28,30 +28,39 @@ jobs:
       artifactName: binaries-windows-Release
       downloadPath: $(Build.ArtifactStagingDirectory)
 
+  # Scan only native files that are released as part of the product.
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\ApiScan'
+    inputs:
+      SourceFolder: $(Build.ArtifactStagingDirectory)\binaries-windows-Release
+      Contents: |
+        **\?(*.pdb|*.dll|*.exe)
+        !**\AnyCPU\**
+        !**\RawProfilerHook.Tests\**
+        !**\Intercept.Latest.Tests\**
+        !**\Intercept.2.0.1.Tests\**
+        !**\Tools\**
+        !**\*Nagler*
+        !**\*Test*
+      TargetFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
+
   # Run API Scan
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@1
+
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
     displayName: 'Run APIScan'
     inputs:
-      softwareFolder: '$(Build.ArtifactStagingDirectory)/binaries-windows-Release'
-      softwareName: Aerobee
+      softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
+      softwareName: ClrInstrumentationEngine
       softwareVersionNum: '$(Build.BuildNumber)'
-      symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/binaries-windows-Release'
+      symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/ApiScan'
       isLargeApp: false
-      verbosityLevel: none
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishlogs.yaml
-
-  # TSA Upload to CodeBase: Aerobee
-  - template: ../../steps/codeanalysis/tsaupload.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
-      APIScan: true
+      ArtifactName: ApiScan
 
-  # Post Analysis
-  - template: ../../steps/codeanalysis/postanalysis.yaml
-    parameters:
-      APIScan: true
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml
