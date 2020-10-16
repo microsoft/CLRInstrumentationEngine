@@ -16,7 +16,7 @@ jobs:
     name: VSEng-MicroBuildVS2019
 
   workspace:
-    clean: outputs
+    clean: all
 
   steps:
   - checkout: none
@@ -61,6 +61,10 @@ jobs:
     parameters:
       ArtifactName: ApiScan
 
-
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: ApiScan
+      Tags: CLRIEApiScan
+      
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

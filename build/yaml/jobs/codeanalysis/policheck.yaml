@@ -12,7 +12,7 @@ jobs:
     name: VSEng-MicroBuildVS2019
 
   workspace:
-    clean: outputs
+    clean: all
 
   steps:
   - checkout: self
@@ -30,6 +30,11 @@ jobs:
   - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
       ArtifactName: PoliCheck
+
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: PoliCheck
+      Tags: CLRIEPoliCheck
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

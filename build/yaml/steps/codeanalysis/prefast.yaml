@@ -9,3 +9,5 @@ steps:
   displayName: 'Install Prefast Plugin'
 
 - template: ../windows/binaries.yaml
+  parameters:
+    NuGetRestore: false

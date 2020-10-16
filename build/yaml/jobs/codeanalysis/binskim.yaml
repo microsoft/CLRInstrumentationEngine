@@ -14,7 +14,7 @@ jobs:
     name: VSEng-MicroBuildVS2019
 
   workspace:
-    clean: outputs
+    clean: all
 
   steps:
   - checkout: none
@@ -40,6 +40,11 @@ jobs:
   - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
       ArtifactName: BinSkim
+
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: BinSkim
+      Tags: CLRIEBinSkim
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

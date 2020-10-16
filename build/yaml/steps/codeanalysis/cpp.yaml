@@ -17,3 +17,10 @@ steps:
       "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /t:Clean /p:Platform=$(Platform) /p:Configuration=$(Configuration)
     buildCommands: |
       "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /p:Platform=$(Platform) /p:Configuration=$(Configuration)
+
+- task: PublishPipelineArtifact@1
+  condition: succeededOrFailed()
+  inputs:
+    targetPath: '$(Agent.BuildDirectory)\_sdt\$(Build.BuildId)\Semmle\projects'
+    artifact: 'semmle-logs-$(Platform)'
+    publishLocation: 'pipeline'
