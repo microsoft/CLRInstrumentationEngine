@@ -17,6 +17,15 @@ MicrosoftInstrumentationEngine::CInstructionGraph::~CInstructionGraph()
         CCriticalSectionHolder lock(&m_cs);
 
         CComPtr<CInstruction> pInstr = (CInstruction*)m_pFirstInstruction;
+
+        m_pFirstInstruction.Release();
+        m_pOrigFirstInstruction.Release();
+        
+        if(m_pUninstrumentedFirstInstruction != nullptr)
+        {
+            m_pUninstrumentedFirstInstruction.Release();
+        }
+
         while (pInstr != nullptr)
         {
             CComPtr<CInstruction> pNextInstruction;
