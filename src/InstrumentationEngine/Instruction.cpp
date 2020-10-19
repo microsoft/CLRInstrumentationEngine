@@ -1769,6 +1769,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::Disconnect()
     {
         m_pOriginalPreviousInstruction.Release();
     }
+    if (m_pNextInstruction)
+    {
+        m_pNextInstruction.Release();
+    }
+    if (m_pOriginalNextInstruction)
+    {
+        m_pOriginalNextInstruction.Release();
+    }
     return S_OK;
 }
 
