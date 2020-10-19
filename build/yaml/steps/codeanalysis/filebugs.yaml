@@ -1,4 +1,7 @@
-#Your build pipeline references an undefined variable named ‘AreaPath’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: File a bug in Azure Devops
 
 parameters:
   BuildName: ''
