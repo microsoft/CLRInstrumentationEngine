@@ -11,6 +11,42 @@ MicrosoftInstrumentationEngine::CInstructionGraph::CInstructionGraph() : m_pMeth
     InitializeCriticalSection(&m_cs);
 }
 
+/*
+Destruction of graph should remove pointers between instructions so it will not cause
+cascading destruction of all instructions which can lead to stack overflow for bigger methods.
+
+Example (first and last nodes contains still 2 references as graph has pointers to first and last nodes):
+
+Initial state:
+|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|        |      |        |      |        |      |        |
+| ref: 2 |      | ref: 2 |      | ref: 2 |      | ref: 2 |
+|========| <--- |========| <--- |========| <--- |========|
+
+After node 1 disconnect:
+|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|        |      |        |      |        |      |        |
+| ref: 2 |      | ref: 1 |      | ref: 2 |      | ref: 2 |
+|========| <--- |========| <--- |========| <--- |========|
+
+After node 2 disconnect:
+|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|        |      |        |      |        |      |        |
+| ref: 1 |      | ref: 1 |      | ref: 1 |      | ref: 2 |
+|========| <--- |========| <--- |========| <--- |========|
+
+After node 3 disconnect:
+|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|        |      |        |      |        |      |        |
+| ref: 1 |      | ref: 0 |      | ref: 1 |      | ref: 1 |
+|========| <--- |========| <--- |========| <--- |========|
+
+After node 4 disconnect:
+|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|        |      |        |      |        |      |        |
+| ref: 1 |      | ref: 0 |      | ref: 0 |      | ref: 1 |
+|========| <--- |========| <--- |========| <--- |========|
+*/
 MicrosoftInstrumentationEngine::CInstructionGraph::~CInstructionGraph()
 {
     {
