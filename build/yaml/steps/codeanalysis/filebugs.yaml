@@ -1,0 +1,31 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: File a bug in Azure Devops
+
+parameters:
+  BuildName: ''
+  Tags: ''
+
+steps:
+- task: mspremier.CreateWorkItem.CreateWorkItem-task.CreateWorkItem@1
+  displayName: 'File Bug'
+  inputs:
+    teamProject: $(TeamProject)
+    workItemType: Bug
+    title: 'CLR Instrumentation Engine ${{ parameters.BuildName}} Build Failed'
+    areaPath: '$(AreaPath)'
+    fieldMappings: |
+     Repro Steps=See linked builds for more information
+     Tags=${{ parameters.Tags}}
+    associate: true
+    preventDuplicates: true
+    keyFields: |
+     System.Title
+     System.State
+     Tags
+     Area Path
+    updateDuplicates: true
+    updateRules: $(UpdateRules)
+  continueOnError: true
+  condition: failed()

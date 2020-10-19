@@ -2,12 +2,15 @@
 # Licensed under the MIT License.
 
 # Step Template: Build Windows Binaries
+parameters:
+  NuGetRestore: true
 
 steps:
 # nuget restore InstrumentationEngine.sln
-- template: nugetrestore.yaml
-  parameters:
-    Solution: InstrumentationEngine.sln
+- ${{ if eq(parameters.NuGetRestore, true) }}:
+  - template: nugetrestore.yaml
+    parameters:
+      Solution: InstrumentationEngine.sln
 
 # msbuild InstrumentationEngine.sln
 - task: MSBuild@1
