@@ -24,28 +24,28 @@ Initial state:
 |========| <--- |========| <--- |========| <--- |========|
 
 After node 1 disconnect:
-|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|=node 1=|      |=node 2=| ---> |=node 3=| ---> |=node 4=|
 |        |      |        |      |        |      |        |
 | ref: 2 |      | ref: 1 |      | ref: 2 |      | ref: 2 |
 |========| <--- |========| <--- |========| <--- |========|
 
 After node 2 disconnect:
-|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|=node 1=|      |=node 2=|      |=node 3=| ---> |=node 4=|
 |        |      |        |      |        |      |        |
 | ref: 1 |      | ref: 1 |      | ref: 1 |      | ref: 2 |
-|========| <--- |========| <--- |========| <--- |========|
+|========|      |========| <--- |========| <--- |========|
 
 After node 3 disconnect:
-|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|=node 1=|      |=node 2=|      |=node 3=|      |=node 4=|
 |        |      |        |      |        |      |        |
 | ref: 1 |      | ref: 0 |      | ref: 1 |      | ref: 1 |
-|========| <--- |========| <--- |========| <--- |========|
+|========|      |========|      |========| <--- |========|
 
 After node 4 disconnect:
-|=node 1=| ---> |=node 2=| ---> |=node 3=| ---> |=node 4=|
+|=node 1=|      |=node 2=|      |=node 3=|      |=node 4=|
 |        |      |        |      |        |      |        |
 | ref: 1 |      | ref: 0 |      | ref: 0 |      | ref: 1 |
-|========| <--- |========| <--- |========| <--- |========|
+|========|      |========|      |========|      |========|
 */
 MicrosoftInstrumentationEngine::CInstructionGraph::~CInstructionGraph()
 {
