@@ -17,7 +17,6 @@ MicrosoftInstrumentationEngine::CInstructionGraph::~CInstructionGraph()
         CCriticalSectionHolder lock(&m_cs);
 
         CComPtr<CInstruction> pInstr = (CInstruction*)m_pFirstInstruction;
-
         while (pInstr != nullptr)
         {
             CComPtr<CInstruction> pNextInstruction;
