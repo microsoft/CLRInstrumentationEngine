@@ -11,7 +11,7 @@ using namespace ATL;
 namespace MicrosoftInstrumentationEngine
 {
     class __declspec(uuid("BEA964F2-5527-4F7C-B606-D8A1BD8CFB39"))
-    CInstruction : public IInstruction2, public CDataContainer
+    CInstruction : public IInstruction, public CDataContainer
     {
         friend CInstructionGraph::~CInstructionGraph();
 
@@ -66,7 +66,6 @@ namespace MicrosoftInstrumentationEngine
         {
             return ImplQueryInterface(
                 static_cast<IInstruction*>(this),
-                static_cast<IInstruction2*>(this),
                 static_cast<IDataContainer*>(this),
                 riid,
                 ppvObject
@@ -125,13 +124,6 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall GetOriginalPreviousInstruction(_Out_ IInstruction** ppPrevInstruction) override;
 
         virtual HRESULT __stdcall GetInstructionGeneration(_Out_ InstructionGeneration* pInstructionGeneration) override;
-
-        //IInstruction2
-    public:
-        virtual IInstruction2* __stdcall GetNextInstruction() override;
-        virtual IInstruction2* __stdcall GetPreviousInstruction() override;
-        virtual IInstruction2* __stdcall GetOriginalNextInstruction() override;
-        virtual IInstruction2* __stdcall GetOriginalPreviousInstruction() override;
 
     public:
         // NOTE: these do not fixup the rest of hte graph. Call the versions on instruction graph if you want

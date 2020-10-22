@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "SingleRetDefaultInstrumentation.h"
-#include "Instruction.h"
 
 MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::CSingleRetDefaultInstrumentation()
 {
@@ -38,7 +37,7 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::ApplyS
     IfFailRet(m_pInstructionGraph->GetMethodInfo(&pMethodInfo));
 
     // Find all of the ret instructions in the instruction graph
-    vector<IInstruction2*> retInstructions;
+    vector<CComPtr<IInstruction>> retInstructions;
     IfFailRet(GetReplaceableRets(retInstructions));
 
     if (retInstructions.size() == 0)
@@ -96,7 +95,7 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::ApplyS
 
     // for each of the old rets, replace them with a jmp to the new ret.
     // If needed, store the return value in the new local.
-    for (IInstruction2* pCurrRetInstruction : retInstructions)
+    for (CComPtr<IInstruction> pCurrRetInstruction : retInstructions)
     {
         CComPtr<IInstruction> pNewBranchInstruction;
         IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Br, pBranchTarget, &pNewBranchInstruction));
@@ -131,48 +130,49 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetBra
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetReplaceableRets(_In_ vector<IInstruction2*>& retInstructions)
+HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetReplaceableRets(_In_ vector<CComPtr<IInstruction>>& retInstructions)
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IInstruction> pFirstInstruction;
-    IfFailRet(m_pInstructionGraph->GetFirstInstruction(&pFirstInstruction));
+    CComPtr<IInstruction> pInstruction;
+    IfFailRet(m_pInstructionGraph->GetFirstInstruction(&pInstruction));
 
-    CComQIPtr<IInstruction2> pcInstruction = pFirstInstruction;
-    IInstruction2* pCurrent = pcInstruction;
-    IfFalseRet(pCurrent != NULL, E_UNEXPECTED);
-
-    while (pCurrent != NULL)
+    while (pInstruction != NULL)
     {
         ILOrdinalOpcode opcode;
-        IfFailRet(pCurrent->GetOpCode(&opcode));
+        IfFailRet(pInstruction->GetOpCode(&opcode));
 
         if (opcode == Cee_Ret)
         {
-            retInstructions.push_back(pCurrent);
+            retInstructions.push_back(pInstruction);
         }
 
-        pCurrent = pCurrent->GetNextInstruction();
+        CComPtr<IInstruction> pCurr = pInstruction;
+        pInstruction.Release();
+        pCurr->GetNextInstruction(&pInstruction);
     }
 
     // Remove all non-replacable rets from the list.
     // If ret is immediately preceded by tail.{call,calli,callvirt}, or tail.call/pop, don't include it.
     // it's forbidden to have instructions between tail.call and ret
     // It is fine not to replace the ret with branch in this case as tail.call means the control won't really get to it anyway
-    for (auto iter = retInstructions.begin(); iter != retInstructions.end(); ++iter)
+    for (vector<CComPtr<IInstruction>>::iterator iter = retInstructions.begin(); iter != retInstructions.end(); ++iter)
     {
-        IInstruction2* pCurrRet = *iter;
+        CComPtr<IInstruction> pCurrRet = *iter;
 
-        IInstruction2* pPrevInstruction = pCurrRet->GetPreviousInstruction();
+        CComPtr<IInstruction> pPrevInstruction;
+        pCurrRet->GetPreviousInstruction(&pPrevInstruction);
 
-        if (pPrevInstruction != NULL)
+        if (pPrevInstruction != nullptr)
         {
             ILOrdinalOpcode prevOpcode;
             IfFailRet(pPrevInstruction->GetOpCode(&prevOpcode));
 
             if (prevOpcode == Cee_Pop)
             {
-                pPrevInstruction = pPrevInstruction->GetPreviousInstruction();
+                CComPtr<IInstruction> pTemp = pPrevInstruction;
+                pPrevInstruction.Release();
+                pTemp->GetPreviousInstruction(&pPrevInstruction);
 
                 if (pPrevInstruction == nullptr)
                 {
@@ -184,7 +184,8 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
             IfFailRet(pPrevInstruction->GetIsCallInstruction(&isCallInstruction));
             if (isCallInstruction)
             {
-                IInstruction2* pPreviousPreviousInstruction = pPrevInstruction->GetPreviousInstruction();
+                CComPtr<IInstruction> pPreviousPreviousInstruction;
+                pPrevInstruction->GetPreviousInstruction(&pPreviousPreviousInstruction);
 
                 if (pPreviousPreviousInstruction == nullptr)
                 {
@@ -196,7 +197,7 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
                 if (prevprevOpcode == Cee_Tailcall)
                 {
                     // This is a non-replaceable ret instruction. Remove it from collection
-                    auto erased = retInstructions.erase(iter);
+                    vector<CComPtr<IInstruction>>::iterator erased = retInstructions.erase(iter);
 
                     // backtrack one on the iterator so that the next increment continues past the last return
                     iter = erased - 1;

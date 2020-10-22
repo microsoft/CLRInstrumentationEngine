@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
-    protocol : all , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0622 
+    protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -92,13 +92,6 @@ typedef interface IDataContainer IDataContainer;
 typedef interface IInstruction IInstruction;
 
 #endif 	/* __IInstruction_FWD_DEFINED__ */
-
-
-#ifndef __IInstruction2_FWD_DEFINED__
-#define __IInstruction2_FWD_DEFINED__
-typedef interface IInstruction2 IInstruction2;
-
-#endif 	/* __IInstruction2_FWD_DEFINED__ */
 
 
 #ifndef __IExceptionSection_FWD_DEFINED__
@@ -504,8 +497,7 @@ extern "C"{
 
 
 
-
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 7 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 6 )
 
 
 enum LoggingFlags
@@ -1978,263 +1970,6 @@ EXTERN_C const IID IID_IInstruction;
 
 
 #endif 	/* __IInstruction_INTERFACE_DEFINED__ */
-
-
-#ifndef __IInstruction2_INTERFACE_DEFINED__
-#define __IInstruction2_INTERFACE_DEFINED__
-
-/* interface IInstruction2 */
-/* [unique][uuid][object] */ 
-
-
-EXTERN_C const IID IID_IInstruction2;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("A77D20D8-B261-41C7-9B0A-F5FBBAABA576")
-    IInstruction2 : public IInstruction
-    {
-    public:
-        virtual IInstruction2 *STDMETHODCALLTYPE GetNextInstruction( void) = 0;
-        
-        virtual IInstruction2 *STDMETHODCALLTYPE GetPreviousInstruction( void) = 0;
-        
-        virtual IInstruction2 *STDMETHODCALLTYPE GetOriginalNextInstruction( void) = 0;
-        
-        virtual IInstruction2 *STDMETHODCALLTYPE GetOriginalPreviousInstruction( void) = 0;
-        
-    };
-    
-    
-#else 	/* C style interface */
-
-    typedef struct IInstruction2Vtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            __RPC__in IInstruction2 * This,
-            /* [in] */ __RPC__in REFIID riid,
-            /* [annotation][iid_is][out] */ 
-            _COM_Outptr_  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            __RPC__in IInstruction2 * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            __RPC__in IInstruction2 * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOffset )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out DWORD *pdwOffset);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOriginalOffset )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out DWORD *pdwOffset);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOpCodeName )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOpCode )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetAlternateOrdinalOpcode )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetInstructionLength )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOpcodeFlags )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum ILOpcodeFlags *pFlags);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOpcodeLength )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOperandType )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum ILOperandType *pType);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOperandLength )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out DWORD *pdwLength);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsNew )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsRemoved )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsBranch )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsSwitch )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsCallInstruction )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbValue);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTerminationType )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum InstructionTerminationType *pTerminationType);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIsFallThrough )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out BOOL *pbIsFallThrough);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetNextInstruction )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetPreviousInstruction )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOriginalNextInstruction )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetOriginalPreviousInstruction )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetInstructionGeneration )( 
-            __RPC__in IInstruction2 * This,
-            /* [out] */ __RPC__out enum InstructionGeneration *pInstructionGeneration);
-        
-        IInstruction2 *( STDMETHODCALLTYPE *GetNextInstruction )( 
-            __RPC__in IInstruction2 * This);
-        
-        IInstruction2 *( STDMETHODCALLTYPE *GetPreviousInstruction )( 
-            __RPC__in IInstruction2 * This);
-        
-        IInstruction2 *( STDMETHODCALLTYPE *GetOriginalNextInstruction )( 
-            __RPC__in IInstruction2 * This);
-        
-        IInstruction2 *( STDMETHODCALLTYPE *GetOriginalPreviousInstruction )( 
-            __RPC__in IInstruction2 * This);
-        
-        END_INTERFACE
-    } IInstruction2Vtbl;
-
-    interface IInstruction2
-    {
-        CONST_VTBL struct IInstruction2Vtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define IInstruction2_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define IInstruction2_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define IInstruction2_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define IInstruction2_GetOffset(This,pdwOffset)	\
-    ( (This)->lpVtbl -> GetOffset(This,pdwOffset) ) 
-
-#define IInstruction2_GetOriginalOffset(This,pdwOffset)	\
-    ( (This)->lpVtbl -> GetOriginalOffset(This,pdwOffset) ) 
-
-#define IInstruction2_GetOpCodeName(This,pbstrName)	\
-    ( (This)->lpVtbl -> GetOpCodeName(This,pbstrName) ) 
-
-#define IInstruction2_GetOpCode(This,pOpCode)	\
-    ( (This)->lpVtbl -> GetOpCode(This,pOpCode) ) 
-
-#define IInstruction2_GetAlternateOrdinalOpcode(This,pOpCode)	\
-    ( (This)->lpVtbl -> GetAlternateOrdinalOpcode(This,pOpCode) ) 
-
-#define IInstruction2_GetInstructionLength(This,pdwLength)	\
-    ( (This)->lpVtbl -> GetInstructionLength(This,pdwLength) ) 
-
-#define IInstruction2_GetOpcodeFlags(This,pFlags)	\
-    ( (This)->lpVtbl -> GetOpcodeFlags(This,pFlags) ) 
-
-#define IInstruction2_GetOpcodeLength(This,pdwLength)	\
-    ( (This)->lpVtbl -> GetOpcodeLength(This,pdwLength) ) 
-
-#define IInstruction2_GetOperandType(This,pType)	\
-    ( (This)->lpVtbl -> GetOperandType(This,pType) ) 
-
-#define IInstruction2_GetOperandLength(This,pdwLength)	\
-    ( (This)->lpVtbl -> GetOperandLength(This,pdwLength) ) 
-
-#define IInstruction2_GetIsNew(This,pbValue)	\
-    ( (This)->lpVtbl -> GetIsNew(This,pbValue) ) 
-
-#define IInstruction2_GetIsRemoved(This,pbValue)	\
-    ( (This)->lpVtbl -> GetIsRemoved(This,pbValue) ) 
-
-#define IInstruction2_GetIsBranch(This,pbValue)	\
-    ( (This)->lpVtbl -> GetIsBranch(This,pbValue) ) 
-
-#define IInstruction2_GetIsSwitch(This,pbValue)	\
-    ( (This)->lpVtbl -> GetIsSwitch(This,pbValue) ) 
-
-#define IInstruction2_GetIsCallInstruction(This,pbValue)	\
-    ( (This)->lpVtbl -> GetIsCallInstruction(This,pbValue) ) 
-
-#define IInstruction2_GetTerminationType(This,pTerminationType)	\
-    ( (This)->lpVtbl -> GetTerminationType(This,pTerminationType) ) 
-
-#define IInstruction2_GetIsFallThrough(This,pbIsFallThrough)	\
-    ( (This)->lpVtbl -> GetIsFallThrough(This,pbIsFallThrough) ) 
-
-#define IInstruction2_GetNextInstruction(This,ppNextInstruction)	\
-    ( (This)->lpVtbl -> GetNextInstruction(This,ppNextInstruction) ) 
-
-#define IInstruction2_GetPreviousInstruction(This,ppPrevInstruction)	\
-    ( (This)->lpVtbl -> GetPreviousInstruction(This,ppPrevInstruction) ) 
-
-#define IInstruction2_GetOriginalNextInstruction(This,ppNextInstruction)	\
-    ( (This)->lpVtbl -> GetOriginalNextInstruction(This,ppNextInstruction) ) 
-
-#define IInstruction2_GetOriginalPreviousInstruction(This,ppPrevInstruction)	\
-    ( (This)->lpVtbl -> GetOriginalPreviousInstruction(This,ppPrevInstruction) ) 
-
-#define IInstruction2_GetInstructionGeneration(This,pInstructionGeneration)	\
-    ( (This)->lpVtbl -> GetInstructionGeneration(This,pInstructionGeneration) ) 
-
-
-#define IInstruction2_GetNextInstruction(This)	\
-    ( (This)->lpVtbl -> GetNextInstruction(This) ) 
-
-#define IInstruction2_GetPreviousInstruction(This)	\
-    ( (This)->lpVtbl -> GetPreviousInstruction(This) ) 
-
-#define IInstruction2_GetOriginalNextInstruction(This)	\
-    ( (This)->lpVtbl -> GetOriginalNextInstruction(This) ) 
-
-#define IInstruction2_GetOriginalPreviousInstruction(This)	\
-    ( (This)->lpVtbl -> GetOriginalPreviousInstruction(This) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __IInstruction2_INTERFACE_DEFINED__ */
 
 
 #ifndef __IExceptionSection_INTERFACE_DEFINED__

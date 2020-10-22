@@ -40,6 +40,6 @@ namespace MicrosoftInstrumentationEngine
 
     private:
 
-        HRESULT GetReplaceableRets(_In_ vector<IInstruction2*>& retInstructions);
+        HRESULT GetReplaceableRets(_In_ vector<CComPtr<IInstruction>>& retInstructions);
     };
 }

@@ -784,26 +784,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::SetPreviousInstruction(_In
     return S_OK;
 }
 
-IInstruction2* MicrosoftInstrumentationEngine::CInstruction::GetNextInstruction()
-{
-    return NextInstructionInternal();
-}
-
-IInstruction2* MicrosoftInstrumentationEngine::CInstruction::GetPreviousInstruction()
-{
-    return PreviousInstructionInternal();
-}
-
-IInstruction2* MicrosoftInstrumentationEngine::CInstruction::GetOriginalNextInstruction()
-{
-    return OriginalNextInstructionInternal();
-}
-
-IInstruction2* MicrosoftInstrumentationEngine::CInstruction::GetOriginalPreviousInstruction()
-{
-    return OriginalPreviousInstructionInternal();
-}
-
 HRESULT MicrosoftInstrumentationEngine::CInstruction::SetOriginalOffset(_In_ ULONG offset)
 {
     HRESULT hr = S_OK;
