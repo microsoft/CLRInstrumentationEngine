@@ -123,7 +123,7 @@ namespace MicrosoftInstrumentationEngine
         }
     }
 
-    void CRefCount::RecordCreationInternal(CRefCount* pCRefCount)
+    void CRefCount::RecordCreation(CRefCount* pCRefCount)
     {
         EnterCriticalSection(&g_crst);
 
@@ -139,8 +139,13 @@ namespace MicrosoftInstrumentationEngine
         LeaveCriticalSection(&g_crst);
     }
 
-    void CRefCount::RecordDestructionInternal(CRefCount* pCRefCount)
+    void CRefCount::RecordDestruction(CRefCount* pCRefCount)
     {
+        if (pCRefCount->m_ulcRef <= 0)
+        {
+            return;
+        }
+
         EnterCriticalSection(&g_crst);
 
         bool fFound = g_map.RemoveKey(pCRefCount);
@@ -151,7 +156,7 @@ namespace MicrosoftInstrumentationEngine
 
     }
 
-    void CRefCount::RecordAddRefInternal(CRefCount* pCRefCount)
+    void CRefCount::RecordAddRef(CRefCount* pCRefCount)
     {
         EnterCriticalSection(&g_crst);
 
@@ -168,7 +173,7 @@ namespace MicrosoftInstrumentationEngine
         LeaveCriticalSection(&g_crst);
     }
 
-    void CRefCount::RecordReleaseInternal(CRefCount* pCRefCount)
+    void CRefCount::RecordRelease(CRefCount* pCRefCount)
     {
         EnterCriticalSection(&g_crst);
 
