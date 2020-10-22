@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "SingleRetDefaultInstrumentation.h"
+#include "Instruction.h"
 
 MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::CSingleRetDefaultInstrumentation()
 {
@@ -134,22 +135,23 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IInstruction> pInstruction;
-    IfFailRet(m_pInstructionGraph->GetFirstInstruction(&pInstruction));
+    CComPtr<IInstruction> pFirstInstruction;
+    IfFailRet(m_pInstructionGraph->GetFirstInstruction(&pFirstInstruction));
 
-    while (pInstruction != NULL)
+    CComQIPtr<CInstruction> pcInstruction = pFirstInstruction;
+    CInstruction* pCurrent = pcInstruction;
+
+    while (pCurrent != NULL)
     {
         ILOrdinalOpcode opcode;
-        IfFailRet(pInstruction->GetOpCode(&opcode));
+        IfFailRet(pCurrent->GetOpCode(&opcode));
 
         if (opcode == Cee_Ret)
         {
-            retInstructions.push_back(pInstruction);
+            retInstructions.push_back(pCurrent);
         }
 
-        CComPtr<IInstruction> pCurr = pInstruction;
-        pInstruction.Release();
-        pCurr->GetNextInstruction(&pInstruction);
+        pCurrent = pCurrent->NextInstructionInternal();
     }
 
     // Remove all non-replacable rets from the list.
@@ -158,10 +160,9 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
     // It is fine not to replace the ret with branch in this case as tail.call means the control won't really get to it anyway
     for (vector<CComPtr<IInstruction>>::iterator iter = retInstructions.begin(); iter != retInstructions.end(); ++iter)
     {
-        CComPtr<IInstruction> pCurrRet = *iter;
+        CComPtr<IInstruction>& pCurrRet = *iter;
 
-        CComPtr<IInstruction> pPrevInstruction;
-        pCurrRet->GetPreviousInstruction(&pPrevInstruction);
+        CInstruction* pPrevInstruction = ((CInstruction*)pCurrRet.p)->PreviousInstructionInternal();
 
         if (pPrevInstruction != nullptr)
         {
@@ -170,9 +171,7 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
 
             if (prevOpcode == Cee_Pop)
             {
-                CComPtr<IInstruction> pTemp = pPrevInstruction;
-                pPrevInstruction.Release();
-                pTemp->GetPreviousInstruction(&pPrevInstruction);
+                pPrevInstruction = pPrevInstruction->PreviousInstructionInternal();
 
                 if (pPrevInstruction == nullptr)
                 {
@@ -184,8 +183,7 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::GetRep
             IfFailRet(pPrevInstruction->GetIsCallInstruction(&isCallInstruction));
             if (isCallInstruction)
             {
-                CComPtr<IInstruction> pPreviousPreviousInstruction;
-                pPrevInstruction->GetPreviousInstruction(&pPreviousPreviousInstruction);
+                CInstruction* pPreviousPreviousInstruction = pPrevInstruction->PreviousInstructionInternal();
 
                 if (pPreviousPreviousInstruction == nullptr)
                 {

@@ -22,6 +22,7 @@ library MicrosoftInstrumentationEngine
     interface IInstrumentationMethod;
     interface IDataContainer;
     interface IInstruction;
+    interface IInstruction2;
     interface IExceptionSection;
     interface IExceptionClause;
     interface IEnumExceptionClauses;
@@ -59,7 +60,7 @@ library MicrosoftInstrumentationEngine
     // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number,
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 6;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 7;
 
     [
         object,
@@ -460,6 +461,39 @@ library MicrosoftInstrumentationEngine
         HRESULT GetOriginalPreviousInstruction([out] IInstruction** ppPrevInstruction);
 
         HRESULT GetInstructionGeneration([out] enum InstructionGeneration* pInstructionGeneration);
+    };
+
+    // Specialization of IInstruction, useful for fast looping.
+    [
+        object,
+        uuid(A77D20D8-B261-41C7-9B0A-F5FBBAABA576),
+        pointer_default(unique)
+    ]
+    interface IInstruction2 : IInstruction
+    {
+        // Returns the next instruction without incrementing the reference count
+        // on the instruction, or NULL if there is none.
+        // The caller is responsible for incrementing the reference
+        // count in case of caching or storing the returned value.
+        IInstruction2* GetNextInstruction();
+
+        // Returns the previous instruction without incrementing the reference count
+        // on the instruction, or NULL if there is none.
+        // The caller is responsible for incrementing the reference
+        // count in case of caching or storing the returned value.
+        IInstruction2* GetPreviousInstruction();
+
+        // Returns the original next instruction without incrementing the reference count
+        // on the instruction, or NULL if there is none.
+        // The caller is responsible for incrementing the reference
+        // count in case of caching or storing the returned value.
+        IInstruction2* GetOriginalNextInstruction();
+
+        // Returns the original previous instruction without incrementing the reference count
+        // on the instruction, or NULL if there is none.
+        // The caller is responsible for incrementing the reference
+        // count in case of caching or storing the returned value.
+        IInstruction2* GetOriginalPreviousInstruction();
     };
 
     [
