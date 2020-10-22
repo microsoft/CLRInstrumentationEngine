@@ -324,6 +324,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
         {
             CSwitchInstruction* pSwitch = static_cast<CSwitchInstruction*>(pCurrent);
             CInstruction* pNextInner = pCurrent->NextInstructionInternal();
+            IfFalseRet(pNextInner != nullptr, E_FAIL);
 
             ULONG nextOffset = 0;
             IfFailRet(pNextInner->GetOriginalOffset(&nextOffset));
