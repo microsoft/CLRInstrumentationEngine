@@ -27,11 +27,12 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
             _CRTDBG_LEAK_CHECK_DF // dump leak report at shutdown
         );
 #endif
-        //INITIALIZE_REF_RECORDER(MicrosoftInstrumentationEngine::CRefCount::EnableRecorder);
+        INITIALIZE_REF_RECORDER(MicrosoftInstrumentationEngine::CRefCount::EnableRecorder);
         break;
 
     case DLL_PROCESS_DETACH:
-        //TERMINATE_REF_RECORDER;
+        DUMP_REFCOUNT;
+        TERMINATE_REF_RECORDER;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     default:

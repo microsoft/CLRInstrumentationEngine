@@ -70,7 +70,7 @@ namespace MicrosoftInstrumentationEngine
 
             va_list marker;
             va_start(marker, pszFormat);
-            _snwprintf_s(szTrace + offset, ARRAYSIZE(szTrace) - offset, _TRUNCATE, pszFormat, marker);
+            _vsnwprintf_s(szTrace + offset, ARRAYSIZE(szTrace) - offset, _TRUNCATE, pszFormat, marker);
             wcscat_s(szTrace, ARRAYSIZE(szTrace), _T("\r\n"));
             OutputDebugStringW(szTrace);
         }
