@@ -289,7 +289,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
     // will need to be broken. I'm making GetPreviousInstruction return null for the first instruction.
     // pCurrent->SetPreviousInstruction(pLast);
 
-    // Second pass, go backwards through the instructions and fix up the next pointers and finalize branch instructions
+    // Second pass, go backwards through the instructions and finalize branch instructions
     while (pCurrent)
     {
         // Finalize branch pointers
