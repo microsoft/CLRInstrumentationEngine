@@ -368,15 +368,9 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            // Holding the lock during the callback functions is dangerous since rentrant
-            // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+            if (m_profilerCallbackHolder != nullptr)
             {
-                CCriticalSectionHolder lock(&m_cs);
-
-                if (m_profilerCallbackHolder != nullptr)
-                {
-                    pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
-                }
+                pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
             }
 
             if (pCallback != nullptr)
