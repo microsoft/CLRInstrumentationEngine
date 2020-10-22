@@ -14,9 +14,11 @@ extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
 
 BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
+    DWORD recordOptions = 0;
     switch (dwReason)
     {
     case DLL_PROCESS_ATTACH:
+
 #ifdef DEBUG
         // Uncomment this code to track down a memory leak based on allocation count
         // The leak allocation count is the number in the {} when the leak is dumped
@@ -26,8 +28,14 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
             _CRTDBG_ALLOC_MEM_DF | // track allocations and mark them
             _CRTDBG_LEAK_CHECK_DF // dump leak report at shutdown
         );
+
+        if (GetEnvironmentVariable(_T("EnableRefRecording"), nullptr, 0) > 0)
+        {
+            recordOptions = MicrosoftInstrumentationEngine::CRefCount::EnableRecorder;
+        }
 #endif
-        INITIALIZE_REF_RECORDER(MicrosoftInstrumentationEngine::CRefCount::EnableRecorder);
+
+        INITIALIZE_REF_RECORDER(recordOptions);
         break;
 
     case DLL_PROCESS_DETACH:

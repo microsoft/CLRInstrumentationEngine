@@ -147,10 +147,42 @@ namespace MicrosoftInstrumentationEngine
         static class CRefRBMap g_map;
         static CRITICAL_SECTION g_crst;
 
-        static void RecordCreation(CRefCount *pCRefCount);
-        static void RecordDestruction(CRefCount *pCRefCount);
-        static void RecordAddRef(CRefCount *pCRefCount);
-        static void RecordRelease(CRefCount *pCRefCount);
+        static void __forceinline RecordCreation(CRefCount* pCRefCount)
+        {
+            if (g_fRecordingInitialized)
+            {
+                RecordCreationInternal(pCRefCount);
+            }
+        }
+
+        static void __forceinline RecordDestruction(CRefCount *pCRefCount)
+        {
+            if (g_fRecordingInitialized)
+            {
+                RecordDestructionInternal(pCRefCount);
+            }
+        }
+
+        static void __forceinline RecordAddRef(CRefCount* pCRefCount)
+        {
+            if (g_fRecordingInitialized)
+            {
+                RecordAddRefInternal(pCRefCount);
+            }
+        }
+           
+        static void __forceinline RecordRelease(CRefCount* pCRefCount)
+        {
+            if (g_fRecordingInitialized)
+            {
+                RecordReleaseInternal(pCRefCount);
+            }
+        }
+
+        static void RecordAddRefInternal(CRefCount* pRefCount);
+        static void RecordReleaseInternal(CRefCount* pRefCount);
+        static void RecordCreationInternal(CRefCount* pRefCount);
+        static void RecordDestructionInternal(CRefCount* pRefCount);
     public:
         static void DumpRefCount(void);
 
