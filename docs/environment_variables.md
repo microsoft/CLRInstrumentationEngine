@@ -43,6 +43,7 @@ MicrosoftInstrumentationEngine_DebugWait|1|Suspends the process until the debugg
 MicrosoftInstrumentationEngine_FileLogPath|"[FULL PATH TO LOGGING FILE]"|File to host the event logs. This requires LogLevel to be set.
 MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signature validation
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
+MicrosoftInstrumentationEngine_LatestPath|D:\Program Files (x86)\SiteExtensions\InstrumentationEngine\\[LATEST VERSION]|This environment variable is available in Azure App Service v91+ and allows private site extensions to reference the path to the latest preinstalled InstrumentationEngine.
 
 ## Raw Profiler Hook
 

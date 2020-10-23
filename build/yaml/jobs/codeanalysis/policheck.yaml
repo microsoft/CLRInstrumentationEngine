@@ -12,7 +12,7 @@ jobs:
     name: VSEng-MicroBuildVS2019
 
   workspace:
-    clean: outputs
+    clean: all
 
   steps:
   - checkout: self
@@ -27,12 +27,14 @@ jobs:
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishlogs.yaml
-
-  # TSA Upload to CodeBase: Aerobee
-  - template: ../../steps/codeanalysis/tsaupload.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml
     parameters:
-      PoliCheck: true
+      ArtifactName: PoliCheck
+
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: PoliCheck
+      Tags: CLRIEPoliCheck
 
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml

@@ -1662,6 +1662,23 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetSignatureInfoFromCallTo
     CComPtr<IMetaDataImport> pMetaDataImport;
     IfFailRet(pModuleInfo->GetMetaDataImport((IUnknown**)&pMetaDataImport));
 
+    // if the callToken is a methodSpec, get the parent MethodDef/MethodRef
+    // to later retrieve the actual method signature
+    if (TypeFromToken(callToken) == mdtMethodSpec)
+    {
+        CComPtr<IMetaDataImport2> pMetaDataImport2;
+        IfFailRet(pMetaDataImport->QueryInterface(IID_IMetaDataImport2, (LPVOID*)&pMetaDataImport2));
+
+        mdToken parentCallToken = mdTokenNil;
+        IfFailRet(pMetaDataImport2->GetMethodSpecProps(
+            callToken,
+            &parentCallToken,
+            NULL,
+            NULL
+        ));
+
+        callToken = parentCallToken;
+    }
 
     PCCOR_SIGNATURE pSigUntouched = nullptr;
     PCCOR_SIGNATURE pSig = nullptr;
@@ -1698,18 +1715,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetSignatureInfoFromCallTo
             nullptr,
             nullptr,
             nullptr
-            ));
-    }
-    else if (TypeFromToken(callToken) == mdtMethodSpec)
-    {
-        CComPtr<IMetaDataImport2> pMetaDataImport2;
-        IfFailRet(pMetaDataImport->QueryInterface(IID_IMetaDataImport2, (LPVOID*)&pMetaDataImport2));
-
-        IfFailRet(pMetaDataImport2->GetMethodSpecProps(
-            callToken,
-            nullptr,
-            &pSig,
-            &sigLength
             ));
     }
     else if (TypeFromToken(callToken) == mdtSignature)
@@ -1763,6 +1768,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::Disconnect()
     if (m_pOriginalPreviousInstruction)
     {
         m_pOriginalPreviousInstruction.Release();
+    }
+    if (m_pNextInstruction)
+    {
+        m_pNextInstruction.Release();
+    }
+    if (m_pOriginalNextInstruction)
+    {
+        m_pOriginalNextInstruction.Release();
     }
     return S_OK;
 }

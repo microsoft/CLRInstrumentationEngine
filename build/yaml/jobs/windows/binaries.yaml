@@ -6,6 +6,7 @@
 parameters:
   IndexSources: false
   PublishSymbols: false
+  PublishFiles: true
   SignType: None
   IsMicroBuildInternal: false
   MatrixStrategy: {}
@@ -53,19 +54,21 @@ jobs:
       parameters:
         PublishSymbols: ${{ parameters.PublishSymbols }}
 
-  - task: CopyFiles@2
-    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
-    inputs:
-      SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
-      Contents: ${{ parameters.CopyFilters }}
-      TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
-      CleanTargetFolder: true
-      OverWrite: true
+  - ${{ if eq('true', parameters.PublishFiles) }}:
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+      inputs:
+        SourceFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
+        Contents: ${{ parameters.CopyFilters }}
+        TargetFolder: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+        CleanTargetFolder: true
+        OverWrite: true
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
-    parameters:
-      PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
-      ArtifactName: 'binaries-windows-$(Configuration)'
+  - ${{ if eq('true', parameters.PublishFiles) }}:
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+      parameters:
+        PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
+        ArtifactName: 'binaries-windows-$(Configuration)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

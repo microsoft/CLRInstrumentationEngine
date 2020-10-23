@@ -399,6 +399,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetAssemblyInfosByName(_
     }
 
     IfFailRet(pEnumerator->Initialize(vecAssemblies));
+    *ppAssemblyInfos = pEnumerator.Detach();
 
     CLogging::LogMessage(_T("End CAppDomainCollection::GetAssemblyInfoByName"));
 
