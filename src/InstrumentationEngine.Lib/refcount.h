@@ -23,7 +23,7 @@ namespace MicrosoftInstrumentationEngine
 #define RECORD_ADD_REF(rc)  if (g_fRecordingInitialized)  { RecordAddRef(rc); }
 #define RECORD_RELEASE(rc)  if (g_fRecordingInitialized)  { RecordRelease(rc); }
 #define RECORD_CREATED(rc)  if (g_fRecordingInitialized)  { RecordCreation(rc); }
-#define RECORD_DESTROY(rc)  if (g_fRecordingInitialized)  { RecordDestruction(rc); }
+#define RECORD_DESTROY(rc)  if (m_ulcRef > 0 ) { if (g_fRecordingInitialized)  { RecordDestruction(rc); } }
 
 #else // !DEBUG
 

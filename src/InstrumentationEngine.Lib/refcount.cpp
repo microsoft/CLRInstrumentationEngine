@@ -141,11 +141,6 @@ namespace MicrosoftInstrumentationEngine
 
     void CRefCount::RecordDestruction(CRefCount* pCRefCount)
     {
-        if (pCRefCount->m_ulcRef <= 0)
-        {
-            return;
-        }
-
         EnterCriticalSection(&g_crst);
 
         bool fFound = g_map.RemoveKey(pCRefCount);
@@ -153,7 +148,6 @@ namespace MicrosoftInstrumentationEngine
         //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
 
         LeaveCriticalSection(&g_crst);
-
     }
 
     void CRefCount::RecordAddRef(CRefCount* pCRefCount)
