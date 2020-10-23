@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.35
++ BugFixes:
+  + Have logging create directory if it does not exist.
 
 ## 1.0.34
 + BugFixes:
