@@ -20,6 +20,11 @@ namespace MicrosoftInstrumentationEngine
 
 #define DUMP_REFCOUNT CRefCount::DumpRefCount()
 
+#define RECORD_ADD_REF(rc)  if (g_fRecordingInitialized)  { RecordAddRef(rc); }
+#define RECORD_RELEASE(rc)  if (g_fRecordingInitialized)  { RecordRelease(rc); }
+#define RECORD_CREATED(rc)  if (g_fRecordingInitialized)  { RecordCreation(rc); }
+#define RECORD_DESTROY(rc)  if (m_ulcRef > 0 ) { if (g_fRecordingInitialized)  { RecordDestruction(rc); } }
+
 #else // !DEBUG
 
 #define INITIALIZE_REF_RECORDER(fOn)
@@ -28,6 +33,11 @@ namespace MicrosoftInstrumentationEngine
 #define DEFINE_REFCOUNT_NAME(cls)
 
 #define DUMP_REFCOUNT
+
+#define RECORD_ADD_REF(rc)
+#define RECORD_RELEASE(rc)
+#define RECORD_CREATED(rc)
+#define RECORD_DESTROY(rc)
 
 #endif // DEBUG
 
@@ -68,22 +78,11 @@ namespace MicrosoftInstrumentationEngine
 
             m_ulcRef = 1;
 
-#ifdef DEBUG
-
-            RecordCreation(this);
-#endif
-
+            RECORD_CREATED(this);
         }
         virtual ~CRefCount()
         {
-#ifdef DEBUG
-
-            if (m_ulcRef > 0)
-            {
-                RecordDestruction(this);
-            }
-#endif // DEBUG
-
+            RECORD_DESTROY(this);
         }
 
         // IUnknown methods
@@ -94,10 +93,7 @@ namespace MicrosoftInstrumentationEngine
 
             ULONG ulcRef = (ULONG)(InterlockedIncrement((LPLONG)(&m_ulcRef)));
 
-#ifdef DEBUG
-
-            RecordAddRef(this);
-#endif // DEBUG
+            RECORD_ADD_REF(this);
 
             // Note: the return from InterlockedIncrement may only match the new value
             // in signed-ness and zero-ness, but the return value of AddRef()
@@ -111,10 +107,7 @@ namespace MicrosoftInstrumentationEngine
 
             ULONG ulcRef = (ULONG)(InterlockedDecrement((LPLONG)(&m_ulcRef)));
 
-#ifdef DEBUG
-
-            RecordRelease(this);
-#endif // DEBUG
+            RECORD_RELEASE(this);
 
             if (ulcRef == 0)
             {
@@ -147,10 +140,10 @@ namespace MicrosoftInstrumentationEngine
         static class CRefRBMap g_map;
         static CRITICAL_SECTION g_crst;
 
-        static void RecordCreation(CRefCount *pCRefCount);
-        static void RecordDestruction(CRefCount *pCRefCount);
-        static void RecordAddRef(CRefCount *pCRefCount);
-        static void RecordRelease(CRefCount *pCRefCount);
+        static void RecordAddRef(CRefCount* pRefCount);
+        static void RecordRelease(CRefCount* pRefCount);
+        static void RecordCreation(CRefCount* pRefCount);
+        static void RecordDestruction(CRefCount* pRefCount);
     public:
         static void DumpRefCount(void);
 
