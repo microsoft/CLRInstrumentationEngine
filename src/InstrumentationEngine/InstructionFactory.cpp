@@ -384,8 +384,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionBy
 
     IfFailRet(pInstructionGraph->DecodeInstructions(instructionBytes, pEndOfCode));
 
-    CComPtr<CInstruction> pCurrInstruction;
-    pInstructionGraph->GetFirstInstruction((IInstruction**)(&pCurrInstruction));
+    CInstruction* pCurrInstruction = pInstructionGraph->FirstInstructionInternal();
 
     // The instruction graph will set these up as if they were from existing il.
     // However, the intended use case of DecodeInstructionByteStream is for parsing a
@@ -395,10 +394,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionBy
     {
         IfFailRet(pCurrInstruction->SetOriginalOffset(0));
         IfFailRet(pCurrInstruction->SetInstructionGeneration(InstructionGeneration::Generation_New));
-
-        CComPtr<IInstruction> pTemp = (IInstruction*)pCurrInstruction;
-        pCurrInstruction.Release();
-        pTemp->GetNextInstruction((IInstruction**)(&pCurrInstruction));
+        pCurrInstruction = pCurrInstruction->NextInstructionInternal();
     }
 
     *ppInstructionGraph = (IInstructionGraph*)(pInstructionGraph.Detach());

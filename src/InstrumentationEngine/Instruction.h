@@ -124,6 +124,7 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall GetOriginalPreviousInstruction(_Out_ IInstruction** ppPrevInstruction) override;
 
         virtual HRESULT __stdcall GetInstructionGeneration(_Out_ InstructionGeneration* pInstructionGeneration) override;
+
     public:
         // NOTE: these do not fixup the rest of hte graph. Call the versions on instruction graph if you want
         // previous, and next to be udpated correctly
@@ -142,6 +143,11 @@ namespace MicrosoftInstrumentationEngine
         HRESULT EmitIL(_In_ BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
 
         HRESULT LogInstruction(_In_ BOOL ignoreTest);
+
+        constexpr CInstruction* NextInstructionInternal() { return m_pNextInstruction.p; }
+        constexpr CInstruction* PreviousInstructionInternal() { return m_pPreviousInstruction.p; }
+        constexpr CInstruction* OriginalNextInstructionInternal() { return m_pOriginalNextInstruction.p; }
+        constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
 
     private:
         // If the callee token is a MethodSpec (generic method), the parameter count and signature returned
@@ -410,6 +416,11 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall GetTargetOffset(_Out_ DWORD* pOffset) override;
 
         virtual HRESULT __stdcall SetBranchTarget(_In_ IInstruction* pInstruction) override;
+
+        // Internal optimized helpers.
+    public:
+        constexpr CInstruction* GetBranchTargetInternal() { return m_pBranchTarget.p; }
+
     protected:
         virtual HRESULT Disconnect() override;
     };
@@ -474,6 +485,10 @@ namespace MicrosoftInstrumentationEngine
 
         virtual HRESULT __stdcall GetBranchCount(_Out_ DWORD* pBranchCount) override;
         virtual HRESULT __stdcall GetBranchOffset(_In_ DWORD index, _In_ DWORD* pdwOffset) override;
+
+        // Optimized helpers
+    public:
+        CInstruction* GetBranchTargetInternal(_In_ DWORD index);
 
     protected:
         virtual HRESULT Disconnect() override;

@@ -129,6 +129,11 @@ namespace MicrosoftInstrumentationEngine
         // Converts short form branch instructions to long form instructions.
         virtual HRESULT __stdcall ExpandBranches() override;
 
+    public:
+    // internal helpers.
+        constexpr CInstruction* FirstInstructionInternal() { return m_pFirstInstruction.p; }
+        constexpr CInstruction* OriginalFirstInstructionInternal() { return m_pOrigFirstInstruction.p; }
+
     private:
         HRESULT IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch);
     };

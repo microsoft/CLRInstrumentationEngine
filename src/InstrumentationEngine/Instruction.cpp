@@ -1258,26 +1258,34 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarget(_In_
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CSwitchInstruction::GetBranchTarget"));
-    *ppTarget = NULL;
 
-    if (index >= m_branchTargets.size())
+    *ppTarget = GetBranchTargetInternal(index);
+    if (*ppTarget != NULL)
     {
-        CLogging::LogError(_T("CSwitchInstruction::GetBranchTarget - invalid index"));
-        return E_FAIL;
+        (*ppTarget)->AddRef();
     }
-
-    CComPtr<CInstruction> pInstruction = m_branchTargets[index];
-    if (pInstruction == NULL)
-    {
-        CLogging::LogError(_T("CSwitchInstruction::GetBranchTarget - branch target at index is null"));
-    }
-
-    *ppTarget = (IInstruction*)(pInstruction.p);
-    (*ppTarget)->AddRef();
 
     CLogging::LogMessage(_T("End CSwitchInstruction::GetBranchTarget"));
 
     return hr;
+}
+
+CInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTargetInternal(_In_ DWORD index)
+{
+    if (index >= m_branchTargets.size())
+    {
+        CLogging::LogError(_T("CSwitchInstruction::GetBranchTargetInternal - invalid index"));
+        return NULL;
+    }
+
+    const CComPtr<CInstruction>& pInstruction = m_branchTargets[index];
+    if (pInstruction == NULL)
+    {
+        CLogging::LogError(_T("CSwitchInstruction::GetBranchTarget - branch target at index is null"));
+        return NULL;
+    }
+
+    return pInstruction.p;
 }
 
 
