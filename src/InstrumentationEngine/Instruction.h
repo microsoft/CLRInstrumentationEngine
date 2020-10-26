@@ -40,6 +40,10 @@ namespace MicrosoftInstrumentationEngine
         InstructionGeneration m_instructionGeneration;
         BOOL m_bIsRemoved;
 
+        // The graph that owns this instruction. Not a CComPtr
+        // so that we don't have circular references.
+        CInstructionGraph* m_pGraph;
+
         CComPtr<CInstruction> m_pNextInstruction;
         CComPtr<CInstruction> m_pPreviousInstruction;
 
@@ -79,6 +83,8 @@ namespace MicrosoftInstrumentationEngine
         // This can be positive for a push and negative for a pop.
         // For variable stack impact (call, etc...) it calculates the stack impact using metadata.
         HRESULT GetStackImpact(_In_ IMethodInfo* pMethodInfo, _In_ DWORD currStackDepth, _Out_ int* pStackImpact);
+        HRESULT SetGraph(_In_ CInstructionGraph* pGraph);
+        constexpr CInstructionGraph* GetGraph() { return m_pGraph; }
 
     public:
         virtual HRESULT __stdcall GetOffset(_Out_ DWORD* pdwOffset) override;
@@ -148,6 +154,8 @@ namespace MicrosoftInstrumentationEngine
         constexpr CInstruction* PreviousInstructionInternal() { return m_pPreviousInstruction.p; }
         constexpr CInstruction* OriginalNextInstructionInternal() { return m_pOriginalNextInstruction.p; }
         constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
+        constexpr bool GetIsSwitchInternal() { return m_opcode == Cee_Switch; }
+        bool GetIsBranchInternal() { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
 
     private:
         // If the callee token is a MethodSpec (generic method), the parameter count and signature returned
@@ -160,9 +168,17 @@ namespace MicrosoftInstrumentationEngine
             _Out_ DWORD* pParameterCount,
             _Out_ CorElementType* pRetTypeElementType
             );
+
+        HRESULT EnsureGraphUpdated()
+        {
+            if (m_pGraph != nullptr)
+            {
+                return m_pGraph->RefreshInstructions();
+            }
+
+            return S_OK;
+        }
     };
-
-
 
     class __declspec(uuid("D154FE63-8B15-465E-BE17-1C7B9AE8872B"))
     COperandInstruction : public IOperandInstruction, public CInstruction
@@ -370,13 +386,10 @@ namespace MicrosoftInstrumentationEngine
     CBranchInstruction : public IBranchInstruction, public CInstruction
     {
     protected:
-        // NOTE: This is only accurate until the target is resolved. As the graph changes,
-        // the target offset will change. Use the offset method off m_pBranchTarget as that
-        // updates as the graph changes.
-        DWORD m_targetOffset;
+        // NOTE: This is the target offset for the original decoded instruction.
+        // It should not be used if m_pBranchTarget has been set.
+        DWORD m_decodedTargetOffset;
         CComPtr<CInstruction> m_pBranchTarget;
-
-        DWORD m_origTargetOffset;
         CComPtr<CInstruction> m_pOrigBranchTarget;
 
     public:
