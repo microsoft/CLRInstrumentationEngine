@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Instruction.h"
+#include "BranchTargetInfo.h"
 
 HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignoreTest)
 {
@@ -1173,7 +1174,9 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
     CLogging::LogMessage(_T("Starting CBranchInstruction::SetBranchTarget"));
     IfNullRetPointer(pInstruction);
 
-    m_pBranchTarget = pInstruction;
+    CComPtr<CInstruction> pOldInstruction = m_pBranchTarget;
+    m_pBranchTarget = (CInstruction*)pInstruction;
+    IfFailRet(CBranchTargetInfo::SetBranchTarget(this, (CInstruction*)pInstruction, pOldInstruction));
 
     if (m_pBranchTarget == nullptr)
     {
@@ -1297,7 +1300,9 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::SetBranchTarget(_In_
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CSwitchInstruction::SetBranchTarget"));
 
-    m_branchTargets[index] = pTarget;
+    CComPtr<CInstruction> oldTarget = m_branchTargets[index];
+    m_branchTargets[index] = (CInstruction*)(pTarget);
+    CBranchTargetInfo::SetBranchTarget(this, (CInstruction*)(pTarget), oldTarget);
 
     CLogging::LogMessage(_T("End CSwitchInstruction::SetBranchTarget"));
 
@@ -1796,6 +1801,13 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::Disconnect()
     {
         m_pOriginalNextInstruction.Release();
     }
+
+    CComPtr<CBranchTargetInfo> pBranchTargetInfo;
+    if (SUCCEEDED(CBranchTargetInfo::GetInstance(this, &pBranchTargetInfo)))
+    {
+        pBranchTargetInfo->Disconnect();
+    }
+
     return S_OK;
 }
 

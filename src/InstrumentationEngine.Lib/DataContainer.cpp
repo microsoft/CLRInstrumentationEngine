@@ -32,27 +32,48 @@ MicrosoftInstrumentationEngine::CDataContainer::~CDataContainer()
 HRESULT MicrosoftInstrumentationEngine::CDataContainer::SetDataItem(
     _In_ const GUID* pComponentId,
     _In_ const GUID* pObjectGuid,
-    _In_ IUnknown* pDataItem
+    _In_opt_ IUnknown* pDataItem
     )
 {
     HRESULT hr = S_OK;
 
     CCriticalSectionHolder lock(&m_cs);
 
-    CAtlMap<GUID, CComPtr<IUnknown>>* pMap;
+    CAtlMap<GUID, CComPtr<IUnknown>>* pMap = nullptr;
 
     if (m_dataContainerMap.Lookup(*pComponentId, pMap) == false)
     {
-        pMap = new CAtlMap<GUID, CComPtr<IUnknown>>;
-        if (!pMap)
+        // Only create the new map if we aren't setting the
+        // data item to null.
+        if (pDataItem != nullptr)
         {
-            return E_OUTOFMEMORY;
-        }
+            pMap = new CAtlMap<GUID, CComPtr<IUnknown>>;
+            if (!pMap)
+            {
+                return E_OUTOFMEMORY;
+            }
 
-        m_dataContainerMap.SetAt(*pComponentId, pMap);
+            m_dataContainerMap.SetAt(*pComponentId, pMap);
+        }
     }
 
-    pMap->SetAt(*pObjectGuid, CComPtr<IUnknown>(pDataItem));
+    if (pMap != nullptr)
+    {
+        // if the data item is null, free memory.
+        if (pDataItem == nullptr)
+        {
+            pMap->RemoveKey(*pObjectGuid);
+
+            if (pMap->GetCount() == 0)
+            {
+                m_dataContainerMap.RemoveKey(*pComponentId);
+            }
+        }
+        else
+        {
+            pMap->SetAt(*pObjectGuid, CComPtr<IUnknown>(pDataItem));
+        }
+    }
 
     return hr;
 }

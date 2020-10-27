@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Instruction.h"
 #include "InstructionGraph.h"
+#include "BranchTargetInfo.h"
 
 MicrosoftInstrumentationEngine::CInstructionGraph::CInstructionGraph() : m_pMethodInfo(NULL), m_bHasBaselineBeenSet(false), m_bAreInstructionsStale(true)
 {
@@ -924,40 +925,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
 
     // Search the graph for any branch whose branch target is the old instruction. Set the branch target
     // to the new instruction.
-    CInstruction* pCurr = m_pFirstInstruction;
-    while (pCurr != nullptr)
-    {
-        bool isBranch = pCurr->GetIsBranchInternal();
-
-        if (isBranch)
-        {
-            CComPtr<CBranchInstruction> pBranch = (CBranchInstruction*)pCurr;
-
-            const IInstruction* pBranchTarget = pBranch->GetBranchTargetInternal();
-
-            // If the branch target is the original instruction AND the branch is not the new instruction,
-            // update it. Note the second condition is important because for things like leave instructions,
-            // often the next instruction is the branch target and resetting this would create an infinite loop.
-            if (pBranchTarget == pInstructionOrig && pCurr != pInstructionNew)
-            {
-                IfFailRet(pBranch->SetBranchTarget(pInstructionNew));
-            }
-        }
-        else
-        {
-            bool isSwitch = pCurr->GetIsSwitchInternal();
-
-            if (isSwitch)
-            {
-                CComPtr<ISwitchInstruction> pSwitch;
-                IfFailRet(pCurr->QueryInterface(__uuidof(ISwitchInstruction), (LPVOID*)&pSwitch));
-                IfFailRet(pSwitch->ReplaceBranchTarget(pInstructionOrig, pInstructionNew));
-            }
-
-        }
-
-        pCurr = pCurr->NextInstructionInternal();
-    }
+    IfFailRet(CBranchTargetInfo::RetargetBranches(pInstrOrig, pInstrNew));
 
     // Search the exception clauses for anything that points to the old instruction
     // Set that target to the new instruction
@@ -1128,23 +1096,9 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::RemoveAll()
     while (pInstr != NULL)
     {
         pInstr->SetIsRemoved();
-
-        CInstruction* pPreviousInstruction = pInstr->PreviousInstructionInternal();
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();
-
-        if (pPreviousInstruction != NULL)
-        {
-            IfFailRet(pPreviousInstruction->SetNextInstruction(NULL, false));
-        }
-
-        if (pNextInstruction != NULL)
-        {
-            IfFailRet(pNextInstruction->SetPreviousInstruction(NULL, false));
-        }
-
         IfFailRet(pInstr->SetNextInstruction(NULL, false));
         IfFailRet(pInstr->SetPreviousInstruction(NULL, false));
-
         pInstr = pNextInstruction;
     }
 
