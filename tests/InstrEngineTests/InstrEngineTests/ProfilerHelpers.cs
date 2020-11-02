@@ -80,7 +80,7 @@ namespace InstrEngineTests
             psi.UseShellExecute = false;
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
             psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
 
             if (EnableRefRecording)
             {
@@ -153,7 +153,7 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
             psi.EnvironmentVariables.Add(
                 is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
-                Path.Combine(PathUtils.GetAssetsPath(), string.Format("NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+                Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -228,7 +228,7 @@ namespace InstrEngineTests
                     while ((tmpStr = outputStream.ReadLine()) != null)
                     {
                         if (!string.IsNullOrEmpty(tmpStr) &&
-                            !tmpStr.StartsWith("[TestIgnore]"))
+                            !tmpStr.StartsWith("[TestIgnore]", StringComparison.Ordinal))
                         {
                             strBuilder.Append(tmpStr);
                             outputStrList.Add(tmpStr);
@@ -263,11 +263,23 @@ namespace InstrEngineTests
                         string baselineXmlDocStr = baselineDocs[docIdx];
                         string outputXmlDocStr = outputDocs[docIdx];
 
-                        XmlDocument baselineDocument = new XmlDocument();
-                        baselineDocument.LoadXml(baselineXmlDocStr);
-
-                        XmlDocument outputDocument = new XmlDocument();
-                        outputDocument.LoadXml(outputXmlDocStr);
+                        // https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca3075#solution-3
+                        XmlDocument baselineDocument = new XmlDocument() { XmlResolver = null };
+                        using (var baselineStringReader = new StringReader(baselineXmlDocStr))
+                        {
+                            using (var xmlReader = XmlReader.Create(baselineStringReader, new XmlReaderSettings() { XmlResolver = null }))
+                            {
+                                baselineDocument.Load(xmlReader);
+                            }
+                        }
+                        XmlDocument outputDocument = new XmlDocument() { XmlResolver = null };
+                        using (var outputStringReader = new StringReader(outputXmlDocStr))
+                        {
+                            using (var xmlReader = XmlReader.Create(outputStringReader, new XmlReaderSettings() { XmlResolver = null }))
+                            {
+                                outputDocument.Load(xmlReader);
+                            }
+                        }
 
                         Assert.AreEqual(baselineDocument.ChildNodes.Count, outputDocument.ChildNodes.Count);
 
@@ -337,10 +349,12 @@ namespace InstrEngineTests
         {
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
-            XmlDocument scriptDocument = new XmlDocument();
-            scriptDocument.Load(scriptPath);
-
-            return scriptDocument;
+            using (var xmlReader = XmlReader.Create(scriptPath, new XmlReaderSettings() { XmlResolver = null }))
+            {
+                XmlDocument scriptDocument = new XmlDocument() { XmlResolver = null };
+                scriptDocument.Load(xmlReader);
+                return scriptDocument;
+            }
         }
 
         private static bool Is32bitTest(string testScript)
@@ -394,7 +408,10 @@ namespace InstrEngineTests
                 flag |= COMPLUS_ENABLE_64BIT;
             }
 
-            NativeMethods.SetComPlusPackageInstallStatus(flag);
+            if(!NativeMethods.SetComPlusPackageInstallStatus(flag))
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

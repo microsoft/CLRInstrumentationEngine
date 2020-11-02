@@ -48,8 +48,9 @@ namespace RawProfilerHook.Tests
 
         private readonly string traceFilePath;
 
-        public static ITestResult ExecuteTest<T>()
+        public static ITestResult ExecuteTest<T>() where T : new()
         {
+            var _ = new T(); // instantiate the attribute class so the static analyzer doesn't think it's never used
             var executor = new TestEngine();
 
             return executor.ExecuteTest(
@@ -72,7 +73,7 @@ namespace RawProfilerHook.Tests
         {
             if (null == t)
             {
-                throw new ArgumentNullException("t");
+                throw new ArgumentNullException(nameof(t));
             }
 
             return ExecuteTest(t.AssemblyQualifiedName, IsX86, expectedErrors);
@@ -80,6 +81,11 @@ namespace RawProfilerHook.Tests
 
         protected override void OnBeforeStarted(DebugeeProcess debugee)
         {
+            if (debugee == null)
+            {
+                throw new ArgumentNullException(nameof(debugee));
+            }
+
             string profilerDest = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestEngine).Assembly.Location), ProfilerSrcFolder));
 
             Trace.TraceInformation("profilerDest: {0}", profilerDest);
@@ -157,12 +163,12 @@ namespace RawProfilerHook.Tests
                                 while (!traceFile.EndOfStream)
                                 {
                                     string traceLine = traceFile.ReadLine();
-                                    if (traceLine.StartsWith("LogError"))
+                                    if (traceLine.StartsWith("LogError", StringComparison.Ordinal))
                                     {
                                         errors += traceLine + "\r\n";
                                     }
                                     if (traceLine.Length != 0 &&
-                                        !traceLine.StartsWith("[TestIgnore]"))
+                                        !traceLine.StartsWith("[TestIgnore]", StringComparison.Ordinal))
                                     {
                                         Trace.WriteLine(traceLine);
                                     }

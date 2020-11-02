@@ -24,6 +24,7 @@
     <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
     <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

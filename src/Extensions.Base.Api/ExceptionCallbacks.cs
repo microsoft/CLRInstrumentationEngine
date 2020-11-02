@@ -47,6 +47,7 @@ namespace _System.Diagnostics
     /// <summary>
     /// This class defines public contract to register new callbacks
     /// </summary>
+    [AttributeUsage(AttributeTargets.All)]
     public partial class DebuggerHiddenAttribute : Attribute
     {
 

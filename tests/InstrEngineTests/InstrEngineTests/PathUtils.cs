@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace InstrEngineTests
 {
-    public class PathUtils
+    public static class PathUtils
     {
         private const string BaselinesFolder = "Baselines";
         private const string TestResultsFolder = "TestResults";

@@ -233,9 +233,12 @@ namespace Microsoft.InstrumentationEngine
             }
 
             XmlSerializer engineConfigSerializer = new XmlSerializer(typeof(InstrumentationEngineConfiguration));
-            MemoryStream memStream = new MemoryStream();
-            engineConfigSerializer.Serialize(memStream, configuration);
-            byte[] bytes = memStream.ToArray();
+            byte[] bytes;
+            using (var memStream = new MemoryStream())
+            {
+                engineConfigSerializer.Serialize(memStream, configuration);
+                bytes = memStream.ToArray();
+            }
             #endregion
 
             #region InstrumentationEngine Path
