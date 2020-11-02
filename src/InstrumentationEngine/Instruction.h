@@ -35,6 +35,7 @@ namespace MicrosoftInstrumentationEngine
         // CONSIDER: Store the original length as well? The graph immediately changes short branches etc...
 
         ILOrdinalOpcode m_opcode;
+
         DWORD m_offset;
         DWORD m_origOffset;
         InstructionGeneration m_instructionGeneration;
@@ -112,8 +113,6 @@ namespace MicrosoftInstrumentationEngine
         // set to true of this instruction has been removed or replaced from in the instruction stream.
         virtual HRESULT __stdcall GetIsRemoved(_Out_ BOOL* pbValue) override;
 
-        virtual HRESULT __stdcall GetInstructionSize(_Out_ DWORD* pdwSize);
-
         virtual HRESULT __stdcall GetIsBranch(_Out_ BOOL* pbValue) override;
         virtual HRESULT __stdcall GetIsSwitch(_Out_ BOOL* pbValue) override;
         virtual HRESULT __stdcall GetIsCallInstruction(_Out_ BOOL* pbValue) override;
@@ -135,6 +134,8 @@ namespace MicrosoftInstrumentationEngine
     public:
         // NOTE: these do not fixup the rest of hte graph. Call the versions on instruction graph if you want
         // previous, and next to be udpated correctly
+
+        virtual DWORD GetInstructionSize();
         HRESULT SetNextInstruction(_In_opt_ CInstruction* pInstruction, _In_ bool setOrig);
         HRESULT SetPreviousInstruction(_In_opt_ CInstruction* pInstruction, _In_ bool setOrig);
 
@@ -483,6 +484,8 @@ namespace MicrosoftInstrumentationEngine
             _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
+
+        virtual DWORD GetInstructionSize() override;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CSwitchInstruction);

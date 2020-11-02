@@ -266,9 +266,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
         pPrevious = pNewInstr.p;
 
         // Jump to the next instruction
-        DWORD instructionSize = 0;
-        IfFailRet(pNewInstr->GetInstructionSize(&instructionSize));
-        pCode += instructionSize;
+        pCode += pNewInstr->GetInstructionSize();
 
         if (pCode >= pEndOfCode)
         {
@@ -383,8 +381,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     CInstruction* pInstruction = m_pFirstInstruction;
     while (pInstruction != NULL)
     {
-        DWORD dwInstructionSize = 0;
-        IfFailRet(pInstruction->GetInstructionSize(&dwInstructionSize));
+        DWORD dwInstructionSize = pInstruction->GetInstructionSize();
 
         BOOL bIsNewInstruction = FALSE;
         pInstruction->GetIsNew(&bIsNewInstruction);
@@ -502,8 +499,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOf
         DWORD currOffset = 0;
         IfFailRet(pCurrent->GetOffset(&currOffset));
 
-        DWORD currSize = 0;
-        IfFailRet(pCurrent->GetInstructionSize(&currSize));
+        DWORD currSize = pCurrent->GetInstructionSize();
 
         if ((currOffset + currSize) == offset)
         {
@@ -534,7 +530,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateInstructionO
         if (pPrev != NULL)
         {
             IfFailRet(pPrev->GetOffset(&dwPrevOffset));
-            IfFailRet(pPrev->GetInstructionSize(&dwPrevLength));
+            dwPrevLength = pPrev->GetInstructionSize();
         }
 
         IfFailRet(pCurrent->SetOffset(dwPrevOffset + dwPrevLength));

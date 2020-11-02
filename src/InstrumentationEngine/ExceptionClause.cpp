@@ -95,18 +95,15 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::RenderExceptionClause(
 
     DWORD firstTryOffset = 0;
     DWORD lastTryOffset = 0;
-    DWORD lastTrySize = 0;
+    DWORD lastTrySize = m_pTryLastInstruction->GetInstructionSize();;
     IfFailRet(m_pTryFirstInstruction->GetOffset(&firstTryOffset));
     IfFailRet(m_pTryLastInstruction->GetOffset(&lastTryOffset));
-    IfFailRet(CInstruction::GetInstructionSize(m_pTryLastInstruction, &lastTrySize));
 
     DWORD firstHandlerOffset = 0;
     DWORD lastHandlerOffset = 0;
-    DWORD lastHandlerSize = 0;
+    DWORD lastHandlerSize = m_pHandlerLastInstruction->GetInstructionSize();
     IfFailRet(m_pHandlerFirstInstruction->GetOffset(&firstHandlerOffset));
     IfFailRet(m_pHandlerLastInstruction->GetOffset(&lastHandlerOffset));
-    IfFailRet(CInstruction::GetInstructionSize(m_pHandlerLastInstruction, &lastHandlerSize));
-
 
     pEHClause->TryOffset = firstTryOffset;
     pEHClause->TryLength = (lastTryOffset + lastTrySize) - firstTryOffset;
