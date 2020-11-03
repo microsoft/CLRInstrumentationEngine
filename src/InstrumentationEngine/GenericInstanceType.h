@@ -15,7 +15,7 @@ namespace MicrosoftInstrumentationEngine
         private:
             std::vector<CComPtr<IType>> m_genericParameters;
         protected:
-            CGenericInstance(_In_ IType* typeDefinition, _In_ std::vector<IType*> genericParameters);
+            CGenericInstance(_In_ IType* typeDefinition, _In_ const std::vector<IType*>& genericParameters);
         // IType
         public:
             STDMETHOD(AddToSignature)(_In_ ISignatureBuilder* pSignatureBuilder);

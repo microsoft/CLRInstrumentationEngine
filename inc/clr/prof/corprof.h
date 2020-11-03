@@ -1,4 +1,6 @@
 
+#pragma warning( push )
+#pragma warning( disable: 25164 ) // C++ Reserved global name.
 
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
@@ -7989,8 +7991,8 @@ EXTERN_C const IID IID_ICorProfilerInfo2;
             /* [in] */ ThreadID thread,
             /* [in] */ StackSnapshotCallback *callback,
             /* [in] */ ULONG32 infoFlags,
-            /* [in] */ void *clientData,
-            /* [size_is][in] */ BYTE context[  ],
+            /* [in] */  _In_ void *clientData,
+            /* [size_is][in] */ _In_reads_bytes_(contextSize) BYTE context[  ],
             /* [in] */ ULONG32 contextSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEnterLeaveFunctionHooks2( 
@@ -8057,9 +8059,9 @@ EXTERN_C const IID IID_ICorProfilerInfo2;
         virtual HRESULT STDMETHODCALLTYPE GetArrayObjectInfo( 
             /* [in] */ ObjectID objectId,
             /* [in] */ ULONG32 cDimensions,
-            /* [size_is][out] */ ULONG32 pDimensionSizes[  ],
-            /* [size_is][out] */ int pDimensionLowerBounds[  ],
-            /* [out] */ BYTE **ppData) = 0;
+            /* [size_is][out] */ _Out_writes_(cDimensions) ULONG32 pDimensionSizes[  ],
+            /* [size_is][out] */ _Out_writes_(cDimensions) int pDimensionLowerBounds[  ],
+            /* [out] */ _Out_ BYTE **ppData) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetBoxClassLayout( 
             /* [in] */ ClassID classId,
@@ -12508,7 +12510,7 @@ EXTERN_C const IID IID_ICorProfilerInfo7;
         virtual HRESULT STDMETHODCALLTYPE ReadInMemorySymbols( 
             /* [in] */ ModuleID moduleId,
             /* [in] */ DWORD symbolsReadOffset,
-            /* [out] */ BYTE *pSymbolBytes,
+            /* [out] */ _Out_writes_(countSymbolBytes) BYTE *pSymbolBytes,
             /* [in] */ DWORD countSymbolBytes,
             /* [out] */ DWORD *pCountSymbolBytesRead) = 0;
         
@@ -13374,10 +13376,10 @@ EXTERN_C const IID IID_ICorProfilerInfo8;
             /* [in] */ FunctionID functionId,
             /* [out] */ ModuleID *moduleId,
             /* [out] */ PCCOR_SIGNATURE *ppvSig,
-            /* [out] */ ULONG *pbSig,
+            /* [out] */ _Out_ ULONG *pbSig,
             /* [in] */ ULONG cchName,
-            /* [out] */ ULONG *pcchName,
-            /* [out] */ WCHAR wszName[  ]) = 0;
+            /* [out] */ _Out_ ULONG *pcchName,
+            /* [out] */ _Out_writes_(cchName) WCHAR wszName[  ]) = 0;
         
     };
     
@@ -16491,3 +16493,4 @@ EXTERN_C const IID IID_ICorProfilerAssemblyReferenceProvider;
 #endif
 
 
+#pragma warning( pop ) // 25164

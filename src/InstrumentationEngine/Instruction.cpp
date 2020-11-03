@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Instruction.h"
 
-HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(_In_ BOOL ignoreTest)
+HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignoreTest)
 {
     HRESULT hr = S_OK;
 
@@ -207,7 +207,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::InstructionFromBytes(
 
 
 // static
-HRESULT MicrosoftInstrumentationEngine::CInstruction::OrdinalOpcodeFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode)
+HRESULT MicrosoftInstrumentationEngine::CInstruction::OrdinalOpcodeFromBytes(_In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(pOpcode);
@@ -232,12 +232,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::OrdinalOpcodeFromBytes(_In
 }
 
 //virtual
-HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_ BYTE* pILBuffer, _In_ DWORD dwcbILBuffer)
+HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_reads_bytes_(dwcbILBuffer) BYTE* pILBuffer, _In_ DWORD dwcbILBuffer)
 {
     HRESULT hr = S_OK;
     ULONG curpos = m_offset;
 
-    CInstruction::ILOpcodeInfo &opcodeInfo = CInstruction::s_ilOpcodeInfo [m_opcode];
+    const CInstruction::ILOpcodeInfo &opcodeInfo = CInstruction::s_ilOpcodeInfo [m_opcode];
     unsigned opcodeLength = opcodeInfo.m_opcodeLength;
 
     if (curpos + opcodeLength + opcodeInfo.m_operandLength > dwcbILBuffer)
@@ -333,7 +333,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_ BYTE* pILBuffe
     return S_OK;
 }
 
-MicrosoftInstrumentationEngine::CInstruction::CInstruction(_In_ ILOrdinalOpcode opcode, _In_ BOOL isNew) :
+MicrosoftInstrumentationEngine::CInstruction::CInstruction(_In_ ILOrdinalOpcode opcode, _In_ bool isNew) :
     m_opcode(opcode),
     m_offset(0),
     m_origOffset(0),
@@ -344,7 +344,7 @@ MicrosoftInstrumentationEngine::CInstruction::CInstruction(_In_ ILOrdinalOpcode 
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstruction::InitializeFromBytes(
-    _In_ LPCBYTE pCode,
+    _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
     _In_ LPCBYTE pEndOfCode
     )
 {
@@ -355,7 +355,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::InitializeFromBytes(
 
 HRESULT MicrosoftInstrumentationEngine::CInstruction::SetIsRemoved()
 {
-    this->m_bIsRemoved = true;
+    this->m_bIsRemoved = TRUE;
     return S_OK;
 }
 
@@ -522,23 +522,29 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsRemoved(_Out_ BOOL* p
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize(_Out_ DWORD* pdwSize)
+HRESULT MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize(_In_ IInstruction* pInstruction, _Out_ DWORD* pdwSize)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CInstruction::GetInstructionSize"));
+    IfNullRetPointer(pInstruction);
     IfNullRetPointer(pdwSize);
 
     DWORD dwOpCodeLength = 0;
-    IfFailRet(this->GetOpcodeLength(&dwOpCodeLength));
+    IfFailRet(pInstruction->GetOpcodeLength(&dwOpCodeLength));
 
     DWORD dwOperandLength = 0;
-    IfFailRet(this->GetOperandLength(&dwOperandLength));
+    IfFailRet(pInstruction->GetOperandLength(&dwOperandLength));
 
     *pdwSize = dwOpCodeLength + dwOperandLength;
 
     CLogging::LogMessage(_T("End CInstruction::GetInstructionSize"));
 
     return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize(_Out_ DWORD* pdwSize)
+{
+    return GetInstructionSize(this, pdwSize);
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsBranch(_Out_ BOOL* pbValue)
@@ -829,7 +835,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetInstructionGeneration(_
 
 MicrosoftInstrumentationEngine::COperandInstruction::COperandInstruction(
         _In_ ILOrdinalOpcode opcode,
-        _In_ BOOL isNew,
+        _In_ bool isNew,
         _In_ DWORD cbBytes,
         _In_ BYTE* pBytes
         ) : CInstruction(opcode, isNew)
@@ -845,7 +851,7 @@ MicrosoftInstrumentationEngine::COperandInstruction::COperandInstruction(
 
 MicrosoftInstrumentationEngine::COperandInstruction::COperandInstruction(
     _In_ ILOrdinalOpcode opcode,
-    _In_ BOOL isNew
+    _In_ bool isNew
     )
     : CInstruction(opcode, isNew)
 {
@@ -853,7 +859,7 @@ MicrosoftInstrumentationEngine::COperandInstruction::COperandInstruction(
 }
 
 HRESULT MicrosoftInstrumentationEngine::COperandInstruction::InitializeFromBytes(
-    _In_ LPCBYTE pCode,
+    _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
     _In_ LPCBYTE pEndOfCode
     )
 {
@@ -1028,7 +1034,7 @@ HRESULT MicrosoftInstrumentationEngine::COperandInstruction::SetOperandValue(
 
 MicrosoftInstrumentationEngine::CBranchInstruction::CBranchInstruction(
     _In_ ILOrdinalOpcode opcode,
-    _In_ BOOL isNew
+    _In_ bool isNew
     )
     :  CInstruction(opcode, isNew),
     m_origTargetOffset(0)
@@ -1037,7 +1043,7 @@ MicrosoftInstrumentationEngine::CBranchInstruction::CBranchInstruction(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::InitializeFromBytes(
-    _In_ LPCBYTE pCode,
+    _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
     _In_ LPCBYTE pEndOfCode
     )
 {
@@ -1167,7 +1173,7 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
     CLogging::LogMessage(_T("Starting CBranchInstruction::SetBranchTarget"));
     IfNullRetPointer(pInstruction);
 
-    m_pBranchTarget = (CInstruction*)pInstruction;
+    m_pBranchTarget = pInstruction;
 
     if (m_pBranchTarget != nullptr)
     {
@@ -1191,7 +1197,7 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
 
 MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
         _In_ ILOrdinalOpcode opcode,
-        _In_ BOOL isNew
+        _In_ bool isNew
         ) : CInstruction(opcode, isNew)
 {
 
@@ -1199,7 +1205,7 @@ MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
 
 MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
         _In_ ILOrdinalOpcode opcode,
-        _In_ BOOL isNew,
+        _In_ bool isNew,
         _In_ DWORD cBranchTargets,
         _In_reads_(cBranchTargets) IInstruction** ppBranchTargets
         ) : CInstruction(opcode, isNew)
@@ -1209,13 +1215,13 @@ MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
 
     for (DWORD i = 0; i < cBranchTargets; i++)
     {
-        CComPtr<CInstruction> pTarget = (CInstruction*)(ppBranchTargets[i]);
+        CComPtr<IInstruction> pTarget = ppBranchTargets[i];
         m_branchTargets[i] = pTarget;
     }
 }
 
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::InitializeFromBytes(
-    _In_ LPCBYTE pCode,
+    _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
     _In_ LPCBYTE pEndOfCode
     )
 {
@@ -1270,7 +1276,7 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarget(_In_
     return hr;
 }
 
-CInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTargetInternal(_In_ DWORD index)
+IInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTargetInternal(_In_ DWORD index)
 {
     if (index >= m_branchTargets.size())
     {
@@ -1278,7 +1284,7 @@ CInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarge
         return NULL;
     }
 
-    const CComPtr<CInstruction>& pInstruction = m_branchTargets[index];
+    const CComPtr<IInstruction>& pInstruction = m_branchTargets[index];
     if (pInstruction == NULL)
     {
         CLogging::LogError(_T("CSwitchInstruction::GetBranchTarget - branch target at index is null"));
@@ -1294,7 +1300,7 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::SetBranchTarget(_In_
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CSwitchInstruction::SetBranchTarget"));
 
-    m_branchTargets[index] = (CInstruction*)(pTarget);
+    m_branchTargets[index] = pTarget;
 
     CLogging::LogMessage(_T("End CSwitchInstruction::SetBranchTarget"));
 
@@ -1318,11 +1324,11 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::RemoveBranchTarget(_
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CSwitchInstruction::RemoveBranchTarget"));
 
-    for(std::vector<CComPtr<CInstruction>>::iterator iter = m_branchTargets.begin(); iter != m_branchTargets.end(); iter++)
+    for(std::vector<CComPtr<IInstruction>>::iterator iter = m_branchTargets.begin(); iter != m_branchTargets.end(); ++iter)
     {
         if(*iter == pTarget)
         {
-            m_branchTargets.erase(iter);
+            iter = m_branchTargets.erase(iter);
         }
     }
 
@@ -1374,7 +1380,7 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchOffset(_In_
 
     IfNullRetPointer(pdwOffset);
 
-    CComPtr<CInstruction> pInstruction = m_branchTargets[index];
+    CComPtr<IInstruction> pInstruction = m_branchTargets[index];
     if (pInstruction != NULL)
     {
         IfFailRet(pInstruction->GetOffset(pdwOffset));

@@ -109,9 +109,9 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CreateBaseline(
     _In_ LPCBYTE pCodeBase,
     _In_ LPCBYTE pEndOfCode,
     _In_ DWORD originalToBaselineCorIlMapSize,
-    _In_ COR_IL_MAP originalToBaselineCorIlMap[],
+    _In_reads_(originalToBaselineCorIlMapSize) COR_IL_MAP originalToBaselineCorIlMap[],
     _In_ DWORD baselineSequencePointSize,
-    _In_ DWORD baselineSequencePointList[]
+    _In_reads_(baselineSequencePointSize) DWORD baselineSequencePointList[]
     )
 {
     HRESULT hr = S_OK;
@@ -227,7 +227,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
 
     CCriticalSectionHolder lock(&m_cs);
 
-    const BYTE * pCode = (BYTE*)pCodeBase;
+    const BYTE * pCode = pCodeBase;
 
 
     if (pEndOfCode > pCode)
@@ -404,14 +404,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     CAutoVectorPtr<BYTE> pILArray;
     if (cbBuffer > 0)
     {
-        pILArray.Attach(new BYTE[cbBuffer]);
+        pILArray.Attach(new BYTE[cbBuffer]());
     }
 
     // Allocate the il map.
     CAutoVectorPtr<COR_IL_MAP> pCorILMap;
     if(cCorILMap > 0)
     {
-        pCorILMap.Attach(new COR_IL_MAP[cCorILMap]);
+        pCorILMap.Attach(new COR_IL_MAP[cCorILMap]());
     }
 
     DWORD iCorILMap = 0;
@@ -491,31 +491,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction)
-{
-    HRESULT hr = S_OK;
-    CCriticalSectionHolder lock(&m_cs);
-
-    CInstruction* pCurrent = m_pFirstInstruction;
-    while (pCurrent != NULL)
-    {
-        DWORD currOffset = 0;
-        IfFailRet(pCurrent->GetOffset(&currOffset));
-
-        if (currOffset == offset)
-        {
-            *ppInstruction = pCurrent;
-            pCurrent->AddRef();
-            return S_OK;
-        }
-
-        pCurrent = pCurrent->NextInstructionInternal();
-    }
-
-    return E_FAIL;
-}
-
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
     CCriticalSectionHolder lock(&m_cs);
@@ -579,7 +555,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::ExpandBranches()
 
     ULONG pos = 0;
     CInstruction* pCurrent = m_pFirstInstruction;
-    CInstruction* pPrev = NULL;
     while (pCurrent != NULL)
     {
         BOOL bIsBranch = FALSE;
@@ -590,7 +565,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::ExpandBranches()
             ((CBranchInstruction*)pCurrent)->ExpandBranch();
         }
 
-        pPrev = pCurrent;
         pCurrent = pCurrent->NextInstructionInternal();
     }
 
@@ -946,7 +920,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
         {
             CComPtr<CBranchInstruction> pBranch = (CBranchInstruction*)pCurr;
 
-            CInstruction* pBranchTarget = pBranch->GetBranchTargetInternal();
+            const IInstruction* pBranchTarget = pBranch->GetBranchTargetInternal();
 
             // If the branch target is the original instruction AND the branch is not the new instruction,
             // update it. Note the second condition is important because for things like leave instructions,

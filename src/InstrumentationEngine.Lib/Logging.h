@@ -79,7 +79,7 @@ namespace MicrosoftInstrumentationEngine
 
         static HRESULT UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
-        static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
+        static HRESULT SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost);
 
         static HRESULT Shutdown();
 

@@ -18,8 +18,6 @@ namespace ProfilerProxy
     // Critical section object which provides synchronization when accessing hProfiler.
     static CCriticalSection g_criticalSection;
 
-    static LPFN_ISWOW64PROCESS fnIsWow64Process;
-
     static constexpr const WCHAR* instrumentationEngineFolder = _T("Microsoft CLR Instrumentation Engine");
     static constexpr const WCHAR* useDebugVar = _T("InstrumentationEngineProxy_UseDebug");
     static constexpr const WCHAR* usePreviewVar = _T("InstrumentationEngineProxy_UsePreview");
@@ -66,6 +64,8 @@ namespace ProfilerProxy
     static HRESULT IsWow64(_In_ CEventLogger& eventLogger, _Out_ BOOL* pIsWow64)
     {
         *pIsWow64 = FALSE;
+
+        LPFN_ISWOW64PROCESS fnIsWow64Process = nullptr;
 
         // IsWow64Process is not available on all supported versions of Windows.
         // Use GetModuleHandle to get a handle to the DLL that contains the function.
@@ -135,10 +135,10 @@ namespace ProfilerProxy
 
         WCHAR wszBuffer[2];
         ZeroMemory(wszBuffer, 2);
-        BOOL useDebug = GetEnvironmentVariable(useDebugVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
+        bool useDebug = GetEnvironmentVariable(useDebugVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
         ZeroMemory(wszBuffer, 2);
-        BOOL usePreview = GetEnvironmentVariable(usePreviewVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
+        bool usePreview = GetEnvironmentVariable(usePreviewVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
         //
         // Iterate folders & compare versions
@@ -160,7 +160,7 @@ namespace ProfilerProxy
             return HRESULT_FROM_WIN32(GetLastError());
         }
 
-        InstrumentationEngineVersion* pLatestVersionFolder = nullptr;
+        const InstrumentationEngineVersion* pLatestVersionFolder = nullptr;
         do {
             // Skip any files; we only want directories
             if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
@@ -313,9 +313,15 @@ namespace ProfilerProxy
      *                 MicrosoftInstrumentationEngine_x64|86.dll
      */
     _Check_return_
-    STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ PVOID* ppObj)
+    STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_result_maybenull_ PVOID* ppObj)
     {
         HRESULT hr = S_OK;
+        if (ppObj == nullptr)
+        {
+            return E_POINTER;
+        }
+        *ppObj = nullptr;
+
 
 #ifdef DEBUG
         WCHAR wszEnvVar[MAX_PATH];

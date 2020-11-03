@@ -72,7 +72,7 @@ HRESULT CReflectionHelper::GetAssemblyRefByName(
 
 HRESULT CReflectionHelper::IsTypeBelongsToModule(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo> spWellKnownTypeInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo>& spWellKnownTypeInfo,
     _Out_ bool& bBelong)
 {
     HRESULT hr = S_OK;
@@ -101,7 +101,7 @@ HRESULT CReflectionHelper::IsTypeBelongsToModule(
 
 HRESULT CReflectionHelper::DefineMethodToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo> spWellKnownMethodInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo>& spWellKnownMethodInfo,
     _Out_ mdToken& tkMethodToken)
 {
     HRESULT hr = S_OK;
@@ -114,7 +114,7 @@ HRESULT CReflectionHelper::DefineMethodToken(
 
 HRESULT CReflectionHelper::GetMethodToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo> spWellKnownMethodInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo>& spWellKnownMethodInfo,
     _Out_ mdToken& tkMethodToken)
 {
     HRESULT hr = S_OK;
@@ -127,7 +127,7 @@ HRESULT CReflectionHelper::GetMethodToken(
 
 HRESULT CReflectionHelper::GetOrDefineMethodToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo> spWellKnownMethodInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownMethodInfo>& spWellKnownMethodInfo,
     _Out_ mdToken& tkMethodToken,
     _In_ bool bDefine)
 {
@@ -186,7 +186,7 @@ HRESULT CReflectionHelper::GetOrDefineMethodToken(
 
 HRESULT CReflectionHelper::GetTypeToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo> spWellKnownTypeInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo>& spWellKnownTypeInfo,
     _Out_ mdToken& tkTypeToken)
 {
     HRESULT hr = S_OK;
@@ -198,7 +198,7 @@ HRESULT CReflectionHelper::GetTypeToken(
 
 HRESULT CReflectionHelper::DefineTypeToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo> spWellKnownTypeInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo>& spWellKnownTypeInfo,
     _Out_ mdToken& tkTypeToken)
 {
     HRESULT hr = S_OK;
@@ -210,7 +210,7 @@ HRESULT CReflectionHelper::DefineTypeToken(
 
 HRESULT CReflectionHelper::GetOrDefineTypeToken(
     _In_ const IModuleInfoSptr& spModuleInfo,
-    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo> spWellKnownTypeInfo,
+    _In_ const std::shared_ptr<Agent::Reflection::CWellKnownTypeInfo>& spWellKnownTypeInfo,
     _Out_ mdToken& tkTypeToken,
     _In_ bool bDefine)
 {

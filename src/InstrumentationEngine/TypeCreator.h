@@ -27,7 +27,7 @@ namespace MicrosoftInstrumentationEngine
 
         // ISignatureParser
             STDMETHOD(ParseMethodSignature)(
-                _In_ const BYTE* pSignature,
+                _In_reads_bytes_(cbSignature) const BYTE* pSignature,
                 _In_ DWORD cbSignature,
                 _Out_opt_ ULONG* pCallingConvention,
                 _Out_opt_ IType** ppReturnType,
@@ -36,14 +36,14 @@ namespace MicrosoftInstrumentationEngine
                 _Out_opt_ ULONG* pcbRead
                 ) override;
             STDMETHOD(ParseLocalVarSignature)(
-                _In_ const BYTE* pSignature,
+                _In_reads_bytes_(cbSignature) const BYTE* pSignature,
                 _In_ ULONG cbSignature,
                 _Out_opt_ ULONG* pCallingConvention,
                 _Out_opt_ IEnumTypes** ppEnumTypes,
                 _Out_opt_ ULONG* pcbRead
                 ) override;
             STDMETHOD(ParseTypeSequence)(
-                _In_ const BYTE* pBuffer,
+                _In_reads_bytes_(cbBuffer) const BYTE* pBuffer,
                 _In_ ULONG cbBuffer,
                 _In_ ULONG cTypes,
                 _Out_opt_ IEnumTypes** ppEnumTypes,

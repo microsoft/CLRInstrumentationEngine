@@ -8,7 +8,7 @@ namespace Agent
 {
     namespace Reflection
     {
-        CWellKnownTypeInfo::CWellKnownTypeInfo(_In_ std::wstring assemblyName, _In_ std::wstring moduleName, _In_ std::wstring typeName)
+        CWellKnownTypeInfo::CWellKnownTypeInfo(_In_ const std::wstring& assemblyName, _In_ const std::wstring& moduleName, _In_ const std::wstring& typeName)
             : m_assemblyName(assemblyName)
             , m_moduleName(moduleName)
             , m_typeName(typeName)

@@ -47,12 +47,12 @@ public:
 		return  this->m_dataItem;
 	}
 
-	HRESULT FinalConstruct()
+	static HRESULT FinalConstruct()
 	{
 		return S_OK;
 	}
 
-	void FinalRelease()
+	static void FinalRelease()
 	{
 	}
 };

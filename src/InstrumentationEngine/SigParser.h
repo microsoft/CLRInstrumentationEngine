@@ -84,7 +84,7 @@ namespace MicrosoftInstrumentationEngine
         // Peek at value of one byte and return it.
         //-------------------------------------------------------------------------
         __checkReturn
-            FORCEINLINE HRESULT PeekByte(_Out_ BYTE *data)
+            FORCEINLINE HRESULT PeekByte(_Out_ BYTE *data) const
         {
             if (m_dwLen > 0)
             {

@@ -9,7 +9,7 @@
 CDecorationCallbackInfo::CDecorationCallbackInfo(
 	const std::wstring& strMethodName,
 	DWORD dwAttributes,
-	PCCOR_SIGNATURE pCorSig,
+    _In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
 	ULONG ulCorSigSize,
 	DWORD dwImplFlags)
 	: m_strMethodName(strMethodName)
@@ -41,7 +41,7 @@ DWORD CDecorationCallbackInfo::GetMethodImplFlags() const
 	return m_dwMethodImplFlags;
 }
 
-DWORD CDecorationCallbackInfo::GetParamCount()
+DWORD CDecorationCallbackInfo::GetParamCount() const
 {
 	const auto InvalidArgumentCount = -1;
 

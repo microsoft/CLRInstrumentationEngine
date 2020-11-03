@@ -51,11 +51,11 @@ namespace MicrosoftInstrumentationEngine
     public:
         CInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
         );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             );
 
@@ -79,6 +79,8 @@ namespace MicrosoftInstrumentationEngine
         // This can be positive for a push and negative for a pop.
         // For variable stack impact (call, etc...) it calculates the stack impact using metadata.
         HRESULT GetStackImpact(_In_ IMethodInfo* pMethodInfo, _In_ DWORD currStackDepth, _Out_ int* pStackImpact);
+
+        static HRESULT GetInstructionSize(_In_ IInstruction* pInstruction, _Out_ DWORD* pdwSize);
 
     public:
         virtual HRESULT __stdcall GetOffset(_Out_ DWORD* pdwOffset) override;
@@ -137,12 +139,12 @@ namespace MicrosoftInstrumentationEngine
         HRESULT SetInstructionGeneration(_In_ InstructionGeneration instructionGeneration);
 
         static HRESULT InstructionFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ CInstruction** ppInstruction);
-        static HRESULT OrdinalOpcodeFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode);
+        static HRESULT OrdinalOpcodeFromBytes(_In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode);
 
 
-        HRESULT EmitIL(_In_ BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
+        HRESULT EmitIL(_In_reads_bytes_(dwcbILBuffer) BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
 
-        HRESULT LogInstruction(_In_ BOOL ignoreTest);
+        HRESULT LogInstruction(bool ignoreTest);
 
         constexpr CInstruction* NextInstructionInternal() { return m_pNextInstruction.p; }
         constexpr CInstruction* PreviousInstructionInternal() { return m_pPreviousInstruction.p; }
@@ -182,18 +184,18 @@ namespace MicrosoftInstrumentationEngine
     public:
         COperandInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew,
+            _In_ bool isNew,
             _In_ DWORD cbBytes,
             _In_ BYTE* pBytes
             );
 
         COperandInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
 
@@ -374,19 +376,19 @@ namespace MicrosoftInstrumentationEngine
         // the target offset will change. Use the offset method off m_pBranchTarget as that
         // updates as the graph changes.
         DWORD m_targetOffset;
-        CComPtr<CInstruction> m_pBranchTarget;
+        CComPtr<IInstruction> m_pBranchTarget;
 
         DWORD m_origTargetOffset;
-        CComPtr<CInstruction> m_pOrigBranchTarget;
+        CComPtr<IInstruction> m_pOrigBranchTarget;
 
     public:
         CBranchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
 
@@ -419,7 +421,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Internal optimized helpers.
     public:
-        constexpr CInstruction* GetBranchTargetInternal() { return m_pBranchTarget.p; }
+        constexpr IInstruction* GetBranchTargetInternal() { return m_pBranchTarget.p; }
 
     protected:
         virtual HRESULT Disconnect() override;
@@ -436,23 +438,23 @@ namespace MicrosoftInstrumentationEngine
 
         // Vector of actual branch targets. Offsets etc... should be read from here
         // after the initialization phase is over.
-        std::vector<CComPtr<CInstruction>> m_branchTargets;
+        std::vector<CComPtr<IInstruction>> m_branchTargets;
 
     public:
         CSwitchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
             );
 
         CSwitchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew,
+            _In_ bool isNew,
             _In_ DWORD cBranchTargets,
             _In_reads_(cBranchTargets) IInstruction** ppBranchTargets
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
 
@@ -488,7 +490,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Optimized helpers
     public:
-        CInstruction* GetBranchTargetInternal(_In_ DWORD index);
+        IInstruction* GetBranchTargetInternal(_In_ DWORD index);
 
     protected:
         virtual HRESULT Disconnect() override;

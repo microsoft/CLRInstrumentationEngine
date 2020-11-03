@@ -399,7 +399,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::CreateILFunctionBody()
     CAutoVectorPtr<BYTE> pSectEhBuffer;
     DWORD cbSectEhBuffer = 0;
     IfFailRet(m_pExceptionSection->CreateExceptionHeader((BYTE**)&pSectEhBuffer, &cbSectEhBuffer));
-    COR_ILMETHOD_SECT_EH_FAT* pSectEh = (COR_ILMETHOD_SECT_EH_FAT*)(pSectEhBuffer.m_p);
+    const COR_ILMETHOD_SECT_EH_FAT* pSectEh = (COR_ILMETHOD_SECT_EH_FAT*)(pSectEhBuffer.m_p);
     cbSehExtra = sizeof(IMAGE_COR_ILMETHOD_SECT_EH_FAT);
     if(pSectEh != NULL)
     {
@@ -1194,7 +1194,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeGenericParameters
                 IfFailRet(m_pModuleInfo->CreateTypeFactory(&typeFactory));
                 CComPtr<IType> parameter;
 
-                DWORD used;
+                DWORD used = 0;
                 IfFailRet(typeFactory->FromSignature(cbSigBlob - currentOffset, &pSigBlob[currentOffset], &parameter, &used));
                 currentOffset += used;
                 m_genericParameters.push_back(parameter);
@@ -1391,7 +1391,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         GetRejitCount(&rejitCount);
         if (rejitCount != 0)
         {
-            DWORD corILMapmLen = (DWORD)m_pCorILMap.Count();
+            size_t corILMapmLen = m_pCorILMap.Count();
             corILMapmLen++;
             CSharedArray<COR_IL_MAP> pTempCorILMap(corILMapmLen);
             size_t capacity = m_pCorILMap.Count() * sizeof(COR_IL_MAP);
@@ -1403,7 +1403,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
 
             // NOTE: CLR's earlier than 4.5.2 won't have this implemented and will return E_NOTIMPL.
             // 4.5.2 is a prereq for rejit.
-            m_pFunctionControl->SetILInstrumentedCodeMap(corILMapmLen, pTempCorILMap.Get());
+            m_pFunctionControl->SetILInstrumentedCodeMap((ULONG)corILMapmLen, pTempCorILMap.Get());
         }
         else
         {
@@ -1537,7 +1537,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogExceptionSection(_In_ CExce
 }
 
 // static
-void MicrosoftInstrumentationEngine::CMethodInfo::LogCorIlMap(_In_ COR_IL_MAP* pCorIlMap, _In_ DWORD dwCorILMapmLen)
+void MicrosoftInstrumentationEngine::CMethodInfo::LogCorIlMap(_In_reads_(dwCorILMapmLen) const COR_IL_MAP* pCorIlMap, _In_ DWORD dwCorILMapmLen)
 {
     if (!CLogging::AllowLogEntry(LoggingFlags_InstrumentationResults))
     {
@@ -1921,7 +1921,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::MergeILInstrumentedCodeMap(
 
                 if (iter != oldMapNewOffsetToEntryMap.end())
                 {
-                    COR_IL_MAP* pOldEntry = iter->second;
+                    const COR_IL_MAP* pOldEntry = iter->second;
 
                     // Entry was found in the original map.
                     pCurr->oldOffset = pOldEntry->oldOffset;
@@ -2064,7 +2064,7 @@ MicrosoftInstrumentationEngine::CModuleInfo* MicrosoftInstrumentationEngine::CMe
     return m_pModuleInfo;
 }
 
-bool MicrosoftInstrumentationEngine::CMethodInfo::IsCreateBaselineEnabled()
+bool MicrosoftInstrumentationEngine::CMethodInfo::IsCreateBaselineEnabled() const
 {
     return m_bIsCreateBaselineEnabled;
 }

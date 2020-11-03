@@ -14,17 +14,17 @@ MicrosoftInstrumentationEngine::CInlineSite::CInlineSite(
 {
 }
 
-mdToken MicrosoftInstrumentationEngine::CInlineSite::GetInlineeToken()
+mdToken MicrosoftInstrumentationEngine::CInlineSite::GetInlineeToken() const
 {
     return m_inlineeToken;
 }
 
-mdToken MicrosoftInstrumentationEngine::CInlineSite::GetInlineSiteToken()
+mdToken MicrosoftInstrumentationEngine::CInlineSite::GetInlineSiteToken() const
 {
     return m_inlineSiteToken;
 }
 
-ModuleID MicrosoftInstrumentationEngine::CInlineSite::GetModuleID()
+ModuleID MicrosoftInstrumentationEngine::CInlineSite::GetModuleID() const
 {
     return m_moduleID;
 }

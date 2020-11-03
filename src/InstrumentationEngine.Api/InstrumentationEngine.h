@@ -7433,7 +7433,7 @@ EXTERN_C const IID IID_IInstructionFactory;
         
         virtual HRESULT STDMETHODCALLTYPE DecodeInstructionByteStream( 
             /* [in] */ DWORD cbMethod,
-            /* [in] */ __RPC__in LPCBYTE instructionBytes,
+            /* [size_is][in] */ __RPC__in_ecount_full(cbMethod) LPCBYTE instructionBytes,
             /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph) = 0;
         
     };

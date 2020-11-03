@@ -4,9 +4,10 @@
 #include "stdafx.h"
 #include "GenericInstanceType.h"
 
-MicrosoftInstrumentationEngine::CGenericInstance::CGenericInstance(_In_ IType* typeDefinition, _In_ std::vector<IType*> genericParameters) : CCompositeType(ELEMENT_TYPE_GENERICINST, typeDefinition)
+MicrosoftInstrumentationEngine::CGenericInstance::CGenericInstance(_In_ IType* typeDefinition, _In_ const std::vector<IType*>& genericParameters) : CCompositeType(ELEMENT_TYPE_GENERICINST, typeDefinition)
 {
     DEFINE_REFCOUNT_NAME(CGenericInstance);
+    m_genericParameters.reserve(genericParameters.size());
     for (IType* type : genericParameters)
     {
         m_genericParameters.push_back(CComPtr<IType>(type));

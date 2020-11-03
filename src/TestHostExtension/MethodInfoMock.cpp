@@ -149,7 +149,7 @@ namespace TestsHostExtension
 		return E_NOTIMPL;
 	}
 
-	HRESULT STDMETHODCALLTYPE  CMethodInfoMock::GetCorSignature(DWORD cbBuffer, BYTE * pCorSignature, DWORD * pcbSignature)
+	HRESULT STDMETHODCALLTYPE  CMethodInfoMock::GetCorSignature(_In_ DWORD cbBuffer, _Out_opt_ BYTE * pCorSignature, _Out_opt_ DWORD * pcbSignature)
 	{
 		return E_NOTIMPL;
 	}

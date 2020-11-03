@@ -50,11 +50,11 @@ namespace CommonLib
      This function checks if a critical section is owned or not.
 
     --*/
-    inline BOOL IsCriticalSectionOwned(
-        _In_ CRITICAL_SECTION* lpCriticalSection
+    inline bool IsCriticalSectionOwned(
+        _In_ const CRITICAL_SECTION* lpCriticalSection
     )
     {
-        BOOL fOwned = FALSE;
+        bool fOwned = false;
         DWORD threadId = GetCurrentThreadId();
 
         //

@@ -207,13 +207,14 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetModuleInfoById(
 }
 
 
-HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetModuleInfosByMvid(_In_ GUID mvid, _Out_ IEnumModuleInfo** ppEnum)
+HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetModuleInfosByMvid(GUID mvid, _Out_opt_ IEnumModuleInfo** ppEnum)
 {
     HRESULT hr = S_OK;
+    IfNullRetPointer(ppEnum);
 
     CLogging::LogMessage(_T("Starting CAppDomainCollection::GetModuleInfosByMvid"));
     CCriticalSectionHolder lock(&m_cs);
-    *ppEnum = NULL;
+    *ppEnum = nullptr;
 
     vector<CComPtr<IModuleInfo>> vecModules;
 

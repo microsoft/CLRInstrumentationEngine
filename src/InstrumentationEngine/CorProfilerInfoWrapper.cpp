@@ -160,13 +160,14 @@ ULONG MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::AddRef()
 
 ULONG MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::Release()
 {
-    if (InterlockedDecrement(&m_refcount) == 0)
+    auto newRefCount = InterlockedDecrement(&m_refcount);
+    if (newRefCount == 0)
     {
         delete this;
         return 0;
     }
 
-    return m_refcount;
+    return newRefCount;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassFromObject(

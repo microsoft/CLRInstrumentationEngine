@@ -30,8 +30,8 @@ public:
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-	HRESULT FinalConstruct() { return S_OK; }
-	void FinalRelease() {}
+	static HRESULT FinalConstruct() { return S_OK; }
+	static void FinalRelease() {}
 };
 
 OBJECT_ENTRY_AUTO(CLSID_HostExtension, CHostExtension)

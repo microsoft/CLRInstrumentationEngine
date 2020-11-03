@@ -41,7 +41,7 @@ void __stdcall DecoderInit(COR_ILMETHOD_DECODER * pThis, const COR_ILMETHOD_FAT*
 /*********************************************************************/
 /* APIs for emitting sections etc */
 
-unsigned __stdcall IlmethodSize(COR_ILMETHOD_FAT* header, BOOL moreSections)
+unsigned __stdcall IlmethodSize(const COR_ILMETHOD_FAT* header, bool moreSections)
 {
     if (header->MaxStack <= 8 && (header->Flags & ~CorILMethod_FormatMask) == 0
         && header->LocalVarSigTok == 0 && header->CodeSize < 64 && !moreSections)
@@ -52,8 +52,8 @@ unsigned __stdcall IlmethodSize(COR_ILMETHOD_FAT* header, BOOL moreSections)
 
 /*********************************************************************/
         // emit the header (bestFormat) return amount emitted
-unsigned __stdcall IlmethodEmit(unsigned size, COR_ILMETHOD_FAT* header,
-                  BOOL moreSections, _Out_cap_(size) BYTE* outBuff)
+unsigned __stdcall IlmethodEmit(unsigned size, const COR_ILMETHOD_FAT* header,
+                  bool moreSections, _Out_cap_(size) BYTE* outBuff)
 {
 #ifdef _DEBUG
     BYTE* origBuff = outBuff;
@@ -110,7 +110,7 @@ unsigned __stdcall SectEH_SizeWorst(unsigned ehCount)
 }
 
 // will return exact size which will match the size returned by Emit
-unsigned __stdcall SectEH_SizeExact(unsigned ehCount, IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses)
+unsigned __stdcall SectEH_SizeExact(unsigned ehCount, const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses)
 {
     if (ehCount == 0)
         return(0);
@@ -133,8 +133,8 @@ unsigned __stdcall SectEH_SizeExact(unsigned ehCount, IMAGE_COR_ILMETHOD_SECT_EH
 
 // emit the section (best format);
 unsigned __stdcall SectEH_Emit(unsigned size, unsigned ehCount,
-                  __in_ecount(ehCount) IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses,
-                  BOOL moreSections, __inout_ecount_opt(size) BYTE* outBuff,
+                  __in_ecount(ehCount) const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses,
+                  bool moreSections, __inout_ecount_opt(size) BYTE* outBuff,
                   __out_ecount(ehCount) ULONG* ehTypeOffsets)
 {
     HRESULT hr = S_OK;

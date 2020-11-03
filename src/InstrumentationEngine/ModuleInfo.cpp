@@ -40,7 +40,7 @@ MicrosoftInstrumentationEngine::CModuleInfo::~CModuleInfo()
 
 HRESULT MicrosoftInstrumentationEngine::CModuleInfo::Initialize(
     _In_ ModuleID moduleID,
-    _In_ WCHAR* wszModuleName,
+    _In_ const WCHAR* wszModuleName,
     _In_ IAssemblyInfo* pAssemblyInfo,
     _In_ IAppDomainInfo* pAppDomainInfo,
     _In_ LPCBYTE pModuleBaseLoadAddress,
@@ -598,7 +598,7 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetModuleTypeFlags()
         {
             //HACK: Figure out whether this is Ngen module by looking for <modulename>.ni.dll in the raw module name.
             tstring moduleName = m_bstrModuleName;
-            WCHAR* pExtension = PathFindExtension(moduleName.c_str());
+            const WCHAR* pExtension = PathFindExtension(moduleName.c_str());
 
             tstring modifiedModuleName = moduleName.substr(pExtension - moduleName.c_str());
             modifiedModuleName.append(L".ni.dll");

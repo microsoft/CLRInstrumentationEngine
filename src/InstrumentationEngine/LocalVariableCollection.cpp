@@ -35,7 +35,7 @@ HRESULT MicrosoftInstrumentationEngine::CLocalVariableCollection::Initialize()
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CLocalVariableCollection::ReplaceSignature(_In_ const BYTE* pSignature, _In_ DWORD dwSigSize)
+HRESULT MicrosoftInstrumentationEngine::CLocalVariableCollection::ReplaceSignature(_In_reads_bytes_(dwSigSize) const BYTE* pSignature, _In_ DWORD dwSigSize)
 {
     //TODO Should we allow complete signature removal?
 

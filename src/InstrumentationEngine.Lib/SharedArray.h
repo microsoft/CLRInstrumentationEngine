@@ -68,7 +68,7 @@ namespace MicrosoftInstrumentationEngine
             return *this;
         }
 
-        CSharedArray<T>& operator=(CSharedArray&& other)
+        CSharedArray<T>& operator=(CSharedArray&& other) noexcept
         {
             if (this != &other)
             {

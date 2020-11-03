@@ -90,6 +90,6 @@ namespace MicrosoftInstrumentationEngine
         //    next and original previous fields set.
         //
         // 2) This graph will not have a method info set and cannot create exception sections or handlers.
-        virtual HRESULT __stdcall  DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_ LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph) override;
+        virtual HRESULT __stdcall  DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_reads_bytes_(cbMethod) LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph) override;
     };
 }

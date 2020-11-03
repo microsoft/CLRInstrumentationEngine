@@ -371,12 +371,12 @@ public:
 
 
 
-    HRESULT FinalConstruct()
+    static HRESULT FinalConstruct()
     {
         return S_OK;
     }
 
-    void FinalRelease()
+    static void FinalRelease()
     {
     }
 

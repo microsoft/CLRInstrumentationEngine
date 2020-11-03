@@ -69,8 +69,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT CalculateInstructionOffsets();
 
-        HRESULT GetInstructionAtOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
-        HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
+        HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ IInstruction** ppInstruction);
 
         HRESULT CalculateMaxStack(_Out_ DWORD* pMaxStack);
 
@@ -118,9 +117,9 @@ namespace MicrosoftInstrumentationEngine
             _In_ LPCBYTE pCodeBase,
             _In_ LPCBYTE pEndOfCode,
             _In_ DWORD originalToBaselineCorIlMapSize,
-            _In_ COR_IL_MAP originalToBaselineCorIlMap[],
+            _In_reads_(originalToBaselineCorIlMapSize) COR_IL_MAP originalToBaselineCorIlMap[],
             _In_ DWORD baselineSequencePointSize,
-            _In_ DWORD baselineSequencePointList[]
+            _In_reads_(baselineSequencePointSize) DWORD baselineSequencePointList[]
             ) override;
 
         // true if CreateBaseline has previously been called.

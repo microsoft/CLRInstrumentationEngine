@@ -52,7 +52,7 @@ namespace MicrosoftInstrumentationEngine
     // defines a delegated method call from InprocServerClassFactory::LockServer() to ClassFactory::LockServer().
 
 #define DEFINE_DELEGATED_METHOD(base_cls, result_type, method, derived_paren_args, base_paren_args) \
-    result_type STDMETHODCALLTYPE method derived_paren_args override \
+    STDMETHOD_(result_type, method) derived_paren_args override\
     { \
     return base_cls::method base_paren_args; \
 }

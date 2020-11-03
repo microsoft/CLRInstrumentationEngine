@@ -45,7 +45,7 @@ namespace TestsHostExtension
 		virtual HRESULT STDMETHODCALLTYPE  GetParameters(IEnumMethodParameters ** pMethodArgs) override;
 		virtual HRESULT STDMETHODCALLTYPE  GetDeclaringType(IType ** ppType) override;
 		virtual HRESULT STDMETHODCALLTYPE  GetReturnType(IType ** ppType) override;
-		virtual HRESULT STDMETHODCALLTYPE  GetCorSignature(DWORD cbBuffer, BYTE * pCorSignature, DWORD * pcbSignature) override;
+		virtual HRESULT STDMETHODCALLTYPE  GetCorSignature(_In_ DWORD cbBuffer, _Out_opt_ BYTE * pCorSignature, _Out_opt_ DWORD * pcbSignature) override;
 		virtual HRESULT STDMETHODCALLTYPE  GetLocalVarSigToken(mdToken * pToken) override;
 		virtual HRESULT STDMETHODCALLTYPE  SetLocalVarSigToken(mdToken token) override;
 		virtual HRESULT STDMETHODCALLTYPE  GetAttributes(DWORD * pCorMethodAttr) override;
