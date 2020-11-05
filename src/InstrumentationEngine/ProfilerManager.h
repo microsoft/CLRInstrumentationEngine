@@ -366,7 +366,7 @@ namespace MicrosoftInstrumentationEngine
         {
             HRESULT hr = S_OK;
 
-            CComPtr<TInterfaceType> pCallback;
+            TInterfaceType* pCallback;
 
             // Holding the lock during the callback functions is dangerous since rentrant
             // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
