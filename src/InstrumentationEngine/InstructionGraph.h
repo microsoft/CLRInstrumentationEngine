@@ -97,7 +97,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Insert an instruction after another instruction. jmp offsets that point to the next instruction after
         // the other instruction are not updated to reflect this change
-        virtual HRESULT __stdcall InsertAfter(_In_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew) override;
+        virtual HRESULT __stdcall InsertAfter(_In_opt_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew) override;
 
         // Insert an instruction before another instruction AND update branch offsets and exception ranges that used
         // to point to the old instruction to point to the new instruction.

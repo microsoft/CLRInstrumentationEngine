@@ -785,8 +785,10 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBefore(_In_ IIn
     IfNullRetPointer(pInstructionOrig);
     IfNullRetPointer(pInstructionNew);
 
-    CInstruction* pInstrOrig = (CInstruction*)pInstructionOrig;
-    CInstruction* pInstrNew = (CInstruction*)pInstructionNew;
+    CComPtr<CInstruction> pInstrOrig;
+    IfFailRet(pInstructionOrig->QueryInterface(&pInstrOrig));
+    CComPtr<CInstruction> pInstrNew;
+    IfFailRet(pInstructionNew->QueryInterface(&pInstrNew));
 
     CComPtr<CInstruction> pPreviousInstruction;
     pInstructionOrig->GetPreviousInstruction((IInstruction**)(&pPreviousInstruction));
@@ -819,7 +821,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBefore(_In_ IIn
 
 // Insert an instruction after another instruction. jmp offsets that point to the next instruction after
 // the other instruction are not updated to reflect this change
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertAfter(_In_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertAfter(_In_opt_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CInstructionGraph::InsertAfter"));
@@ -827,8 +829,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertAfter(_In_ IIns
 
     IfNullRetPointer(pInstructionNew);
 
-    CInstruction* pInstrOrig = (CInstruction*)pInstructionOrig;
-    CInstruction* pInstrNew = (CInstruction*)pInstructionNew;
+    CComPtr<CInstruction> pInstrOrig;
+    if (pInstructionOrig != nullptr)
+    {
+        IfFailRet(pInstructionOrig->QueryInterface(&pInstrOrig));
+    }
+
+    CComPtr<CInstruction> pInstrNew;
+    IfFailRet(pInstructionNew->QueryInterface(&pInstrNew));
 
     IfFailRet(pInstrNew->SetPreviousInstruction(pInstrOrig, false));
 
@@ -878,8 +886,10 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
     IfNullRetPointer(pInstructionOrig);
     IfNullRetPointer(pInstructionNew);
 
-    CInstruction* pInstrOrig = (CInstruction*)pInstructionOrig;
-    CInstruction* pInstrNew = (CInstruction*)pInstructionNew;
+    CComPtr<CInstruction> pInstrOrig;
+    IfFailRet(pInstructionOrig->QueryInterface(&pInstrOrig));
+    CComPtr<CInstruction> pInstrNew;
+    IfFailRet(pInstructionNew->QueryInterface(&pInstrNew));
 
     DWORD offsetOrig = 0;
     IfFailRet(pInstrOrig->GetOffset(&offsetOrig));
@@ -975,8 +985,10 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Replace(_In_ IInstruc
     IfNullRetPointer(pInstructionOrig);
     IfNullRetPointer(pInstructionNew);
 
-    CInstruction* pInstrOrig = (CInstruction*)pInstructionOrig;
-    CInstruction* pInstrNew = (CInstruction*)pInstructionNew;
+    CComPtr<CInstruction> pInstrOrig;
+    IfFailRet(pInstructionOrig->QueryInterface(&pInstrOrig));
+    CComPtr<CInstruction> pInstrNew;
+    IfFailRet(pInstructionNew->QueryInterface(&pInstrNew));
 
     CInstruction* pPreviousInstruction = pInstrOrig->PreviousInstructionInternal();
     CInstruction* pNextInstruction = pInstrOrig->NextInstructionInternal();
@@ -1034,7 +1046,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Remove(_In_ IInstruct
 
     IfNullRetPointer(pInstruction);
 
-    CComPtr<CInstruction> pInstr = (CInstruction*)pInstruction;
+    CComPtr<CInstruction> pInstr;
+    IfFailRet(pInstruction->QueryInterface(&pInstr));
 
     CComPtr<CInstruction> pPreviousInstruction;
     CComPtr<CInstruction> pNextInstruction;
