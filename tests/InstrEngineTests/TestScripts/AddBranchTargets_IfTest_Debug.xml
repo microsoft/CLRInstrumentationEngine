@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Debug_x64.exe</ModuleName>
+    <MethodName>IfTest</MethodName>
+    <Instructions>
+      <!-- Add branches to the instruction following the inserted instruction, to ensure that
+         we don't generate infinite loops. -->
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>31</Offset>
+        <Operand>31</Operand>
+      </Instruction>
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>46</Offset>
+        <Operand>46</Operand>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>
