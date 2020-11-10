@@ -64,6 +64,17 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
+            // Workaround for the diamond inheritence problem.
+            // Both CDataContainer and IInstruction inherit from IUnknown and
+            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknow*.
+            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311 
+            if (__uuidof(CInstruction) == riid && ppvObject != nullptr)
+            {
+                *ppvObject = static_cast<CInstruction*>(this);
+                AddRef();
+                return S_OK;
+            }
+
             return ImplQueryInterface(
                 static_cast<IInstruction*>(this),
                 static_cast<IDataContainer*>(this),
