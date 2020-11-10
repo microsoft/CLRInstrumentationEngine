@@ -9,7 +9,7 @@ steps:
   displayName: 'Install Prefast Plugin'
 
 - powershell: |
-    Write-Host "##vso[task.setvariable variable=_PREFAST_CYCLOMATIC;] 83"
+    Write-Host "##vso[task.setvariable variable=_PREFAST_CYCLOMATIC;] 23"
   displayName: Set _PREFAST_CYCLOMATIC=83
 
 - template: ../windows/binaries.yaml
