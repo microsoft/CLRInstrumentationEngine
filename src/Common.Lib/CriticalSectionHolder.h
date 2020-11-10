@@ -54,14 +54,11 @@ namespace CommonLib
         _In_ const CRITICAL_SECTION* lpCriticalSection
     )
     {
-        bool fOwned = false;
         DWORD threadId = GetCurrentThreadId();
 
         //
         // this is actually thread safe
         //
-        fOwned = (DWORD_PTR)lpCriticalSection->OwningThread == threadId;
-
-        return fOwned;
+        return (DWORD_PTR)lpCriticalSection->OwningThread == threadId;
     }
 }

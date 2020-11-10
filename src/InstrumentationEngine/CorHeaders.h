@@ -178,10 +178,10 @@ typedef struct tagCOR_ILMETHOD_TINY : IMAGE_COR_ILMETHOD_TINY
 {
     bool     IsTiny () const         { return (Flags_CodeSize & (CorILMethod_FormatMask >> 1)) == CorILMethod_TinyFormat; }
     unsigned GetCodeSize () const    { return ((unsigned) Flags_CodeSize) >> (CorILMethod_FormatShift-1); }
-    static unsigned GetMaxStack ()   { return 8; }
+    unsigned GetMaxStack ()   { return 8; }
     BYTE*    GetCode () const        { return ((BYTE*) this) + sizeof (struct tagCOR_ILMETHOD_TINY); }
-   static DWORD    GetLocalVarSigTok () { return 0; }
-   static COR_ILMETHOD_SECT* GetSect () { return 0; }
+    DWORD    GetLocalVarSigTok () { return 0; }
+    COR_ILMETHOD_SECT* GetSect () { return 0; }
 } COR_ILMETHOD_TINY;
 
 // This strucuture is the 'fat' layout, where no compression is attempted.

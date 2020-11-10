@@ -3,6 +3,7 @@
 <!--
     Disabled warnings:
 
+    C25007: member function ... can be static.
     C25021: size of type can be decreased by rearranging its data members
     C25031: Unchecked HRESULT returned by ...
     C25046: global variable ... should be declared with '__declspec(selectany)'.
@@ -14,7 +15,7 @@
     
     -->
   <PropertyGroup>
-    <CodeAnalysisWarningsToDisable>/wd25021 /wd25031 /wd25046 /wd25090 /wd25129 /wd25164 /wd25165 /wd25166</CodeAnalysisWarningsToDisable>
+    <CodeAnalysisWarningsToDisable>/wd25007 /wd25021 /wd25031 /wd25046 /wd25090 /wd25129 /wd25164 /wd25165 /wd25166</CodeAnalysisWarningsToDisable>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
