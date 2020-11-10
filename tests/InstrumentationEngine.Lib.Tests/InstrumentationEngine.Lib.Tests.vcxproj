@@ -46,7 +46,7 @@
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;$(VCInstallDir)Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(OutDir);..\..\inc\clr\prof;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;$(VCInstallDir)Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>

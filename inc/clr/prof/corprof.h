@@ -1,6 +1,4 @@
 
-#pragma warning( push )
-#pragma warning( disable: 25164 ) // C++ Reserved global name.
 
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
@@ -638,7 +636,7 @@ EXTERN_C const IID IID_ICorProfilerCallback;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE Initialize( 
-            _In_ IUnknown *pICorProfilerInfoUnk) = 0;
+            /* [in] */ IUnknown *pICorProfilerInfoUnk) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Shutdown( void) = 0;
         
@@ -743,26 +741,26 @@ EXTERN_C const IID IID_ICorProfilerCallback;
         virtual HRESULT STDMETHODCALLTYPE RemotingClientInvocationStarted( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingClientSendingMessage( 
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync) = 0;
+            /* [in] */ GUID *pCookie,
+            /* [in] */ BOOL fIsAsync) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingClientReceivingReply( 
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync) = 0;
+            /* [in] */ GUID *pCookie,
+            /* [in] */ BOOL fIsAsync) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingClientInvocationFinished( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingServerReceivingMessage( 
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync) = 0;
+            /* [in] */ GUID *pCookie,
+            /* [in] */ BOOL fIsAsync) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingServerInvocationStarted( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingServerInvocationReturned( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemotingServerSendingReply( 
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync) = 0;
+            /* [in] */ GUID *pCookie,
+            /* [in] */ BOOL fIsAsync) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE UnmanagedToManagedTransition( 
             /* [in] */ FunctionID functionId,
@@ -790,29 +788,29 @@ EXTERN_C const IID IID_ICorProfilerCallback;
             /* [in] */ ThreadID threadId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE MovedReferences( 
-            _In_ ULONG cMovedObjectIDRanges,
-            _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[  ],
-            _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[  ],
-            _In_reads_(cMovedObjectIDRanges) ULONG cObjectIDRangeLength[  ]) = 0;
+            /* [in] */ ULONG cMovedObjectIDRanges,
+            /* [size_is][in] */ ObjectID oldObjectIDRangeStart[  ],
+            /* [size_is][in] */ ObjectID newObjectIDRangeStart[  ],
+            /* [size_is][in] */ ULONG cObjectIDRangeLength[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ObjectAllocated( 
-            _In_ ObjectID objectId,
-            _In_ ClassID classId) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [in] */ ClassID classId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ObjectsAllocatedByClass( 
-            _In_ ULONG cClassCount,
-            _In_reads_(cClassCount) ClassID classIds[  ],
-            _In_reads_(cClassCount) ULONG cObjects[  ]) = 0;
+            /* [in] */ ULONG cClassCount,
+            /* [size_is][in] */ ClassID classIds[  ],
+            /* [size_is][in] */ ULONG cObjects[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ObjectReferences( 
-            _In_ ObjectID objectId,
-            _In_ ClassID classId,
-            _In_ ULONG cObjectRefs,
-            _In_reads_(cObjectRefs) ObjectID objectRefIds[  ]) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [in] */ ClassID classId,
+            /* [in] */ ULONG cObjectRefs,
+            /* [size_is][in] */ ObjectID objectRefIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RootReferences( 
-            _In_ ULONG cRootRefs,
-            _In_reads_(cRootRefs) ObjectID rootRefIds[  ]) = 0;
+            /* [in] */ ULONG cRootRefs,
+            /* [size_is][in] */ ObjectID rootRefIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionThrown( 
             /* [in] */ ObjectID thrownObjectId) = 0;
@@ -853,15 +851,15 @@ EXTERN_C const IID IID_ICorProfilerCallback;
         virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherLeave( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE COMClassicVTableCreated( 
-            _In_ ClassID wrappedClassId,
-            _In_ REFGUID implementedIID,
-            _In_ void *pVTable,
-            _In_ ULONG cSlots) = 0;
+            /* [in] */ ClassID wrappedClassId,
+            /* [in] */ REFGUID implementedIID,
+            /* [in] */ void *pVTable,
+            /* [in] */ ULONG cSlots) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE COMClassicVTableDestroyed( 
-            _In_ ClassID wrappedClassId,
-            _In_ REFGUID implementedIID,
-            _In_ void *pVTable) = 0;
+            /* [in] */ ClassID wrappedClassId,
+            /* [in] */ REFGUID implementedIID,
+            /* [in] */ void *pVTable) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ExceptionCLRCatcherFound( void) = 0;
         
@@ -1535,14 +1533,14 @@ EXTERN_C const IID IID_ICorProfilerCallback2;
             _In_reads_opt_(cchName)  WCHAR name[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GarbageCollectionStarted( 
-            _In_ int cGenerations,
-            _In_reads_(cGenerations) BOOL generationCollected[  ],
-            _In_ COR_PRF_GC_REASON reason) = 0;
+            /* [in] */ int cGenerations,
+            /* [size_is][in] */ BOOL generationCollected[  ],
+            /* [in] */ COR_PRF_GC_REASON reason) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SurvivingReferences( 
-            _In_ ULONG cSurvivingObjectIDRanges,
-            _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[  ],
-            _In_reads_(cSurvivingObjectIDRanges) ULONG cObjectIDRangeLength[  ]) = 0;
+            /* [in] */ ULONG cSurvivingObjectIDRanges,
+            /* [size_is][in] */ ObjectID objectIDRangeStart[  ],
+            /* [size_is][in] */ ULONG cObjectIDRangeLength[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GarbageCollectionFinished( void) = 0;
         
@@ -1551,11 +1549,11 @@ EXTERN_C const IID IID_ICorProfilerCallback2;
             /* [in] */ ObjectID objectID) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RootReferences2( 
-            _In_ ULONG cRootRefs,
-            _In_reads_(cRootRefs) ObjectID rootRefIds[  ],
-            _In_reads_(cRootRefs) COR_PRF_GC_ROOT_KIND rootKinds[  ],
-            _In_reads_(cRootRefs) COR_PRF_GC_ROOT_FLAGS rootFlags[  ],
-            _In_reads_(cRootRefs) UINT_PTR rootIds[  ]) = 0;
+            /* [in] */ ULONG cRootRefs,
+            /* [size_is][in] */ ObjectID rootRefIds[  ],
+            /* [size_is][in] */ COR_PRF_GC_ROOT_KIND rootKinds[  ],
+            /* [size_is][in] */ COR_PRF_GC_ROOT_FLAGS rootFlags[  ],
+            /* [size_is][in] */ UINT_PTR rootIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE HandleCreated( 
             /* [in] */ GCHandleID handleId,
@@ -2210,9 +2208,9 @@ EXTERN_C const IID IID_ICorProfilerCallback3;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE InitializeForAttach( 
-            _In_ IUnknown *pCorProfilerInfoUnk,
-            _In_ void *pvClientData,
-            _In_ UINT cbClientData) = 0;
+            /* [in] */ IUnknown *pCorProfilerInfoUnk,
+            /* [in] */ void *pvClientData,
+            /* [in] */ UINT cbClientData) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ProfilerAttachComplete( void) = 0;
         
@@ -2891,9 +2889,9 @@ EXTERN_C const IID IID_ICorProfilerCallback4;
             /* [in] */ BOOL fIsSafeToBlock) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetReJITParameters( 
-            _In_ ModuleID moduleId,
-            _In_ mdMethodDef methodId,
-            _In_ ICorProfilerFunctionControl *pFunctionControl) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ mdMethodDef methodId,
+            /* [in] */ ICorProfilerFunctionControl *pFunctionControl) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReJITCompilationFinished( 
             /* [in] */ FunctionID functionId,
@@ -2908,15 +2906,15 @@ EXTERN_C const IID IID_ICorProfilerCallback4;
             /* [in] */ HRESULT hrStatus) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE MovedReferences2( 
-            _In_ ULONG cMovedObjectIDRanges,
-            _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[  ],
-            _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[  ],
-            _In_reads_(cMovedObjectIDRanges) SIZE_T cObjectIDRangeLength[  ]) = 0;
+            /* [in] */ ULONG cMovedObjectIDRanges,
+            /* [size_is][in] */ ObjectID oldObjectIDRangeStart[  ],
+            /* [size_is][in] */ ObjectID newObjectIDRangeStart[  ],
+            /* [size_is][in] */ SIZE_T cObjectIDRangeLength[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SurvivingReferences2( 
-            _In_ ULONG cSurvivingObjectIDRanges,
-            _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[  ],
-            _In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[  ]) = 0;
+            /* [in] */ ULONG cSurvivingObjectIDRanges,
+            /* [size_is][in] */ ObjectID objectIDRangeStart[  ],
+            /* [size_is][in] */ SIZE_T cObjectIDRangeLength[  ]) = 0;
         
     };
     
@@ -3644,10 +3642,10 @@ EXTERN_C const IID IID_ICorProfilerCallback5;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE ConditionalWeakTableElementReferences( 
-            _In_ ULONG cRootRefs,
-            _In_reads_(cRootRefs) ObjectID keyRefIds[  ],
-            _In_reads_(cRootRefs) ObjectID valueRefIds[  ],
-            _In_reads_(cRootRefs) GCHandleID rootIds[  ]) = 0;
+            /* [in] */ ULONG cRootRefs,
+            /* [size_is][in] */ ObjectID keyRefIds[  ],
+            /* [size_is][in] */ ObjectID valueRefIds[  ],
+            /* [size_is][in] */ GCHandleID rootIds[  ]) = 0;
         
     };
     
@@ -4386,8 +4384,8 @@ EXTERN_C const IID IID_ICorProfilerCallback6;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyReferences( 
-            _In_ const WCHAR *wszAssemblyPath,
-            _In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider) = 0;
+            /* [string][in] */ const WCHAR *wszAssemblyPath,
+            /* [in] */ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider) = 0;
         
     };
     
@@ -7474,157 +7472,160 @@ EXTERN_C const IID IID_ICorProfilerInfo;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetClassFromObject( 
-            _In_ ObjectID objectId,
-            _Out_ ClassID *pClassId) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [out] */ ClassID *pClassId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassFromToken( 
-            _In_ ModuleID moduleId,
-            _In_ mdTypeDef typeDef,
-            _Out_ ClassID *pClassId) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ mdTypeDef typeDef,
+            /* [out] */ ClassID *pClassId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeInfo( 
-            _In_ FunctionID functionId,
-            _Out_ LPCBYTE *pStart,
-            _Out_ ULONG *pcSize) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [out] */ LPCBYTE *pStart,
+            /* [out] */ ULONG *pcSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetEventMask( 
-            _Out_ DWORD *pdwEvents) = 0;
+            /* [out] */ DWORD *pdwEvents) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionFromIP( 
-            _In_ LPCBYTE ip,
-            _Out_ FunctionID *pFunctionId) = 0;
+            /* [in] */ LPCBYTE ip,
+            /* [out] */ FunctionID *pFunctionId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionFromToken( 
-            _In_ ModuleID moduleId,
-            _In_ mdToken token,
-            _Out_ FunctionID *pFunctionId) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ mdToken token,
+            /* [out] */ FunctionID *pFunctionId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetHandleFromThread( 
-            _In_ ThreadID threadId,
-            _Out_ HANDLE *phThread) = 0;
+            /* [in] */ ThreadID threadId,
+            /* [out] */ HANDLE *phThread) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetObjectSize( 
-            _In_ ObjectID objectId,
-            _Out_ ULONG *pcSize) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [out] */ ULONG *pcSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE IsArrayClass( 
-            _In_ ClassID classId,
-            _Out_ CorElementType *pBaseElemType,
-            _Out_ ClassID *pBaseClassId,
-            _Out_ ULONG *pcRank) = 0;
+            /* [in] */ ClassID classId,
+            /* [out] */ CorElementType *pBaseElemType,
+            /* [out] */ ClassID *pBaseClassId,
+            /* [out] */ ULONG *pcRank) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetThreadInfo( 
-            _In_ ThreadID threadId,
-            _Out_ DWORD *pdwWin32ThreadId) = 0;
+            /* [in] */ ThreadID threadId,
+            /* [out] */ DWORD *pdwWin32ThreadId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCurrentThreadID( 
-            _Out_ ThreadID *pThreadId) = 0;
+            /* [out] */ ThreadID *pThreadId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassIDInfo( 
-            _In_ ClassID classId,
-            _Out_ ModuleID *pModuleId,
-            _Out_ mdTypeDef *pTypeDefToken) = 0;
+            /* [in] */ ClassID classId,
+            /* [out] */ ModuleID *pModuleId,
+            /* [out] */ mdTypeDef *pTypeDefToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionInfo( 
-            _In_ FunctionID functionId,
-            _Out_ ClassID *pClassId,
-            _Out_ ModuleID *pModuleId,
-            _Out_ mdToken *pToken) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [out] */ ClassID *pClassId,
+            /* [out] */ ModuleID *pModuleId,
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEventMask( 
-            _In_ DWORD dwEvents) = 0;
+            /* [in] */ DWORD dwEvents) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEnterLeaveFunctionHooks( 
-            _In_ FunctionEnter *pFuncEnter,
-            _In_ FunctionLeave *pFuncLeave,
-            _In_ FunctionTailcall *pFuncTailcall) = 0;
+            /* [in] */ FunctionEnter *pFuncEnter,
+            /* [in] */ FunctionLeave *pFuncLeave,
+            /* [in] */ FunctionTailcall *pFuncTailcall) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetFunctionIDMapper( 
-            _In_ FunctionIDMapper *pFunc) = 0;
+            /* [in] */ FunctionIDMapper *pFunc) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetTokenAndMetaDataFromFunction( 
-            _In_ FunctionID functionId,
-            _In_ REFIID riid,
-            _Out_ IUnknown **ppImport,
-            _Out_ mdToken *pToken) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ REFIID riid,
+            /* [out] */ IUnknown **ppImport,
+            /* [out] */ mdToken *pToken) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfo( 
-            _In_ ModuleID moduleId,
-            _Out_opt_ LPCBYTE *ppBaseLoadAddress,
-            _In_ ULONG cchName,
-            _Out_ ULONG *pcchName,
-            _Out_writes_bytes_to_opt_(cchName, *pcchName)  WCHAR szName[  ],
-            _Out_opt_ AssemblyID *pAssemblyId) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [out] */ LPCBYTE *ppBaseLoadAddress,
+            /* [in] */ ULONG cchName,
+            /* [out] */ ULONG *pcchName,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cchName, *pcchName)  WCHAR szName[  ],
+            /* [out] */ AssemblyID *pAssemblyId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleMetaData( 
-            _In_ ModuleID moduleId,
-            _In_ DWORD dwOpenFlags,
-            _In_ REFIID riid,
-            _Out_ IUnknown **ppOut) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ DWORD dwOpenFlags,
+            /* [in] */ REFIID riid,
+            /* [out] */ IUnknown **ppOut) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILFunctionBody( 
-            _In_ ModuleID moduleId,
-            _In_ mdMethodDef methodId,
-            _Out_ LPCBYTE *ppMethodHeader,
-            _Out_ ULONG *pcbMethodSize) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ mdMethodDef methodId,
+            /* [out] */ LPCBYTE *ppMethodHeader,
+            /* [out] */ ULONG *pcbMethodSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILFunctionBodyAllocator( 
-            _In_ ModuleID moduleId,
-            _Out_ IMethodMalloc **ppMalloc) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [out] */ IMethodMalloc **ppMalloc) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetILFunctionBody( 
-            _In_ ModuleID moduleId,
-            _In_ mdMethodDef methodid,
-            _In_ LPCBYTE pbNewILMethodHeader) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ mdMethodDef methodid,
+            /* [in] */ LPCBYTE pbNewILMethodHeader) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainInfo( 
-            _In_ AppDomainID appDomainId,
-            _In_ ULONG cchName,
-            _Out_ ULONG *pcchName,
+            /* [in] */ AppDomainID appDomainId,
+            /* [in] */ ULONG cchName,
+            /* [out] */ ULONG *pcchName,
+            /* [annotation][out] */ 
             _Out_writes_to_(cchName, *pcchName)  WCHAR szName[  ],
-            _Out_ ProcessID *pProcessId) = 0;
+            /* [out] */ ProcessID *pProcessId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAssemblyInfo( 
-            _In_ AssemblyID assemblyId,
-            _In_ ULONG cchName,
-            _Out_opt_ ULONG *pcchName,
-            _Out_writes_bytes_to_opt_(cchName, *pcchName)  WCHAR szName[  ],
-            _Out_opt_ AppDomainID *pAppDomainId,
-            _Out_opt_ ModuleID *pModuleId) = 0;
+            /* [in] */ AssemblyID assemblyId,
+            /* [in] */ ULONG cchName,
+            /* [out] */ ULONG *pcchName,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cchName, *pcchName)  WCHAR szName[  ],
+            /* [out] */ AppDomainID *pAppDomainId,
+            /* [out] */ ModuleID *pModuleId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetFunctionReJIT( 
-            _In_ FunctionID functionId) = 0;
+            /* [in] */ FunctionID functionId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ForceGC( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetILInstrumentedCodeMap( 
-            _In_ FunctionID functionId,
-            _In_ BOOL fStartJit,
-            _In_ ULONG cILMapEntries,
-            _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[  ]) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ BOOL fStartJit,
+            /* [in] */ ULONG cILMapEntries,
+            /* [size_is][in] */ COR_IL_MAP rgILMapEntries[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInprocInspectionInterface( 
-            _Out_ IUnknown **ppicd) = 0;
+            /* [out] */ IUnknown **ppicd) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInprocInspectionIThisThread( 
-            _Out_ IUnknown **ppicd) = 0;
+            /* [out] */ IUnknown **ppicd) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetThreadContext( 
-            _In_ ThreadID threadId,
-            _Out_ ContextID *pContextId) = 0;
+            /* [in] */ ThreadID threadId,
+            /* [out] */ ContextID *pContextId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginInprocDebugging( 
-            _In_ BOOL fThisThreadOnly,
-            _Out_ DWORD *pdwProfilerContext) = 0;
+            /* [in] */ BOOL fThisThreadOnly,
+            /* [out] */ DWORD *pdwProfilerContext) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EndInprocDebugging( 
-            _In_ DWORD dwProfilerContext) = 0;
+            /* [in] */ DWORD dwProfilerContext) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILToNativeMapping( 
-            _In_ FunctionID functionId,
-            _In_ ULONG32 cMap,
-            _Out_ ULONG32 *pcMap,
-            _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ ULONG32 cMap,
+            /* [out] */ ULONG32 *pcMap,
+            /* [length_is][size_is][out] */ COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
         
     };
     
@@ -7985,128 +7986,128 @@ EXTERN_C const IID IID_ICorProfilerInfo2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE DoStackSnapshot( 
-            _In_ ThreadID thread,
-            _In_ StackSnapshotCallback *callback,
-            _In_ ULONG32 infoFlags,
-            _In_  _In_ void *clientData,
-            _In_reads_bytes_(contextSize) BYTE context[  ],
-            _In_ ULONG32 contextSize) = 0;
+            /* [in] */ ThreadID thread,
+            /* [in] */ StackSnapshotCallback *callback,
+            /* [in] */ ULONG32 infoFlags,
+            /* [in] */ void *clientData,
+            /* [size_is][in] */ BYTE context[  ],
+            /* [in] */ ULONG32 contextSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEnterLeaveFunctionHooks2( 
-            _In_ FunctionEnter2 *pFuncEnter,
-            _In_ FunctionLeave2 *pFuncLeave,
-            _In_ FunctionTailcall2 *pFuncTailcall) = 0;
+            /* [in] */ FunctionEnter2 *pFuncEnter,
+            /* [in] */ FunctionLeave2 *pFuncLeave,
+            /* [in] */ FunctionTailcall2 *pFuncTailcall) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionInfo2( 
-            _In_ FunctionID funcId,
-            _In_ COR_PRF_FRAME_INFO frameInfo,
-            _Out_opt_ ClassID *pClassId,
-            _Out_opt_ ModuleID *pModuleId,
-            _Out_opt_ mdToken *pToken,
-            _In_ ULONG32 cTypeArgs,
-            _Out_opt_ ULONG32 *pcTypeArgs,
-            _Out_writes_bytes_to_opt_(cTypeArgs, *pcTypeArgs) ClassID typeArgs[  ]) = 0;
+            /* [in] */ FunctionID funcId,
+            /* [in] */ COR_PRF_FRAME_INFO frameInfo,
+            /* [out] */ ClassID *pClassId,
+            /* [out] */ ModuleID *pModuleId,
+            /* [out] */ mdToken *pToken,
+            /* [in] */ ULONG32 cTypeArgs,
+            /* [out] */ ULONG32 *pcTypeArgs,
+            /* [out] */ ClassID typeArgs[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetStringLayout( 
-            _Out_ ULONG *pBufferLengthOffset,
-            _Out_ ULONG *pStringLengthOffset,
-            _Out_ ULONG *pBufferOffset) = 0;
+            /* [out] */ ULONG *pBufferLengthOffset,
+            /* [out] */ ULONG *pStringLengthOffset,
+            /* [out] */ ULONG *pBufferOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassLayout( 
-            _In_ ClassID classID,
-            _Inout_updates_(cFieldOffset) COR_FIELD_OFFSET rFieldOffset[  ],
-            _In_ ULONG cFieldOffset,
-            _Out_ ULONG *pcFieldOffset,
-            _Out_ ULONG *pulClassSize) = 0;
+            /* [in] */ ClassID classID,
+            /* [out][in] */ COR_FIELD_OFFSET rFieldOffset[  ],
+            /* [in] */ ULONG cFieldOffset,
+            /* [out] */ ULONG *pcFieldOffset,
+            /* [out] */ ULONG *pulClassSize) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassIDInfo2( 
-            _In_ ClassID classId,
-            _Out_ ModuleID *pModuleId,
-            _Out_ mdTypeDef *pTypeDefToken,
-            _Out_ ClassID *pParentClassId,
-            _In_ ULONG32 cNumTypeArgs,
-            _Out_ ULONG32 *pcNumTypeArgs,
-            _Out_writes_(cNumTypeArgs) ClassID typeArgs[  ]) = 0;
+            /* [in] */ ClassID classId,
+            /* [out] */ ModuleID *pModuleId,
+            /* [out] */ mdTypeDef *pTypeDefToken,
+            /* [out] */ ClassID *pParentClassId,
+            /* [in] */ ULONG32 cNumTypeArgs,
+            /* [out] */ ULONG32 *pcNumTypeArgs,
+            /* [out] */ ClassID typeArgs[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeInfo2( 
-            _In_ FunctionID functionID,
-            _In_ ULONG32 cCodeInfos,
-            _Out_ ULONG32 *pcCodeInfos,
-            _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[  ]) = 0;
+            /* [in] */ FunctionID functionID,
+            /* [in] */ ULONG32 cCodeInfos,
+            /* [out] */ ULONG32 *pcCodeInfos,
+            /* [length_is][size_is][out] */ COR_PRF_CODE_INFO codeInfos[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClassFromTokenAndTypeArgs( 
-            _In_ ModuleID moduleID,
-            _In_ mdTypeDef typeDef,
-            _In_ ULONG32 cTypeArgs,
-            _Out_writes_(cTypeArgs) ClassID typeArgs[  ],
-            _Out_ ClassID *pClassID) = 0;
+            /* [in] */ ModuleID moduleID,
+            /* [in] */ mdTypeDef typeDef,
+            /* [in] */ ULONG32 cTypeArgs,
+            /* [size_is][in] */ ClassID typeArgs[  ],
+            /* [out] */ ClassID *pClassID) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionFromTokenAndTypeArgs( 
-            _In_ ModuleID moduleID,
-            _In_ mdMethodDef funcDef,
-            _In_ ClassID classId,
-            _In_ ULONG32 cTypeArgs,
-            _Out_writes_(cTypeArgs) ClassID typeArgs[  ],
-            _Out_ FunctionID *pFunctionID) = 0;
+            /* [in] */ ModuleID moduleID,
+            /* [in] */ mdMethodDef funcDef,
+            /* [in] */ ClassID classId,
+            /* [in] */ ULONG32 cTypeArgs,
+            /* [size_is][in] */ ClassID typeArgs[  ],
+            /* [out] */ FunctionID *pFunctionID) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumModuleFrozenObjects( 
-            _In_ ModuleID moduleID,
-            _Out_ ICorProfilerObjectEnum **ppEnum) = 0;
+            /* [in] */ ModuleID moduleID,
+            /* [out] */ ICorProfilerObjectEnum **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetArrayObjectInfo( 
-            _In_ ObjectID objectId,
-            _In_ ULONG32 cDimensions,
-            _Out_writes_(cDimensions) ULONG32 pDimensionSizes[  ],
-            _Out_writes_(cDimensions) int pDimensionLowerBounds[  ],
-            _Out_ BYTE **ppData) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [in] */ ULONG32 cDimensions,
+            /* [size_is][out] */ ULONG32 pDimensionSizes[  ],
+            /* [size_is][out] */ int pDimensionLowerBounds[  ],
+            /* [out] */ BYTE **ppData) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetBoxClassLayout( 
-            _In_ ClassID classId,
-            _Out_ ULONG32 *pBufferOffset) = 0;
+            /* [in] */ ClassID classId,
+            /* [out] */ ULONG32 *pBufferOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetThreadAppDomain( 
-            _In_  ThreadID threadId,
-            _Out_ AppDomainID *pAppDomainId) = 0;
+            /* [in] */ ThreadID threadId,
+            /* [out] */ AppDomainID *pAppDomainId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRVAStaticAddress( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _Out_ void **ppAddress) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [out] */ void **ppAddress) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainStaticAddress( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _In_ AppDomainID appDomainId,
-            _Out_ void **ppAddress) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [in] */ AppDomainID appDomainId,
+            /* [out] */ void **ppAddress) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetThreadStaticAddress( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _In_ ThreadID threadId,
-            _Out_ void **ppAddress) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [in] */ ThreadID threadId,
+            /* [out] */ void **ppAddress) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetContextStaticAddress( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _In_ ContextID contextId,
-            _Out_ void **ppAddress) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [in] */ ContextID contextId,
+            /* [out] */ void **ppAddress) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetStaticFieldInfo( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _Out_ COR_PRF_STATIC_TYPE *pFieldInfo) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [out] */ COR_PRF_STATIC_TYPE *pFieldInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetGenerationBounds( 
-            _In_ ULONG cObjectRanges,
-            _Out_ ULONG *pcObjectRanges,
-            _Out_writes_(cObjectRanges) COR_PRF_GC_GENERATION_RANGE ranges[  ]) = 0;
+            /* [in] */ ULONG cObjectRanges,
+            /* [out] */ ULONG *pcObjectRanges,
+            /* [length_is][size_is][out] */ COR_PRF_GC_GENERATION_RANGE ranges[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetObjectGeneration( 
-            _In_ ObjectID objectId,
-            _Out_ COR_PRF_GC_GENERATION_RANGE *range) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [out] */ COR_PRF_GC_GENERATION_RANGE *range) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetNotifiedExceptionClauseInfo( 
-            _Out_ COR_PRF_EX_CLAUSE_INFO *pinfo) = 0;
+            /* [out] */ COR_PRF_EX_CLAUSE_INFO *pinfo) = 0;
         
     };
     
@@ -8676,82 +8677,84 @@ EXTERN_C const IID IID_ICorProfilerInfo3;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumJITedFunctions( 
-            _Out_ ICorProfilerFunctionEnum **ppEnum) = 0;
+            /* [out] */ ICorProfilerFunctionEnum **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RequestProfilerDetach( 
-            _In_ DWORD dwExpectedCompletionMilliseconds) = 0;
+            /* [in] */ DWORD dwExpectedCompletionMilliseconds) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetFunctionIDMapper2( 
-            _In_ FunctionIDMapper2 *pFunc,
-            _In_ void *clientData) = 0;
+            /* [in] */ FunctionIDMapper2 *pFunc,
+            /* [in] */ void *clientData) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetStringLayout2( 
-            _Out_ ULONG *pStringLengthOffset,
-            _Out_ ULONG *pBufferOffset) = 0;
+            /* [out] */ ULONG *pStringLengthOffset,
+            /* [out] */ ULONG *pBufferOffset) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEnterLeaveFunctionHooks3( 
-            _In_ FunctionEnter3 *pFuncEnter3,
-            _In_ FunctionLeave3 *pFuncLeave3,
-            _In_ FunctionTailcall3 *pFuncTailcall3) = 0;
+            /* [in] */ FunctionEnter3 *pFuncEnter3,
+            /* [in] */ FunctionLeave3 *pFuncLeave3,
+            /* [in] */ FunctionTailcall3 *pFuncTailcall3) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEnterLeaveFunctionHooks3WithInfo( 
-            _In_ FunctionEnter3WithInfo *pFuncEnter3WithInfo,
-            _In_ FunctionLeave3WithInfo *pFuncLeave3WithInfo,
-            _In_ FunctionTailcall3WithInfo *pFuncTailcall3WithInfo) = 0;
+            /* [in] */ FunctionEnter3WithInfo *pFuncEnter3WithInfo,
+            /* [in] */ FunctionLeave3WithInfo *pFuncLeave3WithInfo,
+            /* [in] */ FunctionTailcall3WithInfo *pFuncTailcall3WithInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionEnter3Info( 
-            _In_ FunctionID functionId,
-            _In_ COR_PRF_ELT_INFO eltInfo,
-            _Out_ COR_PRF_FRAME_INFO *pFrameInfo,
-            _Inout_ ULONG *pcbArgumentInfo,
-            _Out_writes_(*pcbArgumentInfo) COR_PRF_FUNCTION_ARGUMENT_INFO *pArgumentInfo) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ COR_PRF_ELT_INFO eltInfo,
+            /* [out] */ COR_PRF_FRAME_INFO *pFrameInfo,
+            /* [out][in] */ ULONG *pcbArgumentInfo,
+            /* [size_is][out] */ COR_PRF_FUNCTION_ARGUMENT_INFO *pArgumentInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionLeave3Info( 
-            _In_ FunctionID functionId,
-            _In_ COR_PRF_ELT_INFO eltInfo,
-            _Out_ COR_PRF_FRAME_INFO *pFrameInfo,
-            _Out_ COR_PRF_FUNCTION_ARGUMENT_RANGE *pRetvalRange) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ COR_PRF_ELT_INFO eltInfo,
+            /* [out] */ COR_PRF_FRAME_INFO *pFrameInfo,
+            /* [out] */ COR_PRF_FUNCTION_ARGUMENT_RANGE *pRetvalRange) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionTailcall3Info( 
-            _In_ FunctionID functionId,
-            _In_ COR_PRF_ELT_INFO eltInfo,
-            _Out_ COR_PRF_FRAME_INFO *pFrameInfo) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ COR_PRF_ELT_INFO eltInfo,
+            /* [out] */ COR_PRF_FRAME_INFO *pFrameInfo) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumModules( 
-            _In_ ICorProfilerModuleEnum **ppEnum) = 0;
+            /* [out] */ ICorProfilerModuleEnum **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRuntimeInformation( 
-            _Out_opt_ USHORT *pClrInstanceId,
-            _Out_opt_ COR_PRF_RUNTIME_TYPE *pRuntimeType,
-            _Out_opt_ USHORT *pMajorVersion,
-            _Out_opt_ USHORT *pMinorVersion,
-            _Out_opt_ USHORT *pBuildNumber,
-            _Out_opt_ USHORT *pQFEVersion,
-            _In_ ULONG cchVersionString,
-            _Out_opt_ ULONG *pcchVersionString,
-            _Out_writes_opt_(cchVersionString)  WCHAR szVersionString[  ]) = 0;
+            /* [out] */ USHORT *pClrInstanceId,
+            /* [out] */ COR_PRF_RUNTIME_TYPE *pRuntimeType,
+            /* [out] */ USHORT *pMajorVersion,
+            /* [out] */ USHORT *pMinorVersion,
+            /* [out] */ USHORT *pBuildNumber,
+            /* [out] */ USHORT *pQFEVersion,
+            /* [in] */ ULONG cchVersionString,
+            /* [out] */ ULONG *pcchVersionString,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cchVersionString, *pcchVersionString)  WCHAR szVersionString[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetThreadStaticAddress2( 
-            _In_ ClassID classId,
-            _In_ mdFieldDef fieldToken,
-            _In_ AppDomainID appDomainId,
-            _In_ ThreadID threadId,
-            _Out_ void **ppAddress) = 0;
+            /* [in] */ ClassID classId,
+            /* [in] */ mdFieldDef fieldToken,
+            /* [in] */ AppDomainID appDomainId,
+            /* [in] */ ThreadID threadId,
+            /* [out] */ void **ppAddress) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetAppDomainsContainingModule( 
-            _In_ ModuleID moduleId,
-            _In_ ULONG32 cAppDomainIds,
-            _Out_ ULONG32 *pcAppDomainIds,
-            _Out_writes_(cAppDomainIds) AppDomainID appDomainIds[  ]) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ ULONG32 cAppDomainIds,
+            /* [out] */ ULONG32 *pcAppDomainIds,
+            /* [length_is][size_is][out] */ AppDomainID appDomainIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetModuleInfo2( 
-            _In_ ModuleID moduleId,
-            _Out_opt_ LPCBYTE *ppBaseLoadAddress,
-            _In_ ULONG cchName,
-            _Out_opt_ ULONG *pcchName,
-            _Out_writes_bytes_to_opt_(cchName, *pcchName)  WCHAR szName[  ],
-            _Out_opt_ AssemblyID *pAssemblyId,
-            _Out_opt_ DWORD *pdwModuleFlags) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [out] */ LPCBYTE *ppBaseLoadAddress,
+            /* [in] */ ULONG cchName,
+            /* [out] */ ULONG *pcchName,
+            /* [annotation][out] */ 
+            _Out_writes_to_(cchName, *pcchName)  WCHAR szName[  ],
+            /* [out] */ AssemblyID *pAssemblyId,
+            /* [out] */ DWORD *pdwModuleFlags) = 0;
         
     };
     
@@ -9904,15 +9907,15 @@ EXTERN_C const IID IID_ICorProfilerFunctionControl;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetCodegenFlags( 
-            _In_ DWORD flags) = 0;
+            /* [in] */ DWORD flags) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetILFunctionBody( 
-            _In_ ULONG cbNewILMethodHeader,
-            _In_reads_(cbNewILMethodHeader) LPCBYTE pbNewILMethodHeader) = 0;
+            /* [in] */ ULONG cbNewILMethodHeader,
+            /* [size_is][in] */ LPCBYTE pbNewILMethodHeader) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetILInstrumentedCodeMap( 
-            _In_ ULONG cILMapEntries,
-            _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[  ]) = 0;
+            /* [in] */ ULONG cILMapEntries,
+            /* [size_is][in] */ COR_IL_MAP rgILMapEntries[  ]) = 0;
         
     };
     
@@ -10008,52 +10011,52 @@ EXTERN_C const IID IID_ICorProfilerInfo4;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumThreads( 
-            _Out_ ICorProfilerThreadEnum **ppEnum) = 0;
+            /* [out] */ ICorProfilerThreadEnum **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE InitializeCurrentThread( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RequestReJIT( 
-            _In_ ULONG cFunctions,
-            _In_reads_(cFunctions) ModuleID moduleIds[  ],
-            _In_reads_(cFunctions) mdMethodDef methodIds[  ]) = 0;
+            /* [in] */ ULONG cFunctions,
+            /* [size_is][in] */ ModuleID moduleIds[  ],
+            /* [size_is][in] */ mdMethodDef methodIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RequestRevert( 
-            _In_ ULONG cFunctions,
-            _In_reads_(cFunctions) ModuleID moduleIds[  ],
-            _In_reads_(cFunctions) mdMethodDef methodIds[  ],
-            _Out_writes_(cFunctions) HRESULT status[  ]) = 0;
+            /* [in] */ ULONG cFunctions,
+            /* [size_is][in] */ ModuleID moduleIds[  ],
+            /* [size_is][in] */ mdMethodDef methodIds[  ],
+            /* [size_is][out] */ HRESULT status[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeInfo3( 
-            _In_ FunctionID functionID,
-            _In_ ReJITID reJitId,
-            _In_ ULONG32 cCodeInfos,
-            _Out_ ULONG32 *pcCodeInfos,
-            _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[  ]) = 0;
+            /* [in] */ FunctionID functionID,
+            /* [in] */ ReJITID reJitId,
+            /* [in] */ ULONG32 cCodeInfos,
+            /* [out] */ ULONG32 *pcCodeInfos,
+            /* [length_is][size_is][out] */ COR_PRF_CODE_INFO codeInfos[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionFromIP2( 
-            _In_ LPCBYTE ip,
-            _Out_ FunctionID *pFunctionId,
-            _Out_ ReJITID *pReJitId) = 0;
+            /* [in] */ LPCBYTE ip,
+            /* [out] */ FunctionID *pFunctionId,
+            /* [out] */ ReJITID *pReJitId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetReJITIDs( 
-            _In_ FunctionID functionId,
-            _In_ ULONG cReJitIds,
-            _Out_ ULONG *pcReJitIds,
-            _Out_writes_(cReJitIds) ReJITID reJitIds[  ]) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ ULONG cReJitIds,
+            /* [out] */ ULONG *pcReJitIds,
+            /* [length_is][size_is][out] */ ReJITID reJitIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILToNativeMapping2( 
-            _In_ FunctionID functionId,
-            _In_ ReJITID reJitId,
-            _In_ ULONG32 cMap,
-            _Out_ ULONG32 *pcMap,
-            _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [in] */ ReJITID reJitId,
+            /* [in] */ ULONG32 cMap,
+            /* [out] */ ULONG32 *pcMap,
+            /* [length_is][size_is][out] */ COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumJITedFunctions2( 
-            _Out_ ICorProfilerFunctionEnum **ppEnum) = 0;
+            /* [out] */ ICorProfilerFunctionEnum **ppEnum) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetObjectSize2( 
-            _In_ ObjectID objectId,
-            _Out_ SIZE_T *pcSize) = 0;
+            /* [in] */ ObjectID objectId,
+            /* [out] */ SIZE_T *pcSize) = 0;
         
     };
     
@@ -10849,12 +10852,12 @@ EXTERN_C const IID IID_ICorProfilerInfo5;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetEventMask2( 
-            _Out_ DWORD *pdwEventsLow,
-            _Out_ DWORD *pdwEventsHigh) = 0;
+            /* [out] */ DWORD *pdwEventsLow,
+            /* [out] */ DWORD *pdwEventsHigh) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetEventMask2( 
-            _In_ DWORD dwEventsLow,
-            _In_ DWORD dwEventsHigh) = 0;
+            /* [in] */ DWORD dwEventsLow,
+            /* [in] */ DWORD dwEventsHigh) = 0;
         
     };
     
@@ -11667,11 +11670,11 @@ EXTERN_C const IID IID_ICorProfilerInfo6;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumNgenModuleMethodsInliningThisMethod( 
-            _In_ ModuleID inlinersModuleId,
-            _In_ ModuleID inlineeModuleId,
-            _In_ mdMethodDef inlineeMethodId,
-            _Out_ BOOL *incompleteData,
-            _Out_ ICorProfilerMethodEnum **ppEnum) = 0;
+            /* [in] */ ModuleID inlinersModuleId,
+            /* [in] */ ModuleID inlineeModuleId,
+            /* [in] */ mdMethodDef inlineeMethodId,
+            /* [out] */ BOOL *incompleteData,
+            /* [out] */ ICorProfilerMethodEnum **ppEnum) = 0;
         
     };
     
@@ -12496,18 +12499,18 @@ EXTERN_C const IID IID_ICorProfilerInfo7;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE ApplyMetaData( 
-            _In_ ModuleID moduleId) = 0;
+            /* [in] */ ModuleID moduleId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInMemorySymbolsLength( 
-            _In_ ModuleID moduleId,
-            _Out_ DWORD *pCountSymbolBytes) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [out] */ DWORD *pCountSymbolBytes) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReadInMemorySymbols( 
-            _In_ ModuleID moduleId,
-            _In_ DWORD symbolsReadOffset,
-            _Out_writes_(countSymbolBytes) BYTE *pSymbolBytes,
-            _In_ DWORD countSymbolBytes,
-            _Out_ DWORD *pCountSymbolBytesRead) = 0;
+            /* [in] */ ModuleID moduleId,
+            /* [in] */ DWORD symbolsReadOffset,
+            /* [out] */ BYTE *pSymbolBytes,
+            /* [in] */ DWORD countSymbolBytes,
+            /* [out] */ DWORD *pCountSymbolBytesRead) = 0;
         
     };
     
@@ -13359,22 +13362,22 @@ EXTERN_C const IID IID_ICorProfilerInfo8;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE IsFunctionDynamic( 
-            _In_ FunctionID functionId,
-            _Out_ BOOL *isDynamic) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [out] */ BOOL *isDynamic) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFunctionFromIP3( 
-            _In_ LPCBYTE ip,
-            _Out_ FunctionID *functionId,
-            _Out_ ReJITID *pReJitId) = 0;
+            /* [in] */ LPCBYTE ip,
+            /* [out] */ FunctionID *functionId,
+            /* [out] */ ReJITID *pReJitId) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDynamicFunctionInfo( 
-            _In_ FunctionID functionId,
-            _Out_ ModuleID *moduleId,
-            _Out_ PCCOR_SIGNATURE *ppvSig,
-            _Out_ ULONG *pbSig,
-            _In_ ULONG cchName,
-            _Out_ ULONG *pcchName,
-            _Out_writes_(cchName) WCHAR wszName[  ]) = 0;
+            /* [in] */ FunctionID functionId,
+            /* [out] */ ModuleID *moduleId,
+            /* [out] */ PCCOR_SIGNATURE *ppvSig,
+            /* [out] */ ULONG *pbSig,
+            /* [in] */ ULONG cchName,
+            /* [out] */ ULONG *pcchName,
+            /* [out] */ WCHAR wszName[  ]) = 0;
         
     };
     
@@ -14257,23 +14260,23 @@ EXTERN_C const IID IID_ICorProfilerInfo9;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetNativeCodeStartAddresses( 
-            _In_ FunctionID functionID,
-            _In_ ReJITID reJitId,
-            _In_ ULONG32 cCodeStartAddresses,
-            _Out_ ULONG32 *pcCodeStartAddresses,
-            _Out_writes_(cCodeStartAddresses)UINT_PTR codeStartAddresses[  ]) = 0;
+            FunctionID functionID,
+            ReJITID reJitId,
+            ULONG32 cCodeStartAddresses,
+            ULONG32 *pcCodeStartAddresses,
+            UINT_PTR codeStartAddresses[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILToNativeMapping3( 
-            _In_ UINT_PTR pNativeCodeStartAddress,
-            _In_ ULONG32 cMap,
-            _Out_ ULONG32 *pcMap,
-            _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
+            UINT_PTR pNativeCodeStartAddress,
+            ULONG32 cMap,
+            ULONG32 *pcMap,
+            COR_DEBUG_IL_TO_NATIVE_MAP map[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeInfo4( 
-            _In_ UINT_PTR pNativeCodeStartAddress,
-            _In_ ULONG32 cCodeInfos,
-            _Out_ ULONG32 *pcCodeInfos,
-            _Out_writes_(cCodeInfos) COR_PRF_CODE_INFO codeInfos[  ]) = 0;
+            UINT_PTR pNativeCodeStartAddress,
+            ULONG32 cCodeInfos,
+            ULONG32 *pcCodeInfos,
+            COR_PRF_CODE_INFO codeInfos[  ]) = 0;
         
     };
     
@@ -15188,22 +15191,22 @@ EXTERN_C const IID IID_ICorProfilerInfo10;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumerateObjectReferences( 
-            _In_ ObjectID objectId,
-            _In_ ObjectReferenceCallback callback,
-            _In_ void *clientData) = 0;
+            ObjectID objectId,
+            ObjectReferenceCallback callback,
+            void *clientData) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE IsFrozenObject( 
-            _In_ ObjectID objectId,
-            _Out_ BOOL *pbFrozen) = 0;
+            ObjectID objectId,
+            BOOL *pbFrozen) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLOHObjectSizeThreshold( 
-            _Out_ DWORD *pThreshold) = 0;
+            DWORD *pThreshold) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RequestReJITWithInliners( 
-            _In_ DWORD dwRejitFlags,
-            _In_ ULONG cFunctions,
-            _In_reads_(cFunctions) ModuleID moduleIds[  ],
-            _In_reads_(cFunctions) mdMethodDef methodIds[  ]) = 0;
+            /* [in] */ DWORD dwRejitFlags,
+            /* [in] */ ULONG cFunctions,
+            /* [size_is][in] */ ModuleID moduleIds[  ],
+            /* [size_is][in] */ mdMethodDef methodIds[  ]) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SuspendRuntime( void) = 0;
         
@@ -16488,4 +16491,3 @@ EXTERN_C const IID IID_ICorProfilerAssemblyReferenceProvider;
 #endif
 
 
-#pragma warning( pop ) // 25164

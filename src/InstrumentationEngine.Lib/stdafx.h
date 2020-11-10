@@ -43,7 +43,7 @@ using namespace ATL;
 
 #include <strsafe.h>
 #include <cor.h>
-#include <corprof.h>
+#include <clrprofiler.h>
 #include <sal.h>
 
 #ifndef PLATFORM_UNIX

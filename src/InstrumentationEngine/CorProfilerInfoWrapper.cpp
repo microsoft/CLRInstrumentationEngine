@@ -322,7 +322,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo(
     _Out_opt_ LPCBYTE* ppBaseLoadAddress,
     _In_ ULONG cchName,
     _Out_ ULONG* pcchName,
-    _Out_writes_bytes_to_opt_(cchName, *pcchName) WCHAR szName[],
+    _Out_writes_to_(cchName, *pcchName) WCHAR szName[],
     _Out_opt_ AssemblyID* pAssemblyId
 )
 {
@@ -489,7 +489,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAssemblyInfo
     _In_ AssemblyID assemblyId,
     _In_ ULONG cchName,
     _Out_opt_ ULONG* pcchName,
-    _Out_writes_bytes_to_opt_(cchName,* pcchName)  WCHAR szName[],
+    _Out_writes_bytes_to_(cchName,* pcchName)  WCHAR szName[],
     _Out_opt_ AppDomainID* pAppDomainId,
     _Out_opt_ ModuleID* pModuleId
     )
@@ -911,7 +911,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo2(
     _Out_opt_ LPCBYTE* ppBaseLoadAddress,
     _In_ ULONG cchName,
     _Out_opt_ ULONG* pcchName,
-    _Out_writes_bytes_to_opt_(cchName, *pcchName) WCHAR szName[],
+    _Out_writes_bytes_to_(cchName, *pcchName) WCHAR szName[],
     _Out_opt_ AssemblyID* pAssemblyId,
     _Out_opt_ DWORD* pdwModuleFlags
 )
