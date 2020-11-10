@@ -464,7 +464,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstructions(_Out_ IInst
         // This is because a jit can be occurring at the the same time which would result in the instruction graph being wrong.
         // The current use of stanalone method infos is during the exception callbacks when instrumentation wouldn't be allowed anyway.
         // NOTE: Current tests examine the instruction graph however, so don't fail the method.
-        CLogging::LogError(_T("CMethodInfo::GetInstructions - standalone method infos are not configured properly for instrumentation."));
+        CLogging::LogMessage(_T("CMethodInfo::GetInstructions - standalone method infos are not configured properly for instrumentation."));
     }
 
     if (m_pInstructionGraph == NULL)
