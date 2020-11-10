@@ -46,6 +46,9 @@ namespace InstrEngineTests
 
         private static bool BinaryRecompiled = false;
 
+        // Enable ref recording to track down memory leaks. For debug only.
+        private static bool EnableRefRecording = false;
+
         public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false)
         {
             // Usually we use the same file name for test script, baseline and test result
@@ -78,6 +81,11 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
             psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
             psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+
+            if (EnableRefRecording)
+            {
+                psi.EnvironmentVariables.Add("EnableRefRecording", "1");
+            }
 
             if (!TestParameters.DisableLogLevel)
             {
@@ -144,7 +152,7 @@ namespace InstrEngineTests
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
             psi.EnvironmentVariables.Add(
-                is32bitTest? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
                 Path.Combine(PathUtils.GetAssetsPath(), string.Format("NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);

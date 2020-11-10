@@ -49,7 +49,10 @@ CProfilerManager::CProfilerManager() :
     GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
     if (wcscmp(wszEnvVar, _T("1")) == 0)
     {
-        MessageBox(NULL, _T("MicrosoftInstrumentationEngine ProfilerAttach"), L"", MB_OK);
+        tstringstream mboxStream;
+        DWORD pid = GetCurrentProcessId();
+        mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
+        MessageBox(NULL, mboxStream.str().c_str(), L"", MB_OK);
     }
     if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0)
     {

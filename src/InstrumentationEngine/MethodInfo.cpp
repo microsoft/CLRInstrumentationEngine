@@ -464,7 +464,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstructions(_Out_ IInst
         // This is because a jit can be occurring at the the same time which would result in the instruction graph being wrong.
         // The current use of stanalone method infos is during the exception callbacks when instrumentation wouldn't be allowed anyway.
         // NOTE: Current tests examine the instruction graph however, so don't fail the method.
-        CLogging::LogError(_T("CMethodInfo::GetInstructions - standalone method infos are not configured properly for instrumentation."));
+        CLogging::LogMessage(_T("CMethodInfo::GetInstructions - standalone method infos are not configured properly for instrumentation."));
     }
 
     if (m_pInstructionGraph == NULL)
@@ -1426,34 +1426,26 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
         return;
     }
 
-    CComPtr<IInstruction> pInstruction;
-
     CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA[\r\n"));
 
-    pInstructionGraph->GetOriginalFirstInstruction(&pInstruction);
+    CInstruction* pInstruction = pInstructionGraph->OriginalFirstInstructionInternal();
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction(true);
-
-        CComPtr<IInstruction> pTemp = pInstruction;
-        pInstruction.Release();
-        pTemp->GetOriginalNextInstruction(&pInstruction);
+        pInstruction->LogInstruction(true);
+        pInstruction = pInstruction->OriginalNextInstructionInternal();
     }
 
     CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>\r\n"));
 
     CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
 
-    pInstructionGraph->GetFirstInstruction(&pInstruction);
+    pInstruction = pInstructionGraph->FirstInstructionInternal();
 
     while (pInstruction != NULL)
     {
-        ((CInstruction*)pInstruction.p)->LogInstruction(false);
-
-        CComPtr<IInstruction> pTemp = pInstruction;
-        pInstruction.Release();
-        pTemp->GetNextInstruction(&pInstruction);
+        pInstruction->LogInstruction(false);
+        pInstruction = pInstruction->NextInstructionInternal();
     }
 
     CLogging::LogDumpMessage(_T("    ]]></Instructions>\r\n"));
