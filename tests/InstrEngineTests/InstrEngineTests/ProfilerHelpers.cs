@@ -259,27 +259,8 @@ namespace InstrEngineTests
                     Assert.AreEqual(baselineDocs.Length, outputDocs.Length);
                     for (int docIdx = 0; docIdx < baselineDocs.Length; docIdx++)
                     {
-
-                        string baselineXmlDocStr = baselineDocs[docIdx];
-                        string outputXmlDocStr = outputDocs[docIdx];
-
-                        // https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca3075#solution-3
-                        XmlDocument baselineDocument = new XmlDocument() { XmlResolver = null };
-                        using (var baselineStringReader = new StringReader(baselineXmlDocStr))
-                        {
-                            using (var xmlReader = XmlReader.Create(baselineStringReader, new XmlReaderSettings() { XmlResolver = null }))
-                            {
-                                baselineDocument.Load(xmlReader);
-                            }
-                        }
-                        XmlDocument outputDocument = new XmlDocument() { XmlResolver = null };
-                        using (var outputStringReader = new StringReader(outputXmlDocStr))
-                        {
-                            using (var xmlReader = XmlReader.Create(outputStringReader, new XmlReaderSettings() { XmlResolver = null }))
-                            {
-                                outputDocument.Load(xmlReader);
-                            }
-                        }
+                        var baselineDocument = LoadXmlFromString(baselineDocs[docIdx]);
+                        var outputDocument = LoadXmlFromString(outputDocs[docIdx]);
 
                         Assert.AreEqual(baselineDocument.ChildNodes.Count, outputDocument.ChildNodes.Count);
 
@@ -300,6 +281,20 @@ namespace InstrEngineTests
                 Console.WriteLine($"Output FilePath: {outputPath}");
                 throw;
             }
+        }
+
+        private static XmlDocument LoadXmlFromString(string inputXml)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca3075#solution-3
+            XmlDocument xmlDoc = new XmlDocument() { XmlResolver = null };
+            using (var baselineStringReader = new StringReader(inputXml))
+            {
+                using (var xmlReader = XmlReader.Create(baselineStringReader, new XmlReaderSettings() { XmlResolver = null }))
+                {
+                    xmlDoc.Load(xmlReader);
+                }
+            }
+            return xmlDoc;
         }
 
         private static void DiffResultToBaselineNode(XmlNode baselineNode, XmlNode outputNode)

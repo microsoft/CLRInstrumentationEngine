@@ -50,7 +50,6 @@ namespace RawProfilerHook.Tests
 
         public static ITestResult ExecuteTest<T>() where T : new()
         {
-            var _ = new T(); // instantiate the attribute class so the static analyzer doesn't think it's never used
             var executor = new TestEngine();
 
             return executor.ExecuteTest(

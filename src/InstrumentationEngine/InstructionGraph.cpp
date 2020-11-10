@@ -404,14 +404,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     CAutoVectorPtr<BYTE> pILArray;
     if (cbBuffer > 0)
     {
-        pILArray.Attach(new BYTE[cbBuffer]());
+        pILArray.Attach(new BYTE[cbBuffer]{});
     }
 
     // Allocate the il map.
     CAutoVectorPtr<COR_IL_MAP> pCorILMap;
     if(cCorILMap > 0)
     {
-        pCorILMap.Attach(new COR_IL_MAP[cCorILMap]());
+        pCorILMap.Attach(new COR_IL_MAP[cCorILMap]{});
     }
 
     DWORD iCorILMap = 0;
