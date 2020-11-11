@@ -64,23 +64,11 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            // Workaround for the diamond inheritence problem.
-            // Both CDataContainer and IInstruction inherit from IUnknown and
-            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknow*.
-            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311 
-            if (__uuidof(CInstruction) == riid && ppvObject != nullptr)
-            {
-                *ppvObject = static_cast<CInstruction*>(this);
-                AddRef();
-                return S_OK;
-            }
-
-            return ImplQueryInterface(
-                static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this),
+            return QueryInterfaceInternal(
                 riid,
-                ppvObject
-                );
+                ppvObject,
+                static_cast<IInstruction*>(this),
+                static_cast<IDataContainer*>(this));
         }
 
     public:
@@ -162,6 +150,28 @@ namespace MicrosoftInstrumentationEngine
         constexpr CInstruction* OriginalNextInstructionInternal() { return m_pOriginalNextInstruction.p; }
         constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
 
+    protected:
+        template<typename... Args>
+        HRESULT QueryInterfaceInternal(_In_ REFIID riid, _Out_ void** ppvObject, Args... pThisArgs)
+        {
+            // Workaround for the diamond inheritence problem.
+            // Both CDataContainer and IInstruction inherit from IUnknown and
+            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknow*.
+            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311 
+            if (__uuidof(CInstruction) == riid && ppvObject != nullptr)
+            {
+                *ppvObject = static_cast<CInstruction*>(this);
+                AddRef();
+                return S_OK;
+            }
+
+            return ImplQueryInterface(
+                std::forward<Args>(pThisArgs)...,
+                riid,
+                ppvObject
+            );
+        }
+
     private:
         // If the callee token is a MethodSpec (generic method), the parameter count and signature returned
         // will represent the parent method declaration/reference, not the generic parameters or generic signature.
@@ -215,13 +225,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(COperandInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>(this),
                 static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
 
         // IOperandInstruction methods
@@ -253,13 +262,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -276,13 +284,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -299,13 +306,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadLocalAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -323,13 +329,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CStoreLocalInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -346,13 +351,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArg);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -369,13 +373,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArgAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IOperandInstruction*>((COperandInstruction*)this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
     };
 
@@ -408,13 +411,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CILBranch);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<IBranchInstruction*>(this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
 
         // IBranchInstruction methods
@@ -474,13 +476,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CSwitchInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
+            return QueryInterfaceInternal(
+                riid,
+                ppvObject,
                 static_cast<ISwitchInstruction*>(this),
                 static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+                static_cast<IDataContainer*>(this));
         }
 
     public:
