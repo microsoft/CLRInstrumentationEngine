@@ -1,0 +1,16 @@
+<ExclusionList version="1.0">
+  <SoftwareNames>
+    <Software name="ClrInstrumentationEngine" version="[version]">
+      <ExcludedCalledFiles>
+        <ExcludedCalledFile name="*">
+          <ExcludedCalledFunctions>
+            <ExcludedCalledFunction name="LocaleNameToLCID" />
+            <ExcludedCalledFunction name="LCIDToLocaleName" />
+            <ExcludedCalledFunction name="EnumSystemLocalesEx" />
+            <ExcludedCalledFunction name="GetLocaleInfoEx" />
+          </ExcludedCalledFunctions>
+        </ExcludedCalledFile>
+      </ExcludedCalledFiles>
+    </Software>
+  </SoftwareNames>
+</ExclusionList>

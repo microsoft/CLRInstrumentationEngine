@@ -18,8 +18,12 @@ jobs:
   workspace:
     clean: all
 
+  variables:
+    APIScanExclusionFilePath: $(Build.SourcesDirectory)\build\yaml\jobs\codeanalysis\APIScanExclusion.xml
+
   steps:
-  - checkout: none
+  - checkout: self
+    clean: true
 
   - task: DownloadBuildArtifacts@0
     displayName: Download Windows Files (Release)
@@ -44,15 +48,21 @@ jobs:
         !**\*Test*
       TargetFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
 
+  # Patch the binary version in the exclusion file.
+  - powershell: |
+      (Get-Content $(APIScanExclusionFilePath)).Replace("[version]", "$(Build.BuildNumber)") | Set-Content $(APIScanExclusionFilePath)
+    displayName: Set binary version in APIScan exclusion list
+
   # Run API Scan
 
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@1
     displayName: 'Run APIScan'
     inputs:
       softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
       softwareName: ClrInstrumentationEngine
       softwareVersionNum: '$(Build.BuildNumber)'
       symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/ApiScan'
+      exclusionList: $(APIScanExclusionFilePath)
       isLargeApp: false
     continueOnError: true
 
