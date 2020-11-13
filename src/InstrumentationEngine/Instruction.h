@@ -156,7 +156,7 @@ namespace MicrosoftInstrumentationEngine
         {
             // Workaround for the diamond inheritence problem.
             // Both CDataContainer and IInstruction inherit from IUnknown and
-            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknow*.
+            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknown*.
             // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311 
             if (__uuidof(CInstruction) == riid && ppvObject != nullptr)
             {

@@ -9,7 +9,7 @@
 CDecorationCallbackInfo::CDecorationCallbackInfo(
 	const std::wstring& strMethodName,
 	DWORD dwAttributes,
-    _In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
+	_In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
 	ULONG ulCorSigSize,
 	DWORD dwImplFlags)
 	: m_strMethodName(strMethodName)

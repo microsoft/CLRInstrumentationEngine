@@ -58,5 +58,4 @@
     <PropertyGroup Label="Configuration">
         <SpectreMitigation>Spectre</SpectreMitigation>
     </PropertyGroup>
-    <Import Project =".\CommonBuild.Cpp.props" Condition="'$(MSBuildProjectExtension)'=='.vcxproj'"/>
 </Project>
