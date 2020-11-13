@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>MultiReturnTests_Release_x64.exe</ModuleName>
+    <MethodName>MultiExceptionTest</MethodName>
+    <MakeSingleRet />
+  </InstrumentMethod>
+</InstrumentationTestScript>

@@ -194,6 +194,8 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
     vector<CLocalType> locals;
     vector<COR_IL_MAP> corIlMap;
     BOOL isReplacement = FALSE;
+    BOOL isSingleRetFirst = FALSE;
+    BOOL isSingleRetLast = FALSE;
     shared_ptr<CInstrumentMethodPointTo> spPointTo(nullptr);
 
     for (long i = 0; i < cChildren; i++)
@@ -274,6 +276,23 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
             spPointTo = spPointer;
             ProcessPointTo(pChildNode, *spPointTo);
         }
+        else if (wcscmp(bstrCurrNodeName, L"MakeSingleRet") == 0)
+        {
+            // Allow the single return instrumentation to execute
+            // both before and after the instruction instrumentation.
+            if (instructions.empty())
+            {
+                isSingleRetFirst = true;
+            }
+            else
+            {
+                isSingleRetLast = true;
+            }
+        }
+        else if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        {
+            continue;
+        }
         else
         {
             ATLASSERT(!L"Invalid configuration. Unknown Element");
@@ -288,7 +307,15 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
         return E_FAIL;
     }
 
-    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(bstrModuleName, bstrMethodName, bIsRejit);
+    // if it is a replacement method, there will be no instructions
+    // do the single ret after the method is replaced.
+    if (isReplacement && isSingleRetFirst)
+    {
+        isSingleRetFirst = false;
+        isSingleRetLast = true;
+    }
+
+    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(bstrModuleName, bstrMethodName, bIsRejit, isSingleRetFirst, isSingleRetLast);
     if (spPointTo != nullptr)
     {
         pMethod->SetPointTo(spPointTo);
@@ -323,7 +350,11 @@ HRESULT CInstrumentationMethod::ProcessPointTo(IXMLDOMNode* pNode, CInstrumentMe
         //<MethodName>MethodToCallInstead</MethodName>
         CComBSTR nodeName;
         IfFailRet(pChildNode->get_nodeName(&nodeName));
-        if (wcscmp(nodeName, L"AssemblyName") == 0)
+        if (wcscmp(nodeName, L"#comment") == 0)
+        {
+            continue;
+        }
+        else if (wcscmp(nodeName, L"AssemblyName") == 0)
         {
             CComPtr<IXMLDOMNode> pChildValue;
             pChildNode->get_firstChild(&pChildValue);
@@ -376,7 +407,11 @@ HRESULT CInstrumentationMethod::ProcessInjectAssembly(IXMLDOMNode* pNode, shared
         //<Target>mscorlib</Target>
         CComBSTR nodeName;
         IfFailRet(pChildNode->get_nodeName(&nodeName));
-        if (wcscmp(nodeName, L"Target") == 0)
+        if (wcscmp(nodeName, L"#comment") == 0)
+        {
+            continue;
+        }
+        else if (wcscmp(nodeName, L"Target") == 0)
         {
             CComPtr<IXMLDOMNode> pChildValue;
             pChildNode->get_firstChild(&pChildValue);
@@ -416,6 +451,11 @@ HRESULT CInstrumentationMethod::ProcessLocals(IXMLDOMNode* pNode, vector<CLocalT
 
         CComBSTR nodeName;
         IfFailRet(pChildNode->get_nodeName(&nodeName));
+        if (wcscmp(nodeName, L"#comment") == 0)
+        {
+            continue;
+        }
+
         if (wcscmp(nodeName, L"Local") != 0)
         {
             ATLASSERT(!L"Invalid element");
@@ -454,7 +494,11 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(IXMLDOMNode* pNode, vect
         CComBSTR bstrCurrNodeName;
         IfFailRet(pChildNode->get_nodeName(&bstrCurrNodeName));
 
-        if (wcscmp(bstrCurrNodeName, L"Instruction") == 0)
+        if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        {
+            continue;
+        }
+        else if (wcscmp(bstrCurrNodeName, L"Instruction") == 0)
         {
             CComPtr<IXMLDOMNodeList> pInstructionChildNodes;
             IfFailRet(pChildNode->get_childNodes(&pInstructionChildNodes));
@@ -850,6 +894,11 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
     CComPtr<IInstructionGraph> pInstructionGraph;
     IfFailRet(pMethodInfo->GetInstructions(&pInstructionGraph));
 
+    if (pMethodEntry->IsSingleRetFirst())
+    {
+        PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph);
+    }
+
     if (pMethodEntry->GetPointTo() != nullptr)
     {
         std::shared_ptr<CInstrumentMethodPointTo> spPointTo = pMethodEntry->GetPointTo();
@@ -1120,6 +1169,21 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
     IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
 
+    if (pMethodEntry->IsSingleRetLast())
+    {
+        IfFailRet(PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph));
+    }
+
+    return S_OK;
+}
+
+HRESULT CInstrumentationMethod::PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph)
+{
+    HRESULT hr;
+    CComPtr<ISingleRetDefaultInstrumentation> pSingleRet;
+    IfFailRet(pMethodInfo->GetSingleRetDefaultInstrumentation(&pSingleRet));
+    IfFailRet(pSingleRet->Initialize(pInstructionGraph));
+    IfFailRet(pSingleRet->ApplySingleRetDefaultInstrumentation());
     return S_OK;
 }
 

@@ -54,6 +54,7 @@
     <EmbeddedResource Include="EmbeddedResources\HttpMethodTests.cs" />
     <EmbeddedResource Include="EmbeddedResources\DynamicCodeTests.cs" />
     <EmbeddedResource Include="EmbeddedResources\InstrumentationMethodLoggingTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\MultiReturnTests.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="RuntimeExceptionCallbacks.cs" />
     <Compile Include="TestConstants.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="TestInjectToMscorlib.cs" />
     <Compile Include="TestLocals.cs" />
     <Compile Include="TestMethodReplacement.cs" />
+    <Compile Include="TestMultiReturn.cs" />
     <Compile Include="TestRejit.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="ProfilerHelpers.cs" />
@@ -76,6 +78,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Baselines\AddBranchTargets_ArrayForeachTest.xml">
+      <Link>Baselines\AddBranchTargets_ArrayForeachTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddBranchTargets_IfTest_Debug.xml">
+      <Link>Baselines\AddBranchTargets_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddBranchTargets_SwitchTest.xml">
+      <Link>Baselines\AddBranchTargets_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Baselines\AddMultiNop_IfTest_Debug.xml">
       <Link>Baselines\AddMultiNop_IfTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -252,6 +266,32 @@
       <Link>Baselines\InstrumentationMethodLoggingSome.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\MultiReturn_ExceptionTest.xml">
+      <Link>Baselines\MultiReturn_ExceptionTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\MultiReturn_IfTest.xml">
+      <Link>Baselines\MultiReturn_IfTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\MultiReturn_SwitchTest.xml">
+      <Link>Baselines\MultiReturn_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\TestScripts\AddBranchTargets_ArrayForeachTest.xml">
+      <Link>TestScripts\AddBranchTargets_ArrayForeachTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddBranchTargets_IfTest_Debug.xml">
+      <Link>TestScripts\AddBranchTargets_IfTest_Debug.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddBranchTargets_SwitchTest.xml">
+      <Link>TestScripts\AddBranchTargets_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">
       <Link>TestScripts\AddMultiNop_IfTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -422,6 +462,18 @@
     </Content>
     <Content Include="..\TestScripts\InstrumentationMethodLoggingSome.xml">
       <Link>TestScripts\InstrumentationMethodLoggingSome.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\MultiReturn_ExceptionTest.xml">
+      <Link>TestScripts\MultiReturn_ExceptionTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\MultiReturn_IfTest.xml">
+      <Link>TestScripts\MultiReturn_IfTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\MultiReturn_SwitchTest.xml">
+      <Link>TestScripts\MultiReturn_SwitchTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

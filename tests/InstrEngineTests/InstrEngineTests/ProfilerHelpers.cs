@@ -40,6 +40,8 @@ namespace InstrEngineTests
 
         #endregion
 
+        public const int TestAppTimeoutMs = 10000;
+
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
         private static bool ThrowMessageBoxAtStartup = false;
@@ -49,14 +51,14 @@ namespace InstrEngineTests
         // Enable ref recording to track down memory leaks. For debug only.
         private static bool EnableRefRecording = false;
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false)
+        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args);
+            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args, timeoutMs);
             ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
-        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args)
+        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
             {
@@ -168,7 +170,19 @@ namespace InstrEngineTests
             psi.Arguments = args;
 
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
-            testProcess.WaitForExit();
+
+            // test processes are short. They should not run for more than a few seconds.
+            testProcess.WaitForExit(timeoutMs);
+
+            try
+            {
+                // try to end the process in case it is running too long.
+                testProcess.Kill();
+            }
+            catch
+            {
+                // failure expecected if the process is already ended.
+            }
 
             Assert.AreEqual(0, testProcess.ExitCode, "Test application failed");
         }

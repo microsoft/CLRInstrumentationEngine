@@ -39,6 +39,20 @@ namespace InstrEngineTests
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
+        public void AddBranchTargets_IfTest_Debug()
+        {
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddBranchTargets_IfTest_Debug.xml");
+        }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
+        public void AddBranchTargets_SwitchTest()
+        {
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Release_x64.exe", "AddBranchTargets_SwitchTest.xml");
+        }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ForTest_Debug()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x86.exe", "AddNop_ForTest_Debug.xml");
@@ -77,6 +91,13 @@ namespace InstrEngineTests
         public void AddNop_ArrayForeachTest()
         {
             ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64.exe", "AddNop_ArrayForeachTest.xml");
+        }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
+        public void AddBranchTargets_ArrayForeachTest()
+        {
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64.exe", "AddBranchTargets_ArrayForeachTest.xml");
         }
 
         [TestMethod]
