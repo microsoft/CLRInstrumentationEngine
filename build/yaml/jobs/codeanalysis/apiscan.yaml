@@ -55,7 +55,7 @@ jobs:
 
   # Run API Scan
 
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@1
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
     displayName: 'Run APIScan'
     inputs:
       softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
