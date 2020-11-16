@@ -145,18 +145,22 @@ private:
     CComBSTR m_bstrMethodName;
     BOOL m_bIsRejit;
     BOOL m_isReplacement;
+    BOOL m_bMakeSingleRetFirst;
+    BOOL m_bMakeSingleRetLast;
 
     vector<shared_ptr<CInstrumentInstruction>> m_instructions;
     vector<COR_IL_MAP> m_baselineMap;
     vector<CLocalType> m_locals;
     shared_ptr<CInstrumentMethodPointTo> m_pointTo;
 public:
-    CInstrumentMethodEntry(BSTR bstrModuleName, BSTR bstrMethodName, BOOL isRejit)
+    CInstrumentMethodEntry(BSTR bstrModuleName, BSTR bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast)
         : m_pointTo(nullptr),
         m_bstrModuleName(bstrModuleName),
         m_bstrMethodName(bstrMethodName),
         m_bIsRejit(isRejit),
-        m_isReplacement(FALSE)
+        m_isReplacement(FALSE),
+        m_bMakeSingleRetFirst(makeSingleRetFirst),
+        m_bMakeSingleRetLast(makeSingleRetLast)
     {
     }
 
@@ -224,6 +228,16 @@ public:
     BOOL IsReplacement()
     {
         return m_isReplacement;
+    }
+
+    BOOL IsSingleRetFirst()
+    {
+        return m_bMakeSingleRetFirst;
+    }
+
+    BOOL IsSingleRetLast()
+    {
+        return m_bMakeSingleRetLast;
     }
 
     std::shared_ptr<CInstrumentMethodPointTo>& GetPointTo()

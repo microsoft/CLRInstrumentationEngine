@@ -174,6 +174,7 @@ private:
     HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType &localType, IType** pType);
 
     HRESULT ConvertOpcode(BSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
+    HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
 
     static DWORD WINAPI InstrumentationMethodThreadProc(
         _In_  LPVOID lpParameter
