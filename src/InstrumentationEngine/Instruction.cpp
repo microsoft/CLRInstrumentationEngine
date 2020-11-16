@@ -257,10 +257,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::EmitIL(_In_ BYTE* pILBuffe
 
     int operandSize = opcodeInfo.m_operandLength;
 
-    BOOL bIsBranch = FALSE;
-    BOOL bIsSwitch = FALSE;
-    IfFailRet(this->GetIsBranch(&bIsBranch));
-    IfFailRet(this->GetIsSwitch(&bIsSwitch));
+    bool bIsBranch = GetIsBranchInternal();
+    bool bIsSwitch = GetIsSwitchInternal();
 
     // Finalize branch pointers
     if (bIsBranch)
@@ -338,7 +336,8 @@ MicrosoftInstrumentationEngine::CInstruction::CInstruction(_In_ ILOrdinalOpcode 
     m_offset(0),
     m_origOffset(0),
     m_instructionGeneration(isNew ? InstructionGeneration::Generation_New : InstructionGeneration::Generation_Original),
-    m_bIsRemoved(FALSE)
+    m_bIsRemoved(FALSE),
+    m_pGraph(nullptr)
 {
     DEFINE_REFCOUNT_NAME(CInstruction);
 }
@@ -356,6 +355,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::InitializeFromBytes(
 HRESULT MicrosoftInstrumentationEngine::CInstruction::SetIsRemoved()
 {
     this->m_bIsRemoved = true;
+    this->m_pGraph = nullptr;
     return S_OK;
 }
 
@@ -365,7 +365,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetOffset(_Out_ DWORD* pdw
     CLogging::LogMessage(_T("Starting CInstruction::GetOffset"));
 
     IfNullRetPointer(pdwOffset);
-
+    IfFailRet(EnsureGraphUpdated());
     *pdwOffset = m_offset;
 
     CLogging::LogMessage(_T("End CInstruction::GetOffset"));
@@ -379,7 +379,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetOriginalOffset(_Out_ DW
     CLogging::LogMessage(_T("Starting CInstruction::GetOriginalOffset"));
 
     IfNullRetPointer(pdwOffset);
-
+    IfFailRet(EnsureGraphUpdated());
     *pdwOffset = m_origOffset;
 
     CLogging::LogMessage(_T("End CInstruction::GetOriginalOffset"));
@@ -547,7 +547,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsBranch(_Out_ BOOL* pb
     CLogging::LogMessage(_T("Starting CInstruction::GetIsBranch"));
     IfNullRetPointer(pbValue);
 
-    *pbValue = IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch);
+    *pbValue = GetIsBranchInternal();
 
     CLogging::LogMessage(_T("End CInstruction::GetIsBranch"));
 
@@ -560,7 +560,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsSwitch(_Out_ BOOL* pb
     CLogging::LogMessage(_T("Starting CInstruction::GetIsSwitch"));
     IfNullRetPointer(pbValue);
 
-    *pbValue = (m_opcode == Cee_Switch);
+    *pbValue = GetIsSwitchInternal();
 
     CLogging::LogMessage(_T("End CInstruction::GetIsSwitch"));
 
@@ -1031,7 +1031,7 @@ MicrosoftInstrumentationEngine::CBranchInstruction::CBranchInstruction(
     _In_ BOOL isNew
     )
     :  CInstruction(opcode, isNew),
-    m_origTargetOffset(0)
+    m_decodedTargetOffset(0)
 {
 
 }
@@ -1053,7 +1053,7 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::InitializeFromBytes(
         return E_FAIL;
     }
 
-    m_targetOffset = 0;
+    DWORD targetOffset = 0;
 
     BOOL bIsShortBranch;
     IfFailRet(IsShortBranch(&bIsShortBranch));
@@ -1063,22 +1063,22 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::InitializeFromBytes(
         // add opcodesize and size of target offset (1 byte) to the offset itself
         // to have the exact target offset based on the beginning of this instruction
         char c = *(char *)p;
-        m_targetOffset = (int)c + opcodeSize + 1;
+        targetOffset = (int)c + opcodeSize + 1;
     }
     else
     {
         // add opcodesize and size of target offset (4 bytes) to the offset itself
         // to have the exact target offset based on the beginning of this instruction
-        m_targetOffset = (*p) + opcodeSize + 4;
+        targetOffset = (*p) + opcodeSize + 4;
     }
 
-    if((pCode + static_cast<int>(m_targetOffset)) >= pEndOfCode)
+    if((pCode + static_cast<int>(targetOffset)) >= pEndOfCode)
     {
         CLogging::LogError(_T("COperandInstruction::Initialize - Invalid program"));
         return E_FAIL;
     }
 
-    m_origTargetOffset = m_targetOffset;
+    m_decodedTargetOffset = targetOffset;
 
     return S_OK;
 }
@@ -1152,7 +1152,7 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::GetTargetOffset(_Out
     }
     else
     {
-        *pOffset = m_targetOffset;
+        *pOffset = m_decodedTargetOffset;
     }
 
     CLogging::LogMessage(_T("End CBranchInstruction::GetTargetOffset"));
@@ -1169,13 +1169,10 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
 
     m_pBranchTarget = (CInstruction*)pInstruction;
 
-    if (m_pBranchTarget != nullptr)
+    if (m_pBranchTarget == nullptr)
     {
-        IfFailRet(m_pBranchTarget->GetOffset(&m_targetOffset));
-    }
-    else
-    {
-        m_targetOffset = 0;
+        // The decoded branch target is now invalid.
+        m_decodedTargetOffset = 0;
     }
 
     if (m_pOrigBranchTarget == NULL && m_instructionGeneration != InstructionGeneration::Generation_New)
@@ -1637,6 +1634,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetStackImpact(_In_ IMetho
     }
 
     *pStackImpact = stackImpact;
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstruction::SetGraph(_In_ CInstructionGraph* pGraph)
+{
+    IfNullRet(pGraph);
+    IfFalseRet(m_pGraph == nullptr, E_UNEXPECTED);
+    m_pGraph = pGraph;
     return S_OK;
 }
 

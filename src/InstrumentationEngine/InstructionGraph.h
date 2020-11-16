@@ -41,6 +41,8 @@ namespace MicrosoftInstrumentationEngine
         // True if CreateBaseline has been called by an instrumentation method
         bool m_bHasBaselineBeenSet;
 
+        bool m_bAreInstructionsStale;
+
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CInstructionGraph);
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstructionGraph);
@@ -73,6 +75,10 @@ namespace MicrosoftInstrumentationEngine
         HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
 
         HRESULT CalculateMaxStack(_Out_ DWORD* pMaxStack);
+
+        constexpr CInstruction* FirstInstructionInternal() { return m_pFirstInstruction.p; }
+        constexpr CInstruction* OriginalFirstInstructionInternal() { return m_pOrigFirstInstruction.p; }
+        HRESULT RefreshInstructions();
 
         // IInstructionGraph methods
     public:
@@ -129,12 +135,8 @@ namespace MicrosoftInstrumentationEngine
         // Converts short form branch instructions to long form instructions.
         virtual HRESULT __stdcall ExpandBranches() override;
 
-    public:
-    // internal helpers.
-        constexpr CInstruction* FirstInstructionInternal() { return m_pFirstInstruction.p; }
-        constexpr CInstruction* OriginalFirstInstructionInternal() { return m_pOrigFirstInstruction.p; }
-
     private:
         HRESULT IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch);
+        void MarkInstructionsStale() { m_bAreInstructionsStale = true; }
     };
 }
