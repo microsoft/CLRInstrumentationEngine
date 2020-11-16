@@ -155,8 +155,8 @@ namespace MicrosoftInstrumentationEngine
         constexpr CInstruction* PreviousInstructionInternal() { return m_pPreviousInstruction.p; }
         constexpr CInstruction* OriginalNextInstructionInternal() { return m_pOriginalNextInstruction.p; }
         constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
-        constexpr bool GetIsSwitchInternal() { return m_opcode == Cee_Switch; }
-        bool GetIsBranchInternal() { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
+        constexpr bool GetIsSwitchInternal() const { return m_opcode == Cee_Switch; }
+        bool GetIsBranchInternal() const { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
 
     protected:
         template<typename... Args>
