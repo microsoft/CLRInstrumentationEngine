@@ -17,10 +17,6 @@ jobs:
 
   workspace:
     clean: all
-
-  variables:
-    APIScanExclusionFilePath: $(Build.SourcesDirectory)\build\yaml\jobs\codeanalysis\APIScanExclusion.xml
-
   steps:
   - checkout: self
     clean: true

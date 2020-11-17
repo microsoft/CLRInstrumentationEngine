@@ -29,4 +29,6 @@ steps:
     GdnBreakOutputBaseline: MyBL1
     GdnBreakOutputSuppressionFile: MySupp1
     GdnBreakOutputSuppressionSet: MySupp1
+    GdnBreakBaselineFiles: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\baseline
+    GdnBreakBaselines: ApiScanBaseline
   condition: succeededOrFailed()
