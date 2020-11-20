@@ -6,7 +6,7 @@
 #include "RawProfilerHook_i.h"
 
 #include <cor.h>
-#include <corprof.h>
+#include <clrprofiler.h>
 
 class ATL_NO_VTABLE CCoRawProfilerHook
     : public ATL::CComObjectRootEx<ATL::CComMultiThreadModelNoCS>
@@ -371,12 +371,12 @@ public:
 
 
 
-    HRESULT FinalConstruct()
+    static HRESULT FinalConstruct()
     {
         return S_OK;
     }
 
-    void FinalRelease()
+    static void FinalRelease()
     {
     }
 

@@ -160,13 +160,14 @@ ULONG MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::AddRef()
 
 ULONG MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::Release()
 {
-    if (InterlockedDecrement(&m_refcount) == 0)
+    auto newRefCount = InterlockedDecrement(&m_refcount);
+    if (newRefCount == 0)
     {
         delete this;
         return 0;
     }
 
-    return m_refcount;
+    return newRefCount;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassFromObject(
@@ -223,7 +224,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionFrom
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetHandleFromThread(
     _In_ ThreadID threadId,
-    _In_ HANDLE* phThread
+    _Out_ HANDLE* phThread
 )
 {
     return m_pRealCorProfilerInfo->GetHandleFromThread(threadId, phThread);
@@ -318,11 +319,11 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetTokenAndMeta
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo(
     _In_ ModuleID moduleId,
-    _Out_ LPCBYTE* ppBaseLoadAddress,
+    _Out_opt_ LPCBYTE* ppBaseLoadAddress,
     _In_ ULONG cchName,
     _Out_ ULONG* pcchName,
-    _Out_writes_(cchName) WCHAR szName[],
-    _Out_ AssemblyID* pAssemblyId
+    _Out_writes_to_(cchName, *pcchName) WCHAR szName[],
+    _Out_opt_ AssemblyID* pAssemblyId
 )
 {
     return m_pRealCorProfilerInfo->GetModuleInfo(moduleId, ppBaseLoadAddress, cchName, pcchName, szName, pAssemblyId);
@@ -477,7 +478,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainInf
     _In_ AppDomainID appDomainId,
     _In_ ULONG cchName,
     _Out_ ULONG* pcchName,
-    _Out_writes_(cchName) WCHAR szName[],
+    _Out_writes_to_(cchName, *pcchName) WCHAR szName[],
     _Out_ ProcessID* pProcessId
 )
 {
@@ -487,10 +488,10 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainInf
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAssemblyInfo(
     _In_ AssemblyID assemblyId,
     _In_ ULONG cchName,
-    _Out_ ULONG* pcchName,
-    _Out_writes_to_(cchName,* pcchName)  WCHAR szName[],
-    _Out_ AppDomainID* pAppDomainId,
-    _Out_ ModuleID* pModuleId
+    _Out_opt_ ULONG* pcchName,
+    _Out_writes_bytes_to_(cchName,* pcchName)  WCHAR szName[],
+    _Out_opt_ AppDomainID* pAppDomainId,
+    _Out_opt_ ModuleID* pModuleId
     )
 {
     return m_pRealCorProfilerInfo->GetAssemblyInfo(assemblyId, cchName, pcchName, szName, pAppDomainId, pModuleId);
@@ -577,7 +578,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::DoStackSnapshot
     _In_ StackSnapshotCallback *callback,
     _In_ ULONG32 infoFlags,
     _In_ void *clientData,
-    _In_ BYTE context[],
+    _In_reads_bytes_(contextSize) BYTE context[],
     _In_ ULONG32 contextSize
     )
 {
@@ -598,12 +599,12 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetEnterLeaveFu
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetFunctionInfo2(
     _In_ FunctionID funcId,
     _In_ COR_PRF_FRAME_INFO frameInfo,
-    _Out_ ClassID* pClassId,
-    _Out_ ModuleID* pModuleId,
-    _Out_ mdToken* pToken,
+    _Out_opt_ ClassID* pClassId,
+    _Out_opt_ ModuleID* pModuleId,
+    _Out_opt_ mdToken* pToken,
     _In_ ULONG32 cTypeArgs,
-    _Out_ ULONG32* pcTypeArgs,
-    _Out_writes_(cTypeArgs) ClassID typeArgs[]
+    _Out_opt_ ULONG32* pcTypeArgs,
+    _Out_writes_bytes_to_opt_(cTypeArgs, *pcTypeArgs) ClassID typeArgs[]
     )
 {
     return m_pRealCorProfilerInfo2->GetFunctionInfo2(funcId, frameInfo, pClassId, pModuleId, pToken, cTypeArgs, pcTypeArgs, typeArgs);
@@ -633,7 +634,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetClassIDInfo2
     _In_ ClassID classId,
     _Out_ ModuleID* pModuleId,
     _Out_ mdTypeDef* pTypeDefToken,
-    ClassID* pParentClassId,
+    _Out_ ClassID* pParentClassId,
     _In_ ULONG32 cNumTypeArgs,
     _Out_ ULONG32* pcNumTypeArgs,
     _Out_writes_(cNumTypeArgs) ClassID typeArgs[]
@@ -798,7 +799,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestProfiler
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetFunctionIDMapper2(
     _In_ FunctionIDMapper2* pFunc,
-    _Out_ void *clientData
+    _In_ void *clientData
 )
 {
     return m_pRealCorProfilerInfo3->SetFunctionIDMapper2(pFunc, clientData);
@@ -870,15 +871,15 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumModules(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetRuntimeInformation(
-    _Out_ USHORT* pClrInstanceId,
-    _Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType,
-    _Out_ USHORT* pMajorVersion,
-    _Out_ USHORT* pMinorVersion,
-    _Out_ USHORT* pBuildNumber,
-    _Out_ USHORT* pQFEVersion,
+    _Out_opt_ USHORT* pClrInstanceId,
+    _Out_opt_ COR_PRF_RUNTIME_TYPE* pRuntimeType,
+    _Out_opt_ USHORT* pMajorVersion,
+    _Out_opt_ USHORT* pMinorVersion,
+    _Out_opt_ USHORT* pBuildNumber,
+    _Out_opt_ USHORT* pQFEVersion,
     _In_ ULONG cchVersionString,
-    _Out_ ULONG* pcchVersionString,
-    _Out_writes_(cchVersionString) WCHAR szVersionString[]
+    _Out_opt_ ULONG* pcchVersionString,
+    _Out_writes_opt_(cchVersionString) WCHAR szVersionString[]
 )
 {
     return m_pRealCorProfilerInfo3->GetRuntimeInformation(pClrInstanceId, pRuntimeType, pMajorVersion, pMinorVersion, pBuildNumber, pQFEVersion, cchVersionString, pcchVersionString, szVersionString);
@@ -907,12 +908,12 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetAppDomainsCo
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetModuleInfo2(
     _In_ ModuleID moduleId,
-    _Out_ LPCBYTE* ppBaseLoadAddress,
+    _Out_opt_ LPCBYTE* ppBaseLoadAddress,
     _In_ ULONG cchName,
-    _Out_ ULONG* pcchName,
-    _Out_writes_(cchName) WCHAR szName[],
-    _Out_ AssemblyID* pAssemblyId,
-    _Out_ DWORD* pdwModuleFlags
+    _Out_opt_ ULONG* pcchName,
+    _Out_writes_bytes_to_(cchName, *pcchName) WCHAR szName[],
+    _Out_opt_ AssemblyID* pAssemblyId,
+    _Out_opt_ DWORD* pdwModuleFlags
 )
 {
     return m_pRealCorProfilerInfo3->GetModuleInfo2(moduleId, ppBaseLoadAddress, cchName, pcchName, szName, pAssemblyId, pdwModuleFlags);
@@ -943,7 +944,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::RequestRevert(
     _In_ ULONG cFunctions,
     _In_reads_(cFunctions) ModuleID moduleIds[],
     _In_reads_(cFunctions) mdMethodDef methodIds[],
-    _In_reads_(cFunctions) HRESULT status[]
+    _Out_writes_(cFunctions) HRESULT status[]
 )
 {
     return m_pRealCorProfilerInfo4->RequestRevert(cFunctions, moduleIds, methodIds, status);
@@ -993,7 +994,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetILToNativeMa
 }
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::EnumJITedFunctions2(
-    _In_ ICorProfilerFunctionEnum **ppEnum
+    _Out_ ICorProfilerFunctionEnum **ppEnum
 )
 {
     return m_pRealCorProfilerInfo4->EnumJITedFunctions2(ppEnum);
@@ -1061,7 +1062,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::GetInMemorySymb
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::ReadInMemorySymbols(
     _In_ ModuleID moduleId,
     _In_ DWORD symbolsReadOffset,
-    _Out_ BYTE *pSymbolBytes,
+    _Out_writes_(countSymbolBytes) BYTE *pSymbolBytes,
     _In_ DWORD countSymbolBytes,
     _Out_ DWORD *pCountSymbolBytesRead
 )

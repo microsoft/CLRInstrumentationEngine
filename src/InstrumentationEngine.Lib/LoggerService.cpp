@@ -46,7 +46,7 @@ HRESULT CLoggerService::GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLog
     return m_pLoggingHost.CopyTo(ppLoggingHost);
 }
 
-HRESULT CLoggerService::SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost)
+HRESULT CLoggerService::SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost)
 {
     IfNotInitRetUnexpected(m_initialize);
 

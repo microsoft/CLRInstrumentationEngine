@@ -119,6 +119,9 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
 }
 
 #ifndef PLATFORM_UNIX
+#pragma warning( push )
+#pragma warning( disable: 28301 ) // No annotations for first declaration of 'DllRegisterServer'.
+
 __control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
 {
@@ -130,6 +133,8 @@ STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
+
+#pragma warning ( pop )
 #endif
 
 STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLogging** ppLogging)

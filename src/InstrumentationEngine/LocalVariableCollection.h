@@ -51,7 +51,7 @@ namespace MicrosoftInstrumentationEngine
             virtual HRESULT __stdcall CommitSignature() override;
             virtual HRESULT __stdcall GetCount(_Out_ DWORD* pdwCount) override;
             virtual HRESULT __stdcall AddLocal(_In_ IType* pType, _Out_opt_ DWORD* pIndex) override;
-            virtual HRESULT __stdcall ReplaceSignature(_In_ const BYTE* pSignature, _In_ DWORD dwSigSize) override;
+            virtual HRESULT __stdcall ReplaceSignature(_In_reads_bytes_(dwSigSize) const BYTE* pSignature, _In_ DWORD dwSigSize) override;
 
         // ILocalVariableCollection2
         public:

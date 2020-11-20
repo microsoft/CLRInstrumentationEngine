@@ -40,25 +40,27 @@ namespace InstrEngineTests
         {
             foreach (string prefix in TestAppFilePrefixes)
             {
-                CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
+                using (CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp"))
+                {
 
-                string sourceCode = GetEmbeddedSourceFile(Assembly.GetExecutingAssembly(), "InstrEngineTests.EmbeddedResources", prefix + ".cs");
+                    string sourceCode = GetEmbeddedSourceFile(Assembly.GetExecutingAssembly(), "InstrEngineTests.EmbeddedResources", prefix + ".cs");
 
-                CompilerParameters debugX86Parameters = CreateCompilerParameters(path, prefix, isDebug: true, is64bit: false);
-                CompilerResults results = codeProvider.CompileAssemblyFromSource(debugX86Parameters, sourceCode);
-                Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
+                    CompilerParameters debugX86Parameters = CreateCompilerParameters(path, prefix, isDebug: true, is64bit: false);
+                    CompilerResults results = codeProvider.CompileAssemblyFromSource(debugX86Parameters, sourceCode);
+                    Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
 
-                CompilerParameters debugX64Parameters = CreateCompilerParameters(path, prefix, isDebug: true, is64bit: true);
-                results = codeProvider.CompileAssemblyFromSource(debugX64Parameters, sourceCode);
-                Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
+                    CompilerParameters debugX64Parameters = CreateCompilerParameters(path, prefix, isDebug: true, is64bit: true);
+                    results = codeProvider.CompileAssemblyFromSource(debugX64Parameters, sourceCode);
+                    Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
 
-                CompilerParameters releaseX86Parameters = CreateCompilerParameters(path, prefix, isDebug: false, is64bit: false);
-                results = codeProvider.CompileAssemblyFromSource(releaseX86Parameters, sourceCode);
-                Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
+                    CompilerParameters releaseX86Parameters = CreateCompilerParameters(path, prefix, isDebug: false, is64bit: false);
+                    results = codeProvider.CompileAssemblyFromSource(releaseX86Parameters, sourceCode);
+                    Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
 
-                CompilerParameters releaseX64Parameters = CreateCompilerParameters(path, prefix, isDebug: false, is64bit: true);
-                results = codeProvider.CompileAssemblyFromSource(releaseX64Parameters, sourceCode);
-                Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
+                    CompilerParameters releaseX64Parameters = CreateCompilerParameters(path, prefix, isDebug: false, is64bit: true);
+                    results = codeProvider.CompileAssemblyFromSource(releaseX64Parameters, sourceCode);
+                    Assert.IsFalse(results.Errors.HasErrors, results.Errors.Count > 0 ? "Compile error:" + results.Errors[0].ErrorText : null);
+                }
             }
         }
 
@@ -108,7 +110,7 @@ namespace InstrEngineTests
         {
             Assert.IsFalse(string.IsNullOrEmpty(prefix));
 
-            string fullName = string.Format("{0}_{1}_{2}.exe", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffic, is64bit ? X64BinarySuffix : X86BinarySuffix);
+            string fullName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}_{2}.exe", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffic, is64bit ? X64BinarySuffix : X86BinarySuffix);
             return Path.Combine(path, fullName);
         }
 

@@ -18,7 +18,7 @@ namespace CommonLib
 {
     struct EventLogItem
     {
-        EventLogItem(WORD wType, tstring tsLog)
+        EventLogItem(WORD wType, const tstring& tsLog)
             : wEventType(wType), tsEventLog(tsLog)
         {
         }

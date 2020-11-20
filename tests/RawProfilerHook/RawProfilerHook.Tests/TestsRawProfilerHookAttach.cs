@@ -13,7 +13,7 @@ namespace RawProfilerHook.Tests
     [TestClass]
     public class TestsRawProfilerHookAttach
     {
-        public class TestsRawProfilerHookIsLoadedIfEnvVariableIsSet : TestBase
+        private class TestsRawProfilerHookIsLoadedIfEnvVariableIsSet : TestBase
         {
             public override void Execute()
             {
@@ -47,12 +47,12 @@ namespace RawProfilerHook.Tests
             TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
         }
 
-        public class TestRawProfilerHookCallsGetAssemblyReferencesBase : TestBase
+        private class TestRawProfilerHookCallsGetAssemblyReferencesBase : TestBase
         {
             public override void Execute()
             {
                 // load APTCA module from GAC - System.Xml
-                XmlDocument doc = new XmlDocument();
+                XmlDocument doc = new XmlDocument() { XmlResolver = null };
 
                 Assert.AreEqual(
                     "S_OK",
@@ -74,10 +74,10 @@ namespace RawProfilerHook.Tests
                 "Exception extensions module is loaded");
 
             TestEngine.IgnoreBitness = true;
-            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
 
             TestEngine.IgnoreBitness = false;
-            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
         }
     }
 }

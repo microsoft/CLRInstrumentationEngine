@@ -10,7 +10,7 @@
 #define FORMATTABLE_PREFIX _T("[IM:%s]")
 #endif
 
-CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMethod(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager)
+CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMethod(const GUID& instrumentationMethodGuid, CProfilerManager* pProfilerManager)
 {
     WCHAR wszCurrentMethodGuid[40] = { 0 };
     m_flags = LoggingFlags_None;
@@ -253,9 +253,9 @@ HRESULT CProfilerManagerForInstrumentationMethod::LogMessageInternal(_In_ const 
     }
 }
 
-void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped)
+void MicrosoftInstrumentationEngine::EscapeFormatSpecifiers(_In_ const tstring& tsOriginal, _Inout_ tstring& tsEscaped)
 {
-    for (tstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); it++)
+    for (tstring::const_iterator it = tsOriginal.begin(); it < tsOriginal.end(); ++it)
     {
         // This duplicates any single '%' character (ie. "%%") in the
         // format string from being treated as a format specifier.

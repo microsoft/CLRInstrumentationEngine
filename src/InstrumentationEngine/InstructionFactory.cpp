@@ -369,7 +369,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::CreateLoadArgAddres
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_ LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph)
+HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_reads_bytes_(cbMethod) LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CInstructionFactory::DecodeInstructionByteStream"));

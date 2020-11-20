@@ -16,8 +16,8 @@
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX
 // Use %S for WCHAR* on Linux (which is char16_t*) since *wprintf* expects strings to be wchar_t*.
-// The capital S specifier means "format the string using the width that is opposite of the formatting method".
-// The capital S specifier is appropriate since WCHAR* on Linux is smaller than the *wprintf* width expectation.
+// The uppercase S specifier means "format the string using the width that is opposite of the formatting method".
+// The uppercase S specifier is appropriate since WCHAR* on Linux is smaller than the *wprintf* width expectation.
 #define WCHAR_SPEC _T("%S")
 #else
 // Use %s for WCHAR* on Windows (which is wchar_t*)
@@ -79,7 +79,7 @@ namespace MicrosoftInstrumentationEngine
 
         static HRESULT UpdateInstrumentationMethodLoggingFlags(_In_ GUID classId, _In_ LoggingFlags loggingFlags);
 
-        static HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
+        static HRESULT SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost);
 
         static HRESULT Shutdown();
 

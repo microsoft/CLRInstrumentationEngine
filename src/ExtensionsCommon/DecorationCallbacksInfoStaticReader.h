@@ -17,9 +17,9 @@ public:
 	virtual ~CDecorationCallbacksInfoStaticReader() {}
 private:
 	HRESULT InternalGenerateCallbackInfosForNCustomArgs(
-		const std::wstring strMehodName,
+		const std::wstring& strMehodName,
 		const unsigned int uMaxCustomArgsCount,
-		PCCOR_SIGNATURE	pCorSigTemplate,
+		_In_reads_(ucCorSigTemplateSize) PCCOR_SIGNATURE	pCorSigTemplate,
 		unsigned int	ucCorSigTemplateSize,
 		_Out_ DecorationCallbackInfoCollection& vecCallbacksResult);
 }; // CDecorationCallbacksInfoStaticReader

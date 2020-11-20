@@ -10,7 +10,7 @@
 #include "StrongName.h"
 #endif
 
-MicrosoftInstrumentationEngine::CAssemblyInfo::CAssemblyInfo(CProfilerManager* pProfilerManager) :
+MicrosoftInstrumentationEngine::CAssemblyInfo::CAssemblyInfo(_In_ CProfilerManager* pProfilerManager) :
     m_pProfilerManager(pProfilerManager),
     m_assemblyId(0),
     m_tkAssembly(mdTokenNil),
@@ -31,7 +31,7 @@ MicrosoftInstrumentationEngine::CAssemblyInfo::~CAssemblyInfo()
 
 HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::Initialize(
     _In_ AssemblyID assemblyId,
-    _In_ WCHAR* wszAssemblyName,
+    _In_ const WCHAR* wszAssemblyName,
     _In_ IAppDomainInfo* pAppDomainInfo,
     _In_ ModuleID manifestModuleID
     )
@@ -462,7 +462,7 @@ HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::InitializePublicKeyToken(
     const DWORD dwPublicKeyTokenBufferLen = 16 + 1;
     WCHAR wszPublicKeyToken[dwPublicKeyTokenBufferLen] = { 0 };
     WCHAR *currTokenPos = wszPublicKeyToken;
-    WCHAR *endTokenBuffer = wszPublicKeyToken + 16; // Ignore last element since it is for null not content.
+    const WCHAR *endTokenBuffer = wszPublicKeyToken + 16; // Ignore last element since it is for null not content.
     for (ULONG i = 0; i < publicKeyTokenSize && (currTokenPos != endTokenBuffer); ++i)
     {
         // 2 for each printed character in a byte and 1 for the implicit null

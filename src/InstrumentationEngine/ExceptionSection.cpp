@@ -115,7 +115,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::CreateExceptionHeader
     pEHSect->DataSize = dataSize;
 
     int i=0;
-    for(vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); iter++)
+    for(vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); ++iter)
     {
         CComPtr<IExceptionClause> pClause = *iter;
         ((CExceptionClause*)pClause.p)->RenderExceptionClause(&pEHSect->Clauses[i]);
@@ -195,7 +195,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::RemoveExceptionClause
 
     CCriticalSectionHolder lock(&m_cs);
 
-    for (vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); iter++)
+    for (vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); ++iter)
     {
         if (*iter == pExceptionClause)
         {
@@ -231,7 +231,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::UpdateInstruction(_In
 
     CCriticalSectionHolder lock(&m_cs);
 
-    for (vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); iter++)
+    for (vector<CComPtr<IExceptionClause>>::iterator iter = m_exceptionClauses.begin(); iter != m_exceptionClauses.end(); ++iter)
     {
         CExceptionClause* pClause = (CExceptionClause*)((*iter).p);
         pClause->UpdateInstruction(pInstructionOld, pInstructionNew);
@@ -301,7 +301,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionSection::FindExceptionClauseIn
     // is the correct range to insert after.
     if (m_exceptionClauses.begin() != m_exceptionClauses.end())
     {
-        for (vector<CComPtr<IExceptionClause>>::reverse_iterator iter = m_exceptionClauses.rbegin(); iter != m_exceptionClauses.rend(); iter++)
+        for (vector<CComPtr<IExceptionClause>>::reverse_iterator iter = m_exceptionClauses.rbegin(); iter != m_exceptionClauses.rend(); ++iter)
         {
             CComPtr<IExceptionClause> pExistingExceptionClause = *iter;
 

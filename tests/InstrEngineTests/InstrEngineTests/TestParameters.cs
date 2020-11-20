@@ -25,6 +25,8 @@ namespace InstrEngineTests
 
             // By default, enable LogLevel
             DisableLogLevel = false;
+
+            TestContext = context;
         }
 
         #endregion
@@ -36,6 +38,8 @@ namespace InstrEngineTests
         public static bool DisableMethodPrefix { get; internal set; }
 
         public static bool DisableLogLevel { get; internal set; }
+
+        public static TestContext TestContext { get; internal set; }
 
         internal static LogLevel MethodLogLevel { get; set; }
 

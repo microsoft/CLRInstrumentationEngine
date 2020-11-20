@@ -17,4 +17,28 @@
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
+
+  <!--
+    Disabled preFAST warnings:
+
+    C25007: member function ... can be static.
+    C25021: size of type can be decreased by rearranging its data members
+    C25031: Unchecked HRESULT returned by ...
+    C25046: global variable ... should be declared with '__declspec(selectany)'.
+    C25090: Use 'false' instead of FALSE
+    C25129: Possible truncation on 64bit OS
+    C25164: C++ Reserved global name.
+    C25165: This project forbids the use of a throwing operator new.
+    C25166: This project forbids the use of a non-throwing operator new.
+    
+    -->
+  <PropertyGroup>
+    <CodeAnalysisWarningsToDisable>/wd25007 /wd25021 /wd25031 /wd25046 /wd25090 /wd25129 /wd25164 /wd25165 /wd25166</CodeAnalysisWarningsToDisable>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Microbuild_Prefast)'=='true'">
+    <ClCompile>
+      <AdditionalOptions>%(AdditionalOptions) $(CodeAnalysisWarningsToDisable)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
 </Project>

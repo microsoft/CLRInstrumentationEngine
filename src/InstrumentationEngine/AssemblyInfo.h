@@ -64,7 +64,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT Initialize(
             _In_ AssemblyID assemblyID,
-            _In_ WCHAR* wszAssemblyName,
+            _In_ const WCHAR* wszAssemblyName,
             _In_ IAppDomainInfo* pAppDomainInfo,
             _In_ ModuleID manifestModuleID
             );

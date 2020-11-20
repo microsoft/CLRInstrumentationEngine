@@ -24,6 +24,7 @@ jobs:
     inputs:
       targetType: F
       optionsFC: 1
+      optionsUEPATH: $(Build.SourcesDirectory)\build\yaml\jobs\codeanalysis\PolicheckExclusion.xml
     continueOnError: true
 
   # Publish SecurityAnalysis Logs

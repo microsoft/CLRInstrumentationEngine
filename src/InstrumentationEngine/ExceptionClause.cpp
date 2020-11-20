@@ -98,14 +98,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::RenderExceptionClause(
     DWORD lastTrySize = 0;
     IfFailRet(m_pTryFirstInstruction->GetOffset(&firstTryOffset));
     IfFailRet(m_pTryLastInstruction->GetOffset(&lastTryOffset));
-    IfFailRet(m_pTryLastInstruction->GetInstructionSize(&lastTrySize));
+    IfFailRet(CInstruction::GetInstructionSize(m_pTryLastInstruction, &lastTrySize));
 
     DWORD firstHandlerOffset = 0;
     DWORD lastHandlerOffset = 0;
     DWORD lastHandlerSize = 0;
     IfFailRet(m_pHandlerFirstInstruction->GetOffset(&firstHandlerOffset));
     IfFailRet(m_pHandlerLastInstruction->GetOffset(&lastHandlerOffset));
-    IfFailRet(m_pHandlerLastInstruction->GetInstructionSize(&lastHandlerSize));
+    IfFailRet(CInstruction::GetInstructionSize(m_pHandlerLastInstruction, &lastHandlerSize));
 
 
     pEHClause->TryOffset = firstTryOffset;
@@ -201,7 +201,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::GetTryFirstInstruction
 
     if (m_pTryFirstInstruction != NULL)
     {
-        *ppInstruction = (IInstruction*)(m_pTryFirstInstruction.p);
+        *ppInstruction = m_pTryFirstInstruction.p;
         (*ppInstruction)->AddRef();
     }
 
@@ -218,7 +218,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::GetTryLastInstruction(
 
     if (m_pTryLastInstruction != NULL)
     {
-        *ppInstruction = (IInstruction*)(m_pTryLastInstruction.p);
+        *ppInstruction = m_pTryLastInstruction.p;
         (*ppInstruction)->AddRef();
     }
 
@@ -235,7 +235,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::GetHandlerFirstInstruc
 
     if (m_pHandlerFirstInstruction != NULL)
     {
-        *ppInstruction = (IInstruction*)(m_pHandlerFirstInstruction.p);
+        *ppInstruction = m_pHandlerFirstInstruction.p;
         (*ppInstruction)->AddRef();
     }
 
@@ -252,7 +252,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::GetHandlerLastInstruct
 
     if (m_pHandlerLastInstruction != NULL)
     {
-        *ppInstruction = (IInstruction*)(m_pHandlerLastInstruction.p);
+        *ppInstruction = m_pHandlerLastInstruction.p;
         (*ppInstruction)->AddRef();
     }
 
@@ -269,7 +269,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::GetFilterFirstInstruct
 
     if (m_pFilterFirstInstruction != NULL)
     {
-        *ppInstruction = (IInstruction*)(m_pFilterFirstInstruction.p);
+        *ppInstruction = m_pFilterFirstInstruction.p;
         (*ppInstruction)->AddRef();
     }
 
@@ -308,7 +308,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetTryFirstInstruction
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetTryFirstInstruction"));
 
-    m_pTryFirstInstruction = (CInstruction*)pInstruction;
+    m_pTryFirstInstruction = pInstruction;
 
     CLogging::LogMessage(_T("End CExceptionClause::SetTryFirstInstruction"));
     return hr;
@@ -319,7 +319,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetTryLastInstruction(
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetTryLastInstruction"));
 
-    m_pTryLastInstruction = (CInstruction*)pInstruction;
+    m_pTryLastInstruction = pInstruction;
 
     CLogging::LogMessage(_T("End CExceptionClause::SetTryLastInstruction"));
     return hr;
@@ -330,7 +330,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetHandlerFirstInstruc
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetHandlerFirstInstruction"));
 
-    m_pHandlerFirstInstruction = (CInstruction*)pInstruction;
+    m_pHandlerFirstInstruction = pInstruction;
 
     CLogging::LogMessage(_T("End CExceptionClause::SetHandlerFirstInstruction"));
     return hr;
@@ -341,7 +341,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetHandlerLastInstruct
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetHandlerLastInstruction"));
 
-    m_pHandlerLastInstruction = (CInstruction*)pInstruction;
+    m_pHandlerLastInstruction = pInstruction;
 
     CLogging::LogMessage(_T("End CExceptionClause::SetHandlerLastInstruction"));
     return hr;
@@ -352,7 +352,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetFilterFirstInstruct
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetFilterFirstInstruction"));
 
-    m_pFilterFirstInstruction = (CInstruction*)pInstruction;
+    m_pFilterFirstInstruction = pInstruction;
 
     CLogging::LogMessage(_T("End CExceptionClause::SetFilterFirstInstruction"));
     return hr;

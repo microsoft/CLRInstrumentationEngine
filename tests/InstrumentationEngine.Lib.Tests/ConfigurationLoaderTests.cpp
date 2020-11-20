@@ -28,7 +28,8 @@ namespace InstrumentationEngineLibTests
 
             wfstream output;
             output.open(fileName, ios_base::app | ios_base::out);
-            auto error = _wcserror(GetLastError());
+            wchar_t error[256] = { 0 };
+            _wcserror_s(error,GetLastError());
             Assert::IsTrue(!output.fail() && !output.bad(), error);
 
             output << L"<InstrumentationEngineConfiguration>" << std::endl;
@@ -64,7 +65,8 @@ namespace InstrumentationEngineLibTests
             }
             wfstream output;
             output.open(fileName, ios_base::app | ios_base::out);
-            auto error = _wcserror(GetLastError());
+            wchar_t error[256] = { 0 };
+            _wcserror_s(error, GetLastError());
             Assert::IsTrue(!output.fail() && !output.bad(), error);
 
             output << L"<InstrumentationEngineConfiguration>" << std::endl;
@@ -96,7 +98,8 @@ namespace InstrumentationEngineLibTests
             }
             wfstream output;
             output.open(fileName, ios_base::app | ios_base::out);
-            auto error = _wcserror(GetLastError());
+            wchar_t error[256] = { 0 };
+            _wcserror_s(error, GetLastError());
             Assert::IsTrue(!output.fail() && !output.bad(), error);
 
             output << L"<InstrumentationEngineConfiguration>" << std::endl;

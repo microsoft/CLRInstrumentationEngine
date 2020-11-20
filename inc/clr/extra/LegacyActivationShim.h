@@ -1348,7 +1348,10 @@ WRAP_HRESULT_IMPL_BOOLEAN(StrongNameGetPublicKeyEx_HRESULT,
         }
         else
         {
+#pragma warning( push )
+#pragma warning( disable: 25130 ) // 'CoCreateInstance' needs to be reviewed if a non-global or non-const CLSID is passed.
             IfHrFailRet(::CoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv));
+#pragma warning( pop )
         }
 
         return hr;

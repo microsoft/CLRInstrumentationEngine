@@ -25,6 +25,9 @@ STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID
     return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
 }
 
+#pragma warning( push )
+#pragma warning( disable: 28301 ) // No annotations for first declaration of 'DllRegisterServer'.
+
 // DllRegisterServer - Adds entries to the system registry.
 __control_entrypoint(DllExport)
 STDAPI DllRegisterServer(void)
@@ -42,11 +45,16 @@ STDAPI DllUnregisterServer(void)
     return hr;
 }
 
+#pragma warning ( pop )
+
 // DllInstall - Adds/Removes entries to the system registry per user per machine.
 STDAPI DllInstall(BOOL bInstall, _In_opt_  LPCWSTR pszCmdLine)
 {
     HRESULT hr = E_FAIL;
+#pragma warning( push )
+#pragma warning( disable: 25138 ) // static array 'const wchar_t szUserSwitch[5]' should be a local pointer.
     static const wchar_t szUserSwitch[] = L"user";
+#pragma warning ( pop )
 
     if (pszCmdLine != NULL)
     {

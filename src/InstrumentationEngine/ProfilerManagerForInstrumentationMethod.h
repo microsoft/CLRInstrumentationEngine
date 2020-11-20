@@ -12,7 +12,7 @@ namespace MicrosoftInstrumentationEngine
         public CModuleRefCount
     {
     public:
-        CProfilerManagerForInstrumentationMethod(GUID instrumentationMethodGuid, CProfilerManager* pProfilerManager);
+        CProfilerManagerForInstrumentationMethod(const GUID& instrumentationMethodGuid, CProfilerManager* pProfilerManager);
 
     private:
         static const int LogEntryMaxSize = 4096;
@@ -113,5 +113,5 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(LogMessageInternal)(_In_ const WCHAR* wszMessage, _In_ LoggingFlags flagToCheck);
     };
 
-    void EscapeFormatSpecifiers(_In_ const tstring tsOriginal, _Inout_ tstring& tsEscaped);
+    void EscapeFormatSpecifiers(_In_ const tstring& tsOriginal, _Inout_ tstring& tsEscaped);
 }

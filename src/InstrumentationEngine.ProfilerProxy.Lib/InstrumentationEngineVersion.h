@@ -21,9 +21,9 @@ namespace ProfilerProxy
 
         const std::wstring& GetSemanticVersionString() const;
 
-        BOOL IsPreview() const;
+        bool IsPreview() const;
 
-        BOOL IsDebug() const;
+        bool IsDebug() const;
 
         int Compare(_In_ const InstrumentationEngineVersion& right) const noexcept;
 

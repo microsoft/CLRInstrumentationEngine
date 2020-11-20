@@ -141,7 +141,7 @@ HRESULT CLogging::SetLoggingFlags(_In_ LoggingFlags loggingFlags)
 }
 
 // static
-HRESULT CLogging::SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost)
+HRESULT CLogging::SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost)
 {
     IfNotInitRetUnexpected(s_initialize);
 

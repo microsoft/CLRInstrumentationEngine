@@ -52,12 +52,12 @@ const std::wstring& InstrumentationEngineVersion::GetSemanticVersionString() con
     return m_semanticVersionStr;
 }
 
-BOOL InstrumentationEngineVersion::IsPreview() const
+bool InstrumentationEngineVersion::IsPreview() const
 {
     return m_isPreview;
 }
 
-BOOL InstrumentationEngineVersion::IsDebug() const
+bool InstrumentationEngineVersion::IsDebug() const
 {
     return m_isDebug;
 }
