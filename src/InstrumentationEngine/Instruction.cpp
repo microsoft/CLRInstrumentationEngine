@@ -467,6 +467,9 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsRemoved(_Out_ BOOL* p
 
 DWORD MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize()
 {
+    // Optimization. GetInstructionSize() is not implemented as a combination of GetOpCodeLength() + GetOperandLength() because
+    // it is called many times inside tight loops. Removing the additional virtual function call reduces overhead, and
+    // allows better optimization on return values.
     return s_ilOpcodeInfo[m_opcode].m_opcodeLength + s_ilOpcodeInfo[m_opcode].m_operandLength;
 }
 
@@ -1087,7 +1090,10 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetOperandLength(_Ou
 
 DWORD MicrosoftInstrumentationEngine::CSwitchInstruction::GetInstructionSize()
 {
-    return s_ilOpcodeInfo[m_opcode].m_opcodeLength + ((DWORD)(m_branchTargets.size()) + 1) * sizeof(DWORD);
+    // Optimization. GetInstructionSize() is not implemented as a combination of GetOpCodeLength() + GetOperandLength() because
+    // it is called many times inside tight loops. Removing the additional virtual function call reduces overhead, and
+    // allows better optimization on return values.
+    return s_ilOpcodeInfo[m_opcode].m_opcodeLength + (DWORD)((m_branchTargets.size() + 1) * sizeof(DWORD));
 }
 
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarget(_In_ DWORD index, _Out_ IInstruction** ppTarget)

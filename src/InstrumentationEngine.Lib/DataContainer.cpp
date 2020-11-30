@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "DataContainer.h"
 
-MicrosoftInstrumentationEngine::CDataContainer::CDataContainer()
+MicrosoftInstrumentationEngine::CDataContainer::CDataContainer() : m_dataContainerMap(1)
 {
     DEFINE_REFCOUNT_NAME(CDataContainer);
 
@@ -47,7 +47,7 @@ HRESULT MicrosoftInstrumentationEngine::CDataContainer::SetDataItem(
         // data item to null.
         if (pDataItem != nullptr)
         {
-            pMap = new CAtlMap<GUID, CComPtr<IUnknown>>;
+            pMap = new CAtlMap<GUID, CComPtr<IUnknown>>(1);
             if (!pMap)
             {
                 return E_OUTOFMEMORY;
@@ -67,6 +67,9 @@ HRESULT MicrosoftInstrumentationEngine::CDataContainer::SetDataItem(
             if (pMap->GetCount() == 0)
             {
                 m_dataContainerMap.RemoveKey(*pComponentId);
+
+                // need to manually delete the map.
+                delete pMap;
             }
         }
         else

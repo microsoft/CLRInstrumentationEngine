@@ -5,9 +5,10 @@
 
 namespace MicrosoftInstrumentationEngine
 {
-    CBranchTargetInfo::CBranchTargetInfo(_In_ CInstruction* pInstruction) : m_pInstruction(pInstruction)
+    // Note: we construct m_branches with only one initial bucket to save memory and because
+    // most instructions will not be targeted by that many branches.
+    CBranchTargetInfo::CBranchTargetInfo(_In_ CInstruction* pInstruction) : m_pInstruction(pInstruction), m_branches(1)
     {
-
     }
 
     HRESULT CBranchTargetInfo::GetInstance(_In_ CInstruction* pInstruction, _Outptr_ CBranchTargetInfo** ppResult)
@@ -47,10 +48,9 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
-    HRESULT CBranchTargetInfo::SetBranchTarget(_In_ CInstruction* pBranch, _In_ CInstruction* pTarget, _In_opt_ CInstruction* pOldTarget)
+    HRESULT CBranchTargetInfo::SetBranchTarget(_In_ CInstruction* pBranch, _In_opt_ CInstruction* pTarget, _In_opt_ CInstruction* pOldTarget)
     {
         IfNullRet(pBranch);
-        IfNullRet(pTarget);
 
         HRESULT hr;
 
@@ -66,9 +66,13 @@ namespace MicrosoftInstrumentationEngine
             }
         }
 
-        CComPtr<CBranchTargetInfo> pInfo;
-        IfFailRet(CBranchTargetInfo::GetOrCreateInstance(pTarget, &pInfo));
-        pInfo.p->m_branches.emplace(pBranch);
+        if (pTarget != nullptr)
+        {
+            CComPtr<CBranchTargetInfo> pInfo;
+            IfFailRet(CBranchTargetInfo::GetOrCreateInstance(pTarget, &pInfo));
+            pInfo.p->m_branches.emplace(pBranch);
+        }
+
         return S_OK;
     }
 
@@ -88,10 +92,6 @@ namespace MicrosoftInstrumentationEngine
     HRESULT CBranchTargetInfo::Retarget(_In_ CInstruction* pNewInstruction)
     {
         HRESULT hr = S_OK;
-
-        // keep this alive, since disconnecting branch targets will cause
-        // this info to be removed from the data container.
-        CComPtr<CBranchTargetInfo> _this = this;
 
         // Remove this CBranchTargetInfo from the data container. If a new one
         // is needed, it will be regenerated when branch targets are set.
