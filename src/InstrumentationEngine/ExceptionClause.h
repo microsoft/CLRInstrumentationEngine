@@ -18,11 +18,11 @@ namespace MicrosoftInstrumentationEngine
     {
     private:
         CorExceptionFlag m_flags;
-        CComPtr<IInstruction> m_pTryFirstInstruction;
-        CComPtr<IInstruction> m_pTryLastInstruction;
-        CComPtr<IInstruction> m_pHandlerFirstInstruction;
-        CComPtr<IInstruction> m_pHandlerLastInstruction;
-        CComPtr<IInstruction> m_pFilterFirstInstruction;
+        CComPtr<CInstruction> m_pTryFirstInstruction;
+        CComPtr<CInstruction> m_pTryLastInstruction;
+        CComPtr<CInstruction> m_pHandlerFirstInstruction;
+        CComPtr<CInstruction> m_pHandlerLastInstruction;
+        CComPtr<CInstruction> m_pFilterFirstInstruction;
 
         mdToken m_ExceptionHandlerType;
 
