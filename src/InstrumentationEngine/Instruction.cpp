@@ -1184,7 +1184,7 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchOffset(_In_
     HRESULT hr = S_OK;
     IfNullRetPointer(pdwOffset);
 
-    CComPtr<IInstruction> pInstruction = m_branchTargets[index];
+    CComPtr<CInstruction> pInstruction = m_branchTargets[index];
     if (pInstruction != NULL)
     {
         IfFailRet(pInstruction->GetOffset(pdwOffset));
