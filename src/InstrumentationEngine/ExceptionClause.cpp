@@ -24,11 +24,11 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::InitializeFromSmall(
     m_flags = static_cast<CorExceptionFlag>(pSmallClause->Flags);
 #endif
 
-    IfFailRet(pInstructionGraph->GetInstructionAtOffset(pSmallClause->TryOffset, &m_pTryFirstInstruction));
+    IfFailRet(pInstructionGraph->GetInstructionAtOffsetInternal(pSmallClause->TryOffset, &m_pTryFirstInstruction));
     IfFailRet(pInstructionGraph->GetInstructionAtEndOffset(pSmallClause->TryOffset + pSmallClause->TryLength, &m_pTryLastInstruction));
 
     // Is it legal to not have a handler for a filter? Not doing if fail ret here.
-    pInstructionGraph->GetInstructionAtOffset(pSmallClause->HandlerOffset, &m_pHandlerFirstInstruction);
+    pInstructionGraph->GetInstructionAtOffsetInternal(pSmallClause->HandlerOffset, &m_pHandlerFirstInstruction);
     pInstructionGraph->GetInstructionAtEndOffset(pSmallClause->HandlerOffset + pSmallClause->HandlerLength, &m_pHandlerLastInstruction);
 
     if (m_flags == COR_ILEXCEPTION_CLAUSE_NONE)
@@ -39,7 +39,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::InitializeFromSmall(
     else if (m_flags == COR_ILEXCEPTION_CLAUSE_FILTER)
     {
         //filter block - get the filter first instruction
-        IfFailRet(pInstructionGraph->GetInstructionAtOffset(pSmallClause->FilterOffset, &m_pFilterFirstInstruction));
+        IfFailRet(pInstructionGraph->GetInstructionAtOffsetInternal(pSmallClause->FilterOffset, &m_pFilterFirstInstruction));
     }
 
     CLogging::LogMessage(_T("End CExceptionClause::InitializeFromSmall"));
@@ -57,11 +57,11 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::InitializeFromFat(
 
     m_flags = pFatClause->Flags;
 
-    IfFailRet(pInstructionGraph->GetInstructionAtOffset(pFatClause->TryOffset, &m_pTryFirstInstruction));
+    IfFailRet(pInstructionGraph->GetInstructionAtOffsetInternal(pFatClause->TryOffset, &m_pTryFirstInstruction));
     IfFailRet(pInstructionGraph->GetInstructionAtEndOffset(pFatClause->TryOffset + pFatClause->TryLength, &m_pTryLastInstruction));
 
     // Is it legal to not have a handler for a filter? Not doing if fail ret here.
-    pInstructionGraph->GetInstructionAtOffset(pFatClause->HandlerOffset, &m_pHandlerFirstInstruction);
+    pInstructionGraph->GetInstructionAtOffsetInternal(pFatClause->HandlerOffset, &m_pHandlerFirstInstruction);
     pInstructionGraph->GetInstructionAtEndOffset(pFatClause->HandlerOffset + pFatClause->HandlerLength, &m_pHandlerLastInstruction);
 
     if (m_flags == COR_ILEXCEPTION_CLAUSE_NONE)
@@ -72,7 +72,7 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::InitializeFromFat(
     else if (m_flags == COR_ILEXCEPTION_CLAUSE_FILTER)
     {
         //filter block - get the filter first instruction
-        IfFailRet(pInstructionGraph->GetInstructionAtOffset(pFatClause->FilterOffset, &m_pFilterFirstInstruction));
+        IfFailRet(pInstructionGraph->GetInstructionAtOffsetInternal(pFatClause->FilterOffset, &m_pFilterFirstInstruction));
     }
 
     CLogging::LogMessage(_T("End CExceptionClause::InitializeFromSmall"));
@@ -305,7 +305,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetTryFirstInstruction
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetTryFirstInstruction"));
 
-    m_pTryFirstInstruction = pInstruction;
+    if (pInstruction != nullptr)
+    {
+        IfFailRet(pInstruction->QueryInterface(__uuidof(CInstruction), (void**)&m_pTryFirstInstruction));
+    }
+    else
+    {
+        m_pTryFirstInstruction = nullptr;
+    }
 
     CLogging::LogMessage(_T("End CExceptionClause::SetTryFirstInstruction"));
     return hr;
@@ -316,7 +323,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetTryLastInstruction(
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetTryLastInstruction"));
 
-    m_pTryLastInstruction = pInstruction;
+    if (pInstruction != nullptr)
+    {
+        IfFailRet(pInstruction->QueryInterface(__uuidof(CInstruction), (void**)&m_pTryLastInstruction));
+    }
+    else
+    {
+        m_pTryLastInstruction = nullptr;
+    }
 
     CLogging::LogMessage(_T("End CExceptionClause::SetTryLastInstruction"));
     return hr;
@@ -327,7 +341,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetHandlerFirstInstruc
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetHandlerFirstInstruction"));
 
-    m_pHandlerFirstInstruction = pInstruction;
+    if (pInstruction != nullptr)
+    {
+        IfFailRet(pInstruction->QueryInterface(__uuidof(CInstruction), (void**)&m_pHandlerFirstInstruction));
+    }
+    else
+    {
+        m_pHandlerFirstInstruction = nullptr;
+    }
 
     CLogging::LogMessage(_T("End CExceptionClause::SetHandlerFirstInstruction"));
     return hr;
@@ -338,7 +359,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetHandlerLastInstruct
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetHandlerLastInstruction"));
 
-    m_pHandlerLastInstruction = pInstruction;
+    if (pInstruction != nullptr)
+    {
+        IfFailRet(pInstruction->QueryInterface(__uuidof(CInstruction), (void**)&m_pHandlerLastInstruction));
+    }
+    else
+    {
+        m_pHandlerLastInstruction = nullptr;
+    }
 
     CLogging::LogMessage(_T("End CExceptionClause::SetHandlerLastInstruction"));
     return hr;
@@ -349,7 +377,14 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::SetFilterFirstInstruct
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CExceptionClause::SetFilterFirstInstruction"));
 
-    m_pFilterFirstInstruction = pInstruction;
+    if (pInstruction != nullptr)
+    {
+        IfFailRet(pInstruction->QueryInterface(__uuidof(CInstruction), (void**)&m_pFilterFirstInstruction));
+    }
+    else
+    {
+        m_pFilterFirstInstruction = nullptr;
+    }
 
     CLogging::LogMessage(_T("End CExceptionClause::SetFilterFirstInstruction"));
     return hr;

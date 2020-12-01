@@ -86,8 +86,6 @@ namespace MicrosoftInstrumentationEngine
         HRESULT SetGraph(_In_ CInstructionGraph* pGraph);
         constexpr CInstructionGraph* GetGraph() { return m_pGraph; }
 
-        static HRESULT GetInstructionSize(_In_ IInstruction* pInstruction, _Out_ DWORD* pdwSize);
-
     public:
         virtual HRESULT __stdcall GetOffset(_Out_ DWORD* pdwOffset) override;
         virtual HRESULT __stdcall GetOriginalOffset(_Out_ DWORD* pdwOffset) override;
@@ -406,8 +404,8 @@ namespace MicrosoftInstrumentationEngine
         // NOTE: This is the target offset for the original decoded instruction.
         // It should not be used if m_pBranchTarget has been set.
         DWORD m_decodedTargetOffset;
-        CComPtr<IInstruction> m_pBranchTarget;
-        CComPtr<IInstruction> m_pOrigBranchTarget;
+        CComPtr<CInstruction> m_pBranchTarget;
+        CComPtr<CInstruction> m_pOrigBranchTarget;
 
     public:
         CBranchInstruction(
@@ -465,7 +463,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Vector of actual branch targets. Offsets etc... should be read from here
         // after the initialization phase is over.
-        std::vector<CComPtr<IInstruction>> m_branchTargets;
+        std::vector<CComPtr<CInstruction>> m_branchTargets;
 
     public:
         CSwitchInstruction(

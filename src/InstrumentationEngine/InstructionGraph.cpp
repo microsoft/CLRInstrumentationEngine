@@ -488,7 +488,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ IInstruction** ppInstruction)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
     CCriticalSectionHolder lock(&m_cs);
@@ -703,8 +703,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedLast
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffset(_In_  DWORD offset, _Out_ IInstruction** ppInstruction)
 {
+    HRESULT hr;
+    IfNullRetPointer(ppInstruction);
+    CComPtr<CInstruction> pResult;
+    IfFailRet(GetInstructionAtOffsetInternal(offset, &pResult));
+    *ppInstruction = pResult.Detach();
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction)
+{
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetInstructionAtOffset"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -726,15 +735,22 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffse
         pCurrInstruction = pCurrInstruction->NextInstructionInternal();
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetInstructionAtOffset"));
-
     return E_FAIL;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOriginalOffset(_In_  DWORD offset, _Out_ IInstruction** ppInstruction)
 {
+    IfNullRetPointer(ppInstruction);
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetInstructionAtOriginalOffset"));
+    CComPtr<CInstruction> pResult;
+    IfFailRet(GetInstructionAtOriginalOffsetInternal(offset, &pResult));
+    *ppInstruction = pResult.Detach();
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOriginalOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction)
+{
+    HRESULT hr = S_OK;
     CCriticalSectionHolder lock(&m_cs);
     IfNullRetPointer(ppInstruction);
 
@@ -763,8 +779,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOrigi
             pCurrInstruction = pCurrInstruction->NextInstructionInternal();
         }
     }
-
-    CLogging::LogMessage(_T("End CInstructionGraph::GetInstructionAtOriginalOffset"));
 
     return E_FAIL;
 }

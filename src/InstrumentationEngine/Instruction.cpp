@@ -473,11 +473,6 @@ DWORD MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize()
     return s_ilOpcodeInfo[m_opcode].m_opcodeLength + s_ilOpcodeInfo[m_opcode].m_operandLength;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstruction::GetInstructionSize(_Out_ DWORD* pdwSize)
-{
-    return GetInstructionSize(this, pdwSize);
-}
-
 HRESULT MicrosoftInstrumentationEngine::CInstruction::GetIsBranch(_Out_ BOOL* pbValue)
 {
     HRESULT hr = S_OK;
@@ -1115,7 +1110,7 @@ IInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarge
         return NULL;
     }
 
-    const CComPtr<IInstruction>& pInstruction = m_branchTargets[index];
+    const CComPtr<CInstruction>& pInstruction = m_branchTargets[index];
     if (pInstruction == NULL)
     {
         CLogging::LogError(_T("CSwitchInstruction::GetBranchTarget - branch target at index is null"));
