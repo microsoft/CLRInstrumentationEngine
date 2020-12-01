@@ -1151,7 +1151,7 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::ReplaceBranchTarget(
     {
         if(m_branchTargets[i] == pOriginal)
         {
-            SetBranchTarget(i, pNew);
+            IfFailRet(SetBranchTarget(i, pNew));
             //Need to continue as several branches of the switch might point to the same location
         }
     }
