@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -424,10 +425,8 @@ namespace InstrEngineTests
                 flag |= COMPLUS_ENABLE_64BIT;
             }
 
-            if(!NativeMethods.SetComPlusPackageInstallStatus(flag))
-            {
-                throw new InvalidOperationException();
-            }
+            // safely ignore the result.
+            _ = NativeMethods.SetComPlusPackageInstallStatus(flag);
         }
     }
 }

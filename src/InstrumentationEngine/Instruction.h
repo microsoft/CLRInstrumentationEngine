@@ -69,11 +69,16 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CInstruction>(riid, ppvObject)))
+            {
+                return ImplQueryInterface(
+                    static_cast<IInstruction*>(this),
+                    static_cast<IDataContainer*>(this),
+                    riid,
+                    ppvObject
+                );
+            }
+            return S_OK;
         }
 
     public:
@@ -158,25 +163,25 @@ namespace MicrosoftInstrumentationEngine
         bool GetIsBranchInternal() const { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
 
     protected:
-        template<typename... Args>
-        HRESULT QueryInterfaceInternal(_In_ REFIID riid, _Out_ void** ppvObject, Args... pThisArgs)
+
+        template<typename TBase>
+        HRESULT QueryBaseType(_In_ REFIID riid, _Out_ void** ppvObject)
         {
             // Workaround for the diamond inheritence problem.
             // Both CDataContainer and IInstruction inherit from IUnknown and
             //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknown*.
-            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311 
-            if (__uuidof(CInstruction) == riid && ppvObject != nullptr)
+            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311
+
+            IfNullRet(ppvObject);
+
+            if (__uuidof(TBase) == riid)
             {
-                *ppvObject = static_cast<CInstruction*>(this);
+                *ppvObject = static_cast<TBase*>(this);
                 AddRef();
                 return S_OK;
             }
 
-            return ImplQueryInterface(
-                std::forward<Args>(pThisArgs)...,
-                riid,
-                ppvObject
-            );
+            return E_NOINTERFACE;
         }
 
     private:
@@ -240,12 +245,18 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(COperandInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>(this),
-                static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<COperandInstruction>(riid, ppvObject)))
+            {
+                if FAILED(CInstruction::QueryInterface(riid, ppvObject))
+                {
+                    return ImplQueryInterface(
+                        static_cast<IOperandInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+            }
+            return S_OK;
         }
 
         // IOperandInstruction methods
@@ -277,12 +288,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CLoadConstInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -295,16 +306,16 @@ namespace MicrosoftInstrumentationEngine
             );
 
     public:
-        DEFINE_DELEGATED_REFCOUNT_ADDREF(CLoadConstInstruction);
-        DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
+        DEFINE_DELEGATED_REFCOUNT_ADDREF(CLoadLocalInstruction);
+        DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadLocalInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CLoadLocalInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -321,12 +332,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadLocalAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CLoadLocalAddrInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -344,12 +355,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CStoreLocalInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CStoreLocalInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -366,12 +377,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArg);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CLoadArgInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -388,12 +399,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArgAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CLoadArgAddrInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -423,12 +434,20 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CILBranch);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<IBranchInstruction*>(this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CBranchInstruction>(riid, ppvObject)))
+            {
+                if (FAILED(CInstruction::QueryInterface(riid, ppvObject)))
+                {
+                    return ImplQueryInterface(
+                        static_cast<IBranchInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+                
+            }
+
+            return S_OK;
         }
 
         // IBranchInstruction methods
@@ -490,12 +509,20 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CSwitchInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return QueryInterfaceInternal(
-                riid,
-                ppvObject,
-                static_cast<ISwitchInstruction*>(this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this));
+            if (FAILED(QueryBaseType<CSwitchInstruction>(riid, ppvObject)))
+            {
+                if (FAILED(CInstruction::QueryInterface(riid, ppvObject)))
+                {
+                    return ImplQueryInterface(
+                        static_cast<ISwitchInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+
+            }
+
+            return S_OK;
         }
 
     public:

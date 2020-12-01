@@ -100,7 +100,9 @@ namespace MicrosoftInstrumentationEngine
         {
             if (pInstr->GetIsBranchInternal())
             {
-                CBranchInstruction* pBranch = (CBranchInstruction*)pInstr;
+                CComPtr<CBranchInstruction> pBranch;
+                IfFailRet(pInstr->QueryInterface(__uuidof(CBranchInstruction), (void**)&pBranch));
+
                 // This indicates that the new instruction targets this instruction.
                 // If we were to retarget it, we would cause an infinite loop.
                 if (pBranch != pNewInstruction)
