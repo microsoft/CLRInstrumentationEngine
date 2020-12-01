@@ -150,7 +150,6 @@ namespace MicrosoftInstrumentationEngine
         static HRESULT InstructionFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ CInstruction** ppInstruction);
         static HRESULT OrdinalOpcodeFromBytes(_In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode);
 
-
         HRESULT EmitIL(_In_reads_bytes_(dwcbILBuffer) BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
 
         HRESULT LogInstruction(bool ignoreTest);
@@ -161,6 +160,20 @@ namespace MicrosoftInstrumentationEngine
         constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
         constexpr bool GetIsSwitchInternal() const { return m_opcode == Cee_Switch; }
         bool GetIsBranchInternal() const { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
+
+        // Attempt to cast the given IInstruction to a more specific TCast type. pInstruction may
+        // be null, in which case, the result will also be null.
+        template<typename TCast>
+        static HRESULT CastTo(_In_opt_ IInstruction* pInstruction, _Outptr_result_maybenull_ TCast** pResult)
+        {
+            IfNullRet(pResult);
+            if (pInstruction == nullptr)
+            {
+                *pResult = nullptr;
+            }
+
+            return pInstruction->QueryInterface(pResult);
+        }
 
     protected:
 
@@ -487,14 +500,8 @@ namespace MicrosoftInstrumentationEngine
     public:
         CSwitchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ bool isNew
-            );
-
-        CSwitchInstruction(
-            _In_ ILOrdinalOpcode opcode,
             _In_ bool isNew,
-            _In_ DWORD cBranchTargets,
-            _In_reads_(cBranchTargets) IInstruction** ppBranchTargets
+            _In_ DWORD initialCount = 0
             );
 
         virtual HRESULT InitializeFromBytes(

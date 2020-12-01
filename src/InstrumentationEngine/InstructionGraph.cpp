@@ -1101,7 +1101,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::RemoveAll()
     CLogging::LogMessage(_T("Starting CInstructionGraph::RemoveAll"));
     CCriticalSectionHolder lock(&m_cs);
 
-    CInstruction* pInstr = (CInstruction*)m_pFirstInstruction;
+    CInstruction* pInstr = m_pFirstInstruction.p;
 
     while (pInstr != NULL)
     {
@@ -1142,7 +1142,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     // is not taken into account. It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
     // The actual maximum may be slightly smaller.
-    CInstruction* pInstr = (CInstruction*)m_pFirstInstruction;
+    CInstruction* pInstr = m_pFirstInstruction.p;
     while (pInstr != NULL)
     {
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();

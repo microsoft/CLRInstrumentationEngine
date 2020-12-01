@@ -1007,8 +1007,9 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
     IfNullRetPointer(pInstruction);
 
     CComPtr<CInstruction> pOldInstruction = m_pBranchTarget;
-    m_pBranchTarget = (CInstruction*)pInstruction;
-    IfFailRet(CBranchTargetInfo::SetBranchTarget(this, (CInstruction*)pInstruction, pOldInstruction));
+    m_pBranchTarget.Release();
+    IfFailRet(CInstruction::CastTo(pInstruction, &m_pBranchTarget));
+    IfFailRet(CBranchTargetInfo::SetBranchTarget(this, m_pBranchTarget, pOldInstruction));
 
     if (m_pBranchTarget == nullptr)
     {
@@ -1026,27 +1027,11 @@ HRESULT MicrosoftInstrumentationEngine::CBranchInstruction::SetBranchTarget(_In_
 
 MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
         _In_ ILOrdinalOpcode opcode,
-        _In_ bool isNew
-        ) : CInstruction(opcode, isNew)
-{
-
-}
-
-MicrosoftInstrumentationEngine::CSwitchInstruction::CSwitchInstruction(
-        _In_ ILOrdinalOpcode opcode,
         _In_ bool isNew,
-        _In_ DWORD cBranchTargets,
-        _In_reads_(cBranchTargets) IInstruction** ppBranchTargets
-        ) : CInstruction(opcode, isNew)
+        _In_ DWORD initialCount
+        ) : CInstruction(opcode, isNew), m_branchTargets(initialCount)
 {
 
-    m_branchTargets.reserve(cBranchTargets);
-
-    for (DWORD i = 0; i < cBranchTargets; i++)
-    {
-        CComPtr<IInstruction> pTarget = ppBranchTargets[i];
-        m_branchTargets[i] = pTarget;
-    }
 }
 
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::InitializeFromBytes(
@@ -1127,8 +1112,11 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::SetBranchTarget(_In_
     CLogging::LogMessage(_T("Starting CSwitchInstruction::SetBranchTarget"));
 
     CComPtr<CInstruction> oldTarget = m_branchTargets[index];
-    m_branchTargets[index] = (CInstruction*)(pTarget);
-    CBranchTargetInfo::SetBranchTarget(this, (CInstruction*)(pTarget), oldTarget);
+    CComPtr<CInstruction> pNewTarget;
+    IfFailRet(CInstruction::CastTo(pTarget, &pNewTarget));
+
+    m_branchTargets[index] = pNewTarget;
+    IfFailRet(CBranchTargetInfo::SetBranchTarget(this, pNewTarget, oldTarget));
 
     return hr;
 }
