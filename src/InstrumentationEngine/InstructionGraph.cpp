@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Instruction.h"
 #include "InstructionGraph.h"
+#include "BranchTargetInfo.h"
 
 MicrosoftInstrumentationEngine::CInstructionGraph::CInstructionGraph() : m_pMethodInfo(NULL), m_bHasBaselineBeenSet(false), m_bAreInstructionsStale(true)
 {
@@ -265,9 +266,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
         pPrevious = pNewInstr.p;
 
         // Jump to the next instruction
-        DWORD instructionSize = 0;
-        IfFailRet(pNewInstr->GetInstructionSize(&instructionSize));
-        pCode += instructionSize;
+        pCode += pNewInstr->GetInstructionSize();
 
         if (pCode >= pEndOfCode)
         {
@@ -382,8 +381,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     CInstruction* pInstruction = m_pFirstInstruction;
     while (pInstruction != NULL)
     {
-        DWORD dwInstructionSize = 0;
-        IfFailRet(pInstruction->GetInstructionSize(&dwInstructionSize));
+        DWORD dwInstructionSize = pInstruction->GetInstructionSize();
 
         BOOL bIsNewInstruction = FALSE;
         pInstruction->GetIsNew(&bIsNewInstruction);
@@ -490,7 +488,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ IInstruction** ppInstruction)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
     CCriticalSectionHolder lock(&m_cs);
@@ -501,8 +499,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOf
         DWORD currOffset = 0;
         IfFailRet(pCurrent->GetOffset(&currOffset));
 
-        DWORD currSize = 0;
-        IfFailRet(pCurrent->GetInstructionSize(&currSize));
+        DWORD currSize = pCurrent->GetInstructionSize();
 
         if ((currOffset + currSize) == offset)
         {
@@ -533,7 +530,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateInstructionO
         if (pPrev != NULL)
         {
             IfFailRet(pPrev->GetOffset(&dwPrevOffset));
-            IfFailRet(pPrev->GetInstructionSize(&dwPrevLength));
+            dwPrevLength = pPrev->GetInstructionSize();
         }
 
         IfFailRet(pCurrent->SetOffset(dwPrevOffset + dwPrevLength));
@@ -706,8 +703,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedLast
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffset(_In_  DWORD offset, _Out_ IInstruction** ppInstruction)
 {
+    HRESULT hr;
+    IfNullRetPointer(ppInstruction);
+    CComPtr<CInstruction> pResult;
+    IfFailRet(GetInstructionAtOffsetInternal(offset, &pResult));
+    *ppInstruction = pResult.Detach();
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction)
+{
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetInstructionAtOffset"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -729,15 +735,22 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffse
         pCurrInstruction = pCurrInstruction->NextInstructionInternal();
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetInstructionAtOffset"));
-
     return E_FAIL;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOriginalOffset(_In_  DWORD offset, _Out_ IInstruction** ppInstruction)
 {
+    IfNullRetPointer(ppInstruction);
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetInstructionAtOriginalOffset"));
+    CComPtr<CInstruction> pResult;
+    IfFailRet(GetInstructionAtOriginalOffsetInternal(offset, &pResult));
+    *ppInstruction = pResult.Detach();
+    return S_OK;
+}
+
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOriginalOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction)
+{
+    HRESULT hr = S_OK;
     CCriticalSectionHolder lock(&m_cs);
     IfNullRetPointer(ppInstruction);
 
@@ -766,8 +779,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOrigi
             pCurrInstruction = pCurrInstruction->NextInstructionInternal();
         }
     }
-
-    CLogging::LogMessage(_T("End CInstructionGraph::GetInstructionAtOriginalOffset"));
 
     return E_FAIL;
 }
@@ -924,40 +935,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
 
     // Search the graph for any branch whose branch target is the old instruction. Set the branch target
     // to the new instruction.
-    CInstruction* pCurr = m_pFirstInstruction;
-    while (pCurr != nullptr)
-    {
-        bool isBranch = pCurr->GetIsBranchInternal();
-
-        if (isBranch)
-        {
-            CComPtr<CBranchInstruction> pBranch = (CBranchInstruction*)pCurr;
-
-            const IInstruction* pBranchTarget = pBranch->GetBranchTargetInternal();
-
-            // If the branch target is the original instruction AND the branch is not the new instruction,
-            // update it. Note the second condition is important because for things like leave instructions,
-            // often the next instruction is the branch target and resetting this would create an infinite loop.
-            if (pBranchTarget == pInstructionOrig && pCurr != pInstructionNew)
-            {
-                IfFailRet(pBranch->SetBranchTarget(pInstructionNew));
-            }
-        }
-        else
-        {
-            bool isSwitch = pCurr->GetIsSwitchInternal();
-
-            if (isSwitch)
-            {
-                CComPtr<ISwitchInstruction> pSwitch;
-                IfFailRet(pCurr->QueryInterface(__uuidof(ISwitchInstruction), (LPVOID*)&pSwitch));
-                IfFailRet(pSwitch->ReplaceBranchTarget(pInstructionOrig, pInstructionNew));
-            }
-
-        }
-
-        pCurr = pCurr->NextInstructionInternal();
-    }
+    IfFailRet(CBranchTargetInfo::RetargetBranches(pInstrOrig, pInstrNew));
 
     // Search the exception clauses for anything that points to the old instruction
     // Set that target to the new instruction
@@ -1123,28 +1101,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::RemoveAll()
     CLogging::LogMessage(_T("Starting CInstructionGraph::RemoveAll"));
     CCriticalSectionHolder lock(&m_cs);
 
-    CInstruction* pInstr = (CInstruction*)m_pFirstInstruction;
+    CInstruction* pInstr = m_pFirstInstruction.p;
 
     while (pInstr != NULL)
     {
         pInstr->SetIsRemoved();
-
-        CInstruction* pPreviousInstruction = pInstr->PreviousInstructionInternal();
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();
-
-        if (pPreviousInstruction != NULL)
-        {
-            IfFailRet(pPreviousInstruction->SetNextInstruction(NULL, false));
-        }
-
-        if (pNextInstruction != NULL)
-        {
-            IfFailRet(pNextInstruction->SetPreviousInstruction(NULL, false));
-        }
-
         IfFailRet(pInstr->SetNextInstruction(NULL, false));
         IfFailRet(pInstr->SetPreviousInstruction(NULL, false));
-
         pInstr = pNextInstruction;
     }
 
@@ -1178,7 +1142,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     // is not taken into account. It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
     // The actual maximum may be slightly smaller.
-    CInstruction* pInstr = (CInstruction*)m_pFirstInstruction;
+    CInstruction* pInstr = m_pFirstInstruction.p;
     while (pInstr != NULL)
     {
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();

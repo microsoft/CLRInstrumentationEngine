@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -45,6 +46,8 @@ namespace InstrEngineTests
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
         private static bool ThrowMessageBoxAtStartup = false;
+
+        private static bool WaitForDebugger = false;
 
         private static bool BinaryRecompiled = false;
 
@@ -100,6 +103,11 @@ namespace InstrEngineTests
             if (ThrowMessageBoxAtStartup)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_MessageboxAtAttach", @"1");
+            }
+
+            if (WaitForDebugger)
+            {
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", @"1");
             }
 
             if (TestParameters.DisableMethodSignatureValidation)
@@ -417,10 +425,8 @@ namespace InstrEngineTests
                 flag |= COMPLUS_ENABLE_64BIT;
             }
 
-            if(!NativeMethods.SetComPlusPackageInstallStatus(flag))
-            {
-                throw new InvalidOperationException();
-            }
+            // safely ignore the result.
+            _ = NativeMethods.SetComPlusPackageInstallStatus(flag);
         }
     }
 }

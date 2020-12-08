@@ -71,12 +71,15 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT CalculateInstructionOffsets();
 
-        HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ IInstruction** ppInstruction);
+        HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
 
         HRESULT CalculateMaxStack(_Out_ DWORD* pMaxStack);
 
         constexpr CInstruction* FirstInstructionInternal() { return m_pFirstInstruction.p; }
         constexpr CInstruction* OriginalFirstInstructionInternal() { return m_pOrigFirstInstruction.p; }
+        HRESULT GetInstructionAtOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction);
+        HRESULT GetInstructionAtOriginalOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction);
+
         HRESULT RefreshInstructions();
 
         // IInstructionGraph methods

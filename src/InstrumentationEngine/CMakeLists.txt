@@ -20,6 +20,7 @@ set(src_files
     ./AssemblyInfo.cpp
     #./AssemblyInjector.cpp
     #./AtlModule.cpp
+    ./BranchTargetInfo.cpp
     ./CompositeType.cpp
     ./CorHeaders.cpp
     ./CorMethodMalloc.cpp

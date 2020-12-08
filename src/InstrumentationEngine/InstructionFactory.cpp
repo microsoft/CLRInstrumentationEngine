@@ -219,10 +219,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::CreateSwitchInstruc
     IfNullRetPointer(ppInstruction);
 
     CComPtr<CSwitchInstruction> pInstruction;
-    pInstruction.Attach(new CSwitchInstruction(opcode, TRUE, cBranchTargets, ppBranchTargets));
+    pInstruction.Attach(new CSwitchInstruction(opcode, TRUE, cBranchTargets));
     if (pInstruction == NULL)
     {
         return E_OUTOFMEMORY;
+    }
+
+    for (DWORD i = 0; i < cBranchTargets; i++)
+    {
+        CComPtr<CInstruction> pTarget;
+        IfFailRet(ppBranchTargets[i]->QueryInterface(&pTarget));
+        IfFailRet(pInstruction->SetBranchTarget(i, ppBranchTargets[i]));
     }
 
     *ppInstruction = (IInstruction*)(pInstruction.p);
