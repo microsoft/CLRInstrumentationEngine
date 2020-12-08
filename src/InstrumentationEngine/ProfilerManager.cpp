@@ -974,11 +974,16 @@ HRESULT CProfilerManager::Initialize(
         {
             if (m_attachedClrVersion != ClrVersion_2)
             {
-                IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+                IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
             }
             else
             {
-                IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+                IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+            }
+
+            if (FAILED(hr))
+            {
+                RemoveRawProfilerHook();
             }
         }
     }
