@@ -5,11 +5,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -39,20 +41,27 @@ namespace InstrEngineTests
 
         #endregion
 
+        public const int TestAppTimeoutMs = 10000;
+
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
         private static bool ThrowMessageBoxAtStartup = false;
 
+        private static bool WaitForDebugger = false;
+
         private static bool BinaryRecompiled = false;
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false)
+        // Enable ref recording to track down memory leaks. For debug only.
+        private static bool EnableRefRecording = false;
+
+        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args);
+            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args, timeoutMs);
             ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
-        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args)
+        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
             {
@@ -75,8 +84,13 @@ namespace InstrEngineTests
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
             psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
-            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B"));
-            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format("MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
+            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+
+            if (EnableRefRecording)
+            {
+                psi.EnvironmentVariables.Add("EnableRefRecording", "1");
+            }
 
             if (!TestParameters.DisableLogLevel)
             {
@@ -89,6 +103,11 @@ namespace InstrEngineTests
             if (ThrowMessageBoxAtStartup)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_MessageboxAtAttach", @"1");
+            }
+
+            if (WaitForDebugger)
+            {
+                psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", @"1");
             }
 
             if (TestParameters.DisableMethodSignatureValidation)
@@ -143,8 +162,8 @@ namespace InstrEngineTests
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
             psi.EnvironmentVariables.Add(
-                is32bitTest? HostConfig32PathEnvName : HostConfig64PathEnvName,
-                Path.Combine(PathUtils.GetAssetsPath(), string.Format("NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+                is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -159,7 +178,19 @@ namespace InstrEngineTests
             psi.Arguments = args;
 
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
-            testProcess.WaitForExit();
+
+            // test processes are short. They should not run for more than a few seconds.
+            testProcess.WaitForExit(timeoutMs);
+
+            try
+            {
+                // try to end the process in case it is running too long.
+                testProcess.Kill();
+            }
+            catch
+            {
+                // failure expecected if the process is already ended.
+            }
 
             Assert.AreEqual(0, testProcess.ExitCode, "Test application failed");
         }
@@ -169,14 +200,14 @@ namespace InstrEngineTests
             List<string> docs = new List<string>();
             const string xmlDeclarationString = "<?xml version=\"1.0\"?>";
             int idx = 0;
-            int iNext = content.IndexOf(xmlDeclarationString, idx + 1);
+            int iNext = content.IndexOf(xmlDeclarationString, idx + 1, StringComparison.Ordinal);
 
             while (iNext != -1)
             {
                 string doc = content.Substring(idx, iNext - idx);
                 docs.Add(doc);
                 idx = iNext;
-                iNext = content.IndexOf(xmlDeclarationString, idx + 1);
+                iNext = content.IndexOf(xmlDeclarationString, idx + 1, StringComparison.Ordinal);
             }
 
             iNext = content.Length;
@@ -219,7 +250,7 @@ namespace InstrEngineTests
                     while ((tmpStr = outputStream.ReadLine()) != null)
                     {
                         if (!string.IsNullOrEmpty(tmpStr) &&
-                            !tmpStr.StartsWith("[TestIgnore]"))
+                            !tmpStr.StartsWith("[TestIgnore]", StringComparison.Ordinal))
                         {
                             strBuilder.Append(tmpStr);
                             outputStrList.Add(tmpStr);
@@ -250,15 +281,8 @@ namespace InstrEngineTests
                     Assert.AreEqual(baselineDocs.Length, outputDocs.Length);
                     for (int docIdx = 0; docIdx < baselineDocs.Length; docIdx++)
                     {
-
-                        string baselineXmlDocStr = baselineDocs[docIdx];
-                        string outputXmlDocStr = outputDocs[docIdx];
-
-                        XmlDocument baselineDocument = new XmlDocument();
-                        baselineDocument.LoadXml(baselineXmlDocStr);
-
-                        XmlDocument outputDocument = new XmlDocument();
-                        outputDocument.LoadXml(outputXmlDocStr);
+                        var baselineDocument = LoadXmlFromString(baselineDocs[docIdx]);
+                        var outputDocument = LoadXmlFromString(outputDocs[docIdx]);
 
                         Assert.AreEqual(baselineDocument.ChildNodes.Count, outputDocument.ChildNodes.Count);
 
@@ -279,6 +303,20 @@ namespace InstrEngineTests
                 Console.WriteLine($"Output FilePath: {outputPath}");
                 throw;
             }
+        }
+
+        private static XmlDocument LoadXmlFromString(string inputXml)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca3075#solution-3
+            XmlDocument xmlDoc = new XmlDocument() { XmlResolver = null };
+            using (var baselineStringReader = new StringReader(inputXml))
+            {
+                using (var xmlReader = XmlReader.Create(baselineStringReader, new XmlReaderSettings() { XmlResolver = null }))
+                {
+                    xmlDoc.Load(xmlReader);
+                }
+            }
+            return xmlDoc;
         }
 
         private static void DiffResultToBaselineNode(XmlNode baselineNode, XmlNode outputNode)
@@ -328,10 +366,12 @@ namespace InstrEngineTests
         {
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
-            XmlDocument scriptDocument = new XmlDocument();
-            scriptDocument.Load(scriptPath);
-
-            return scriptDocument;
+            using (var xmlReader = XmlReader.Create(scriptPath, new XmlReaderSettings() { XmlResolver = null }))
+            {
+                XmlDocument scriptDocument = new XmlDocument() { XmlResolver = null };
+                scriptDocument.Load(xmlReader);
+                return scriptDocument;
+            }
         }
 
         private static bool Is32bitTest(string testScript)
@@ -385,7 +425,8 @@ namespace InstrEngineTests
                 flag |= COMPLUS_ENABLE_64BIT;
             }
 
-            NativeMethods.SetComPlusPackageInstallStatus(flag);
+            // safely ignore the result.
+            _ = NativeMethods.SetComPlusPackageInstallStatus(flag);
         }
     }
 }

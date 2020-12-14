@@ -118,7 +118,7 @@ namespace MicrosoftInstrumentationEngine
         void LogDumpMessage(_In_ LPCWSTR wszMessage, ...);
 
         HRESULT GetLoggingHost(_Out_ IProfilerManagerLoggingHost** ppLoggingHost);
-        HRESULT SetLoggingHost(_In_ IProfilerManagerLoggingHost* pLoggingHost);
+        HRESULT SetLoggingHost(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost);
 
         bool GetLogToDebugPort();
         void SetLogToDebugPort(_In_ bool enable);

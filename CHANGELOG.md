@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.35
+
 ## 1.0.34
 + BugFixes:
   + Fix GetAssemblyInfosByName to return out param

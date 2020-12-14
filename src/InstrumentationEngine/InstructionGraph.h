@@ -41,6 +41,8 @@ namespace MicrosoftInstrumentationEngine
         // True if CreateBaseline has been called by an instrumentation method
         bool m_bHasBaselineBeenSet;
 
+        bool m_bAreInstructionsStale;
+
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CInstructionGraph);
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstructionGraph);
@@ -69,10 +71,16 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT CalculateInstructionOffsets();
 
-        HRESULT GetInstructionAtOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
         HRESULT GetInstructionAtEndOffset(_In_ DWORD offset, _Out_ CInstruction** ppInstruction);
 
         HRESULT CalculateMaxStack(_Out_ DWORD* pMaxStack);
+
+        constexpr CInstruction* FirstInstructionInternal() { return m_pFirstInstruction.p; }
+        constexpr CInstruction* OriginalFirstInstructionInternal() { return m_pOrigFirstInstruction.p; }
+        HRESULT GetInstructionAtOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction);
+        HRESULT GetInstructionAtOriginalOffsetInternal(_In_  DWORD offset, _Out_ CInstruction** ppInstruction);
+
+        HRESULT RefreshInstructions();
 
         // IInstructionGraph methods
     public:
@@ -98,7 +106,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Insert an instruction after another instruction. jmp offsets that point to the next instruction after
         // the other instruction are not updated to reflect this change
-        virtual HRESULT __stdcall InsertAfter(_In_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew) override;
+        virtual HRESULT __stdcall InsertAfter(_In_opt_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew) override;
 
         // Insert an instruction before another instruction AND update branch offsets and exception ranges that used
         // to point to the old instruction to point to the new instruction.
@@ -118,9 +126,9 @@ namespace MicrosoftInstrumentationEngine
             _In_ LPCBYTE pCodeBase,
             _In_ LPCBYTE pEndOfCode,
             _In_ DWORD originalToBaselineCorIlMapSize,
-            _In_ COR_IL_MAP originalToBaselineCorIlMap[],
+            _In_reads_(originalToBaselineCorIlMapSize) COR_IL_MAP originalToBaselineCorIlMap[],
             _In_ DWORD baselineSequencePointSize,
-            _In_ DWORD baselineSequencePointList[]
+            _In_reads_(baselineSequencePointSize) DWORD baselineSequencePointList[]
             ) override;
 
         // true if CreateBaseline has previously been called.
@@ -131,5 +139,6 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         HRESULT IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch);
+        void MarkInstructionsStale() { m_bAreInstructionsStale = true; }
     };
 }

@@ -117,6 +117,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="AssemblyInjector.cpp" />
     <ClCompile Include="AtlModule.cpp" />
+    <ClCompile Include="BranchTargetInfo.cpp" />
     <ClCompile Include="CompositeType.cpp" />
     <ClCompile Include="CorHeaders.cpp" />
     <ClCompile Include="CorMethodMalloc.cpp" />

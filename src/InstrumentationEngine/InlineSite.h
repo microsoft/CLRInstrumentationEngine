@@ -21,8 +21,8 @@ namespace MicrosoftInstrumentationEngine
             _In_ ModuleID m_moduleID
             );
 
-        mdToken GetInlineeToken();
-        mdToken GetInlineSiteToken();
-        ModuleID GetModuleID();
+        mdToken GetInlineeToken() const;
+        mdToken GetInlineSiteToken() const;
+        ModuleID GetModuleID() const;
     };
 }

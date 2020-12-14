@@ -96,7 +96,7 @@ namespace MicrosoftInstrumentationEngine
         }
 
     private:
-        HRESULT InitializeCore()
+        static HRESULT InitializeCore()
         {
             return CLogging::Initialize();
         }

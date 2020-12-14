@@ -193,7 +193,7 @@ namespace MicrosoftInstrumentationEngine
 #endif
 
         HRESULT FinalConstruct();
-        void FinalRelease();
+        static void FinalRelease();
 
         void SetIsInInitialize(_In_ bool val);
         bool GetIsInInitialize() const;
@@ -208,7 +208,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh);
         HRESULT SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dwEventMaskHigh);
 
-        ClrVersion GetAttachedClrVersion();
+        ClrVersion GetAttachedClrVersion() const;
 
         // Returns the raw unwrapped profiler info instance.
         HRESULT GetRealCorProfilerInfo(ICorProfilerInfo** ppRealProfilerInfo);
@@ -291,13 +291,13 @@ namespace MicrosoftInstrumentationEngine
 
         //Template method to either QI or simple copy the InstrumentionMethod ComPtr. These methods support CopyInstrumentationMethods.
         template<typename TInterfaceType>
-        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, TInterfaceType** pInterface)
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod>& pRawInstrumentationMethod, TInterfaceType** pInterface)
         {
             return pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (void**)pInterface);
         }
 
         template<>
-        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> pRawInstrumentationMethod, IInstrumentationMethod** pInterface)
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod>& pRawInstrumentationMethod, IInstrumentationMethod** pInterface)
         {
             return pRawInstrumentationMethod.CopyTo(pInterface);
         }

@@ -22,7 +22,7 @@
 
 #include <corhdr.h>
 #include <cor.h>
-#include <corprof.h>
+#include <clrprofiler.h>
 
 #include "InstrumentationEngine.h"
 

@@ -35,10 +35,15 @@ namespace MicrosoftInstrumentationEngine
         // CONSIDER: Store the original length as well? The graph immediately changes short branches etc...
 
         ILOrdinalOpcode m_opcode;
+
         DWORD m_offset;
         DWORD m_origOffset;
         InstructionGeneration m_instructionGeneration;
         BOOL m_bIsRemoved;
+
+        // The graph that owns this instruction. Not a CComPtr
+        // so that we don't have circular references.
+        CInstructionGraph* m_pGraph;
 
         CComPtr<CInstruction> m_pNextInstruction;
         CComPtr<CInstruction> m_pPreviousInstruction;
@@ -51,11 +56,11 @@ namespace MicrosoftInstrumentationEngine
     public:
         CInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
         );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             );
 
@@ -64,12 +69,16 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
+            if (FAILED(QueryBaseType<CInstruction>(riid, ppvObject)))
+            {
+                return ImplQueryInterface(
+                    static_cast<IInstruction*>(this),
+                    static_cast<IDataContainer*>(this),
+                    riid,
+                    ppvObject
                 );
+            }
+            return S_OK;
         }
 
     public:
@@ -79,6 +88,8 @@ namespace MicrosoftInstrumentationEngine
         // This can be positive for a push and negative for a pop.
         // For variable stack impact (call, etc...) it calculates the stack impact using metadata.
         HRESULT GetStackImpact(_In_ IMethodInfo* pMethodInfo, _In_ DWORD currStackDepth, _Out_ int* pStackImpact);
+        HRESULT SetGraph(_In_ CInstructionGraph* pGraph);
+        constexpr CInstructionGraph* GetGraph() { return m_pGraph; }
 
     public:
         virtual HRESULT __stdcall GetOffset(_Out_ DWORD* pdwOffset) override;
@@ -105,8 +116,6 @@ namespace MicrosoftInstrumentationEngine
         // set to true of this instruction has been removed or replaced from in the instruction stream.
         virtual HRESULT __stdcall GetIsRemoved(_Out_ BOOL* pbValue) override;
 
-        virtual HRESULT __stdcall GetInstructionSize(_Out_ DWORD* pdwSize);
-
         virtual HRESULT __stdcall GetIsBranch(_Out_ BOOL* pbValue) override;
         virtual HRESULT __stdcall GetIsSwitch(_Out_ BOOL* pbValue) override;
         virtual HRESULT __stdcall GetIsCallInstruction(_Out_ BOOL* pbValue) override;
@@ -124,9 +133,12 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall GetOriginalPreviousInstruction(_Out_ IInstruction** ppPrevInstruction) override;
 
         virtual HRESULT __stdcall GetInstructionGeneration(_Out_ InstructionGeneration* pInstructionGeneration) override;
+
     public:
         // NOTE: these do not fixup the rest of hte graph. Call the versions on instruction graph if you want
         // previous, and next to be udpated correctly
+
+        virtual DWORD GetInstructionSize();
         HRESULT SetNextInstruction(_In_opt_ CInstruction* pInstruction, _In_ bool setOrig);
         HRESULT SetPreviousInstruction(_In_opt_ CInstruction* pInstruction, _In_ bool setOrig);
 
@@ -136,14 +148,58 @@ namespace MicrosoftInstrumentationEngine
         HRESULT SetInstructionGeneration(_In_ InstructionGeneration instructionGeneration);
 
         static HRESULT InstructionFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ CInstruction** ppInstruction);
-        static HRESULT OrdinalOpcodeFromBytes(_In_ LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode);
+        static HRESULT OrdinalOpcodeFromBytes(_In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode, _In_ LPCBYTE pEndOfCode, _Out_ ILOrdinalOpcode* pOpcode);
 
+        HRESULT EmitIL(_In_reads_bytes_(dwcbILBuffer) BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
 
-        HRESULT EmitIL(_In_ BYTE* pILBuffer, _In_ DWORD dwcbILBuffer);
+        HRESULT LogInstruction(bool ignoreTest);
 
-        HRESULT LogInstruction(_In_ BOOL ignoreTest);
+        constexpr CInstruction* NextInstructionInternal() { return m_pNextInstruction.p; }
+        constexpr CInstruction* PreviousInstructionInternal() { return m_pPreviousInstruction.p; }
+        constexpr CInstruction* OriginalNextInstructionInternal() { return m_pOriginalNextInstruction.p; }
+        constexpr CInstruction* OriginalPreviousInstructionInternal() { return m_pOriginalPreviousInstruction.p; }
+        constexpr bool GetIsSwitchInternal() const { return m_opcode == Cee_Switch; }
+        bool GetIsBranchInternal() const { return IsFlagSet(s_ilOpcodeInfo[m_opcode].m_flags, ILOpcodeFlag_Branch); }
+
+        // Attempt to cast the given IInstruction to a more specific TCast type. pInstruction may
+        // be null, in which case, the result will also be null.
+        template<typename TCast>
+        static HRESULT CastTo(_In_opt_ IInstruction* pInstruction, _Outptr_result_maybenull_ TCast** pResult)
+        {
+            IfNullRet(pResult);
+            if (pInstruction == nullptr)
+            {
+                *pResult = nullptr;
+            }
+
+            return pInstruction->QueryInterface(pResult);
+        }
+
+    protected:
+
+        template<typename TBase>
+        HRESULT QueryBaseType(_In_ REFIID riid, _Out_ void** ppvObject)
+        {
+            // Workaround for the diamond inheritence problem.
+            // Both CDataContainer and IInstruction inherit from IUnknown and
+            //    ImplQueryInterface() doesn't know which one to pick when casting CInstruction* to IUnknown*.
+            // A more comprehensive fix will be covered by https://github.com/microsoft/CLRInstrumentationEngine/issues/311
+
+            IfNullRet(ppvObject);
+
+            if (__uuidof(TBase) == riid)
+            {
+                *ppvObject = static_cast<TBase*>(this);
+                AddRef();
+                return S_OK;
+            }
+
+            return E_NOINTERFACE;
+        }
 
     private:
+        // If the callee token is a MethodSpec (generic method), the parameter count and signature returned
+        // will represent the parent method declaration/reference, not the generic parameters or generic signature.
         HRESULT GetSignatureInfoFromCallToken(
             _In_ IMethodInfo* pMethodInfo,
             _Out_ PCCOR_SIGNATURE* ppSig,
@@ -152,9 +208,17 @@ namespace MicrosoftInstrumentationEngine
             _Out_ DWORD* pParameterCount,
             _Out_ CorElementType* pRetTypeElementType
             );
+
+        HRESULT EnsureGraphUpdated()
+        {
+            if (m_pGraph != nullptr)
+            {
+                return m_pGraph->RefreshInstructions();
+            }
+
+            return S_OK;
+        }
     };
-
-
 
     class __declspec(uuid("D154FE63-8B15-465E-BE17-1C7B9AE8872B"))
     COperandInstruction : public IOperandInstruction, public CInstruction
@@ -174,18 +238,18 @@ namespace MicrosoftInstrumentationEngine
     public:
         COperandInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew,
+            _In_ bool isNew,
             _In_ DWORD cbBytes,
             _In_ BYTE* pBytes
             );
 
         COperandInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
 
@@ -194,13 +258,18 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(COperandInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>(this),
-                static_cast<IInstruction*>(this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<COperandInstruction>(riid, ppvObject)))
+            {
+                if FAILED(CInstruction::QueryInterface(riid, ppvObject))
+                {
+                    return ImplQueryInterface(
+                        static_cast<IOperandInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+            }
+            return S_OK;
         }
 
         // IOperandInstruction methods
@@ -232,13 +301,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CLoadConstInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -251,17 +319,16 @@ namespace MicrosoftInstrumentationEngine
             );
 
     public:
-        DEFINE_DELEGATED_REFCOUNT_ADDREF(CLoadConstInstruction);
-        DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadConstInstruction);
+        DEFINE_DELEGATED_REFCOUNT_ADDREF(CLoadLocalInstruction);
+        DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadLocalInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CLoadLocalInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -278,13 +345,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadLocalAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CLoadLocalAddrInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -302,13 +368,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CStoreLocalInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CStoreLocalInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -325,13 +390,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArg);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CLoadArgInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -348,13 +412,12 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CLoadArgAddrInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IOperandInstruction*>((COperandInstruction*)this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CLoadArgAddrInstruction>(riid, ppvObject)))
+            {
+                return COperandInstruction::QueryInterface(riid, ppvObject);
+            }
+
+            return S_OK;
         }
     };
 
@@ -362,23 +425,20 @@ namespace MicrosoftInstrumentationEngine
     CBranchInstruction : public IBranchInstruction, public CInstruction
     {
     protected:
-        // NOTE: This is only accurate until the target is resolved. As the graph changes,
-        // the target offset will change. Use the offset method off m_pBranchTarget as that
-        // updates as the graph changes.
-        DWORD m_targetOffset;
+        // NOTE: This is the target offset for the original decoded instruction.
+        // It should not be used if m_pBranchTarget has been set.
+        DWORD m_decodedTargetOffset;
         CComPtr<CInstruction> m_pBranchTarget;
-
-        DWORD m_origTargetOffset;
         CComPtr<CInstruction> m_pOrigBranchTarget;
 
     public:
         CBranchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
+            _In_ bool isNew
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
 
@@ -387,13 +447,20 @@ namespace MicrosoftInstrumentationEngine
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CILBranch);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<IBranchInstruction*>(this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CBranchInstruction>(riid, ppvObject)))
+            {
+                if (FAILED(CInstruction::QueryInterface(riid, ppvObject)))
+                {
+                    return ImplQueryInterface(
+                        static_cast<IBranchInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+                
+            }
+
+            return S_OK;
         }
 
         // IBranchInstruction methods
@@ -408,6 +475,11 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall GetTargetOffset(_Out_ DWORD* pOffset) override;
 
         virtual HRESULT __stdcall SetBranchTarget(_In_ IInstruction* pInstruction) override;
+
+        // Internal optimized helpers.
+    public:
+        constexpr IInstruction* GetBranchTargetInternal() { return m_pBranchTarget.p; }
+
     protected:
         virtual HRESULT Disconnect() override;
     };
@@ -428,33 +500,36 @@ namespace MicrosoftInstrumentationEngine
     public:
         CSwitchInstruction(
             _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew
-            );
-
-        CSwitchInstruction(
-            _In_ ILOrdinalOpcode opcode,
-            _In_ BOOL isNew,
-            _In_ DWORD cBranchTargets,
-            _In_reads_(cBranchTargets) IInstruction** ppBranchTargets
+            _In_ bool isNew,
+            _In_ DWORD initialCount = 0
             );
 
         virtual HRESULT InitializeFromBytes(
-            _In_ LPCBYTE pCode,
+            _In_reads_to_ptr_(pEndOfCode) LPCBYTE pCode,
             _In_ LPCBYTE pEndOfCode
             ) override;
+
+        virtual DWORD GetInstructionSize() override;
 
     public:
         DEFINE_DELEGATED_REFCOUNT_ADDREF(CSwitchInstruction);
         DEFINE_DELEGATED_REFCOUNT_RELEASE(CSwitchInstruction);
         STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void **ppvObject) override
         {
-            return ImplQueryInterface(
-                static_cast<ISwitchInstruction*>(this),
-                static_cast<IInstruction*>((CInstruction*)this),
-                static_cast<IDataContainer*>(this),
-                riid,
-                ppvObject
-                );
+            if (FAILED(QueryBaseType<CSwitchInstruction>(riid, ppvObject)))
+            {
+                if (FAILED(CInstruction::QueryInterface(riid, ppvObject)))
+                {
+                    return ImplQueryInterface(
+                        static_cast<ISwitchInstruction*>(this),
+                        riid,
+                        ppvObject
+                    );
+                }
+
+            }
+
+            return S_OK;
         }
 
     public:
@@ -472,6 +547,10 @@ namespace MicrosoftInstrumentationEngine
 
         virtual HRESULT __stdcall GetBranchCount(_Out_ DWORD* pBranchCount) override;
         virtual HRESULT __stdcall GetBranchOffset(_In_ DWORD index, _In_ DWORD* pdwOffset) override;
+
+        // Optimized helpers
+    public:
+        IInstruction* GetBranchTargetInternal(_In_ DWORD index);
 
     protected:
         virtual HRESULT Disconnect() override;

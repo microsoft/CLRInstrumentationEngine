@@ -45,7 +45,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT ImportMethodSpec(_In_ const mdMethodSpec sourceMethodSpec, _Out_ mdMethodSpec* pTargetMethodSpec);
 
         HRESULT ConvertToken(_In_ mdToken token, _Out_ mdToken* pTargetToken);
-        HRESULT ConvertILCode(_In_ const BYTE* pSourceILCode, _In_ BYTE* pTargetILCode, ULONG32 ilCodeSize);
+        HRESULT ConvertILCode(_In_reads_bytes_(ilCodeSize) const BYTE* pSourceILCode, _Inout_updates_bytes_(ilCodeSize) BYTE* pTargetILCode, ULONG32 ilCodeSize);
         HRESULT ConvertNonTypeSignatureCached(_Inout_ PCCOR_SIGNATURE* pSignature, _Inout_ DWORD* pcbSignature);
         HRESULT ConvertTypeSignatureCached(_Inout_ PCCOR_SIGNATURE* pSignature, _Inout_ DWORD* pcbSignature);
         HRESULT ConvertNonTypeSignature(_In_ SigParser & sig, _In_ const CComPtr<ISignatureBuilder>& newSig);

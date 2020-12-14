@@ -79,7 +79,7 @@ namespace MicrosoftInstrumentationEngine
 
         virtual HRESULT __stdcall GetModuleCount(_Out_ ULONG* pcModuleInfos) override;
         virtual HRESULT __stdcall GetModuleInfoById(_In_ ModuleID moduleId, _Out_ IModuleInfo** ppModuleInfo) override;
-        virtual HRESULT __stdcall GetModuleInfosByMvid(_In_ GUID mvid, _Out_ IEnumModuleInfo** ppModuleInfo) override;
+        virtual HRESULT __stdcall GetModuleInfosByMvid(GUID mvid, _Out_opt_ IEnumModuleInfo** ppModuleInfo) override;
         virtual HRESULT __stdcall GetModuleInfosByName(_In_ BSTR pszModuleName, _Out_ IEnumModuleInfo** ppModuleInfo) override;
     };
 }

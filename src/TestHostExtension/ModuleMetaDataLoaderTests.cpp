@@ -8,6 +8,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "Extensions.BaseLib\ModuleMetaDataLoader.h"
 
+#pragma warning( push )
+#pragma warning( disable: 25143 ) // Writable function pointer 'pVoidStaticMethod' with fixed global memory address.
+#pragma warning( disable: 25007 ) // member function '' can be static
+
 namespace TestsHostExtension
 {
     TEST_CLASS(ModuleMetaDataLoaderTests)
@@ -47,3 +51,4 @@ namespace TestsHostExtension
         }
     };
 }
+#pragma warning ( pop )

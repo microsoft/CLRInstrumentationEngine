@@ -534,14 +534,14 @@ namespace LegacyActivationShim
         inline
         bool HasNewActivationAPIs()
         {
-            if (ReadAcquire((LONG volatile *)&g_fHasNewActivationAPIs) == LONG(-1))
+            if (ReadAcquire(&g_fHasNewActivationAPIs) == -1l)
             {
                 ICLRMetaHost *pMetaHost = NULL;
                 HRESULT hr = GetCLRMetaHost(&pMetaHost);
                 InterlockedCompareExchange((LONG volatile *)&g_fHasNewActivationAPIs, (LONG)(SUCCEEDED(hr)), ULONG(-1));
             }
 
-            return ReadAcquire((LONG volatile *)&g_fHasNewActivationAPIs) != 0;
+            return ReadAcquire(&g_fHasNewActivationAPIs) != 0l;
         }
 
         // ---CLRMETAHOSTPOLICY INTERFACE DATA-----------------------------------------------------
@@ -1020,7 +1020,7 @@ namespace LegacyActivationShim
         inline
         HRESULT AddStartupFlags(
             ICLRRuntimeInfo *pInfo,
-            LPCWSTR wszBuildFlavor,
+            _In_opt_z_ LPCWSTR wszBuildFlavor,
             DWORD dwStartupFlags,
             LPCWSTR wszHostConfigFile)
         {

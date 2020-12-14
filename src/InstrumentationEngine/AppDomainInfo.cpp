@@ -447,7 +447,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetModuleInfoById(_In_ M
     return hr;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetModuleInfosByMvid(_In_ GUID mvid, _Out_ IEnumModuleInfo** ppModuleInfo)
+HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetModuleInfosByMvid(GUID mvid, _Out_opt_ IEnumModuleInfo** ppModuleInfo)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(ppModuleInfo);

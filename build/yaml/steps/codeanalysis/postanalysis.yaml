@@ -3,21 +3,32 @@
 
 # Step Template: Post Analysis
 
-parameters:
-  APIScan: false
-  BinSkim: false
-  FxCop: false
-  PoliCheck: false
-  PREFast: false
-
 steps:
-# Post Analysis
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
   displayName: 'Post Analysis'
   inputs:
-    APIScan: ${{ parameters.APIScan }}
-    BinSkim: ${{ parameters.BinSkim }}
-    FxCop: ${{ parameters.FxCop }}
-    FxCopBreakOn: CriticalError
-    SDLNativeRules: ${{ parameters.PREFast }}
-  continueOnError: true
+    GdnBreakGdnToolApiScanSeverity: Warning
+    GdnBreakGdnToolArmorySeverity: Warning
+    GdnBreakGdnToolBanditSeverity: Warning
+    GdnBreakGdnToolBinSkimSeverity: Warning
+    GdnBreakGdnToolCodesignValidationSeverity: Warning
+    GdnBreakGdnToolCredScanSeverity: Warning
+    GdnBreakGdnToolESLintSeverity: Warning
+    GdnBreakGdnToolFlawfinderSeverity: Warning
+    GdnBreakGdnToolFortifyScaSeverity: Warning
+    GdnBreakGdnToolFxCopSeverity: Warning
+    GdnBreakGdnToolModernCopSeverity: Warning
+    GdnBreakGdnToolPoliCheckSeverity: Warning
+    GdnBreakGdnToolRoslynAnalyzersSeverity: Warning
+    GdnBreakGdnToolSDLNativeRulesSeverity: Warning
+    GdnBreakGdnToolSemmleSeverity: Warning
+    GdnBreakGdnToolSpotBugsSeverity: WarningAbove
+    GdnBreakGdnToolTSLintSeverity: Warning
+    GdnBreakPolicyMinSev: Warning
+    GdnBreakOutputBaselineFile: MyBL1
+    GdnBreakOutputBaseline: MyBL1
+    GdnBreakOutputSuppressionFile: MySupp1
+    GdnBreakOutputSuppressionSet: MySupp1
+    GdnBreakBaselineFiles: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\baseline
+    GdnBreakBaselines: ApiScanBaseline
+  condition: succeededOrFailed()

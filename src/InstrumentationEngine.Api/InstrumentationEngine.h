@@ -7,8 +7,8 @@
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.01.0622 
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -7433,7 +7433,7 @@ EXTERN_C const IID IID_IInstructionFactory;
         
         virtual HRESULT STDMETHODCALLTYPE DecodeInstructionByteStream( 
             /* [in] */ DWORD cbMethod,
-            /* [in] */ __RPC__in LPCBYTE instructionBytes,
+            /* [size_is][in] */ __RPC__in_ecount_full(cbMethod) LPCBYTE instructionBytes,
             /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph) = 0;
         
     };
@@ -7550,7 +7550,7 @@ EXTERN_C const IID IID_IInstructionFactory;
         HRESULT ( STDMETHODCALLTYPE *DecodeInstructionByteStream )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ DWORD cbMethod,
-            /* [in] */ __RPC__in LPCBYTE instructionBytes,
+            /* [size_is][in] */ __RPC__in_ecount_full(cbMethod) LPCBYTE instructionBytes,
             /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
         
         END_INTERFACE

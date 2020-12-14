@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests2_Release_x64.exe</ModuleName>
+    <MethodName>ArrayForeachTest</MethodName>
+    <!-- Add branches to the instruction following the inserted instruction, to ensure that
+         we don't generate infinite loops. -->
+    <Instructions>
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>47</Offset>
+        <Operand>47</Operand>
+      </Instruction>
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>90</Offset>
+        <Operand>90</Operand>
+      </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

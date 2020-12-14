@@ -15,7 +15,7 @@ public:
 	CDecorationCallbackInfo(
 		const std::wstring& strMethodName,
 		DWORD dwAttributes,
-		PCCOR_SIGNATURE pCorSig,
+        _In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
 		ULONG ulCorSigSize,
 		DWORD dwImplFlags);
 
@@ -25,7 +25,7 @@ public:
 	const CorSigDefinition& GetMethodSig() const;
 	DWORD GetMethodAttributes() const;
 	DWORD GetMethodImplFlags() const;
-	DWORD GetParamCount();
+	DWORD GetParamCount() const;
 };
 
 typedef std::shared_ptr<CDecorationCallbackInfo> CDecorationCallbackInfoSptr;

@@ -23,7 +23,7 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall SetDataItem(
             _In_ const GUID* componentId,
             _In_ const GUID* objectGuid,
-            _In_ IUnknown* pDataItem
+            _In_opt_ IUnknown* pDataItem
             );
 
         virtual HRESULT __stdcall GetDataItem(

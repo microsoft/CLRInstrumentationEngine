@@ -389,7 +389,7 @@ HRESULT MicrosoftInstrumentationEngine::CTypeCreator::IsValueType(_In_ mdTypeDef
 }
 
 HRESULT MicrosoftInstrumentationEngine::CTypeCreator::ParseMethodSignature(
-    _In_ const BYTE* pSignature,
+    _In_reads_bytes_(cbSignature) const BYTE* pSignature,
     _In_ DWORD cbSignature,
     _Out_opt_ ULONG* pCallingConvention,
     _Out_opt_ IType** ppReturnType,
@@ -491,7 +491,7 @@ HRESULT MicrosoftInstrumentationEngine::CTypeCreator::ParseMethodSignature(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CTypeCreator::ParseLocalVarSignature(
-    _In_ const BYTE* pSignature,
+    _In_reads_bytes_(cbSignature) const BYTE* pSignature,
     _In_ ULONG cbSignature,
     _Out_opt_ ULONG* pCallingConvention,
     _Out_opt_ IEnumTypes** ppEnumTypes,
@@ -556,7 +556,7 @@ HRESULT MicrosoftInstrumentationEngine::CTypeCreator::ParseLocalVarSignature(
 }
 
 HRESULT MicrosoftInstrumentationEngine::CTypeCreator::ParseTypeSequence(
-    _In_ const BYTE* pBuffer,
+    _In_reads_bytes_(cbBuffer) const BYTE* pBuffer,
     _In_ ULONG cbBuffer,
     _In_ ULONG cTypes,
     _Out_opt_ IEnumTypes** ppEnumTypes,

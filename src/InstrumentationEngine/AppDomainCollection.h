@@ -55,7 +55,7 @@ namespace MicrosoftInstrumentationEngine
         // NOTE: These helpers will search all appdomains
         STDMETHOD(GetAssemblyInfoById)(_In_ AssemblyID assemblyID, _Out_ IAssemblyInfo** ppAssemblyInfo) override;
         STDMETHOD(GetModuleInfoById)(_In_ ModuleID moduleID, _Out_ IModuleInfo** ppModuleInfo) override;
-        STDMETHOD(GetModuleInfosByMvid)(_In_ GUID mvid, _Out_ IEnumModuleInfo** ppEnum) override;
+        STDMETHOD(GetModuleInfosByMvid)(GUID mvid, _Out_opt_ IEnumModuleInfo** ppEnum) override;
 
         // Obtain a method info instance from a function id. This method info is for querying information only,
         // and cannot be used for instrumentation.
