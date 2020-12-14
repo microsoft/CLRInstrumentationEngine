@@ -4,6 +4,7 @@
 namespace InstrEngineTests
 {
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using ApplicationInsightsCompatibility;
@@ -14,13 +15,13 @@ namespace InstrEngineTests
     [TestClass]
     public class CustomAttributesTest
     {
-        public class CustomAttributesTestBase : TestBase
+        private class CustomAttributesTestBase : TestBase
         {
             public override void Execute()
             {
                 var declaredMscorlib = Assembly.ReflectionOnlyLoadFrom((typeof(object)).Assembly.Location);
-                var declaredAttributes = CustomAttributeData.GetCustomAttributes(declaredMscorlib).Select(attr => attr.AttributeType.FullName.ToString()).ToArray<string>();
-                var runtimeAttributes = CustomAttributeData.GetCustomAttributes((typeof(object)).Assembly).Select(attr => attr.AttributeType.FullName.ToString()).ToArray<string>();
+                var declaredAttributes = CustomAttributeData.GetCustomAttributes(declaredMscorlib).Select(attr => attr.AttributeType.FullName.ToString(CultureInfo.InvariantCulture)).ToArray<string>();
+                var runtimeAttributes = CustomAttributeData.GetCustomAttributes((typeof(object)).Assembly).Select(attr => attr.AttributeType.FullName.ToString(CultureInfo.InvariantCulture)).ToArray<string>();
 
                 Assert.AreEqual(declaredAttributes.Length, runtimeAttributes.Length);
 

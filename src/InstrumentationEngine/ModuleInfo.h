@@ -119,7 +119,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT Initialize(
             _In_ ModuleID moduleID,
-            _In_ WCHAR* wszModulePath,
+            _In_ const WCHAR* wszModulePath,
             _In_ IAssemblyInfo* pAssemblyInfo,
             _In_ IAppDomainInfo* pAppDomainInfo,
             _In_ LPCBYTE pModuleBaseLoadAddress,

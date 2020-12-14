@@ -8,7 +8,10 @@
 #undef USE_DEPRECATED_CLR_API_WITHOUT_WARNING
 
 #include <mscoree.h>
+#pragma warning( push )
+#pragma warning( disable: 28740 ) // Unannotated unsigned buffer
 #include <LegacyActivationShim.h>
+#pragma warning( pop )
 
 __encoded_pointer void* g_StrongNameTokenFromAssemblyPtr = EncodePointer(0);
 __encoded_pointer void* g_StrongNameTokenFromPublicKeyPtr = EncodePointer(0);

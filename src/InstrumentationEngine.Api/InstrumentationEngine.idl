@@ -764,7 +764,7 @@ library MicrosoftInstrumentationEngine
         //    next and original previous fields set.
         //
         // 2) This graph will not have a method info set and cannot create exception sections or handlers.
-        HRESULT DecodeInstructionByteStream([in] DWORD cbMethod, [in] LPCBYTE instructionBytes, [out] IInstructionGraph** ppInstructionGraph);
+        HRESULT DecodeInstructionByteStream([in] DWORD cbMethod, [in, size_is(cbMethod)] LPCBYTE instructionBytes, [out] IInstructionGraph** ppInstructionGraph);
     }
 
     [

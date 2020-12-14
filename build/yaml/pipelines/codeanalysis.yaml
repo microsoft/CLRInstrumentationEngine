@@ -21,12 +21,23 @@ variables:
   TeamName: ClrInstrumentationEngine
 
 stages:
+
 - stage: Build
   jobs:
   # Binaries (Windows)
-  - template: ../jobs/binaries.yaml
+  - template: ../jobs/windows/binaries.yaml
     parameters:
       IsMicroBuildInternal: true
+      MatrixStrategy:
+        Release_x86:
+          Configuration: 'Release'
+          Platform: 'x86'
+        Release_x64:
+          Configuration: 'Release'
+          Platform: 'x64'
+        Release_AnyCPU:
+          Configuration: 'Release'
+          Platform: 'Any CPU'
 
 - stage: Analyze_Parallel
   displayName: Code Analysis (Parallel)
@@ -42,4 +53,38 @@ stages:
   jobs:
   - template: ../jobs/codeanalysis/apiscan.yaml
   - template: ../jobs/codeanalysis/binskim.yaml
-  - template: ../jobs/codeanalysis/fxcop.yaml
+
+- stage: Run_Build_Analyzers
+  displayName: Code Analysis (Build Time)
+  dependsOn: []
+
+  jobs:
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+    parameters:
+      Platform: AnyCPU
+      Analyzer: csharp
+
+# Semmle is the future for C++ code analysis, but it doesn't
+# seem to be working right now. Run prefast instead.
+#  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+#    parameters:
+#      Platform: x64
+#      Analyzer: cpp
+
+#  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+#    parameters:
+#      Platform: x86
+#      Analyzer: cpp
+
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+    parameters:
+      Platform: x64
+      Analyzer: prefast
+      PublishReport: false
+
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+    parameters:
+      Platform: x86
+      Analyzer: prefast
+      PublishReport: false
+

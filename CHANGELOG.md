@@ -7,6 +7,28 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.35
++ New:
+  + Allow unit tests to test single-return instrumentation methods and created unit tests for this.
++ BugFixes:
+  + Fix GetSignatureInfoFromCallToken to use parent token if current token is methodSpec.
+  + Fix static code analysis builds.
+  + Address static analysis errors.
+  + Add HResult, PID, and method name in logging for InstrumentationMethod.
+  + Normalize file line endings
++ Perf:
+  + Fix stack overflow when destructing graphs.
+  + Reduce overhead of retargeting branches
+  + Optimize addref/release.
+  + Defer instruction offset calculation.
++ Updates:
+  + Reenable ref counting in debug
+  + Change log for missing method from error to message level
+  + Update PR/CI stage dependencies
+  + Use NuGet 5.8 when restoring
+  + Use IfFailLog when rawprofiler fails to initialize.
+
+
 ## 1.0.34
 + BugFixes:
   + Fix GetAssemblyInfosByName to return out param

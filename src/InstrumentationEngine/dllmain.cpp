@@ -14,9 +14,11 @@ extern MicrosoftInstrumentationEngine::CCustomAtlModule _AtlModule;
 
 BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
+    DWORD recordOptions = 0;
     switch (dwReason)
     {
     case DLL_PROCESS_ATTACH:
+
 #ifdef DEBUG
         // Uncomment this code to track down a memory leak based on allocation count
         // The leak allocation count is the number in the {} when the leak is dumped
@@ -26,12 +28,19 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
             _CRTDBG_ALLOC_MEM_DF | // track allocations and mark them
             _CRTDBG_LEAK_CHECK_DF // dump leak report at shutdown
         );
+
+        if (GetEnvironmentVariable(_T("EnableRefRecording"), nullptr, 0) > 0)
+        {
+            recordOptions = MicrosoftInstrumentationEngine::CRefCount::EnableRecorder;
+        }
 #endif
-        //INITIALIZE_REF_RECORDER(MicrosoftInstrumentationEngine::CRefCount::EnableRecorder);
+
+        INITIALIZE_REF_RECORDER(recordOptions);
         break;
 
     case DLL_PROCESS_DETACH:
-        //TERMINATE_REF_RECORDER;
+        DUMP_REFCOUNT;
+        TERMINATE_REF_RECORDER;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     default:
@@ -110,6 +119,9 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
 }
 
 #ifndef PLATFORM_UNIX
+#pragma warning( push )
+#pragma warning( disable: 28301 ) // No annotations for first declaration of 'DllRegisterServer'.
+
 __control_entrypoint(DllExport)
 STDAPI DLLEXPORT(DllRegisterServer, 0)(void)
 {
@@ -121,6 +133,8 @@ STDAPI DLLEXPORT(DllUnregisterServer, 0)(void)
 {
     return _AtlModule.DllRegisterServer(false);
 }
+
+#pragma warning ( pop )
 #endif
 
 STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLogging** ppLogging)

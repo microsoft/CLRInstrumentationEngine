@@ -26,6 +26,7 @@
     <RootNamespace>RawProfilerHook.Tests</RootNamespace>
     <AssemblyName>RawProfilerHook.Tests_$(Platform)</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -51,10 +52,6 @@
   <ItemGroup>
     <Reference Include="RemoteUnitTestExecutor">
       <HintPath>$(PackagesDir)\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RemoteUnitTestExecutor.Host_x86">
-      <HintPath>$(PackagesDir)\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.Host_x86.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

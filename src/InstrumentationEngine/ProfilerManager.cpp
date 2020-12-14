@@ -49,7 +49,10 @@ CProfilerManager::CProfilerManager() :
     GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
     if (wcscmp(wszEnvVar, _T("1")) == 0)
     {
-        MessageBox(NULL, _T("MicrosoftInstrumentationEngine ProfilerAttach"), L"", MB_OK);
+        tstringstream mboxStream;
+        DWORD pid = GetCurrentProcessId();
+        mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
+        MessageBoxW(NULL, mboxStream.str().c_str(), L"", MB_OK);
     }
     if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0)
     {
@@ -147,7 +150,10 @@ HRESULT CProfilerManager::InvokeThreadRoutine(_In_ LPTHREAD_START_ROUTINE thread
     // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
     // as that would screw up the com state for the application thread. This thread allows the profiler manager
     // to co create a free threaded version of msxml on a thread that it owns to avoid this.
-    CHandle hConfigThread(CreateThread(NULL, 0, threadRoutine, this, 0, NULL));
+    HANDLE hThread = CreateThread(NULL, 0, threadRoutine, this, 0, NULL);
+    IfFalseRet(hThread != NULL, CORPROF_E_PROFILER_CANCEL_ACTIVATION);
+
+    CHandle hConfigThread(hThread);
 
     DWORD waitTime = 60 * 1000; // Wait 1 minute for loading instrumentation methods
 
@@ -716,7 +722,7 @@ HRESULT CProfilerManager::RemoveInstrumentationMethod(
     {
         DWORD dwFlags = 0;
         CCriticalSectionHolder lock(&m_cs);
-        for (TInstrumentationMethodsCollection::iterator iter = m_instrumentationMethods.begin(); iter != m_instrumentationMethods.end(); iter++)
+        for (TInstrumentationMethodsCollection::iterator iter = m_instrumentationMethods.begin(); iter != m_instrumentationMethods.end(); ++iter)
         {
             CComPtr<IInstrumentationMethod> spInstrMethodTmp;
             IfFailRet(iter->first->GetRawInstrumentationMethod(&spInstrMethodTmp));
@@ -798,7 +804,7 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
         bool bInserted = false;
 
         // Number of instrumentation methods is expected to be very small.
-        for (TInstrumentationMethodsCollection::iterator iter = m_instrumentationMethods.begin(); iter != m_instrumentationMethods.end(); iter++)
+        for (TInstrumentationMethodsCollection::iterator iter = m_instrumentationMethods.begin(); iter != m_instrumentationMethods.end(); ++iter)
         {
             shared_ptr<CInstrumentationMethod> pCurrInstrumentationMethod = iter->first;
 
@@ -968,11 +974,16 @@ HRESULT CProfilerManager::Initialize(
         {
             if (m_attachedClrVersion != ClrVersion_2)
             {
-                IfFailRet(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+                IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
             }
             else
             {
-                IfFailRet(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+                IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+            }
+
+            if (FAILED(hr))
+            {
+                RemoveRawProfilerHook();
             }
         }
     }
@@ -1232,7 +1243,7 @@ HRESULT CProfilerManager::SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dw
     return S_OK;
 }
 
-ClrVersion CProfilerManager::GetAttachedClrVersion()
+ClrVersion CProfilerManager::GetAttachedClrVersion() const
 {
     return m_attachedClrVersion;
 }
@@ -3025,14 +3036,14 @@ HRESULT CProfilerManager::InitializeForAttach(
     // Copy data to new buffer to ensure that it is null terminated.
 
     // Add one more to make room for null terminator.
-    size_t bufferSize = cbClientData + 1;
+    size_t bufferSize = (size_t)cbClientData + 1;
     unique_ptr<char[]> pszConfigXml = make_unique<char[]>(bufferSize);
     IfFailRetErrno(
         memcpy_s(
             pszConfigXml.get(), // Destination buffer
             bufferSize,         // Destination buffer size in Bytes
             pvClientData,       // Source buffer
-            cbClientData        // Source buffer size in Bytes
+            (size_t)cbClientData        // Source buffer size in Bytes
             ));
     // Ensure that the data is null terminated.
     pszConfigXml[bufferSize - 1] = 0;

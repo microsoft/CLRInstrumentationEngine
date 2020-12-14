@@ -5,6 +5,7 @@ namespace ProfilerCallbacksTests
 {
     using System;
     using System.Globalization;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -155,10 +156,12 @@ namespace ProfilerCallbacksTests
 
                 allTasks[nonCapturedI] =
                     Task.Factory.StartNew(
-                        () => AID.ApplicationInsights_RemoveCallbacks(nonCapturedI, 0));
+                        () => AID.ApplicationInsights_RemoveCallbacks(nonCapturedI, 0),
+                        default(CancellationToken), TaskCreationOptions.None, TaskScheduler.Default);
                 allTasks[nonCapturedI + numberOfTasks] =
                     Task.Factory.StartNew(
-                        () => AID.ApplicationInsights_AddCallbacks(nonCapturedI + numberOfTasks, () => nonCapturedI + numberOfTasks, null, null));
+                        () => AID.ApplicationInsights_AddCallbacks(nonCapturedI + numberOfTasks, () => nonCapturedI + numberOfTasks, null, null),
+                        default(CancellationToken), TaskCreationOptions.None, TaskScheduler.Default);
             }
 
             Task.WaitAll(allTasks);

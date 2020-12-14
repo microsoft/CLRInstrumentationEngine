@@ -633,8 +633,8 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportMethodDef(_In_ m
     if (ulCodeRVA != 0)
     {
         VOID* pSourceCode = (BYTE*)m_pSourceImageBaseAddress + ulCodeRVA;
-        IMAGE_COR_ILMETHOD_TINY* pSourceCodeTinyHeader = (IMAGE_COR_ILMETHOD_TINY*)pSourceCode;
-        IMAGE_COR_ILMETHOD_FAT* pSourceCodeFatHeader = (IMAGE_COR_ILMETHOD_FAT*)pSourceCode;
+        const IMAGE_COR_ILMETHOD_TINY* pSourceCodeTinyHeader = (IMAGE_COR_ILMETHOD_TINY*)pSourceCode;
+        const IMAGE_COR_ILMETHOD_FAT* pSourceCodeFatHeader = (IMAGE_COR_ILMETHOD_FAT*)pSourceCode;
         bool isTinyHeader = ((pSourceCodeTinyHeader->Flags_CodeSize & (CorILMethod_FormatMask >> 1)) == CorILMethod_TinyFormat);
         ULONG ilCodeSize = 0;
         ULONG headerSize = 0;
@@ -1420,7 +1420,7 @@ static OPCLSA g_opcodeInlineValues[] = {
 #define MAX_MSIL_OPCODE (0x22+0x100)
 
 
-HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ConvertILCode(_In_ const BYTE* pSourceILCode, _In_ BYTE* pTargetILCode, ULONG32 bufferSize)
+HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ConvertILCode(_In_reads_bytes_(bufferSize) const BYTE* pSourceILCode, _Inout_updates_bytes_(bufferSize) BYTE* pTargetILCode, ULONG32 bufferSize)
 {
     HRESULT hr = S_OK;
 

@@ -176,7 +176,7 @@ namespace MicrosoftInstrumentationEngine
             _In_ ULONG cbMethodSize
             );
 
-         bool IsInstrumented()
+         bool IsInstrumented() const
          {
              return m_bIsInstrumented;
          }
@@ -198,15 +198,15 @@ namespace MicrosoftInstrumentationEngine
         void LogMethodInfo();
         void LogInstructionGraph(_In_ CInstructionGraph* pInstructionGraph);
         void LogExceptionSection(_In_ CExceptionSection* pExceptionSection);
-        void LogCorIlMap(_In_ COR_IL_MAP* pCorIlMap, _In_ DWORD dwCorILMapmLen);
+        void LogCorIlMap(_In_reads_(dwCorILMapmLen) const COR_IL_MAP* pCorIlMap, _In_ DWORD dwCorILMapmLen);
         tstring GetCorElementTypeString(_In_ IType* pType);
 
 
         CModuleInfo* GetModuleInfo();
 
-        bool IsCreateBaselineEnabled();
+        bool IsCreateBaselineEnabled() const;
         void DisableCreateBaseline();
-        bool IsRejit()
+        bool IsRejit() const
         {
             return m_bIsRejit;
         }

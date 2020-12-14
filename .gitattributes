@@ -2,5 +2,6 @@
 # Licensed under the MIT License.
 
 # Use unix line endings on scripts so that they can be run on unix even when pulled with windows git
+* text=auto
 *.sh text eol=lf
 *.awk text eol=lf

@@ -10,11 +10,11 @@ namespace Agent
     namespace Reflection
     {
         CWellKnownMethodInfo::CWellKnownMethodInfo(
-            _In_ std::wstring assemblyName,
-            _In_ std::wstring moduleName,
-            _In_ std::wstring typeName,
-            _In_ std::wstring methodName,
-            _In_ PCCOR_SIGNATURE pCorSig,
+            _In_ const std::wstring& assemblyName,
+            _In_ const std::wstring& moduleName,
+            _In_ const std::wstring& typeName,
+            _In_ const std::wstring& methodName,
+            _In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
             _In_ ULONG ulCorSigSize)
             : m_spTypeInfo(new CWellKnownTypeInfo(assemblyName, moduleName, typeName))
             , m_methodName(methodName)

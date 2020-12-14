@@ -20,11 +20,11 @@ namespace Agent
 
         public:
             CWellKnownMethodInfo(
-                _In_ std::wstring assemblyName,
-                _In_ std::wstring moduleName,
-                _In_ std::wstring typeName,
-                _In_ std::wstring methodName,
-                _In_ PCCOR_SIGNATURE pCorSig,
+                _In_ const std::wstring& assemblyName,
+                _In_ const std::wstring& moduleName,
+                _In_ const std::wstring& typeName,
+                _In_ const std::wstring& methodName,
+                _In_reads_(ulCorSigSize) PCCOR_SIGNATURE pCorSig,
                 _In_ ULONG ulCorSigSize);
 
             const std::wstring& GetMethodName() const;

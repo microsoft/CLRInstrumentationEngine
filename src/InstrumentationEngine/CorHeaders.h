@@ -127,10 +127,10 @@ unsigned __stdcall SectEH_SizeWithCode (unsigned ehCount, unsigned codeSize);
 unsigned __stdcall SectEH_SizeWorst (unsigned ehCount);
 
 // will return exact size which will match the size returned by Emit
-unsigned __stdcall SectEH_SizeExact (unsigned ehCount, IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses);
+unsigned __stdcall SectEH_SizeExact (unsigned ehCount, const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses);
 
 // emit the section (best format);
-unsigned __stdcall SectEH_Emit (unsigned size, unsigned ehCount, __in_ecount(ehCount) IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses, BOOL moreSections, __inout_ecount_opt(size) BYTE* outBuff, __out_ecount(ehCount) ULONG* ehTypeOffsets = 0);
+unsigned __stdcall SectEH_Emit (unsigned size, unsigned ehCount, __in_ecount(ehCount) const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses, bool moreSections, __inout_ecount_opt(size) BYTE* outBuff, __out_ecount(ehCount) ULONG* ehTypeOffsets = 0);
 
 
 struct COR_ILMETHOD_SECT_EH : public COR_ILMETHOD_SECT
@@ -161,13 +161,13 @@ struct COR_ILMETHOD_SECT_EH : public COR_ILMETHOD_SECT
     // will return exact size which will match the size returned by Emit
     unsigned static Size (unsigned ehCount, const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses)
     {
-		return SectEH_SizeExact (ehCount, (IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT*)clauses);
+		return SectEH_SizeExact (ehCount, clauses);
 	};
 
     // emit the section (best format);
-    unsigned static Emit (unsigned size, unsigned ehCount, IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses, bool moreSections, _Out_cap_(size) BYTE* outBuff,  __out_ecount(ehCount)  ULONG* ehTypeOffsets = 0)
+    unsigned static Emit (unsigned size, unsigned ehCount, const IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT* clauses, bool moreSections, _Out_cap_(size) BYTE* outBuff,  __out_ecount(ehCount)  ULONG* ehTypeOffsets = 0)
     {
-		return SectEH_Emit (size, ehCount, (IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT*)clauses, moreSections, outBuff, ehTypeOffsets);
+		return SectEH_Emit (size, ehCount, clauses, moreSections, outBuff, ehTypeOffsets);
 	};
 }; // COR_ILMETHOD_SECT_EH
 
@@ -178,10 +178,10 @@ typedef struct tagCOR_ILMETHOD_TINY : IMAGE_COR_ILMETHOD_TINY
 {
     bool     IsTiny () const         { return (Flags_CodeSize & (CorILMethod_FormatMask >> 1)) == CorILMethod_TinyFormat; }
     unsigned GetCodeSize () const    { return ((unsigned) Flags_CodeSize) >> (CorILMethod_FormatShift-1); }
-    unsigned GetMaxStack () const    { return 8; }
+    unsigned GetMaxStack ()   { return 8; }
     BYTE*    GetCode () const        { return ((BYTE*) this) + sizeof (struct tagCOR_ILMETHOD_TINY); }
-    DWORD    GetLocalVarSigTok () const  { return 0; }
-    COR_ILMETHOD_SECT* GetSect () const { return 0; }
+    DWORD    GetLocalVarSigTok () { return 0; }
+    COR_ILMETHOD_SECT* GetSect () { return 0; }
 } COR_ILMETHOD_TINY;
 
 // This strucuture is the 'fat' layout, where no compression is attempted.
@@ -217,10 +217,10 @@ typedef COR_ILMETHOD_FAT *PCOR_ILMETHOD_FAT;
 
 /************************************/
 // exported functions (impl. Format\Format.cpp)
-unsigned __stdcall IlmethodSize (COR_ILMETHOD_FAT* header, BOOL MoreSections);
+unsigned __stdcall IlmethodSize (const COR_ILMETHOD_FAT* header, bool MoreSections);
 
 // emit the header (bestFormat) return amount emitted
-unsigned __stdcall IlmethodEmit (unsigned size, COR_ILMETHOD_FAT* header, BOOL moreSections, _Out_cap_(size) BYTE* outBuff);
+unsigned __stdcall IlmethodEmit (unsigned size, const COR_ILMETHOD_FAT* header, bool moreSections, _Out_cap_(size) BYTE* outBuff);
 
 struct COR_ILMETHOD
 {
@@ -231,13 +231,13 @@ struct COR_ILMETHOD
         // compute the size of the header (best format)
     unsigned static Size (const COR_ILMETHOD_FAT* header, bool MoreSections)
     {
-		return IlmethodSize ((COR_ILMETHOD_FAT*)header,MoreSections);
+		return IlmethodSize (header,MoreSections);
 	};
 
     // emit the header (bestFormat) return amount emitted
     unsigned static Emit (unsigned size, const COR_ILMETHOD_FAT* header, bool moreSections, _Out_cap_(size) BYTE* outBuff)
     {
-		return IlmethodEmit (size, (COR_ILMETHOD_FAT*)header, moreSections, outBuff);
+		return IlmethodEmit (size, header, moreSections, outBuff);
 	};
 
 //private:

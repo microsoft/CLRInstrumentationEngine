@@ -25,7 +25,7 @@ namespace CommonLib
         HRESULT m_result;
 
     public:
-        CInitOnce(std::function<HRESULT()> func) : m_isCreated(false), m_func(func), m_result(0) { }
+        CInitOnce(const std::function<HRESULT()>& func) : m_isCreated(false), m_func(func), m_result(0) { }
 
     public:
         HRESULT Get()
@@ -42,7 +42,7 @@ namespace CommonLib
             return m_result;
         }
 
-        bool IsSuccessful()
+        bool IsSuccessful() const
         {
             return m_isCreated.load(std::memory_order_relaxed) && SUCCEEDED(m_result);
         }

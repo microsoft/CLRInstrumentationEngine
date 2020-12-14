@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Intercept.Tests
 {
-    public class Constants
+    public static class Constants
     {
         public const string InterceptVersion = "2.4.0.0";
     }

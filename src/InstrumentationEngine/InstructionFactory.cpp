@@ -219,10 +219,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::CreateSwitchInstruc
     IfNullRetPointer(ppInstruction);
 
     CComPtr<CSwitchInstruction> pInstruction;
-    pInstruction.Attach(new CSwitchInstruction(opcode, TRUE, cBranchTargets, ppBranchTargets));
+    pInstruction.Attach(new CSwitchInstruction(opcode, TRUE, cBranchTargets));
     if (pInstruction == NULL)
     {
         return E_OUTOFMEMORY;
+    }
+
+    for (DWORD i = 0; i < cBranchTargets; i++)
+    {
+        CComPtr<CInstruction> pTarget;
+        IfFailRet(ppBranchTargets[i]->QueryInterface(&pTarget));
+        IfFailRet(pInstruction->SetBranchTarget(i, ppBranchTargets[i]));
     }
 
     *ppInstruction = (IInstruction*)(pInstruction.p);
@@ -369,7 +376,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::CreateLoadArgAddres
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_ LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph)
+HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionByteStream(_In_ DWORD cbMethod, _In_reads_bytes_(cbMethod) LPCBYTE instructionBytes, _Out_ IInstructionGraph** ppInstructionGraph)
 {
     HRESULT hr = S_OK;
     CLogging::LogMessage(_T("Starting CInstructionFactory::DecodeInstructionByteStream"));
@@ -384,8 +391,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionBy
 
     IfFailRet(pInstructionGraph->DecodeInstructions(instructionBytes, pEndOfCode));
 
-    CComPtr<CInstruction> pCurrInstruction;
-    pInstructionGraph->GetFirstInstruction((IInstruction**)(&pCurrInstruction));
+    CInstruction* pCurrInstruction = pInstructionGraph->FirstInstructionInternal();
 
     // The instruction graph will set these up as if they were from existing il.
     // However, the intended use case of DecodeInstructionByteStream is for parsing a
@@ -395,10 +401,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionFactory::DecodeInstructionBy
     {
         IfFailRet(pCurrInstruction->SetOriginalOffset(0));
         IfFailRet(pCurrInstruction->SetInstructionGeneration(InstructionGeneration::Generation_New));
-
-        CComPtr<IInstruction> pTemp = (IInstruction*)pCurrInstruction;
-        pCurrInstruction.Release();
-        pTemp->GetNextInstruction((IInstruction**)(&pCurrInstruction));
+        pCurrInstruction = pCurrInstruction->NextInstructionInternal();
     }
 
     *ppInstructionGraph = (IInstructionGraph*)(pInstructionGraph.Detach());

@@ -16,7 +16,7 @@ namespace InstrEngineTests
     [TestClass]
     public class InterceptDecorateTests
     {
-        public class SimpleDecorate : TestBase
+        private class SimpleDecorate : TestBase
         {
             public override void TestPreInitialize()
             {
@@ -27,6 +27,7 @@ namespace InstrEngineTests
             public override void TestInitialize()
             {
                 Decorator.InitializeExtension(Environment.CurrentDirectory);
+#pragma warning disable CS0612 // Type or member is obsolete
                 Decorator.Decorate(
                     "System",
                     "System.dll",
@@ -35,12 +36,13 @@ namespace InstrEngineTests
                     this.OnBegin,
                     this.OnEnd,
                     this.OnException);
+#pragma warning restore CS0612
             }
 
             public override void Execute()
             {
                 // Calls the method WebRequest.GetResponse which was decorated
-                WebRequest.Create("http://bing.com").GetResponse();
+                WebRequest.Create(new Uri("http://bing.com")).GetResponse();
 
                 // Make sure begin and end methods are invoked
                 AssertExtensions.InvokedMethodsAreEqual(this.TestResult.InvokedMethods, new[] { "OnBegin", "OnEnd" });
@@ -50,7 +52,7 @@ namespace InstrEngineTests
                 try
                 {
                     // Calling method to fail
-                    WebRequest.Create("http://SomeRandomBadUri.com").GetResponse();
+                    WebRequest.Create(new Uri("http://SomeRandomBadUri.com")).GetResponse();
                 }
                 catch
                 {

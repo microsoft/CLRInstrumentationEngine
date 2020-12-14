@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>BasicManagedTests_Release_x64.exe</ModuleName>
+    <MethodName>SwitchTest2</MethodName>
+    <Instructions>
+      <!-- Add branches to the instruction following the inserted instruction, to ensure that
+         we don't generate infinite loops. -->
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>65</Offset>
+        <Operand>65</Operand>
+      </Instruction>
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>81</Offset>
+        <Operand>81</Operand>
+      </Instruction>
+      <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>34</Offset>
+        <Operand>34</Operand>
+      </Instruction>
+    <Instruction>
+        <Opcode>br</Opcode>
+        <Offset>115</Offset>
+        <Operand>115</Operand>
+    </Instruction>
+    </Instructions>
+  </InstrumentMethod>
+</InstrumentationTestScript>

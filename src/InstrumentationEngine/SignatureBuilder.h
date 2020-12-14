@@ -38,7 +38,7 @@ namespace MicrosoftInstrumentationEngine
             STDMETHOD(AddData)(_In_ const BYTE* memory, _In_ DWORD cbSize) override;
             STDMETHOD(AddSignature)(_In_ ISignatureBuilder* pSignature) override;
             STDMETHOD(Clear)() override;
-            STDMETHOD(GetCorSignature)(_In_ DWORD cbBuffer, _Inout_opt_ BYTE* pCorSignature, _Out_opt_ DWORD* pcbSignature) override;
+            STDMETHOD(GetCorSignature)(_In_ DWORD cbBuffer, _Inout_updates_bytes_opt_(cbBuffer) BYTE* pCorSignature, _Out_opt_ DWORD* pcbSignature) override;
             STDMETHOD(GetCorSignaturePtr)(_Out_ const BYTE** ppCorSignature) override;
             STDMETHOD(GetSize)(_Out_ DWORD* cbSize) override;
         private:

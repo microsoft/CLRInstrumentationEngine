@@ -70,7 +70,7 @@ namespace MicrosoftInstrumentationEngine
 
             va_list marker;
             va_start(marker, pszFormat);
-            _snwprintf_s(szTrace + offset, ARRAYSIZE(szTrace) - offset, _TRUNCATE, pszFormat, marker);
+            _vsnwprintf_s(szTrace + offset, ARRAYSIZE(szTrace) - offset, _TRUNCATE, pszFormat, marker);
             wcscat_s(szTrace, ARRAYSIZE(szTrace), _T("\r\n"));
             OutputDebugStringW(szTrace);
         }
@@ -94,12 +94,8 @@ namespace MicrosoftInstrumentationEngine
 
     void CRefCount::InitRecorder(DWORD dwOptions)
     {
-        //Add an environment variable hook to disable ref-recording, since this can sometimes be really slow.
-        if (GetEnvironmentVariable(_T("DisableRefRecording"), nullptr, 0) > 0)
-        {
-            dwOptions &= ~EnableRecorder;
-        }
-
+        // Add an environment variable hook to disable ref-recording, since this can sometimes be really slow.
+        
         g_dwRecorderOptions = dwOptions;
         if (g_dwRecorderOptions & EnableRecorder)
         {
@@ -129,82 +125,70 @@ namespace MicrosoftInstrumentationEngine
 
     void CRefCount::RecordCreation(CRefCount* pCRefCount)
     {
-        if (g_fRecordingInitialized)
+        EnterCriticalSection(&g_crst);
+
+        CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
+        if (pPair)
         {
-            EnterCriticalSection(&g_crst);
-
-            CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
-            if (pPair)
-            {
-                //VSASSERT(false, "Object recorder: Object destroyed without the recorder being notified.");
-                TRACE(_T("Object \"%s\" (%lxh) destroyed without recorder being notified."), pCRefCount->m_pszCRefCountClassName, pCRefCount);
-            }
-
-            g_map.SetAt(pCRefCount, 1);
-
-            LeaveCriticalSection(&g_crst);
+            //VSASSERT(false, "Object recorder: Object destroyed without the recorder being notified.");
+            TRACE(_T("Object \"%s\" (%lxh) destroyed without recorder being notified."), pCRefCount->m_pszCRefCountClassName, pCRefCount);
         }
+
+        g_map.SetAt(pCRefCount, 1);
+
+        LeaveCriticalSection(&g_crst);
     }
 
     void CRefCount::RecordDestruction(CRefCount* pCRefCount)
     {
-        if (g_fRecordingInitialized)
-        {
-            EnterCriticalSection(&g_crst);
+        EnterCriticalSection(&g_crst);
 
-            bool fFound = g_map.RemoveKey(pCRefCount);
+        bool fFound = g_map.RemoveKey(pCRefCount);
 
-            //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
+        //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
 
-            LeaveCriticalSection(&g_crst);
-        }
+        LeaveCriticalSection(&g_crst);
     }
 
     void CRefCount::RecordAddRef(CRefCount* pCRefCount)
     {
-        if (g_fRecordingInitialized)
+        EnterCriticalSection(&g_crst);
+
+        BOOL fFound = FALSE;
+        CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
+        if (pPair)
         {
-            EnterCriticalSection(&g_crst);
-
-            BOOL fFound = FALSE;
-            CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
-            if (pPair)
-            {
-                pPair->m_value++;
-                fFound = TRUE;
-            }
-
-            //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
-
-            LeaveCriticalSection(&g_crst);
+            pPair->m_value++;
+            fFound = TRUE;
         }
+
+        //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
+
+        LeaveCriticalSection(&g_crst);
     }
 
     void CRefCount::RecordRelease(CRefCount* pCRefCount)
     {
-        if (g_fRecordingInitialized)
+        EnterCriticalSection(&g_crst);
+
+        BOOL fFound = FALSE;
+        CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
+        if (pPair)
         {
-            EnterCriticalSection(&g_crst);
+            pPair->m_value--;
 
-            BOOL fFound = FALSE;
-            CRefRBMap::CPair* pPair = g_map.Lookup(pCRefCount);
-            if (pPair)
+            //VSASSERT(pPair->m_value != -1, "Object recorder: Object released too many times.");
+
+            if (pPair->m_value == 0)
             {
-                pPair->m_value--;
-
-                //VSASSERT(pPair->m_value != -1, "Object recorder: Object released too many times.");
-
-                if (pPair->m_value == 0)
-                {
-                    g_map.RemoveAt(pPair);
-                }
-                fFound = TRUE;
+                g_map.RemoveAt(pPair);
             }
-
-            //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
-
-            LeaveCriticalSection(&g_crst);
+            fFound = TRUE;
         }
+
+        //VSASSERT(fFound, "Object recorder: Object created without the recorder being notified.");
+
+        LeaveCriticalSection(&g_crst);
     }
 
     void CRefCount::DumpRefCount(void)

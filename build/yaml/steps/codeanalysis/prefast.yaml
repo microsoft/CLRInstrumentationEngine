@@ -1,0 +1,21 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Run C++ code analysis
+
+steps:
+
+- task: ms-vseng.MicroBuildShipTasks.9ef02907-718e-41b7-a57e-b10f86130bb8.MicroBuildPrefastPlugin@2
+  displayName: 'Install Prefast Plugin'
+
+# Increase the maximum cyclomatic complexity threshold.
+# The cyclomatic complexity is the number of closed loops in a function + 1.
+# A quick way to count this metric is to sum 1 plus the count of {IF FOR WHILE SWITCH BREAK RETURN OPERATOR.QUESTION OPERATOR.AND OPERATOR.OR CATCH} in the function body.
+# Ideally we'd like to simplify the faulting methods and use the default (25), but for now we'll ignore them.
+- powershell: |
+    Write-Host "##vso[task.setvariable variable=_PREFAST_CYCLOMATIC;] 83"
+  displayName: Set _PREFAST_CYCLOMATIC=83
+
+- template: ../windows/binaries.yaml
+  parameters:
+    NuGetRestore: false

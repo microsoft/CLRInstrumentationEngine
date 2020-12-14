@@ -16,9 +16,9 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         /// Find and load the correct satellite resource dll for the profiler
-        HRESULT LoadResourceModule();
+        static HRESULT LoadResourceModule();
 
-        void FreeResourceModule();
+        static void FreeResourceModule();
 
     public:
         DECLARE_NO_REGISTRY() // don't try to register the module.

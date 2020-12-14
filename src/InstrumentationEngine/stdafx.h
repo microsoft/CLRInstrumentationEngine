@@ -39,7 +39,7 @@ using namespace ATL;
 
 #include <strsafe.h>
 #include <cor.h>
-#include <corprof.h>
+#include <clrprofiler.h>
 #include "CorHeaders.h"
 #include <sal.h>
 

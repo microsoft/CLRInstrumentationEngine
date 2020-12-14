@@ -34,7 +34,7 @@
 
 #include <strsafe.h>
 #include <cor.h>
-#include <corprof.h>
+#include <clrprofiler.h>
 #include <sal.h>
 
 #include <msxml6.h>

@@ -23,15 +23,12 @@ namespace ApplicationInsightsCompatibility
 
         public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
         public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
-        private const string InstrumentationEngineProfilerId = "{324F817A-7420-4E6D-B3C1-143FBED6D855}";
-        private const string InstrumentationEngineApmcExtensionApmcId = "{CA487940-57D2-10BF-11B2-A3AD5A13CBC0}";
-        private const string RawProfilerHookComponentId = "{4BCBE156-37EC-4179-B051-0183C57BACF9}";
 
         private TestEngine()
         {
         }
 
-        public static ITestResult ExecuteTest<T>()
+        public static ITestResult ExecuteTest<T>() where T : new()
         {
             var executor = new TestEngine();
 
