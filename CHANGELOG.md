@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.36
+
 ## 1.0.35
 + New:
   + Allow unit tests to test single-return instrumentation methods and created unit tests for this.
