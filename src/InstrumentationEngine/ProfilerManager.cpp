@@ -314,12 +314,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    HRESULT hr = S_OK;
-
-    CCriticalSectionHolder lock(&m_cs);
-
-    m_profilerCallbackHolder = nullptr;
-
+    // Prevent external clients from removing RawProfilerHook during lifetime of process.
     return S_OK;
 }
 
@@ -983,7 +978,7 @@ HRESULT CProfilerManager::Initialize(
 
             if (FAILED(hr))
             {
-                RemoveRawProfilerHook();
+                m_profilerCallbackHolder = nullptr;
             }
         }
     }
