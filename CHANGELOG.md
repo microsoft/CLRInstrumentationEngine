@@ -9,7 +9,7 @@ Please format the changes as follows:
 
 ## 1.0.36
 + Perf:
-  + Remove critical section around rawprofiler handle which can bottleneck objectalloc callbacks.
+  + use atomic shared_ptr instead of critical section around rawprofiler handle which can bottleneck objectalloc callbacks.
 
 ## 1.0.35
 + New:
