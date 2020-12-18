@@ -186,8 +186,8 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
-    std::unique_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
-    if (m_profilerCallbackHolder != nullptr)
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
         return E_FAIL;
@@ -201,7 +201,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     CCriticalSectionHolder lock(&m_cs);
 
-    unique_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
+    shared_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
 
     // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
     // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
@@ -307,7 +307,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
         }
     }
 
-    m_profilerCallbackHolder = std::move(profilerCallbackHolder);
+    std::atomic_store(&m_profilerCallbackHolder, profilerCallbackHolder);
 
     return S_OK;
 }
@@ -315,9 +315,8 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    std::unique_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
-
-    m_profilerCallbackHolder = nullptr;
+    atomic_store(&m_profilerCallbackHolder, shared_ptr<CProfilerCallbackHolder>(nullptr));
+    //m_profilerCallbackHolder.reset();
 
     return S_OK;
 }
@@ -963,14 +962,11 @@ HRESULT CProfilerManager::Initialize(
     }
 
     CComPtr<ICorProfilerCallback2> pCallback;
-    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
-    {
-        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
 
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
-        }
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
+    {
+        CComPtr<ICorProfilerCallback2> pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
     }
 
     if (pCallback)
@@ -2804,13 +2800,10 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
-        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
@@ -2836,13 +2829,10 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
     // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
-        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
