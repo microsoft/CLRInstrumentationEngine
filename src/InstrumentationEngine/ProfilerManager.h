@@ -13,6 +13,7 @@
 #include "../Common.Lib/ModuleHandle.h"
 #endif
 #include <XmlDocWrapper.h>
+#include <shared_mutex>
 
 using namespace ATL;
 
@@ -171,6 +172,7 @@ namespace MicrosoftInstrumentationEngine
         // This is the client that asked to receive the raw cor profiler event
         // model rather than using the simplified instrumentation method model. .
         unique_ptr<CProfilerCallbackHolder> m_profilerCallbackHolder;
+        mutable std::shared_mutex m_sharedMutexRawProfiler;
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
@@ -368,10 +370,15 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            if (m_profilerCallbackHolder != nullptr)
+            // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
             {
-                pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
+                std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
+                if (m_profilerCallbackHolder != nullptr)
+                {
+                    pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
+                }
             }
+
 
             if (pCallback != nullptr)
             {

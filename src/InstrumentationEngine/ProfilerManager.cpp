@@ -186,6 +186,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
+    std::unique_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
     if (m_profilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
@@ -314,7 +315,10 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    // Prevent external clients from removing RawProfilerHook during lifetime of process.
+    std::unique_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
+
+    m_profilerCallbackHolder = nullptr;
+
     return S_OK;
 }
 
@@ -958,28 +962,31 @@ HRESULT CProfilerManager::Initialize(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
+    CComPtr<ICorProfilerCallback2> pCallback;
     // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
-
-    CCriticalSectionHolder lock(&m_cs);
-
-    if (m_profilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
-        if (pCallback)
-        {
-            if (m_attachedClrVersion != ClrVersion_2)
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
-            }
-            else
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
-            }
+        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
 
-            if (FAILED(hr))
-            {
-                m_profilerCallbackHolder = nullptr;
-            }
+        if (m_profilerCallbackHolder != nullptr)
+        {
+            CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
+        }
+    }
+
+    if (pCallback)
+    {
+        if (m_attachedClrVersion != ClrVersion_2)
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+        }
+        else
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+        }
+
+        if (FAILED(hr))
+        {
+            RemoveRawProfilerHook();
         }
     }
 
@@ -2797,10 +2804,9 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant events and calls will block.
+    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
     {
-        CCriticalSectionHolder lock(&m_cs);
-
+        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
         if (m_profilerCallbackHolder != nullptr)
         {
             pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
@@ -2830,11 +2836,9 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
     // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant
-    // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
     {
-        CCriticalSectionHolder lock(&m_cs);
-
+        std::shared_lock<std::shared_mutex> srwLock(m_sharedMutexRawProfiler);
         if (m_profilerCallbackHolder != nullptr)
         {
             pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
