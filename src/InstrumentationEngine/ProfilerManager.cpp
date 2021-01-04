@@ -186,7 +186,8 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
-    if (m_profilerCallbackHolder != nullptr)
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
         return E_FAIL;
@@ -200,7 +201,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     CCriticalSectionHolder lock(&m_cs);
 
-    unique_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
+    shared_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
 
     // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
     // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
@@ -306,7 +307,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
         }
     }
 
-    m_profilerCallbackHolder = std::move(profilerCallbackHolder);
+    std::atomic_store(&m_profilerCallbackHolder, profilerCallbackHolder);
 
     return S_OK;
 }
@@ -314,11 +315,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    HRESULT hr = S_OK;
-
-    CCriticalSectionHolder lock(&m_cs);
-
-    m_profilerCallbackHolder = nullptr;
+    atomic_store(&m_profilerCallbackHolder, shared_ptr<CProfilerCallbackHolder>(nullptr));
 
     return S_OK;
 }
@@ -963,28 +960,28 @@ HRESULT CProfilerManager::Initialize(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
+    CComPtr<ICorProfilerCallback2> pCallback;
 
-    CCriticalSectionHolder lock(&m_cs);
-
-    if (m_profilerCallbackHolder != nullptr)
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
-        if (pCallback)
-        {
-            if (m_attachedClrVersion != ClrVersion_2)
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
-            }
-            else
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
-            }
+        CComPtr<ICorProfilerCallback2> pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+    }
 
-            if (FAILED(hr))
-            {
-                RemoveRawProfilerHook();
-            }
+    if (pCallback)
+    {
+        if (m_attachedClrVersion != ClrVersion_2)
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+        }
+        else
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+        }
+
+        if (FAILED(hr))
+        {
+            RemoveRawProfilerHook();
         }
     }
 
@@ -2802,14 +2799,10 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant events and calls will block.
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
-        CCriticalSectionHolder lock(&m_cs);
-
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
@@ -2835,15 +2828,10 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
     // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant
-    // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    if (pProfilerCallbackHolder != nullptr)
     {
-        CCriticalSectionHolder lock(&m_cs);
-
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)

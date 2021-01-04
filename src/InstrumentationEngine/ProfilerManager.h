@@ -170,7 +170,7 @@ namespace MicrosoftInstrumentationEngine
 
         // This is the client that asked to receive the raw cor profiler event
         // model rather than using the simplified instrumentation method model. .
-        unique_ptr<CProfilerCallbackHolder> m_profilerCallbackHolder;
+        shared_ptr<CProfilerCallbackHolder> m_profilerCallbackHolder;
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
@@ -368,15 +368,10 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            // Holding the lock during the callback functions is dangerous since rentrant
-            // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
+            shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+            if (pProfilerCallbackHolder != nullptr)
             {
-                CCriticalSectionHolder lock(&m_cs);
-
-                if (m_profilerCallbackHolder != nullptr)
-                {
-                    pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
-                }
+                CComPtr<ICorProfilerCallback2> pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
             }
 
             if (pCallback != nullptr)
