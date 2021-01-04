@@ -316,7 +316,6 @@ HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
     atomic_store(&m_profilerCallbackHolder, shared_ptr<CProfilerCallbackHolder>(nullptr));
-    //m_profilerCallbackHolder.reset();
 
     return S_OK;
 }
