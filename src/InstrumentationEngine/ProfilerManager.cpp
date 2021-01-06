@@ -965,7 +965,7 @@ HRESULT CProfilerManager::Initialize(
     shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
     if (pProfilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback2> pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+        pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
     }
 
     if (pCallback)
