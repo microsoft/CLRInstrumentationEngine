@@ -70,7 +70,7 @@ HRESULT MicrosoftInstrumentationEngine::CTokenType::GetName(_Out_ BSTR* pbstrNam
             IfFailRet(pImport->GetTypeDefProps(m_token, nameBuffer.data(), cchLength, &cchLength, nullptr, nullptr));
             fullName += nameBuffer.data();
 
-            m_name = CComBSTR(fullName.c_str());
+            m_name = CComBSTR(fullName.length(), fullName.c_str());
         }
         else if (TypeFromToken(m_token) == mdtTypeRef)
         {
