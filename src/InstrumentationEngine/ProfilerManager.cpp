@@ -186,7 +186,11 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
-    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
+
     if (pProfilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
@@ -201,7 +205,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     CCriticalSectionHolder lock(&m_cs);
 
-    shared_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
+    CProfilerCallbackHolder* profilerCallbackHolder = new CProfilerCallbackHolder;
 
     // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
     // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
@@ -307,7 +311,8 @@ HRESULT CProfilerManager::AddRawProfilerHook(
         }
     }
 
-    std::atomic_store(&m_profilerCallbackHolder, profilerCallbackHolder);
+    // ICorProfiler::Initialize happens before any other callbacks so this shouldn't have any race conditions
+    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, pProfilerCallbackHolder);
 
     return S_OK;
 }
@@ -315,7 +320,9 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    atomic_store(&m_profilerCallbackHolder, shared_ptr<CProfilerCallbackHolder>(nullptr));
+    // This doesn't causea a race condition since we are only setting null to the pointer, however this
+    // will cause a memory leak as there's no lock-free guarantees to delete the object.
+    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, nullptr);
 
     return S_OK;
 }
@@ -962,7 +969,11 @@ HRESULT CProfilerManager::Initialize(
 
     CComPtr<ICorProfilerCallback2> pCallback;
 
-    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
+
     if (pProfilerCallbackHolder != nullptr)
     {
         pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
@@ -2799,7 +2810,11 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
+
     if (pProfilerCallbackHolder != nullptr)
     {
         pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
@@ -2828,7 +2843,11 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
     // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
     CComPtr<ICorProfilerCallback> pCallback;
 
-    shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
+
     if (pProfilerCallbackHolder != nullptr)
     {
         pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));

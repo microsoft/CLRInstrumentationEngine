@@ -168,9 +168,14 @@ namespace MicrosoftInstrumentationEngine
             }
         };
 
-        // This is the client that asked to receive the raw cor profiler event
-        // model rather than using the simplified instrumentation method model. .
-        shared_ptr<CProfilerCallbackHolder> m_profilerCallbackHolder;
+        // This is the client that asked to receive the raw ICorProfiler event
+        // model rather than using the simplified instrumentation method model.
+        // 
+        // We use a raw pointer here to address perf issues around locks & critical sections
+        // that cause thread context switching. This implementation uses InterlockedExchange functions
+        // to read/write the pointer and will produce an expected memory leak since there are no
+        // lock-free guarantees to delete the object.
+        CProfilerCallbackHolder* m_profilerCallbackHolder;
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
@@ -368,7 +373,7 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            shared_ptr<CProfilerCallbackHolder> pProfilerCallbackHolder = atomic_load(&m_profilerCallbackHolder);
+            CProfilerCallbackHolder* pProfilerCallbackHolder = InterlockedCompareExchangePointer(&m_profilerCallbackHolder, nullptr, nullptr);
             if (pProfilerCallbackHolder != nullptr)
             {
                 pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
