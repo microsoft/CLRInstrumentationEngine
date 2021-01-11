@@ -2817,7 +2817,7 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     if (pProfilerCallbackHolder != nullptr)
     {
-        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
@@ -2850,7 +2850,7 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
 
     if (pProfilerCallbackHolder != nullptr)
     {
-        pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)

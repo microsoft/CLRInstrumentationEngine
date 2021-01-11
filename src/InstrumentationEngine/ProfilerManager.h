@@ -373,7 +373,11 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            CProfilerCallbackHolder* pProfilerCallbackHolder = InterlockedCompareExchangePointer(&m_profilerCallbackHolder, nullptr, nullptr);
+            CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+                &m_profilerCallbackHolder,
+                nullptr,
+                nullptr));
+
             if (pProfilerCallbackHolder != nullptr)
             {
                 pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
