@@ -20,3 +20,4 @@ steps:
     msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)
+    msbuildArguments: /verbosity:diagnostic
