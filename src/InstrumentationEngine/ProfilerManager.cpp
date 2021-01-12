@@ -37,7 +37,8 @@ CProfilerManager::CProfilerManager() :
     m_bIsInitializingInstrumentationMethod(false),
     m_dwInstrumentationMethodFlags(0),
     m_bValidateCodeSignature(true),
-    m_bAttach(false)
+    m_bAttach(false),
+    m_profilerCallbackHolder(nullptr)
 {
 #ifdef PLATFORM_UNIX
     PAL_Initialize(0, NULL);
@@ -186,12 +187,12 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
-    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+    CProfilerCallbackHolder* profilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
         nullptr,
         nullptr));
 
-    if (pProfilerCallbackHolder != nullptr)
+    if (profilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
         return E_FAIL;
@@ -205,7 +206,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     CCriticalSectionHolder lock(&m_cs);
 
-    CProfilerCallbackHolder* profilerCallbackHolder = new CProfilerCallbackHolder;
+    profilerCallbackHolder = new CProfilerCallbackHolder;
 
     // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
     // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
@@ -312,7 +313,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     }
 
     // ICorProfiler::Initialize happens before any other callbacks so this shouldn't have any race conditions
-    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, pProfilerCallbackHolder);
+    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, profilerCallbackHolder);
 
     return S_OK;
 }
