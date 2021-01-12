@@ -11,5 +11,5 @@ steps:
     rulesetName: Custom
     msBuildArchitecture: x86
     customRuleset: DevDivRoslynRequired.ruleset
-    msBuildCommandline: msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /p:Platform="$(Platform)" /p:Configuration=$(Configuration)
+    msBuildCommandline: msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /p:Platform="$(Platform)" /p:Configuration=$(Configuration) /verbosity:diagnostic
     suppressionFileForCompilerWarnings: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\csharpsuppressions.txt
