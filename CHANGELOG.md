@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.36
++ Perf:
+  + use atomic shared_ptr instead of critical section around rawprofiler handle which can bottleneck objectalloc callbacks.
 
 ## 1.0.35
 + New:
@@ -29,7 +31,6 @@ Please format the changes as follows:
   + Update PR/CI stage dependencies
   + Use NuGet 5.8 when restoring
   + Use IfFailLog when rawprofiler fails to initialize.
-
 
 ## 1.0.34
 + BugFixes:
