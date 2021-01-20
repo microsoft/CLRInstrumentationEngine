@@ -13,7 +13,7 @@ jobs:
   # No dependencies. Requires Build Stages to ensure that binaries are built
 
   pool:
-    name: VSEng-MicroBuildVS2019
+    name: VSEngSS-MicroBuild2019
 
   workspace:
     clean: all
