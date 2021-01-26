@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.36
++ BugFixes:
+  + Make configuration environment variables case-insensitive on Windows.
 + Perf:
   + use atomic shared_ptr instead of critical section around rawprofiler handle which can bottleneck objectalloc callbacks.
 
