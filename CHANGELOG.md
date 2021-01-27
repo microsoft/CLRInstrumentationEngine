@@ -7,6 +7,12 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.36
++ BugFixes:
+  + Make configuration environment variables case-insensitive on Windows.
++ Perf:
+  + Use interlockedexchange instead of critical sections around rawprofiler handle to address bottleneck objectalloc callbacks.
+
 ## 1.0.35
 + New:
   + Allow unit tests to test single-return instrumentation methods and created unit tests for this.
@@ -27,7 +33,6 @@ Please format the changes as follows:
   + Update PR/CI stage dependencies
   + Use NuGet 5.8 when restoring
   + Use IfFailLog when rawprofiler fails to initialize.
-
 
 ## 1.0.34
 + BugFixes:

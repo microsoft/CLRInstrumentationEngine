@@ -168,9 +168,14 @@ namespace MicrosoftInstrumentationEngine
             }
         };
 
-        // This is the client that asked to receive the raw cor profiler event
-        // model rather than using the simplified instrumentation method model. .
-        unique_ptr<CProfilerCallbackHolder> m_profilerCallbackHolder;
+        // This is the client that asked to receive the raw ICorProfiler event
+        // model rather than using the simplified instrumentation method model.
+        // 
+        // We use a raw pointer here to address perf issues around locks & critical sections
+        // that cause thread context switching. This implementation uses InterlockedExchange functions
+        // to read/write the pointer and will produce an expected memory leak since there are no
+        // lock-free guarantees to delete the object.
+        CProfilerCallbackHolder* m_profilerCallbackHolder;
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
@@ -368,15 +373,14 @@ namespace MicrosoftInstrumentationEngine
 
             CComPtr<TInterfaceType> pCallback;
 
-            // Holding the lock during the callback functions is dangerous since rentrant
-            // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-            {
-                CCriticalSectionHolder lock(&m_cs);
+            CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+                (volatile PVOID*)&m_profilerCallbackHolder,
+                nullptr,
+                nullptr));
 
-                if (m_profilerCallbackHolder != nullptr)
-                {
-                    pCallback = (TInterfaceType*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
-                }
+            if (pProfilerCallbackHolder != nullptr)
+            {
+                pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
             }
 
             if (pCallback != nullptr)

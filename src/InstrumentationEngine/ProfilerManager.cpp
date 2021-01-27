@@ -37,7 +37,8 @@ CProfilerManager::CProfilerManager() :
     m_bIsInitializingInstrumentationMethod(false),
     m_dwInstrumentationMethodFlags(0),
     m_bValidateCodeSignature(true),
-    m_bAttach(false)
+    m_bAttach(false),
+    m_profilerCallbackHolder(nullptr)
 {
 #ifdef PLATFORM_UNIX
     PAL_Initialize(0, NULL);
@@ -186,7 +187,12 @@ HRESULT CProfilerManager::AddRawProfilerHook(
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
 
-    if (m_profilerCallbackHolder != nullptr)
+    CProfilerCallbackHolder* profilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
+
+    if (profilerCallbackHolder != nullptr)
     {
         CLogging::LogError(_T("CAppDomainInfo::AddRawProfilerHook - Raw profiler hook is already initialized"));
         return E_FAIL;
@@ -200,7 +206,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 
     CCriticalSectionHolder lock(&m_cs);
 
-    unique_ptr<CProfilerCallbackHolder> profilerCallbackHolder(new CProfilerCallbackHolder);
+    profilerCallbackHolder = new CProfilerCallbackHolder;
 
     // Rather than following COM-rules and QI-ing for each specific ICorProfilerCallback version, we instead follow the implementation set by the CLR
     // where to interface inheritance, higher versioned ICorProfilerCallback## can be statically-casted to lower versioned ICorProfilerCallback##,
@@ -306,7 +312,8 @@ HRESULT CProfilerManager::AddRawProfilerHook(
         }
     }
 
-    m_profilerCallbackHolder = std::move(profilerCallbackHolder);
+    // ICorProfiler::Initialize happens before any other callbacks so this shouldn't have any race conditions
+    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, profilerCallbackHolder);
 
     return S_OK;
 }
@@ -314,11 +321,9 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 HRESULT CProfilerManager::RemoveRawProfilerHook(
     )
 {
-    HRESULT hr = S_OK;
-
-    CCriticalSectionHolder lock(&m_cs);
-
-    m_profilerCallbackHolder = nullptr;
+    // This doesn't causea a race condition since we are only setting null to the pointer, however this
+    // will cause a memory leak as there's no lock-free guarantees to delete the object.
+    InterlockedExchangePointer((void**)&m_profilerCallbackHolder, nullptr);
 
     return S_OK;
 }
@@ -963,28 +968,32 @@ HRESULT CProfilerManager::Initialize(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    // Take the lock that protects the raw profiler callback and the instrumentation methods. This keeps the collection from changing out from under the iterator
+    CComPtr<ICorProfilerCallback2> pCallback;
 
-    CCriticalSectionHolder lock(&m_cs);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
 
-    if (m_profilerCallbackHolder != nullptr)
+    if (pProfilerCallbackHolder != nullptr)
     {
-        CComPtr<ICorProfilerCallback2> pCallback = m_profilerCallbackHolder->m_CorProfilerCallback2;
-        if (pCallback)
-        {
-            if (m_attachedClrVersion != ClrVersion_2)
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
-            }
-            else
-            {
-                IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
-            }
+        pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+    }
 
-            if (FAILED(hr))
-            {
-                RemoveRawProfilerHook();
-            }
+    if (pCallback)
+    {
+        if (m_attachedClrVersion != ClrVersion_2)
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pWrappedProfilerInfo.p)));
+        }
+        else
+        {
+            IfFailLog(pCallback->Initialize((IUnknown*)(m_pRealProfilerInfo.p)));
+        }
+
+        if (FAILED(hr))
+        {
+            RemoveRawProfilerHook();
         }
     }
 
@@ -2802,14 +2811,14 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant events and calls will block.
-    {
-        CCriticalSectionHolder lock(&m_cs);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
 
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+    if (pProfilerCallbackHolder != nullptr)
+    {
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
@@ -2835,15 +2844,14 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
     // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
     CComPtr<ICorProfilerCallback> pCallback;
 
-    // Holding the lock during the callback functions is dangerous since rentrant
-    // events and calls will block. Copy the collection under the lock, then release it and finally call the callbacks
-    {
-        CCriticalSectionHolder lock(&m_cs);
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+        (volatile PVOID*)&m_profilerCallbackHolder,
+        nullptr,
+        nullptr));
 
-        if (m_profilerCallbackHolder != nullptr)
-        {
-            pCallback = (ICorProfilerCallback*)(m_profilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
-        }
+    if (pProfilerCallbackHolder != nullptr)
+    {
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback != nullptr)
