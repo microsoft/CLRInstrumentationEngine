@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.36
++ BugFixes:
+  + Make configuration environment variables case-insensitive on Windows.
 + Perf:
   + Use interlockedexchange instead of critical sections around rawprofiler handle to address bottleneck objectalloc callbacks.
 

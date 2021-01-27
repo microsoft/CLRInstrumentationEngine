@@ -23,6 +23,7 @@ namespace MicrosoftInstrumentationEngine
 
 #ifndef PLATFORM_UNIX
         // Pull config paths from environment variables by checking for known prefix.
+        // Ignore casing of variable names on Windows.
         auto freeEnvironmentBlock = [](LPTCH p) { FreeEnvironmentStrings(p); };
         auto pEnvironmentBlock = unique_ptr<WCHAR, decltype(freeEnvironmentBlock)>(GetEnvironmentStrings(), freeEnvironmentBlock);
 
@@ -45,14 +46,24 @@ namespace MicrosoftInstrumentationEngine
         for (LPWSTR wszVariable = pEnvironmentBlock.get(); *wszVariable; wszVariable += wcslen(wszVariable) + 1)
         {
             // If the variable name starts with the known prefix
-            if (0 == wcsncmp(wszVariable, s_wszConfigurationPathEnvironmentVariablePrefix, cchConfigurationPathEnvironmentVariablePrefix))
+            const size_t cchVariable = wcslen(wszVariable);
+            if (cchVariable > cchConfigurationPathEnvironmentVariablePrefix)
             {
-                LPCWSTR wszVariableValue = wcsstr(wszVariable, s_wszEnvironmentVariableNameValueSeparator) + 1;
-
-                if (wszVariableValue != nullptr)
+                int compareResult = CompareStringOrdinal(
+                    wszVariable,
+                    (int)cchConfigurationPathEnvironmentVariablePrefix,
+                    s_wszConfigurationPathEnvironmentVariablePrefix,
+                    (int)cchConfigurationPathEnvironmentVariablePrefix,
+                    TRUE /* bIgnoreCase*/);
+                if (CSTR_EQUAL == compareResult)
                 {
-                    // The value found after the first '=' character is the variable value; get the configuration paths from the value
-                    IfFailRet(AddExpandedPaths(sources, wszVariableValue));
+                    LPCWSTR wszVariableValue = wcsstr(wszVariable, s_wszEnvironmentVariableNameValueSeparator) + 1;
+
+                    if (wszVariableValue != nullptr)
+                    {
+                        // The value found after the first '=' character is the variable value; get the configuration paths from the value
+                        IfFailRet(AddExpandedPaths(sources, wszVariableValue));
+                    }
                 }
             }
         }
