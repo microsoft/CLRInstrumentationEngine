@@ -55,9 +55,11 @@
     <EmbeddedResource Include="EmbeddedResources\DynamicCodeTests.cs" />
     <EmbeddedResource Include="EmbeddedResources\InstrumentationMethodLoggingTests.cs" />
     <EmbeddedResource Include="EmbeddedResources\MultiReturnTests.cs" />
+    <EmbeddedResource Include="EmbeddedResources\AddExceptionHandlerTests.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="RuntimeExceptionCallbacks.cs" />
     <Compile Include="TestConstants.cs" />
+    <Compile Include="TestAddExceptionHandler.cs" />
     <Compile Include="TestHttpMethods.cs" />
     <Compile Include="TestDynamicCode.cs" />
     <Compile Include="TestInstruOperations.cs" />
@@ -88,6 +90,34 @@
     </Content>
     <Content Include="..\Baselines\AddBranchTargets_SwitchTest.xml">
       <Link>Baselines\AddBranchTargets_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ExceptionFatMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ExceptionFatMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ExceptionTinyMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ExceptionTinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ReturnAndThrowMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ReturnAndThrowMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ReturnMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ReturnMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ReturnMultiMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ReturnMultiMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ReturnMultiVoidMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ReturnMultiVoidMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_ReturnVoidMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_ReturnVoidMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\AddMultiNop_IfTest_Debug.xml">
@@ -290,6 +320,34 @@
     </Content>
     <Content Include="..\TestScripts\AddBranchTargets_SwitchTest.xml">
       <Link>TestScripts\AddBranchTargets_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ExceptionFatMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ExceptionFatMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ExceptionTinyMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ExceptionTinyMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ReturnAndThrowMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ReturnAndThrowMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ReturnMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ReturnMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ReturnMultiMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ReturnMultiMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ReturnMultiVoidMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ReturnMultiVoidMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_ReturnVoidMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_ReturnVoidMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\AddMultiNop_IfTest_Debug.xml">

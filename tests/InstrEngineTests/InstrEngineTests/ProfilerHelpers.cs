@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace InstrEngineTests
 {
@@ -338,7 +339,12 @@ namespace InstrEngineTests
             {
                 if (CompareOrdinalNormalizeLineEndings(baselineNode.Value, outputNode.Value) != 0)
                 {
-                    Assert.Fail("Baseline value does not equal output value\n" + baselineNode.Value + "\n" + outputNode.Value);
+                    int index = baselineNode.Value.Zip(outputNode.Value, (c1, c2) => c1 == c2).TakeWhile(b => b).Count() + 1;
+                    string assertError = $"Baseline value does not equal output value{Environment.NewLine}" +
+                        $"{baselineNode.Value} (Length: {baselineNode.Value.Length}){Environment.NewLine}" +
+                        $"{outputNode.Value} (Length: {outputNode.Value.Length}){Environment.NewLine}" +
+                        $"Index of first diff: {index}";
+                    Assert.Fail(assertError);
                 }
 
                 Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count);

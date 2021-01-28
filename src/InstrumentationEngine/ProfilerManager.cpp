@@ -1952,6 +1952,18 @@ HRESULT CProfilerManager::JITCompilationFinished(
 
     PROF_CALLBACK_BEGIN
 
+    CComPtr<CMethodInfo> pMethodInfo;
+    hr = CreateMethodInfo(functionId, &pMethodInfo);
+    CComBSTR name;
+    if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
+    {
+        CLogging::LogMessage(_T("JITCompilationFinished FullMethodName %s, hr = %X"), name.m_str, hrStatus);
+    }
+    else
+    {
+        CLogging::LogMessage(_T("Method name failed"));
+    }
+
     IGNORE_IN_NET20_BEGIN
 
     CComPtr<CMethodJitInfo> pMethodJitInfo;

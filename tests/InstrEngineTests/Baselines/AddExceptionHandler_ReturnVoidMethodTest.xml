@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>ReturnVoidMethodTest</Name>
+    <FullName>AddExceptionHandlerTests.Program.ReturnVoidMethodTest</FullName>
+    <ClassID Volatile="True">0xd4a03998</ClassID>
+    <FunctionID>0x00000001</FunctionID>
+    <MethodToken>0x06000005</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_VOID</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x00 0x01 </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x0000221b</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x00 </LocalSignature>
+    <MaxStack>0x00000001</MaxStack>
+    <Instructions>
+        <![CDATA[
+IL_0000 nop
+IL_0001 leave.s IL_0006
+IL_0003 pop
+IL_0004 leave.s IL_0006
+IL_0006 nop
+IL_0007 ret
+    ]]>
+    </Instructions>
+    <ExceptionClauses>
+        <ExceptionClause>
+            <Flags>0x00000000</Flags>
+            <FirstTryOffset>0x00000000</FirstTryOffset>
+            <LastTryOffset>0x00000001</LastTryOffset>
+            <FirstHandlerOffset>0x00000003</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000004</LastHandlerOffset>
+            <FilterOffset>0x00000000</FilterOffset>
+            <ExceptionToken>0x01000006</ExceptionToken>
+        </ExceptionClause>
+    </ExceptionClauses>
+    <CorIlMap>
+    </CorIlMap>
+</InstrumentedMethod>

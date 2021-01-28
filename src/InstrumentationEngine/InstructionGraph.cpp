@@ -1001,6 +1001,10 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Replace(_In_ IInstruc
     // This is necessary since this is an API to be consumed by multiple instermentation methods.
     MarkInstructionsStale();
 
+    // Search the graph for any branch whose branch target is the old instruction. Set the branch target
+    // to the new instruction.
+    IfFailRet(CBranchTargetInfo::RetargetBranches(pInstrOrig, pInstrNew));
+
     // Search the exception clauses for anything that points to the old instruction
     // Set that target to the new instruction
     if (m_pMethodInfo != NULL)

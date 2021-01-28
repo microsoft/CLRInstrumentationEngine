@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+  <InstrumentMethod>
+    <ModuleName>AddExceptionHandlerTests_Release_x64.exe</ModuleName>
+    <MethodName>ReturnMultiVoidMethodTest</MethodName>
+    <AddExceptionHandler>True</AddExceptionHandler>
+    <MakeSingleRet />
+  </InstrumentMethod>
+</InstrumentationTestScript>
