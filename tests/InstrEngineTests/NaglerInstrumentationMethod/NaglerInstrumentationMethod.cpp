@@ -196,6 +196,7 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
     BOOL isReplacement = FALSE;
     BOOL isSingleRetFirst = FALSE;
     BOOL isSingleRetLast = FALSE;
+    BOOL isAddExceptionHandler = FALSE;
     shared_ptr<CInstrumentMethodPointTo> spPointTo(nullptr);
 
     for (long i = 0; i < cChildren; i++)
@@ -244,6 +245,15 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
             CComVariant varNodeValue;
             pChildValue->get_nodeValue(&varNodeValue);
             bIsRejit = (wcscmp(varNodeValue.bstrVal, L"True") == 0);
+        }
+        else if (wcscmp(bstrCurrNodeName, L"AddExceptionHandler") == 0)
+        {
+            CComPtr<IXMLDOMNode> pChildValue;
+            pChildNode->get_firstChild(&pChildValue);
+
+            CComVariant varNodeValue;
+            pChildValue->get_nodeValue(&varNodeValue);
+            isAddExceptionHandler = (wcscmp(varNodeValue.bstrVal, L"True") == 0);
         }
         else if (wcscmp(bstrCurrNodeName, L"CorIlMap") == 0)
         {
@@ -315,7 +325,7 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
         isSingleRetLast = true;
     }
 
-    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(bstrModuleName, bstrMethodName, bIsRejit, isSingleRetFirst, isSingleRetLast);
+    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(bstrModuleName, bstrMethodName, bIsRejit, isSingleRetFirst, isSingleRetLast, isAddExceptionHandler);
     if (spPointTo != nullptr)
     {
         pMethod->SetPointTo(spPointTo);
@@ -1174,6 +1184,11 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         IfFailRet(PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph));
     }
 
+    if (pMethodEntry->IsAddExceptionHandler())
+    {
+        AddExceptionHandler(pMethodInfo, pInstructionGraph);
+    }
+
     return S_OK;
 }
 
@@ -1184,6 +1199,174 @@ HRESULT CInstrumentationMethod::PerformSingleReturnInstrumentation(IMethodInfo* 
     IfFailRet(pMethodInfo->GetSingleRetDefaultInstrumentation(&pSingleRet));
     IfFailRet(pSingleRet->Initialize(pInstructionGraph));
     IfFailRet(pSingleRet->ApplySingleRetDefaultInstrumentation());
+    return S_OK;
+}
+
+// this function doesn't handle multiple returns or tailcalls
+// we expect PerformSingleReturnInstrumentation to be applied before this function is called, so normally that won't be an issue
+HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph)
+{
+    HRESULT hr;
+
+    CComPtr<IInstruction> pCurrentInstruction;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pCurrentInstruction));
+    DWORD returnCount = 0;
+    DWORD tailcallCount = 0;
+
+    CComPtr<IInstruction> pInstruction;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pInstruction));
+
+    while (pInstruction != NULL)
+    {
+        ILOrdinalOpcode opCode;
+        IfFailRet(pInstruction->GetOpCode(&opCode));
+
+        if (opCode == Cee_Ret)
+        {
+            returnCount++;
+        }
+        if (opCode == Cee_Tailcall)
+        {
+            tailcallCount++;
+        }
+
+        CComPtr<IInstruction> pCurr = pInstruction;
+        pInstruction.Release();
+        pCurr->GetNextInstruction(&pInstruction);
+    }
+
+    if (tailcallCount > 0)
+    {
+        ATLASSERT(L"Trying to add exception handler to method with tailcall");
+        return E_FAIL;
+    }
+
+    if (returnCount > 1) // note it would be valid to have method with zero returns, as we could end in a throw
+    {
+        ATLASSERT(L"Trying to add exception handler to method with more than one return");
+        return E_FAIL;
+    }
+
+    IModuleInfo* pModuleInfo;
+    IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+
+    IType* pReturnType;
+    IfFailRet(pMethodInfo->GetReturnType(&pReturnType));
+
+    CorElementType returnCorElementType;
+    IfFailRet(pReturnType->GetCorElementType(&returnCorElementType));
+
+    CComPtr<ILocalVariableCollection> localVars;
+    IfFailRet(pMethodInfo->GetLocalVariables(&localVars));
+
+    DWORD returnIndex = -1;
+    if (returnCorElementType != ELEMENT_TYPE_VOID)
+    {
+        IfFailRet(localVars->AddLocal(pReturnType, &returnIndex));
+    }
+
+    CComPtr<IMetaDataImport> pIMetaDataImport;
+    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&pIMetaDataImport)));
+
+    CComPtr<IMetaDataAssemblyImport> pIMetaDataAssemblyImport;
+    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&pIMetaDataAssemblyImport)));
+
+    mdAssembly resolutionScope;
+    pIMetaDataAssemblyImport->GetAssemblyFromScope(&resolutionScope);
+
+    std::wstring strExceptionTypeName(_T("System.Exception"));
+
+    ULONG chName = MAX_PATH;
+    std::wstring strName(chName, wchar_t());
+    DWORD cTokens;
+    mdTypeRef currentTypeRef;
+    mdTypeRef targetTypeRef = mdTypeRefNil;
+    MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport> pHEnSourceTypeRefs(pIMetaDataImport, nullptr);
+    while (SUCCEEDED(pIMetaDataImport->EnumTypeRefs(pHEnSourceTypeRefs.Get(), &currentTypeRef, 1, &cTokens)) && cTokens > 0)
+    {
+        pIMetaDataImport->GetTypeRefProps(currentTypeRef, &resolutionScope, &strName[0], static_cast<ULONG>(strName.size()), &chName);
+        if (0 == wcscmp(strName.c_str(), strExceptionTypeName.c_str()))
+        {
+            targetTypeRef = currentTypeRef;
+            break;
+        }
+    }
+
+    if (targetTypeRef == mdTypeRefNil)
+    {
+        return E_FAIL;
+    }
+
+
+    CComPtr<IInstructionFactory> pInstructionFactory;
+    IfFailRet(pMethodInfo->GetInstructionFactory(&pInstructionFactory));
+
+    CComPtr<IInstruction> pExitLabel;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Nop, &pExitLabel));
+
+    CComPtr<IInstruction> pRet;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Ret, &pRet));
+
+    CComPtr<IInstruction> pFirst;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pFirst));
+
+    CComPtr<IInstruction> pLast;
+    IfFailRet(pInstructionGraph->GetLastInstruction(&pLast));
+
+    ILOrdinalOpcode lastOpCode;
+    IfFailRet(pLast->GetOpCode(&lastOpCode));
+    if (lastOpCode == Cee_Ret)
+    {
+        if (returnCorElementType == ELEMENT_TYPE_VOID)
+        {
+            // it might seem that return instruction could simply be removed, but it might be used as jump target, so better to replace with a nop
+            CComPtr<IInstruction> pNewLast;
+            pInstructionFactory->CreateInstruction(Cee_Nop, &pNewLast);
+            pInstructionGraph->Replace(pLast, pNewLast);
+            pLast = pNewLast;
+        }
+        else
+        {
+            CComPtr<IInstruction> pReplacementLast;
+            pInstructionFactory->CreateStoreLocalInstruction(static_cast<USHORT>(returnIndex), &pReplacementLast);
+            pInstructionGraph->Replace(pLast, pReplacementLast);
+            pLast = pReplacementLast;
+        }
+    }
+
+    CComPtr<IExceptionSection> pExceptionSection;
+    IfFailRet(pMethodInfo->GetExceptionSection(&pExceptionSection));
+
+    CComPtr<IInstruction> pLeave1;
+    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, pExitLabel, &pLeave1));
+    IfFailRet(pInstructionGraph->InsertAfter(pLast, pLeave1));
+
+    // --- handler body ---
+    CComPtr<IInstruction> pPop;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Pop, &pPop));
+    IfFailRet(pInstructionGraph->InsertAfter(pLeave1, pPop));
+    // --- handler body ---
+
+    CComPtr<IInstruction> pLeave2;
+    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, pExitLabel, &pLeave2));
+    IfFailRet(pInstructionGraph->InsertAfter(pPop, pLeave2));
+
+    IfFailRet(pInstructionGraph->InsertAfter(pLeave2, pExitLabel));
+    CComPtr<IInstruction> pPrev = pExitLabel;
+
+    if (returnCorElementType != ELEMENT_TYPE_VOID)
+    {
+        CComPtr<IInstruction> pLoadResult;
+        pInstructionFactory->CreateLoadLocalInstruction(static_cast<USHORT>(returnIndex), &pLoadResult);
+        IfFailRet(pInstructionGraph->InsertAfter(pPrev, pLoadResult));
+        pPrev = pLoadResult;
+    }
+
+    IfFailRet(pInstructionGraph->InsertAfter(pPrev, pRet));
+
+    CComPtr<IExceptionClause> pExceptionClause;
+    pExceptionSection->AddNewExceptionClause(0, pFirst, pLeave1, pPop, pLeave2, nullptr, targetTypeRef, &pExceptionClause);
+
     return S_OK;
 }
 

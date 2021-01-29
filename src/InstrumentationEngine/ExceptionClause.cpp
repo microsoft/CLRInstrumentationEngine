@@ -110,9 +110,15 @@ HRESULT MicrosoftInstrumentationEngine::CExceptionClause::RenderExceptionClause(
     pEHClause->HandlerOffset = firstHandlerOffset;
     pEHClause->HandlerLength = (lastHandlerOffset + lastHandlerSize) - firstHandlerOffset;
 
+    CLogging::LogMessage(_T("CExceptionClause::RenderExceptionClause, pEHClause->TryOffset: %i (%X), pEHClause->TryLength: %i (%X), pEHClause->HandlerOffset: %i (%X), pEHClause->HandlerLength: %i (%X)"),
+        pEHClause->TryOffset, pEHClause->TryOffset, pEHClause->TryLength, pEHClause->TryLength, pEHClause->HandlerOffset, pEHClause->HandlerOffset, pEHClause->HandlerLength, pEHClause->HandlerLength);
+
+
     if (m_flags == COR_ILEXCEPTION_CLAUSE_NONE)
     {
         pEHClause->ClassToken = m_ExceptionHandlerType;
+        CLogging::LogMessage(_T("CExceptionClause::RenderExceptionClause, pEHClause->ClassToken: %i (%X)"),
+            pEHClause->ClassToken, pEHClause->ClassToken);
     }
     else if (m_flags == COR_ILEXCEPTION_CLAUSE_FILTER)
     {

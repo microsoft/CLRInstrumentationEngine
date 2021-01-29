@@ -22,6 +22,7 @@ namespace InstrEngineTests
         private const string X64BinarySuffix = "x64";
 
         private static string[] TestAppFilePrefixes = new string[] {
+            "AddExceptionHandlerTests",
             "InjectToMscorlibTest",
             "BasicManagedTests",
             "BasicManagedTests2",
