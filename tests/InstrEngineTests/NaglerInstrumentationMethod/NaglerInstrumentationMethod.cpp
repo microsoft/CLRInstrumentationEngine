@@ -1202,7 +1202,7 @@ HRESULT CInstrumentationMethod::PerformSingleReturnInstrumentation(IMethodInfo* 
     return S_OK;
 }
 
-// this function does handle multiple returns or tailcalls
+// this function doesn't handle multiple returns or tailcalls
 // we expect PerformSingleReturnInstrumentation to be applied before this function is called, so normally that won't be an issue
 HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph)
 {
@@ -1237,13 +1237,13 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
 
     if (tailcallCount > 0)
     {
-        ATLASSERT(L"Trying to add exception handle to method with tailcall");
+        ATLASSERT(L"Trying to add exception handler to method with tailcall");
         return E_FAIL;
     }
 
     if (returnCount > 1) // note it would be valid to have method with zero returns, as we could end in a throw
     {
-        ATLASSERT(L"Trying to add exception handle to method with more than one return");
+        ATLASSERT(L"Trying to add exception handler to method with more than one return");
         return E_FAIL;
     }
 
