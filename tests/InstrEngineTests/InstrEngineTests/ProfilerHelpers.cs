@@ -337,12 +337,14 @@ namespace InstrEngineTests
             // NOTE: Eventually this should also be made to do regexp matching against
             if (!isVolatile)
             {
-                if (CompareOrdinalNormalizeLineEndings(baselineNode.Value, outputNode.Value) != 0)
+                var baselineString = NormalizeLineEndingsAndTrimWhitespace(baselineNode.Value);
+                var outputString = NormalizeLineEndingsAndTrimWhitespace(outputNode.Value);
+                if (String.CompareOrdinal(baselineString, outputString) != 0)
                 {
-                    int index = baselineNode.Value.Zip(outputNode.Value, (c1, c2) => c1 == c2).TakeWhile(b => b).Count() + 1;
+                    int index = baselineString.Zip(outputString, (c1, c2) => c1 == c2).TakeWhile(b => b).Count() + 1;
                     string assertError = $"Baseline value does not equal output value{Environment.NewLine}" +
-                        $"{baselineNode.Value} (Length: {baselineNode.Value.Length}){Environment.NewLine}" +
-                        $"{outputNode.Value} (Length: {outputNode.Value.Length}){Environment.NewLine}" +
+                        $"{baselineString} (Length: {baselineString.Length}){Environment.NewLine}" +
+                        $"{outputString} (Length: {outputString.Length}){Environment.NewLine}" +
                         $"Index of first diff: {index}";
                     Assert.Fail(assertError);
                 }
@@ -361,11 +363,9 @@ namespace InstrEngineTests
 
         // Do this because we are doing git autocrlf stuff so the baselines will have ???
         // but the test output files will always have Windows-style.
-        private static int CompareOrdinalNormalizeLineEndings(string a, string b)
+        private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
-            string normalA = a?.Replace("\r\n", "\n");
-            string normalB = b?.Replace("\r\n", "\n");
-            return String.CompareOrdinal(normalA, normalB);
+            return s?.Replace("\r\n", "\n")?.Trim();
         }
 
         private static XmlDocument LoadTestScript(string testScript)
