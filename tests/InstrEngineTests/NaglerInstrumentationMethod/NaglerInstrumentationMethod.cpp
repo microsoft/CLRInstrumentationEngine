@@ -1202,9 +1202,50 @@ HRESULT CInstrumentationMethod::PerformSingleReturnInstrumentation(IMethodInfo* 
     return S_OK;
 }
 
+// this function does handle multiple returns or tailcalls
+// we expect PerformSingleReturnInstrumentation to be applied before this function is called, so normally that won't be an issue
 HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph)
 {
     HRESULT hr;
+
+    CComPtr<IInstruction> pCurrentInstruction;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pCurrentInstruction));
+    DWORD returnCount = 0;
+    DWORD tailcallCount = 0;
+
+    CComPtr<IInstruction> pInstruction;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pInstruction));
+
+    while (pInstruction != NULL)
+    {
+        ILOrdinalOpcode opCode;
+        IfFailRet(pInstruction->GetOpCode(&opCode));
+
+        if (opCode == Cee_Ret)
+        {
+            returnCount++;
+        }
+        if (opCode == Cee_Tailcall)
+        {
+            tailcallCount++;
+        }
+
+        CComPtr<IInstruction> pCurr = pInstruction;
+        pInstruction.Release();
+        pCurr->GetNextInstruction(&pInstruction);
+    }
+
+    if (tailcallCount > 0)
+    {
+        ATLASSERT(L"Trying to add exception handle to method with tailcall");
+        return E_FAIL;
+    }
+
+    if (returnCount > 1) // note it would be valid to have method with zero returns, as we could end in a throw
+    {
+        ATLASSERT(L"Trying to add exception handle to method with more than one return");
+        return E_FAIL;
+    }
 
     IModuleInfo* pModuleInfo;
     IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
