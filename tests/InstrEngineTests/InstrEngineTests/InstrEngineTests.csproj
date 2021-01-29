@@ -100,20 +100,20 @@
       <Link>Baselines\AddExceptionHandler_ExceptionTinyMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_MultiReturnToSingleReturnMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_MultiReturnToSingleReturnMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\AddExceptionHandler_MultiReturnToSingleReturnVoidMethodTest.xml">
+      <Link>Baselines\AddExceptionHandler_MultiReturnToSingleReturnVoidMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Baselines\AddExceptionHandler_ReturnAndThrowMethodTest.xml">
       <Link>Baselines\AddExceptionHandler_ReturnAndThrowMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\AddExceptionHandler_ReturnMethodTest.xml">
       <Link>Baselines\AddExceptionHandler_ReturnMethodTest.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Baselines\AddExceptionHandler_ReturnMultiMethodTest.xml">
-      <Link>Baselines\AddExceptionHandler_ReturnMultiMethodTest.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\Baselines\AddExceptionHandler_ReturnMultiVoidMethodTest.xml">
-      <Link>Baselines\AddExceptionHandler_ReturnMultiVoidMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\AddExceptionHandler_ReturnVoidMethodTest.xml">
@@ -330,20 +330,20 @@
       <Link>TestScripts\AddExceptionHandler_ExceptionTinyMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_MultiReturnToSingleReturnMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_MultiReturnToSingleReturnMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\AddExceptionHandler_MultiReturnToSingleReturnVoidMethodTest.xml">
+      <Link>TestScripts\AddExceptionHandler_MultiReturnToSingleReturnVoidMethodTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\TestScripts\AddExceptionHandler_ReturnAndThrowMethodTest.xml">
       <Link>TestScripts\AddExceptionHandler_ReturnAndThrowMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\AddExceptionHandler_ReturnMethodTest.xml">
       <Link>TestScripts\AddExceptionHandler_ReturnMethodTest.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\TestScripts\AddExceptionHandler_ReturnMultiMethodTest.xml">
-      <Link>TestScripts\AddExceptionHandler_ReturnMultiMethodTest.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\TestScripts\AddExceptionHandler_ReturnMultiVoidMethodTest.xml">
-      <Link>TestScripts\AddExceptionHandler_ReturnMultiVoidMethodTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\AddExceptionHandler_ReturnVoidMethodTest.xml">

@@ -60,16 +60,16 @@ namespace InstrEngineTests
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
-        public void ReturnMultiMethodTest()
+        public void MultiReturnToSingleReturnMethodTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("AddExceptionHandlerTests_Release_x64", "AddExceptionHandler_ReturnMultiMethodTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("AddExceptionHandlerTests_Release_x64", "AddExceptionHandler_MultiReturnToSingleReturnMethodTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
-        public void ReturnMultiVoidMethodTest()
+        public void MultiReturnToSingleReturnVoidMethodTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("AddExceptionHandlerTests_Release_x64", "AddExceptionHandler_ReturnMultiVoidMethodTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("AddExceptionHandlerTests_Release_x64", "AddExceptionHandler_MultiReturnToSingleReturnVoidMethodTest.xml");
         }
     }
 }

@@ -39,9 +39,9 @@ namespace AddExceptionHandlerTests
             }
             catch (ApplicationException) { }
 
-            ReturnMultiMethodTest();
+            MultiReturnToSingleReturnMethodTest();
 
-            ReturnMultiVoidMethodTest();
+            MultiReturnToSingleReturnVoidMethodTest();
 
             return error;
         }
@@ -78,7 +78,7 @@ namespace AddExceptionHandlerTests
             throw new ApplicationException("Expected Exception");
         }
 
-        static string ReturnMultiMethodTest()
+        static string MultiReturnToSingleReturnMethodTest()
         {
             if (error == -1)
             {
@@ -87,7 +87,7 @@ namespace AddExceptionHandlerTests
             return "A";
         }
 
-        static void ReturnMultiVoidMethodTest()
+        static void MultiReturnToSingleReturnVoidMethodTest()
         {
             if (error == -1)
             {

@@ -2,8 +2,8 @@
 <InstrumentationTestScript>
   <InstrumentMethod>
     <ModuleName>AddExceptionHandlerTests_Release_x64.exe</ModuleName>
-    <MethodName>ReturnMultiMethodTest</MethodName>
-    <AddExceptionHandler>True</AddExceptionHandler>
+    <MethodName>MultiReturnToSingleReturnVoidMethodTest</MethodName>
     <MakeSingleRet />
+    <AddExceptionHandler>True</AddExceptionHandler>
   </InstrumentMethod>
 </InstrumentationTestScript>

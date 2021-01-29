@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <InstrumentedMethod>
-    <Name>ReturnMultiVoidMethodTest</Name>
-    <FullName>AddExceptionHandlerTests.Program.ReturnMultiVoidMethodTest</FullName>
+    <Name>MultiReturnToSingleReturnVoidMethodTest</Name>
+    <FullName>AddExceptionHandlerTests.Program.MultiReturnToSingleReturnVoidMethodTest</FullName>
     <ClassID Volatile="True">0xd4a03998</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000008</MethodToken>
