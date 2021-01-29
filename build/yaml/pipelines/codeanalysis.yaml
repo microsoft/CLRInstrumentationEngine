@@ -63,6 +63,7 @@ stages:
     parameters:
       Platform: AnyCPU
       Analyzer: csharp
+      FileBugs: $(FileBugs) # NOTE this string won't be replaced until runtime
 
 # Semmle is the future for C++ code analysis, but it doesn't
 # seem to be working right now. Run prefast instead.
