@@ -1224,14 +1224,14 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
         IfFailRet(localVars->AddLocal(pReturnType, &returnIndex));
     }
 
-    CComPtr<IMetaDataImport> spIMetaDataImport;
-    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&spIMetaDataImport)));
+    CComPtr<IMetaDataImport> pIMetaDataImport;
+    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&pIMetaDataImport)));
 
-    CComPtr<IMetaDataAssemblyImport> spIMetaDataAssemblyImport;
-    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&spIMetaDataAssemblyImport)));
+    CComPtr<IMetaDataAssemblyImport> pIMetaDataAssemblyImport;
+    IfFailRet(pModuleInfo->GetMetaDataImport(reinterpret_cast<IUnknown**>(&pIMetaDataAssemblyImport)));
 
     mdAssembly resolutionScope;
-    spIMetaDataAssemblyImport->GetAssemblyFromScope(&resolutionScope);
+    pIMetaDataAssemblyImport->GetAssemblyFromScope(&resolutionScope);
 
     std::wstring strExceptionTypeName(_T("System.Exception"));
 
@@ -1240,10 +1240,10 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
     DWORD cTokens;
     mdTypeRef currentTypeRef;
     mdTypeRef targetTypeRef = mdTypeRefNil;
-    MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport> spHEnSourceTypeRefs(spIMetaDataImport, nullptr);
-    while (SUCCEEDED(spIMetaDataImport->EnumTypeRefs(spHEnSourceTypeRefs.Get(), &currentTypeRef, 1, &cTokens)) && cTokens > 0)
+    MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport> pHEnSourceTypeRefs(pIMetaDataImport, nullptr);
+    while (SUCCEEDED(pIMetaDataImport->EnumTypeRefs(pHEnSourceTypeRefs.Get(), &currentTypeRef, 1, &cTokens)) && cTokens > 0)
     {
-        spIMetaDataImport->GetTypeRefProps(currentTypeRef, &resolutionScope, &strName[0], static_cast<ULONG>(strName.size()), &chName);
+        pIMetaDataImport->GetTypeRefProps(currentTypeRef, &resolutionScope, &strName[0], static_cast<ULONG>(strName.size()), &chName);
         if (0 == wcscmp(strName.c_str(), strExceptionTypeName.c_str()))
         {
             targetTypeRef = currentTypeRef;
@@ -1260,71 +1260,71 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
     CComPtr<IInstructionFactory> pInstructionFactory;
     IfFailRet(pMethodInfo->GetInstructionFactory(&pInstructionFactory));
 
-    CComPtr<IInstruction> sptrExitLabel;
-    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Nop, &sptrExitLabel));
+    CComPtr<IInstruction> pExitLabel;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Nop, &pExitLabel));
 
-    CComPtr<IInstruction> sptrRet;
-    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Ret, &sptrRet));
+    CComPtr<IInstruction> pRet;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Ret, &pRet));
 
-    CComPtr<IInstruction> sptrFirst;
-    IfFailRet(pInstructionGraph->GetFirstInstruction(&sptrFirst));
+    CComPtr<IInstruction> pFirst;
+    IfFailRet(pInstructionGraph->GetFirstInstruction(&pFirst));
 
-    CComPtr<IInstruction> sptrLast;
-    IfFailRet(pInstructionGraph->GetLastInstruction(&sptrLast));
+    CComPtr<IInstruction> pLast;
+    IfFailRet(pInstructionGraph->GetLastInstruction(&pLast));
 
     ILOrdinalOpcode lastOpCode;
-    IfFailRet(sptrLast->GetOpCode(&lastOpCode));
+    IfFailRet(pLast->GetOpCode(&lastOpCode));
     if (lastOpCode == Cee_Ret)
     {
         if (returnCorElementType == ELEMENT_TYPE_VOID)
         {
             // it might seem that return instruction could simply be removed, but it might be used as jump target, so better to replace with a nop
-            CComPtr<IInstruction> sptrNewLast;
-            pInstructionFactory->CreateInstruction(Cee_Nop, &sptrNewLast);
-            pInstructionGraph->Replace(sptrLast, sptrNewLast);
-            sptrLast = sptrNewLast;
+            CComPtr<IInstruction> pNewLast;
+            pInstructionFactory->CreateInstruction(Cee_Nop, &pNewLast);
+            pInstructionGraph->Replace(pLast, pNewLast);
+            pLast = pNewLast;
         }
         else
         {
-            CComPtr<IInstruction> sptrReplacementLast;
-            pInstructionFactory->CreateStoreLocalInstruction(static_cast<USHORT>(returnIndex), &sptrReplacementLast);
-            pInstructionGraph->Replace(sptrLast, sptrReplacementLast);
-            sptrLast = sptrReplacementLast;
+            CComPtr<IInstruction> pReplacementLast;
+            pInstructionFactory->CreateStoreLocalInstruction(static_cast<USHORT>(returnIndex), &pReplacementLast);
+            pInstructionGraph->Replace(pLast, pReplacementLast);
+            pLast = pReplacementLast;
         }
     }
 
-    CComPtr<IExceptionSection> sptrExceptionSection;
-    IfFailRet(pMethodInfo->GetExceptionSection(&sptrExceptionSection));
+    CComPtr<IExceptionSection> pExceptionSection;
+    IfFailRet(pMethodInfo->GetExceptionSection(&pExceptionSection));
 
-    CComPtr<IInstruction> sptrLeave1;
-    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, sptrExitLabel, &sptrLeave1));
-    IfFailRet(pInstructionGraph->InsertAfter(sptrLast, sptrLeave1));
+    CComPtr<IInstruction> pLeave1;
+    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, pExitLabel, &pLeave1));
+    IfFailRet(pInstructionGraph->InsertAfter(pLast, pLeave1));
 
     // --- handler body ---
-    CComPtr<IInstruction> sptrPop;
-    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Pop, &sptrPop));
-    IfFailRet(pInstructionGraph->InsertAfter(sptrLeave1, sptrPop));
+    CComPtr<IInstruction> pPop;
+    IfFailRet(pInstructionFactory->CreateInstruction(Cee_Pop, &pPop));
+    IfFailRet(pInstructionGraph->InsertAfter(pLeave1, pPop));
     // --- handler body ---
 
-    CComPtr<IInstruction> sptrLeave2;
-    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, sptrExitLabel, &sptrLeave2));
-    IfFailRet(pInstructionGraph->InsertAfter(sptrPop, sptrLeave2));
+    CComPtr<IInstruction> pLeave2;
+    IfFailRet(pInstructionFactory->CreateBranchInstruction(Cee_Leave_S, pExitLabel, &pLeave2));
+    IfFailRet(pInstructionGraph->InsertAfter(pPop, pLeave2));
 
-    IfFailRet(pInstructionGraph->InsertAfter(sptrLeave2, sptrExitLabel));
-    CComPtr<IInstruction> sptrPrev = sptrExitLabel;
+    IfFailRet(pInstructionGraph->InsertAfter(pLeave2, pExitLabel));
+    CComPtr<IInstruction> pPrev = pExitLabel;
 
     if (returnCorElementType != ELEMENT_TYPE_VOID)
     {
-        CComPtr<IInstruction> sptrLoadResult;
-        pInstructionFactory->CreateLoadLocalInstruction(static_cast<USHORT>(returnIndex), &sptrLoadResult);
-        IfFailRet(pInstructionGraph->InsertAfter(sptrPrev, sptrLoadResult));
-        sptrPrev = sptrLoadResult;
+        CComPtr<IInstruction> pLoadResult;
+        pInstructionFactory->CreateLoadLocalInstruction(static_cast<USHORT>(returnIndex), &pLoadResult);
+        IfFailRet(pInstructionGraph->InsertAfter(pPrev, pLoadResult));
+        pPrev = pLoadResult;
     }
 
-    IfFailRet(pInstructionGraph->InsertAfter(sptrPrev, sptrRet));
+    IfFailRet(pInstructionGraph->InsertAfter(pPrev, pRet));
 
-    CComPtr<IExceptionClause> sptrExceptionClause;
-    sptrExceptionSection->AddNewExceptionClause(0, sptrFirst, sptrLeave1, sptrPop, sptrLeave2, nullptr, targetTypeRef, &sptrExceptionClause);
+    CComPtr<IExceptionClause> pExceptionClause;
+    pExceptionSection->AddNewExceptionClause(0, pFirst, pLeave1, pPop, pLeave2, nullptr, targetTypeRef, &pExceptionClause);
 
     return S_OK;
 }
