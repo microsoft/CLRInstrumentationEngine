@@ -909,11 +909,6 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph);
     }
 
-    if (pMethodEntry->IsAddExceptionHandler())
-    {
-        AddExceptionHandler(pMethodInfo, pInstructionGraph);
-    }
-
     if (pMethodEntry->GetPointTo() != nullptr)
     {
         std::shared_ptr<CInstrumentMethodPointTo> spPointTo = pMethodEntry->GetPointTo();
@@ -1187,6 +1182,11 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
     if (pMethodEntry->IsSingleRetLast())
     {
         IfFailRet(PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph));
+    }
+
+    if (pMethodEntry->IsAddExceptionHandler())
+    {
+        AddExceptionHandler(pMethodInfo, pInstructionGraph);
     }
 
     return S_OK;
