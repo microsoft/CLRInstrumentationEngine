@@ -9,24 +9,19 @@
         <Operand>12</Operand>
       </Instruction>
       <Instruction>
-       <Opcode>stloc.0</Opcode>
-      </Instruction>
-      <Instruction>
         <Opcode>ldc.i4.s</Opcode>
         <Operand>11</Operand>
       </Instruction>
       <Instruction>
-        <Opcode>stloc.1</Opcode>
+        <Opcode>stloc.0</Opcode>
       </Instruction>
       <Instruction>
         <Opcode>ldloc.0</Opcode>
       </Instruction>
       <Instruction>
-        <Opcode>ldloc.1</Opcode>
-      </Instruction>
-      <Instruction>
         <Opcode>sub</Opcode>
       </Instruction>
+      <!-- Begin new instructions -->
       <Instruction>
         <Opcode>stloc.0</Opcode>
       </Instruction>
@@ -45,6 +40,7 @@
       <Instruction>
         <Opcode>ldloc.0</Opcode>
       </Instruction>
+      <!-- End new instructions -->
       <Instruction>
         <Opcode>ret</Opcode>
       </Instruction>

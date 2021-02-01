@@ -45,3 +45,5 @@ using namespace ATL;
 #define IfFailRet(EXPR) \
     do { if (FAILED(hr = (EXPR))) { ATLASSERT(FALSE); return hr; } } while (false)
 #endif
+
+#include "../../../src/Common.Lib/tstring.h"

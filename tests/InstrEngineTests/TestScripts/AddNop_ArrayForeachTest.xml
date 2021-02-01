@@ -6,40 +6,40 @@
     <Instructions>
       <Instruction>
         <Opcode>nop</Opcode>
+        <Offset>36</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>38</Offset>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
         <Offset>39</Offset>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>43</Offset>
+        <Offset>41</Offset>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>45</Offset>
-      </Instruction>
-      <Instruction>
-        <Opcode>nop</Opcode>
-        <Offset>47</Offset>
-      </Instruction>
-      <Instruction>
-        <Opcode>nop</Opcode>
-        <Offset>52</Offset>
+        <Offset>44</Offset>
         <RepeatCount>4</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>73</Offset>
+        <Offset>61</Offset>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>81</Offset>
+        <Offset>69</Offset>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>86</Offset>
+        <Offset>74</Offset>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>90</Offset>
+        <Offset>78</Offset>
       </Instruction>
     </Instructions>
   </InstrumentMethod>

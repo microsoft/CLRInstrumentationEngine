@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>AddLocalsExisting</Name>
     <FullName>LocalTests.Program.AddLocalsExisting</FullName>
-    <ClassID Volatile="True">0xd49f3970</ClassID>
+    <ClassID Volatile="True">0x700a5a78</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,27 +19,27 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020d0</CodeRVA>
+    <CodeRVA>0x000020c8</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
-    <LocalSignature>0x07 0x05 0x07 0x12 0x3d 0x11 0x35 0x05 0x12 0x08 </LocalSignature>
+    <LocalSignature>0x07 0x05 0x07 0x12 0x21 0x11 0x25 0x05 0x12 0x08 </LocalSignature>
     <MaxStack>0x00000001</MaxStack>
     <Instructions><![CDATA[
 IL_0000 nop
 IL_0001 ldc.i4.1
 IL_0002 stloc.0
-IL_0003 newobj 0xa00000a
+IL_0003 newobj 0x0a00000a
 IL_0008 stloc.1
-IL_0009 call 0xa00000b
+IL_0009 call 0x0a00000b
 IL_000e stloc.2
 IL_000f ldloc.0
-IL_0010 call 0xa00000c
+IL_0010 call 0x0a00000c
 IL_0015 nop
 IL_0016 ldloc.1
-IL_0017 call 0xa00000d
+IL_0017 call 0x0a00000d
 IL_001c nop
 IL_001d ldloc.2
-IL_001e box 0x100000d
-IL_0023 call 0xa00000d
+IL_001e box 0x01000009
+IL_0023 call 0x0a00000d
 IL_0028 nop
 IL_0029 ret
     ]]></Instructions>

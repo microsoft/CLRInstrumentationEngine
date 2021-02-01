@@ -8,11 +8,14 @@ parameters:
   Platform: ''
 
 steps:
+  # Temporarily disable running tests for .NET Core and .NET 5
 - task: VSTest@2
   displayName: 'Test Assemblies $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\**\$(Platform)\**\*Tests*.dll'
   inputs:
     testAssemblyVer2: |
      **\$(Platform)\**\*Tests*.dll
+     !**\netcoreapp3.1\**
+     !**\net50\**
      !**\*TestAdapter.dll
      !**\obj\**
     searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)'

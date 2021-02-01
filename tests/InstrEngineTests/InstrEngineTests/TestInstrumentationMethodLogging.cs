@@ -28,7 +28,7 @@ namespace InstrEngineTests
         public void InstrMethodLoggingTest()
         {
             TestParameters.DisableMethodPrefix = false;
-            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLogging.xml", args: null);
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64", fileName: "InstrumentationMethodLogging.xml", args: null);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace InstrEngineTests
         {
             TestParameters.DisableMethodPrefix = false;
             TestParameters.MethodLogLevel = LogLevel.None;
-            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingNone.xml", args: null);
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64", fileName: "InstrumentationMethodLoggingNone.xml", args: null);
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace InstrEngineTests
         {
             TestParameters.DisableMethodPrefix = false;
             TestParameters.MethodLogLevel = LogLevel.All;
-            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingAll.xml", args: null);
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64", fileName: "InstrumentationMethodLoggingAll.xml", args: null, regexCompare: true);
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ namespace InstrEngineTests
         {
             TestParameters.DisableMethodPrefix = false;
             TestParameters.MethodLogLevel = LogLevel.Errors | LogLevel.InstrumentationResults;
-            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingSome.xml", args: null);
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64", fileName: "InstrumentationMethodLoggingSome.xml", args: null, regexCompare: true);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace InstrEngineTests
             TestParameters.DisableMethodPrefix = false;
             TestParameters.DisableLogLevel = true;
             TestParameters.MethodLogLevel = LogLevel.All;
-            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64.exe", fileName: "InstrumentationMethodLoggingAllWithNoLogLevel.xml", args: null, regexCompare: true);
+            ProfilerHelpers.LaunchAppAndCompareResult(testApp: "InstrumentationMethodLoggingTests_Debug_x64", fileName: "InstrumentationMethodLoggingAllWithNoLogLevel.xml", args: null, regexCompare: true);
         }
     }
 }

@@ -74,7 +74,7 @@ public:
         {
             size_t index = buffer.size();
             buffer.resize(buffer.size() + m_opcodeInfo.m_operandLength);
-            memcpy(&buffer[index], (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
+            memcpy_s(&buffer[index], m_opcodeInfo.m_operandLength, (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
         }
         return S_OK;
     }

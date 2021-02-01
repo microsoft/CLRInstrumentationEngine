@@ -1,9 +1,8 @@
-
 <?xml version="1.0"?>
 <InstrumentedMethod>
     <Name>MultiIfTest</Name>
     <FullName>InstrEngineTests.EmbeddedResources.Program.MultiIfTest</FullName>
-    <ClassID Volatile="True">0x9f5f5a40</ClassID>
+    <ClassID Volatile="True">0x70065a48</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -18,58 +17,35 @@
     <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
     <RetValueCorElementType>ELEMENT_TYPE_I4</RetValueCorElementType>
     <RetTypeToken>0x00000000</RetTypeToken>
-    <CorSignature>
-0x00 
-0x01 
-0x08 
-0x08 
-</CorSignature>
+    <CorSignature>0x00 0x01 0x08 0x08 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x0000211a</CodeRVA>
+    <CodeRVA>0x00002101</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
-    <LocalSignature>
-0x07 
-0x01 
-0x08 
-</LocalSignature>
+    <LocalSignature>0x07 0x01 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
-    <Instructions>
-        <![CDATA[
+    <Instructions><![CDATA[
 IL_0000 ldarg.0
 IL_0001 ldc.i4.1
-IL_0002 bne.un
- IL_0011
+IL_0002 bne.un IL_0011
 IL_0007 ldc.i4.1
-IL_0008 stloc
- 0x00
-IL_000c br
- IL_003e
+IL_0008 stloc 0x0
+IL_000c br IL_003e
 IL_0011 ldarg.0
 IL_0012 ldc.i4.2
-IL_0013 bne.un
- IL_0022
+IL_0013 bne.un IL_0022
 IL_0018 ldc.i4.2
-IL_0019 stloc
- 0x00
-IL_001d br
- IL_003e
+IL_0019 stloc 0x0
+IL_001d br IL_003e
 IL_0022 ldarg.0
-IL_0023 ldc.i4.s
- 0xa
-IL_0025 bne.un
- IL_0034
+IL_0023 ldc.i4.s 0xa
+IL_0025 bne.un IL_0034
 IL_002a ldc.i4.3
-IL_002b stloc
- 0x00
-IL_002f br
- IL_003e
+IL_002b stloc 0x0
+IL_002f br IL_003e
 IL_0034 ldc.i4.4
-IL_0035 stloc
- 0x00
-IL_0039 br
- IL_003e
-IL_003e ldloc
- 0x00
+IL_0035 stloc 0x0
+IL_0039 br IL_003e
+IL_003e ldloc 0x0
 IL_0042 ret
     ]]></Instructions>
     <ExceptionClauses>

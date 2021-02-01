@@ -1,83 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+<Project>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <GenerateAdditionalSources>false</GenerateAdditionalSources>
+    <SubComponent>$(TargetFramework)</SubComponent>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <TargetFrameworks>net461;netcoreapp3.1;net50</TargetFrameworks>
+    <IsPackable>false</IsPackable>
     <RootNamespace>InstrEngineTests</RootNamespace>
-    <AssemblyName>InstrEngineTests_$(Platform)</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.XML" />
+    <Compile Remove="EmbeddedResources\**" />
+    <EmbeddedResource Include="EmbeddedResources\**" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\BasicManagedTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\BasicManagedTests2.cs" />
-    <EmbeddedResource Include="EmbeddedResources\ExceptionTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\InstruOperationsTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\MethodReplacementTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\LocalTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\RuntimeExceptionCallbacks.cs" />
-    <EmbeddedResource Include="EmbeddedResources\InjectToMscorlibTest.cs" />
-    <EmbeddedResource Include="EmbeddedResources\HttpMethodTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\DynamicCodeTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\InstrumentationMethodLoggingTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\MultiReturnTests.cs" />
-    <EmbeddedResource Include="EmbeddedResources\AddExceptionHandlerTests.cs" />
-    <Compile Include="PathUtils.cs" />
-    <Compile Include="RuntimeExceptionCallbacks.cs" />
-    <Compile Include="TestConstants.cs" />
-    <Compile Include="TestAddExceptionHandler.cs" />
-    <Compile Include="TestHttpMethods.cs" />
-    <Compile Include="TestDynamicCode.cs" />
-    <Compile Include="TestInstruOperations.cs" />
-    <Compile Include="TestOperand.cs" />
-    <Compile Include="TestParameters.cs" />
-    <Compile Include="TestInjectToMscorlib.cs" />
-    <Compile Include="TestLocals.cs" />
-    <Compile Include="TestMethodReplacement.cs" />
-    <Compile Include="TestMultiReturn.cs" />
-    <Compile Include="TestRejit.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="ProfilerHelpers.cs" />
-    <Compile Include="TargetAppCompiler.cs" />
-    <Compile Include="TestAddInstruction.cs" />
-    <Compile Include="TestException.cs" />
-    <Compile Include="TestRoundTrip.cs" />
-    <Compile Include="TestInstrumentationMethodLogging.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+    <PackageReference Include="coverlet.collector" Version="1.3.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Baselines\AddBranchTargets_ArrayForeachTest.xml">
@@ -535,7 +479,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

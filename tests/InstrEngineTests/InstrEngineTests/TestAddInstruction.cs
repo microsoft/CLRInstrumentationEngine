@@ -27,84 +27,84 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_IfTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x86.exe", "AddNop_IfTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x86", "AddNop_IfTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddMultiNop_IfTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddMultiNop_IfTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64", "AddMultiNop_IfTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddBranchTargets_IfTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddBranchTargets_IfTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64", "AddBranchTargets_IfTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddBranchTargets_SwitchTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Release_x64.exe", "AddBranchTargets_SwitchTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Release_x64", "AddBranchTargets_SwitchTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ForTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x86.exe", "AddNop_ForTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x86", "AddNop_ForTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_WhileTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddNop_WhileTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64", "AddNop_WhileTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_SwitchTest_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddNop_SwitchTest_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64", "AddNop_SwitchTest_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_SwitchTest2_Debug()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64.exe", "AddNop_SwitchTest2_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Debug_x64", "AddNop_SwitchTest2_Debug.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_SwitchTest2()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Release_x64.exe", "AddNop_SwitchTest2.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests_Release_x64", "AddNop_SwitchTest2.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ArrayForeachTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64.exe", "AddNop_ArrayForeachTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64", "AddNop_ArrayForeachTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void AddBranchTargets_ArrayForeachTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64.exe", "AddBranchTargets_ArrayForeachTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64", "AddBranchTargets_ArrayForeachTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TinyMethodTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64.exe", "TinyMethodTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("BasicManagedTests2_Release_x64", "TinyMethodTest.xml");
         }
     }
 }

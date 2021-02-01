@@ -8,24 +8,24 @@
          we don't generate infinite loops. -->
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>65</Offset>
-        <Operand>65</Operand>
+        <Offset>53</Offset>
+        <Operand>53</Operand>
       </Instruction>
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>81</Offset>
-        <Operand>81</Operand>
+        <Offset>69</Offset>
+        <Operand>69</Operand>
       </Instruction>
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>34</Offset>
-        <Operand>34</Operand>
+        <Offset>33</Offset>
+        <Operand>33</Operand>
       </Instruction>
-    <Instruction>
+      <Instruction>
         <Opcode>br</Opcode>
-        <Offset>115</Offset>
-        <Operand>115</Operand>
-    </Instruction>
+        <Offset>103</Offset>
+        <Operand>103</Operand>
+      </Instruction>
     </Instructions>
   </InstrumentMethod>
 </InstrumentationTestScript>

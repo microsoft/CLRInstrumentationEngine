@@ -3859,7 +3859,7 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
                     std::vector<WCHAR> modulePath(cchModulePath);
                     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, cchModulePath, &cchModulePath, modulePath.data(), nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: %s\r\n"), modulePath.data());
+                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [JIT] for Module: %s"), modulePath.data());
 
                     // Get MethodInfo
 
@@ -3873,7 +3873,7 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
                     ULONG rva;
                     IfFailRet(pMetadataImport->GetMethodProps(functionToken, nullptr, methodName.data(), cbMethodName, &cbMethodName, nullptr, nullptr, nullptr, &rva, nullptr));
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: %s, rva 0x%08x\r\n"), methodName.data(), rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore]   Method: %s, rva 0x%08x"), methodName.data(), rva);
                 }
                 else
                 {
@@ -3883,7 +3883,7 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
                     ULONG rva;
                     ((CMethodInfo*)pMethodInfo)->GetCodeRva(&rva);
 
-                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for %s with rva 0x%08x\r\n"), bstrMethodFullName.m_str, rva);
+                    CLogging::LogDumpMessage(_T("[TestIgnore] CProfilerManager::CallInstrumentOnInstrumentationMethods [REJIT] for %s with rva 0x%08x"), bstrMethodFullName.m_str, rva);
                 }
             }
 

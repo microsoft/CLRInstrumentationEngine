@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>Instru_CreateErrorTest</Name>
     <FullName>InstruOperationsTests.Program.Instru_CreateErrorTest</FullName>
-    <ClassID Volatile="True">0x8f245a48</ClassID>
+    <ClassID Volatile="True">0x70085a90</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000006</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x0000215c</CodeRVA>
+    <CodeRVA>0x00002140</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x02 0x08 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
@@ -41,21 +41,20 @@ IL_0011 ldloc.1
 IL_0012 ldloc.0
 IL_0013 blt IL_0009
 IL_0018 ldstr 0x70000001
-IL_001d newobj 0xa000009
+IL_001d newobj 0x0a000009
 IL_0022 throw
 IL_0023 pop
 IL_0024 nop
 IL_0025 nop
 IL_0026 nop
 IL_0027 nop
-IL_0028 leave IL_002d
-IL_002d leave IL_0037
-IL_0032 nop
-IL_0033 nop
-IL_0034 nop
-IL_0035 nop
-IL_0036 endfinally
-IL_0037 ret
+IL_0028 leave IL_0032
+IL_002d nop
+IL_002e nop
+IL_002f nop
+IL_0030 nop
+IL_0031 endfinally
+IL_0032 ret
     ]]></Instructions>
     <ExceptionClauses>
         <ExceptionClause>
@@ -65,16 +64,16 @@ IL_0037 ret
             <FirstHandlerOffset>0x00000023</FirstHandlerOffset>
             <LastHandlerOffset>0x00000028</LastHandlerOffset>
             <FilterOffset>0x00000000</FilterOffset>
-            <ExceptionToken>0x01000001</ExceptionToken>
+            <ExceptionToken>0x01000005</ExceptionToken>
         </ExceptionClause>
         <ExceptionClause>
             <Flags>0x00000002</Flags>
             <FirstTryOffset>0x00000002</FirstTryOffset>
-            <LastTryOffset>0x0000002d</LastTryOffset>
-            <FirstHandlerOffset>0x00000032</FirstHandlerOffset>
-            <LastHandlerOffset>0x00000036</LastHandlerOffset>
+            <LastTryOffset>0x00000028</LastTryOffset>
+            <FirstHandlerOffset>0x0000002d</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000031</LastHandlerOffset>
             <FilterOffset>0x00000000</FilterOffset>
-            <ExceptionToken Volatile="True">0x00000000</ExceptionToken>
+            <ExceptionToken>0x00000000</ExceptionToken>
         </ExceptionClause>
     </ExceptionClauses>
     <CorIlMap>
@@ -165,18 +164,13 @@ IL_0037 ret
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000034</oldOffset>
+            <oldOffset>0x00000040</oldOffset>
             <newOffset>0x0000002d</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000042</oldOffset>
+            <oldOffset>0x00000041</oldOffset>
             <newOffset>0x00000032</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x00000043</oldOffset>
-            <newOffset>0x00000037</newOffset>
         </CorIlMapEntry>
     </CorIlMap>
 </InstrumentedMethod>

@@ -54,7 +54,7 @@
 
     <!-- Turn on dynamic assembly attribute generation -->
     <AssemblyAttributesPath>$(IntermediateOutputPath)\AssemblyInfo.g.cs</AssemblyAttributesPath>
-    <GenerateAdditionalSources>true</GenerateAdditionalSources>
+    <GenerateAdditionalSources Condition="'$(GenerateAdditionalSources)' == ''">true</GenerateAdditionalSources>
     <AssemblyFileVersion>$(FileVersionMajor).$(FileVersionMinor).$(FileVersionPatch).$(BuildVersion)</AssemblyFileVersion>
   </PropertyGroup>
   <PropertyGroup>

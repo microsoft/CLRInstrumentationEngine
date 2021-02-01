@@ -1,9 +1,8 @@
-
 <?xml version="1.0"?>
 <InstrumentedMethod>
     <Name>MultiExceptionTest</Name>
     <FullName>InstrEngineTests.EmbeddedResources.Program.MultiExceptionTest</FullName>
-    <ClassID Volatile="True">0x9f5f5a40</ClassID>
+    <ClassID Volatile="True">0x70095a48</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -18,75 +17,42 @@
     <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
     <RetValueCorElementType>ELEMENT_TYPE_I4</RetValueCorElementType>
     <RetTypeToken>0x00000000</RetTypeToken>
-    <CorSignature>
-0x00 
-0x01 
-0x08 
-0x08 
-</CorSignature>
+    <CorSignature>0x00 0x01 0x08 0x08 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x00002068</CodeRVA>
+    <CodeRVA>0x00002060</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
-    <LocalSignature>
-0x07 
-0x03 
-0x12 
-0x19 
-0x08 
-0x08 
-</LocalSignature>
+    <LocalSignature>0x07 0x02 0x08 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
     <Instructions><![CDATA[
 IL_0000 ldarg.0
 IL_0001 ldc.i4.5
-IL_0002 bne.un
- IL_000e
+IL_0002 bne.un IL_000e
 IL_0007 ldc.i4.1
-IL_0008 stloc.1
-IL_0009 leave
- IL_0056
+IL_0008 stloc.0
+IL_0009 leave IL_004f
 IL_000e ldarg.0
 IL_000f ldc.i4.3
-IL_0010 bne.un
- IL_0020
-IL_0015 ldstr
- 0x70000001
-IL_001a newobj
- 0xa000004
+IL_0010 bne.un IL_0020
+IL_0015 ldstr 0x70000001
+IL_001a newobj 0x0a000004
 IL_001f throw
-IL_0020 ldstr
- 0x70000027
-IL_0025 call
- 0xa000005
-IL_002a leave
- IL_003c
-IL_002f stloc.0
-IL_0030 ldloc.0
-IL_0031 callvirt
- 0xa000006
-IL_0036 stloc.1
-IL_0037 leave
- IL_0056
-IL_003c leave
- IL_004c
-IL_0041 ldstr
- 0x70000049
-IL_0046 call
- 0xa000005
-IL_004b endfinally
-IL_004c ldc.i4.0
-IL_004d stloc
- 0x02
-IL_0051 br
- IL_0060
-IL_0056 ldloc.1
-IL_0057 stloc
- 0x02
-IL_005b br
- IL_0060
-IL_0060 ldloc
- 0x02
-IL_0064 ret
+IL_0020 ldstr 0x70000027
+IL_0025 call 0x0a000005
+IL_002a leave IL_0045
+IL_002f callvirt 0x0a000006
+IL_0034 stloc.0
+IL_0035 leave IL_004f
+IL_003a ldstr 0x70000049
+IL_003f call 0x0a000005
+IL_0044 endfinally
+IL_0045 ldc.i4.0
+IL_0046 stloc 0x1
+IL_004a br IL_0059
+IL_004f ldloc.0
+IL_0050 stloc 0x1
+IL_0054 br IL_0059
+IL_0059 ldloc 0x1
+IL_005d ret
     ]]></Instructions>
     <ExceptionClauses>
         <ExceptionClause>
@@ -94,18 +60,18 @@ IL_0064 ret
             <FirstTryOffset>0x00000000</FirstTryOffset>
             <LastTryOffset>0x0000002a</LastTryOffset>
             <FirstHandlerOffset>0x0000002f</FirstHandlerOffset>
-            <LastHandlerOffset>0x00000037</LastHandlerOffset>
+            <LastHandlerOffset>0x00000035</LastHandlerOffset>
             <FilterOffset>0x00000000</FilterOffset>
             <ExceptionToken>0x01000006</ExceptionToken>
         </ExceptionClause>
         <ExceptionClause>
             <Flags>0x00000002</Flags>
             <FirstTryOffset>0x00000000</FirstTryOffset>
-            <LastTryOffset>0x0000003c</LastTryOffset>
-            <FirstHandlerOffset>0x00000041</FirstHandlerOffset>
-            <LastHandlerOffset>0x0000004b</LastHandlerOffset>
+            <LastTryOffset>0x00000035</LastTryOffset>
+            <FirstHandlerOffset>0x0000003a</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000044</LastHandlerOffset>
             <FilterOffset>0x00000000</FilterOffset>
-            <ExceptionToken>0xcdcdcdcd</ExceptionToken>
+            <ExceptionToken>0x00000000</ExceptionToken>
         </ExceptionClause>
     </ExceptionClauses>
     <CorIlMap>
@@ -191,53 +157,38 @@ IL_0064 ret
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000024</oldOffset>
-            <newOffset>0x00000030</newOffset>
+            <oldOffset>0x00000028</oldOffset>
+            <newOffset>0x00000034</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000025</oldOffset>
-            <newOffset>0x00000031</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x0000002a</oldOffset>
-            <newOffset>0x00000036</newOffset>
+            <oldOffset>0x00000029</oldOffset>
+            <newOffset>0x00000035</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
             <oldOffset>0x0000002b</oldOffset>
-            <newOffset>0x00000037</newOffset>
+            <newOffset>0x0000003a</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000002d</oldOffset>
-            <newOffset>0x0000003c</newOffset>
+            <oldOffset>0x00000030</oldOffset>
+            <newOffset>0x0000003f</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000002f</oldOffset>
-            <newOffset>0x00000041</newOffset>
+            <oldOffset>0x00000035</oldOffset>
+            <newOffset>0x00000044</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000034</oldOffset>
+            <oldOffset>0x00000036</oldOffset>
+            <newOffset>0x00000045</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000038</oldOffset>
             <newOffset>0x00000046</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x00000039</oldOffset>
-            <newOffset>0x0000004b</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x0000003a</oldOffset>
-            <newOffset>0x0000004c</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x0000003c</oldOffset>
-            <newOffset>0x0000004d</newOffset>
         </CorIlMapEntry>
     </CorIlMap>
 </InstrumentedMethod>

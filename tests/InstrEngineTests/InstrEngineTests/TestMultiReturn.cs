@@ -25,21 +25,21 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_IfTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_IfTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64", "MultiReturn_IfTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_ExceptionTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_ExceptionTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64", "MultiReturn_ExceptionTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_SwitchTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_SwitchTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64", "MultiReturn_SwitchTest.xml");
         }
     }
 }

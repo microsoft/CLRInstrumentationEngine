@@ -55,6 +55,16 @@ namespace InstrEngineTests
         // Enable ref recording to track down memory leaks. For debug only.
         private static bool EnableRefRecording = false;
 
+#if NETCOREAPP
+        private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "CORECLR_PROFILER";
+        private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+#else
+        private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "COR_PROFILER";
+        private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
+#endif
+
         public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
@@ -84,9 +94,9 @@ namespace InstrEngineTests
 
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
-            psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
-            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
+            psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
+            psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
 
             if (EnableRefRecording)
             {
@@ -175,8 +185,19 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputFileEnvName, outputPath);
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
-            psi.FileName = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+            string appPath = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+#if NETCOREAPP
+            string hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "dotnet.exe");
+            if (is32bitTest)
+            {
+                hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "dotnet", "dotnet.exe");
+            }
+            psi.FileName = hostPath;
+            psi.Arguments = $"{appPath}.dll {args}";
+#else
+            psi.FileName = $"{appPath}.exe";
             psi.Arguments = args;
+#endif
 
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
 
@@ -349,7 +370,7 @@ namespace InstrEngineTests
                     Assert.Fail(assertError);
                 }
 
-                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count);
+                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count, $"Child node counts are different on node '{baselineNode.Name}'.");
 
                 for (int i = 0; i < baselineNode.ChildNodes.Count; i++)
                 {

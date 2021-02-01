@@ -31,14 +31,14 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void CompiledDynamicCodeTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64.exe", "DynamicCompiledCode.xml", "Compiled");
+            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64", "DynamicCompiledCode.xml", "Compiled");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void EmittedDynamicCodeTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64.exe", "DynamicEmittedCode.xml", "Emitted");
+            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64", "DynamicEmittedCode.xml", "Emitted");
         }
     }
 }
