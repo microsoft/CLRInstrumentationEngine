@@ -54,11 +54,9 @@ jobs:
   #   displayName: Install PowerShell
 
   - script: >
-      docker run -d
+      docker run -d -t
       --name $(containerName)
       $(testImageName)
-      1> /tmp/$(containerName)_stdout
-      2> /tmp/$(containerName)_stderr
     displayName: Start Test Container
 
   - script: >
@@ -71,11 +69,13 @@ jobs:
     condition: always()
     continueOnError: true
 
-  - script: |
-      echo "stdout:"
-      cat /tmp/$(containerName)_stdout
-      echo "stderr:"
-      cat /tmp/$(containerName)_stderr
-    displayName: Print stdout and stderr
+  # - script: |
+  #     echo "stdout:"
+  #     cat /tmp/$(containerName)_stdout
+  #     echo "stderr:"
+  #     cat /tmp/$(containerName)_stderr
+  #   displayName: Print stdout and stderr
+  #   condition: always()
+  #   continueOnError: true
 
   - template: ../../steps/azuredevops/componentgovernance.yaml
