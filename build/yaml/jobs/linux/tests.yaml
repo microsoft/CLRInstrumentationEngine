@@ -33,7 +33,7 @@ jobs:
 
   pool:
     vmImage: ubuntu-20.04
-    demands:
+    # demands:
     # - docker
     # - pwsh
 
