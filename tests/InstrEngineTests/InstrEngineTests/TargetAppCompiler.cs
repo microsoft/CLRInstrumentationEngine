@@ -7,12 +7,10 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
@@ -23,12 +21,14 @@ namespace InstrEngineTests
     /// </summary>
     internal class TargetAppCompiler
     {
+        private const string SourceExtension = "cs";
+        private const string DynamicallyLinkedLibraryExtension = "dll";
+        private const string ExecutableExtension = "exe";
+
 #if NETCOREAPP
-        private const string EntryPointAssemblyExtension = "dll";
-        private const OutputKind EntryPointAssemblyOutputKind = OutputKind.DynamicallyLinkedLibrary;
+        private const string EntryPointAssemblyExtension = DynamicallyLinkedLibraryExtension;
 #else
-        private const string EntryPointAssemblyExtension = "exe";
-        private const OutputKind EntryPointAssemblyOutputKind = OutputKind.ConsoleApplication;
+        private const string EntryPointAssemblyExtension = ExecutableExtension;
 #endif
 
         private const string DebugBinarySuffix = "Debug";
@@ -36,6 +36,8 @@ namespace InstrEngineTests
 
         private const string X86BinarySuffix = "x86";
         private const string X64BinarySuffix = "x64";
+
+        private const string EmbeddedResourcesPath = "InstrEngineTests.EmbeddedResources";
 
         private static string[] TestAppFilePrefixes = new string[] {
             "AddExceptionHandlerTests",
@@ -53,18 +55,32 @@ namespace InstrEngineTests
             "MultiReturnTests"
         };
 
-        internal static void ComplileCSharpTestCode(string path)
+        private const string DynamicCodeAssemblyName = "DynamicCodeAssembly";
+
+        internal static void ComplileCSharpTestCode(string directoryPath)
         {
+            EmitResult result;
             foreach (string prefix in TestAppFilePrefixes)
             {
-                string sourceCode = GetEmbeddedFile("InstrEngineTests.EmbeddedResources", prefix + ".cs");
+                string sourceCode = GetEmbeddedSourceFile(prefix);
                 SourceText sourceText = SourceText.From(sourceCode);
 
-                GenerateExecutable(sourceText, path, prefix, isDebug: true, is64bit: false);
-                GenerateExecutable(sourceText, path, prefix, isDebug: true, is64bit: true);
-                GenerateExecutable(sourceText, path, prefix, isDebug: false, is64bit: false);
-                GenerateExecutable(sourceText, path, prefix, isDebug: false, is64bit: true);
+                result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: true, is64bit: false);
+                Assert.IsTrue(result.Success);
+
+                result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: true, is64bit: true);
+                Assert.IsTrue(result.Success);
+
+                result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: false, is64bit: false);
+                Assert.IsTrue(result.Success);
+
+                result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: false, is64bit: true);
+                Assert.IsTrue(result.Success);
             }
+
+            SourceText dynamicCodeAssemblyText = SourceText.From(GetEmbeddedSourceFile(DynamicCodeAssemblyName));
+            result = CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName);
+            Assert.IsTrue(result.Success);
         }
 
         internal static void DeleteExistingBinary(string path)
@@ -97,14 +113,19 @@ namespace InstrEngineTests
             }
         }
 
-        private static void GenerateExecutable(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit)
+        private static EmitResult CompileTestAppPrefix(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit)
         {
-            EmitResult result = Compile(sourceText, path, prefix, isDebug, is64bit);
-            Assert.IsTrue(result.Success);
-            CopyAdditionalFiles(path, prefix, isDebug, is64bit);
+            return CompileAssembly(sourceText, path, GetAssemblyName(prefix, isDebug, is64bit), isDebug, is64bit, OutputKind.ConsoleApplication, EntryPointAssemblyExtension);
         }
 
-        private static EmitResult Compile(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit)
+        private static EmitResult CompileAssembly(
+            SourceText sourceText,
+            string directoryPath,
+            string assemblyName,
+            bool isDebug = false,
+            bool? is64bit = null,
+            OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary,
+            string extension = DynamicallyLinkedLibraryExtension)
         {
             CSharpParseOptions parseOptions = CSharpParseOptions.Default
                 .WithLanguageVersion(LanguageVersion.CSharp9);
@@ -116,10 +137,6 @@ namespace InstrEngineTests
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(HttpWebRequest).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(SourceText).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(ImmutableArray<>).Assembly.Location),
-                MetadataReference.CreateFromFile(Path.Combine(sharedFrameworkDir, "netstandard.dll")),
 #if NETCOREAPP
                 MetadataReference.CreateFromFile(typeof(Console).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Uri).Assembly.Location),
@@ -127,47 +144,36 @@ namespace InstrEngineTests
 #endif
             };
 
-            CSharpCompilationOptions compilationOptions = new CSharpCompilationOptions(EntryPointAssemblyOutputKind)
+            Platform platform = Platform.AnyCpu;
+            if (is64bit.HasValue)
+            {
+                platform = is64bit.Value ? Platform.X64 : Platform.X86;
+            }
+
+            CSharpCompilationOptions compilationOptions = new CSharpCompilationOptions(outputKind)
                 .WithWarningLevel(4)
                 .WithOptimizationLevel(isDebug ? OptimizationLevel.Debug : OptimizationLevel.Release)
-                .WithPlatform(is64bit ? Platform.X64 : Platform.X86);
+                .WithPlatform(platform);
 
-            string assemblyName = GetAssemblyName(prefix, isDebug, is64bit);
             CSharpCompilation compilation = CSharpCompilation.Create(assemblyName)
                 .WithReferences(references)
                 .WithOptions(compilationOptions)
                 .AddSyntaxTrees(syntaxTree);
 
-            return compilation.Emit(GetBinaryFullPath(path, prefix, isDebug, is64bit));
-        }
-
-        private static void CopyAdditionalFiles(string path, string prefix, bool isDebug, bool is64bit)
-        {
-#if !NETCOREAPP
-            string appConfig = GetEmbeddedFile("InstrEngineTests.EmbeddedResources", prefix + ".config", required: false);
-            if (!string.IsNullOrEmpty(appConfig))
-            {
-                File.WriteAllText(Path.Combine(path, GetAppConfigFileName(prefix, isDebug, is64bit)), appConfig);
-            }
-#endif
+            return compilation.Emit(Path.Combine(directoryPath, Path.ChangeExtension(assemblyName, extension)));
         }
 
         private static string GetBinaryFullPath(string path, string prefix, bool isDebug, bool is64bit)
         {
-            return Path.Combine(path, Path.ChangeExtension(GetFileName(prefix, isDebug, is64bit), EntryPointAssemblyExtension));
+            return GetBinaryFullPath(path, GetAssemblyName(prefix, isDebug, is64bit));
+        }
+
+        private static string GetBinaryFullPath(string path, string assemblyName)
+        {
+            return Path.Combine(path, Path.ChangeExtension(assemblyName, EntryPointAssemblyExtension));
         }
 
         private static string GetAssemblyName(string prefix, bool isDebug, bool is64bit)
-        {
-            return GetFileName(prefix, isDebug, is64bit);
-        }
-
-        private static string GetAppConfigFileName(string prefix, bool isDebug, bool is64bit)
-        {
-            return Path.ChangeExtension(GetFileName(prefix, isDebug, is64bit), "exe.config");
-        }
-
-        private static string GetFileName(string prefix, bool isDebug, bool is64bit)
         {
             Assert.IsFalse(string.IsNullOrEmpty(prefix));
 
@@ -184,12 +190,11 @@ namespace InstrEngineTests
             return $"/platform:{platform} /define:{defines} /debug:{debug} /optimize{optimize}";
         }
 
-        private static string GetEmbeddedFile(string resourcePath, string path, bool required = true)
+        private static string GetEmbeddedSourceFile(string file, bool required = true)
         {
-            Assert.IsNotNull(path);
-            Assert.IsNotNull(resourcePath);
+            Assert.IsNotNull(file);
 
-            var fullPath = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", resourcePath, path);
+            var fullPath = string.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}", EmbeddedResourcesPath, file, SourceExtension);
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fullPath);
 
             if (required)

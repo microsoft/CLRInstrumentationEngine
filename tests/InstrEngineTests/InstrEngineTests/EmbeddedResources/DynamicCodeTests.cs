@@ -1,10 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
-using Microsoft.CodeAnalysis.Text;
 using System;
 using System.IO;
 using System.Reflection;
@@ -49,36 +45,15 @@ namespace CompiledCode
 
         private static void CallCompiledAssembly()
         {
-            SourceText sourceText = SourceText.From(CallForwarderSource);
+            string assemblyPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "DynamicCodeAssembly.dll");
 
-            CSharpParseOptions parseOptions = CSharpParseOptions.Default
-                .WithLanguageVersion(LanguageVersion.CSharp9);
+            using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
+            using BinaryReader assemblyReader = new BinaryReader(assemblyStream);
+            byte[] assemblyData = assemblyReader.ReadBytes((int)assemblyStream.Length);
 
-            SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceText, parseOptions);
-
-            MetadataReference[] references = new MetadataReference[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            };
-
-            CSharpCompilationOptions compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-                .WithWarningLevel(4);
-
-            CSharpCompilation compilation = CSharpCompilation.Create("DynamicCodeAssembly")
-                .WithReferences(references)
-                .WithOptions(compilationOptions)
-                .AddSyntaxTrees(syntaxTree);
-
-            using MemoryStream peStream = new MemoryStream();
-
-            EmitResult result = compilation.Emit(peStream);
-            if (!result.Success)
-            {
-                throw new InvalidOperationException();
-            }
-            peStream.Position = 0;
-
-            Assembly compiledAssembly = AppDomain.CurrentDomain.Load(peStream.ToArray());
+            Assembly compiledAssembly = AppDomain.CurrentDomain.Load(assemblyData);
 
             Type t = compiledAssembly.GetType("CompiledCode.CallForwarder");
             MethodInfo mi = t.GetMethod("ForwardCallCompiled", new Type[] { typeof(System.Action) });
