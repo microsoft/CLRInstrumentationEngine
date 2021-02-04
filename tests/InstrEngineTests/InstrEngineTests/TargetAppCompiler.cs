@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -66,21 +67,21 @@ namespace InstrEngineTests
                 SourceText sourceText = SourceText.From(sourceCode);
 
                 result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: true, is64bit: false);
-                Assert.IsTrue(result.Success);
+                Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
 
                 result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: true, is64bit: true);
-                Assert.IsTrue(result.Success);
+                Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
 
                 result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: false, is64bit: false);
-                Assert.IsTrue(result.Success);
+                Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
 
                 result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug: false, is64bit: true);
-                Assert.IsTrue(result.Success);
+                Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
             }
 
             SourceText dynamicCodeAssemblyText = SourceText.From(GetEmbeddedSourceFile(DynamicCodeAssemblyName));
             result = CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName);
-            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
         }
 
         internal static void DeleteExistingBinary(string path)
@@ -127,8 +128,16 @@ namespace InstrEngineTests
             OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary,
             string extension = DynamicallyLinkedLibraryExtension)
         {
+            IList<string> preprocessorSymbols = new List<string>();
+            preprocessorSymbols.Add("TRACE");
+            if (isDebug)
+            {
+                preprocessorSymbols.Add("DEBUG");
+            }
+
             CSharpParseOptions parseOptions = CSharpParseOptions.Default
-                .WithLanguageVersion(LanguageVersion.CSharp9);
+                .WithLanguageVersion(LanguageVersion.CSharp9)
+                .WithPreprocessorSymbols(preprocessorSymbols);
 
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceText, parseOptions);
 
