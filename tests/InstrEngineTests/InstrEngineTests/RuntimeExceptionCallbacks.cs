@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
@@ -17,18 +16,24 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class RuntimeExceptionCallbacks
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void RuntimeExceptionCallbacksTest()
         {
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp: "RuntimeExceptionCallbacks_Debug_x64", testScript: "RuntimeExceptionCallbacks.xml",
-                output: "RuntimeExceptionCallbacks.xml", isRejit: false, args: null);
+            ProfilerHelpers.LaunchAppUnderProfiler(
+                TestParameters.FromContext(Context),
+                testApp: "RuntimeExceptionCallbacks_Debug_x64",
+                testScript: "RuntimeExceptionCallbacks.xml",
+                output: "RuntimeExceptionCallbacks.xml",
+                isRejit: false);
 
             ProfilerHelpers.DiffResultToBaseline(output: "RuntimeExceptionCallbacks.xml", baseline: "RuntimeExceptionCallbacks.xml");
         }

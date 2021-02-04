@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
@@ -21,24 +16,34 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestDynamicCode
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void CompiledDynamicCodeTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64", "DynamicCompiledCode.xml", "Compiled");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "DynamicCodeTests_Debug_x64",
+                "DynamicCompiledCode.xml",
+                "Compiled");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void EmittedDynamicCodeTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("DynamicCodeTests_Debug_x64", "DynamicEmittedCode.xml", "Emitted");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "DynamicCodeTests_Debug_x64",
+                "DynamicEmittedCode.xml",
+                "Emitted");
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
@@ -17,24 +16,34 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestLocals
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void Instru_Locals()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("LocalTests_Release_x64", "Instru_Locals.xml", "AddLocals");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "LocalTests_Release_x64",
+                "Instru_Locals.xml",
+                "AddLocals");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void Instru_LocalsExisting()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("LocalTests_Debug_x64", "Instru_LocalsExisting.xml", "AddLocalsExisting");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "LocalTests_Debug_x64",
+                "Instru_LocalsExisting.xml",
+                "AddLocalsExisting");
         }
     }
 }

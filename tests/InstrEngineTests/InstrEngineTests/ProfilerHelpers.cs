@@ -4,15 +4,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Runtime.InteropServices;
-using System.Linq;
 
 namespace InstrEngineTests
 {
@@ -65,14 +62,14 @@ namespace InstrEngineTests
         private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
 #endif
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
+        public static void LaunchAppAndCompareResult(TestParameters parameters, string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args, timeoutMs);
+            ProfilerHelpers.LaunchAppUnderProfiler(parameters, testApp, fileName, fileName, false, args, timeoutMs);
             ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
-        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args, int timeoutMs = TestAppTimeoutMs)
+        public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
             {
@@ -103,7 +100,7 @@ namespace InstrEngineTests
                 psi.EnvironmentVariables.Add("EnableRefRecording", "1");
             }
 
-            if (!TestParameters.DisableLogLevel)
+            if (!parameters.DisableLogLevel)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
             }
@@ -121,42 +118,42 @@ namespace InstrEngineTests
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", @"1");
             }
 
-            if (TestParameters.DisableMethodSignatureValidation)
+            if (parameters.DisableMethodSignatureValidation)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", @"1");
             }
 
-            if (TestParameters.DisableMethodPrefix)
+            if (parameters.DisableMethodPrefix)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableLogMethodPrefix", @"1");
             }
 
-            if (TestParameters.MethodLogLevel != LogLevel.Unset)
+            if (parameters.MethodLogLevel != LogLevel.Unset)
             {
                 StringBuilder methodLogLevelBuilder = new StringBuilder();
-                if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
+                if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
                 {
                     methodLogLevelBuilder.Append("|None");
                 }
                 else
                 {
-                    if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
+                    if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
                     {
                         methodLogLevelBuilder.Append("|All");
                     }
                     else
                     {
-                        if ((TestParameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
+                        if ((parameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
                         {
                             methodLogLevelBuilder.Append("|Errors");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
+                        if ((parameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
                         {
                             methodLogLevelBuilder.Append("|Messages");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
+                        if ((parameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
                         {
                             methodLogLevelBuilder.Append("|Dumps");
                         }
