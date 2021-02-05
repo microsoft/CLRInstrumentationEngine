@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ExceptionTinyMethodTest</Name>
     <FullName>AddExceptionHandlerTests.Program.ExceptionTinyMethodTest</FullName>
-    <ClassID Volatile="True">0x70095ab8</ClassID>
+    <ClassID Volatile="True">0x70095ab0</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>MultiSwitchTest</Name>
     <FullName>InstrEngineTests.EmbeddedResources.Program.MultiSwitchTest</FullName>
-    <ClassID Volatile="True">0x70065a48</ClassID>
+    <ClassID Volatile="True">0x70095a40</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

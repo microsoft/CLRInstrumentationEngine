@@ -164,6 +164,14 @@ namespace InstrEngineTests
                 .WithOptimizationLevel(isDebug ? OptimizationLevel.Debug : OptimizationLevel.Release)
                 .WithPlatform(platform);
 
+            // Attempt to enable /debug+ to allow profiler friendly optimizations
+            MethodInfo withDebugPlusModeMethod = typeof(CSharpCompilationOptions)
+                .GetMethod("WithDebugPlusMode", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(withDebugPlusModeMethod);
+            compilationOptions = (CSharpCompilationOptions)withDebugPlusModeMethod.Invoke(
+                compilationOptions,
+                new object[] { true });
+
             CSharpCompilation compilation = CSharpCompilation.Create(assemblyName)
                 .WithReferences(references)
                 .WithOptions(compilationOptions)

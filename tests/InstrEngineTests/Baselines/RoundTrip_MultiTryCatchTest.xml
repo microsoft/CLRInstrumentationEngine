@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ExceptionMultiTryCatchTest</Name>
     <FullName>ExceptionTests.Program.ExceptionMultiTryCatchTest</FullName>
-    <ClassID Volatile="True">0x70075a88</ClassID>
+    <ClassID Volatile="True">0x70065a88</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000005</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000022b8</CodeRVA>
+    <CodeRVA>0x000022bc</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000003</MaxStack>

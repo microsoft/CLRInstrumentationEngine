@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>WhileTest</Name>
     <FullName>BasicManagedTest.Program.WhileTest</FullName>
-    <ClassID Volatile="True">0x70085a78</ClassID>
+    <ClassID Volatile="True">0x70065a78</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

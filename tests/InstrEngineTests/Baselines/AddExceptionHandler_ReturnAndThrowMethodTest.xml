@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ReturnAndThrowMethodTest</Name>
     <FullName>AddExceptionHandlerTests.Program.ReturnAndThrowMethodTest</FullName>
-    <ClassID Volatile="True">0x70095ab8</ClassID>
+    <ClassID Volatile="True">0x70085ab0</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000006</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

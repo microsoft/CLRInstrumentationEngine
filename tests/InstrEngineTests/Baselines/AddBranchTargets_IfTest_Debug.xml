@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>IfTest</Name>
     <FullName>BasicManagedTest.Program.IfTest</FullName>
-    <ClassID Volatile="True">0x70075a78</ClassID>
+    <ClassID Volatile="True">0x70085a78</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

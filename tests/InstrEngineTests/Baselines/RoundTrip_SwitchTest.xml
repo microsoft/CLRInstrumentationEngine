@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>SwitchTest</Name>
     <FullName>BasicManagedTest.Program.SwitchTest</FullName>
-    <ClassID Volatile="True">0x70095a68</ClassID>
+    <ClassID Volatile="True">0x70065a60</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000005</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020e4</CodeRVA>
+    <CodeRVA>0x000020f0</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x08 </LocalSignature>
     <MaxStack>0x00000001</MaxStack>

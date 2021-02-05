@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>MultiReturnToSingleReturnMethodTest</Name>
     <FullName>AddExceptionHandlerTests.Program.MultiReturnToSingleReturnMethodTest</FullName>
-    <ClassID Volatile="True">0x70085ab8</ClassID>
+    <ClassID Volatile="True">0x700a5ab0</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000007</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x0e </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x0000220e</CodeRVA>
+    <CodeRVA>0x00002212</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x02 0x0e 0x0e </LocalSignature>
     <MaxStack>0x00000002</MaxStack>

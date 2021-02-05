@@ -23,12 +23,12 @@
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>286</Offset>
+        <Offset>290</Offset>
         <RepeatCount>5</RepeatCount>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>288</Offset>
+        <Offset>292</Offset>
       </Instruction>
     </Instructions>
   </InstrumentMethod>

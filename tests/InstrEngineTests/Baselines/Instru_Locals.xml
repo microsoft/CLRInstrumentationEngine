@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>AddLocals</Name>
     <FullName>LocalTests.Program.AddLocals</FullName>
-    <ClassID Volatile="True">0x70065a60</ClassID>
+    <ClassID Volatile="True">0x70075a58</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020a9</CodeRVA>
+    <CodeRVA>0x000020ab</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x03 0x08 0x0e 0x12 0x08 </LocalSignature>
     <MaxStack>0x00000000</MaxStack>

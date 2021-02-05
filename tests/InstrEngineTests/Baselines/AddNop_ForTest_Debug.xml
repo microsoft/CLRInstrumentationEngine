@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ForTest</Name>
     <FullName>BasicManagedTest.Program.ForTest</FullName>
-    <ClassID Volatile="True">0x01304db8</ClassID>
+    <ClassID Volatile="True">0x00c54db4</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

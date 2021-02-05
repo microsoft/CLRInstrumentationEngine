@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>SwitchTest</Name>
     <FullName>BasicManagedTest.Program.SwitchTest</FullName>
-    <ClassID Volatile="True">0x70085a78</ClassID>
+    <ClassID Volatile="True">0x70075a78</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000005</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ReturnMethodTest</Name>
     <FullName>AddExceptionHandlerTests.Program.ReturnMethodTest</FullName>
-    <ClassID Volatile="True">0x70065ab8</ClassID>
+    <ClassID Volatile="True">0x70075ab0</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x0e </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x00002205</CodeRVA>
+    <CodeRVA>0x00002209</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x0e </LocalSignature>
     <MaxStack>0x00000001</MaxStack>

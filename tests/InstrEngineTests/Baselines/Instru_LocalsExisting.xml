@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>AddLocalsExisting</Name>
     <FullName>LocalTests.Program.AddLocalsExisting</FullName>
-    <ClassID Volatile="True">0x700a5a78</ClassID>
+    <ClassID Volatile="True">0x70085a70</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

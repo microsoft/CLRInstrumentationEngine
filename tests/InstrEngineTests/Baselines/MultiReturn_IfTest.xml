@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>MultiIfTest</Name>
     <FullName>InstrEngineTests.EmbeddedResources.Program.MultiIfTest</FullName>
-    <ClassID Volatile="True">0x70065a48</ClassID>
+    <ClassID Volatile="True">0x70065a40</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>

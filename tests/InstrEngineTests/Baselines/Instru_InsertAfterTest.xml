@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>Instru_InsertAfterTest</Name>
     <FullName>InstruOperationsTests.Program.Instru_InsertAfterTest</FullName>
-    <ClassID Volatile="True">0x70075a90</ClassID>
+    <ClassID Volatile="True">0x70085a90</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020a4</CodeRVA>
+    <CodeRVA>0x000020a8</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
