@@ -5,7 +5,9 @@
 #include "ExceptionClause.h"
 #include "InstructionGraph.h"
 
-MicrosoftInstrumentationEngine::CExceptionClause::CExceptionClause(CMethodInfo* m_pMethodInfo) : m_pMethodInfo(m_pMethodInfo)
+MicrosoftInstrumentationEngine::CExceptionClause::CExceptionClause(CMethodInfo* m_pMethodInfo) :
+    m_ExceptionHandlerType(mdTokenNil),
+    m_pMethodInfo(m_pMethodInfo)
 {
     DEFINE_REFCOUNT_NAME(CExceptionClause);
 }

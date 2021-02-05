@@ -16,27 +16,27 @@
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>40</Offset>
+        <Offset>24</Offset>
         <InstrumentationType>InsertAfter</InstrumentationType>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>49</Offset>
+        <Offset>33</Offset>
         <InstrumentationType>InsertAfter</InstrumentationType>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>54</Offset>
+        <Offset>38</Offset>
         <InstrumentationType>InsertAfter</InstrumentationType>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>67</Offset>
+        <Offset>51</Offset>
         <InstrumentationType>InsertAfter</InstrumentationType>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>75</Offset>
+        <Offset>59</Offset>
         <InstrumentationType>InsertAfter</InstrumentationType>
       </Instruction>
     </Instructions>

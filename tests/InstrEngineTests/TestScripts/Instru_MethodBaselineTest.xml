@@ -9,7 +9,7 @@
         <Operand>12</Operand>
       </Instruction>
       <Instruction>
-       <Opcode>stloc.0</Opcode>
+        <Opcode>stloc.0</Opcode>
       </Instruction>
       <Instruction>
         <Opcode>ldc.i4.s</Opcode>

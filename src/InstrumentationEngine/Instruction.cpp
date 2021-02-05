@@ -9,9 +9,22 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignore
 {
     HRESULT hr = S_OK;
 
-    tstring ignoreTestPrefix = ignoreTest ? _T("[TestIgnore]") : _T("");
+    tstring strIgnoreTestPrefix(ignoreTest ? _T("[TestIgnore] ") : _T(""));
 
-    CLogging::LogDumpMessage(_T("%sIL_%04x %s"), ignoreTestPrefix.c_str(), m_offset, s_ilOpcodeInfo[m_opcode].m_name);
+    tstring strInstruction(strIgnoreTestPrefix);
+
+    const size_t InstructionBufferSize = 64;
+    WCHAR wszInstructionBuffer[InstructionBufferSize];
+
+    ZeroMemory(wszInstructionBuffer, InstructionBufferSize);
+    _snwprintf_s(
+        wszInstructionBuffer,
+        InstructionBufferSize,
+        _TRUNCATE,
+        _T("IL_%04x %s"),
+        m_offset,
+        s_ilOpcodeInfo[m_opcode].m_name);
+    strInstruction.append(wszInstructionBuffer);
 
     CComPtr<IOperandInstruction> pOperand;
     if (SUCCEEDED(this->QueryInterface(__uuidof(IOperandInstruction), (LPVOID*)&pOperand)))
@@ -29,33 +42,94 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignore
             ILOperandType operandType;
             IfFailRet(pOperand->GetOperandType(&operandType));
 
+            ZeroMemory(wszInstructionBuffer, InstructionBufferSize);
             switch(operandType)
             {
             case ILOperandType_Byte:
-                CLogging::LogDumpMessage(_T("%s 0x%01x"), ignoreTestPrefix.c_str(), *(BYTE*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%x"),
+                    *(BYTE*)(pOperandValue.m_p));
                 break;
             case ILOperandType_Int:
-                CLogging::LogDumpMessage(_T("%s 0x%04x"), ignoreTestPrefix.c_str(), *(DWORD*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%x"),
+                    *(DWORD*)(pOperandValue.m_p));
                 break;
             case ILOperandType_UShort:
-                CLogging::LogDumpMessage(_T("%s 0x%02x"), ignoreTestPrefix.c_str(), *(USHORT*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%x"),
+                    *(USHORT*)(pOperandValue.m_p));
                 break;
             case ILOperandType_Long:
-                CLogging::LogDumpMessage(_T("%s 0x%08x"), ignoreTestPrefix.c_str(), *(LONGLONG*)(pOperandValue.m_p));
+                // There is no format specifier for LONGLONG; use LARGE_INTEGER to break apart
+                // the LONGLONG and format each part appropriately.
+                LARGE_INTEGER value;
+                value.QuadPart = *(LONGLONG*)(pOperandValue.m_p);
+                if (value.u.HighPart != 0L)
+                {
+                    _snwprintf_s(
+                        wszInstructionBuffer,
+                        InstructionBufferSize,
+                        _TRUNCATE,
+                        _T(" 0x%x"),
+                        value.u.HighPart);
+                    strInstruction.append(wszInstructionBuffer);
+                    ZeroMemory(wszInstructionBuffer, InstructionBufferSize);
+                    _snwprintf_s(
+                        wszInstructionBuffer,
+                        InstructionBufferSize,
+                        _TRUNCATE,
+                        _T("%08x"),
+                        value.u.LowPart);
+                }
+                else
+                {
+                    _snwprintf_s(
+                        wszInstructionBuffer,
+                        InstructionBufferSize,
+                        _TRUNCATE,
+                        _T(" 0x%x"),
+                        value.u.LowPart);
+                }
                 break;
             case ILOperandType_Single:
-                CLogging::LogDumpMessage(_T("%s 0x%f"), ignoreTestPrefix.c_str(), *(float*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%f"),
+                    *(float*)(pOperandValue.m_p));
                 break;
             case ILOperandType_Double:
-                CLogging::LogDumpMessage(_T("%s 0x%f"), ignoreTestPrefix.c_str(), *(double*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%f"),
+                    *(double*)(pOperandValue.m_p));
                 break;
             case ILOperandType_Token:
-                CLogging::LogDumpMessage(_T("%s 0x%04x"), ignoreTestPrefix.c_str(), *(DWORD*)(pOperandValue.m_p));
+                _snwprintf_s(
+                    wszInstructionBuffer,
+                    InstructionBufferSize,
+                    _TRUNCATE,
+                    _T(" 0x%08x"),
+                    *(DWORD*)(pOperandValue.m_p));
                 break;
             default:
-                CLogging::LogDumpMessage(_T("Invalid operand type"));
+                wcscpy_s(wszInstructionBuffer, InstructionBufferSize, _T(" (Invalid operand type)"));
                 break;
             }
+            strInstruction.append(wszInstructionBuffer);
         }
     }
     else
@@ -69,7 +143,14 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignore
             DWORD targetOffset = 0;
             IfFailRet(pBranchTarget->GetOffset(&targetOffset));
 
-            CLogging::LogDumpMessage(_T("%s IL_%04x"), ignoreTestPrefix.c_str(), targetOffset);
+            ZeroMemory(wszInstructionBuffer, InstructionBufferSize);
+            _snwprintf_s(
+                wszInstructionBuffer,
+                InstructionBufferSize,
+                _TRUNCATE,
+                _T(" IL_%04x"),
+                targetOffset);
+            strInstruction.append(wszInstructionBuffer);
         }
         else
         {
@@ -79,27 +160,32 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignore
                 DWORD branchCount = 0;
                 IfFailRet(pSwitchInstruction->GetBranchCount(&branchCount));
 
-                CLogging::LogDumpMessage(_T("%s (\r\n"), ignoreTestPrefix.c_str());
-
+                strInstruction.append(_T(" ("));
                 for (DWORD i = 0; i < branchCount; i++)
                 {
                     DWORD offset = 0;
                     IfFailRet(pSwitchInstruction->GetBranchOffset(i, &offset));
 
-                    CLogging::LogDumpMessage(_T("%s IL_%04x"), ignoreTestPrefix.c_str(), offset);
+                    ZeroMemory(wszInstructionBuffer, InstructionBufferSize);
+                    _snwprintf_s(
+                        wszInstructionBuffer,
+                        InstructionBufferSize,
+                        _TRUNCATE,
+                        _T("IL_%04x"),
+                        offset);
+                    strInstruction.append(wszInstructionBuffer);
 
                     if (i < branchCount - 1)
                     {
-                        CLogging::LogDumpMessage(_T("%s,\r\n"), ignoreTestPrefix.c_str());
+                        strInstruction.append(_T(","));
                     }
                 }
-
-                CLogging::LogDumpMessage(_T("%s)"), ignoreTestPrefix.c_str());
+                strInstruction.append(_T(")"));
             }
         }
     }
 
-    CLogging::LogDumpMessage(_T("%s\r\n"), ignoreTestPrefix.c_str());
+    CLogging::LogDumpMessage(strInstruction.c_str());
 
     return hr;
 }

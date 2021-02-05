@@ -8,13 +8,13 @@
          we don't generate infinite loops. -->
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>31</Offset>
-        <Operand>31</Operand>
+        <Offset>28</Offset>
+        <Operand>28</Operand>
       </Instruction>
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>46</Offset>
-        <Operand>46</Operand>
+        <Offset>43</Offset>
+        <Operand>43</Operand>
       </Instruction>
     </Instructions>
   </InstrumentMethod>

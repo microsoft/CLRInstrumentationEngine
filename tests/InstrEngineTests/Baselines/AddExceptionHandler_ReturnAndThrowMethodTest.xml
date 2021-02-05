@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ReturnAndThrowMethodTest</Name>
     <FullName>AddExceptionHandlerTests.Program.ReturnAndThrowMethodTest</FullName>
-    <ClassID Volatile="True">0xd4a03998</ClassID>
+    <ClassID Volatile="True">0x70085ab0</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000006</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,14 +19,13 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x0e </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x0000221d</CodeRVA>
+    <CodeRVA>0x000020d0</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x0e </LocalSignature>
     <MaxStack>0x00000001</MaxStack>
-    <Instructions>
-        <![CDATA[
+    <Instructions><![CDATA[
 IL_0000 ldstr 0x70000001
-IL_0005 newobj 0xa000005
+IL_0005 newobj 0x0a000005
 IL_000a throw
 IL_000b leave.s IL_0010
 IL_000d pop
@@ -34,8 +33,7 @@ IL_000e leave.s IL_0010
 IL_0010 nop
 IL_0011 ldloc.0
 IL_0012 ret
-    ]]>
-    </Instructions>
+    ]]></Instructions>
     <ExceptionClauses>
         <ExceptionClause>
             <Flags>0x00000000</Flags>

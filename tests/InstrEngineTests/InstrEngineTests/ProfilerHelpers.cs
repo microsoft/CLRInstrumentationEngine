@@ -4,15 +4,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Runtime.InteropServices;
-using System.Linq;
 
 namespace InstrEngineTests
 {
@@ -55,14 +52,24 @@ namespace InstrEngineTests
         // Enable ref recording to track down memory leaks. For debug only.
         private static bool EnableRefRecording = false;
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
+#if NETCOREAPP
+        private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "CORECLR_PROFILER";
+        private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+#else
+        private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "COR_PROFILER";
+        private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
+#endif
+
+        public static void LaunchAppAndCompareResult(TestParameters parameters, string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args, timeoutMs);
+            ProfilerHelpers.LaunchAppUnderProfiler(parameters, testApp, fileName, fileName, false, args, timeoutMs);
             ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
-        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args, int timeoutMs = TestAppTimeoutMs)
+        public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
             {
@@ -84,16 +91,16 @@ namespace InstrEngineTests
 
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
-            psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
-            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
+            psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
+            psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
 
             if (EnableRefRecording)
             {
                 psi.EnvironmentVariables.Add("EnableRefRecording", "1");
             }
 
-            if (!TestParameters.DisableLogLevel)
+            if (!parameters.DisableLogLevel)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
             }
@@ -111,42 +118,42 @@ namespace InstrEngineTests
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", @"1");
             }
 
-            if (TestParameters.DisableMethodSignatureValidation)
+            if (parameters.DisableMethodSignatureValidation)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", @"1");
             }
 
-            if (TestParameters.DisableMethodPrefix)
+            if (parameters.DisableMethodPrefix)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableLogMethodPrefix", @"1");
             }
 
-            if (TestParameters.MethodLogLevel != LogLevel.Unset)
+            if (parameters.MethodLogLevel != LogLevel.Unset)
             {
                 StringBuilder methodLogLevelBuilder = new StringBuilder();
-                if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
+                if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
                 {
                     methodLogLevelBuilder.Append("|None");
                 }
                 else
                 {
-                    if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
+                    if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
                     {
                         methodLogLevelBuilder.Append("|All");
                     }
                     else
                     {
-                        if ((TestParameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
+                        if ((parameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
                         {
                             methodLogLevelBuilder.Append("|Errors");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
+                        if ((parameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
                         {
                             methodLogLevelBuilder.Append("|Messages");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
+                        if ((parameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
                         {
                             methodLogLevelBuilder.Append("|Dumps");
                         }
@@ -175,8 +182,19 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputFileEnvName, outputPath);
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
-            psi.FileName = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+            string appPath = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+#if NETCOREAPP
+            string hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "dotnet.exe");
+            if (is32bitTest)
+            {
+                hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "dotnet", "dotnet.exe");
+            }
+            psi.FileName = hostPath;
+            psi.Arguments = $"{appPath}.dll {args}";
+#else
+            psi.FileName = $"{appPath}.exe";
             psi.Arguments = args;
+#endif
 
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
 
@@ -349,7 +367,7 @@ namespace InstrEngineTests
                     Assert.Fail(assertError);
                 }
 
-                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count);
+                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count, $"Child node counts are different on node '{baselineNode.Name}'.");
 
                 for (int i = 0; i < baselineNode.ChildNodes.Count; i++)
                 {

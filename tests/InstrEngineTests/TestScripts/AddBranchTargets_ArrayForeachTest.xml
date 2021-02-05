@@ -8,13 +8,13 @@
     <Instructions>
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>47</Offset>
-        <Operand>47</Operand>
+        <Offset>43</Offset>
+        <Operand>43</Operand>
       </Instruction>
       <Instruction>
         <Opcode>br</Opcode>
-        <Offset>90</Offset>
-        <Operand>90</Operand>
+        <Offset>82</Offset>
+        <Operand>82</Operand>
       </Instruction>
     </Instructions>
   </InstrumentMethod>

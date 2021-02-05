@@ -16,10 +16,12 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestHttpMethods
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         // Disabling test because HttpMethodTests_Debug.xml test script does not exist
@@ -27,7 +29,10 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void GetResponseAsync()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("HttpMethodTests_Debug.exe", "HttpMethodTests_Debug.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "HttpMethodTests_Debug.exe",
+                "HttpMethodTests_Debug.xml");
         }
     }
 }

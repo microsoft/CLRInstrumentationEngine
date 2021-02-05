@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
@@ -17,24 +16,32 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestInjectToMscorlib
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void SimpleInjectTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("InjectToMscorlibTest_Release_x64", "InjectToMscorlibTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "InjectToMscorlibTest_Release_x64",
+                "InjectToMscorlibTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void SimpleInjectTest32()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("InjectToMscorlibTest_Release_x86", "InjectToMscorlibTest32.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "InjectToMscorlibTest_Release_x86",
+                "InjectToMscorlibTest32.xml");
         }
     }
 }

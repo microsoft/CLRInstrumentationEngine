@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ExceptionTinyMethodTest</Name>
     <FullName>ExceptionTests.Program.ExceptionTinyMethodTest</FullName>
-    <ClassID Volatile="True">0xd4a03998</ClassID>
+    <ClassID Volatile="True">0x70065a88</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020d4</CodeRVA>
+    <CodeRVA>0x000020d0</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000001</MaxStack>
@@ -31,7 +31,7 @@ IL_0003 nop
 IL_0004 nop
 IL_0005 ldstr 0x70000001
 IL_000a nop
-IL_000b newobj 0xa000004
+IL_000b newobj 0x0a000004
 IL_0010 nop
 IL_0011 throw
     ]]></Instructions>

@@ -31,12 +31,7 @@
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>55</Offset>
-        <RepeatCount>3</RepeatCount>
-      </Instruction>
-      <Instruction>
-        <Opcode>nop</Opcode>
-        <Offset>60</Offset>
+        <Offset>58</Offset>
         <RepeatCount>3</RepeatCount>
       </Instruction>
     </Instructions>

@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>Instru_ReplaceTest</Name>
     <FullName>InstruOperationsTests.Program.Instru_ReplaceTest</FullName>
-    <ClassID Volatile="True">0xd4a13998</ClassID>
+    <ClassID Volatile="True">0x700a5a90</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000004</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x00002110</CodeRVA>
+    <CodeRVA>0x000020f8</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x02 0x08 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
@@ -29,10 +29,10 @@ IL_0001 stloc.0
 IL_0002 ldc.i4.0
 IL_0003 stloc.1
 IL_0004 br IL_0019
-IL_0009 ldsfld 0x4000001
+IL_0009 ldsfld 0x04000001
 IL_000e ldc.i4.1
 IL_000f add
-IL_0010 stsfld 0x4000001
+IL_0010 stsfld 0x04000001
 IL_0015 ldloc.1
 IL_0016 ldc.i4.2
 IL_0017 add
@@ -40,10 +40,10 @@ IL_0018 stloc.1
 IL_0019 ldloc.1
 IL_001a ldloc.0
 IL_001b blt IL_0009
-IL_0020 ldsfld 0x4000001
+IL_0020 ldsfld 0x04000001
 IL_0025 ldc.i4.4
 IL_0026 sub
-IL_0027 stsfld 0x4000001
+IL_0027 stsfld 0x04000001
 IL_002c ret
     ]]></Instructions>
     <ExceptionClauses>

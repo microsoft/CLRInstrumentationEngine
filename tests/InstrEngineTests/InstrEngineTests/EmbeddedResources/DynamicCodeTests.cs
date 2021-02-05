@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using System.CodeDom.Compiler;
+using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -45,22 +45,36 @@ namespace CompiledCode
 
         private static void CallCompiledAssembly()
         {
-            string[] assemblies = { "System.dll" };
-            CompilerParameters cp = new CompilerParameters(assemblies);
-            cp.OutputAssembly = "DynamicCodeAssembly.dll";
-            cp.GenerateInMemory = true;
-            CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
-            CompilerResults results = provider.CompileAssemblyFromSource(cp, CallForwarderSource);
+            string assemblyPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "DynamicCodeAssembly.dll");
 
-            Type t = results.CompiledAssembly.GetType("CompiledCode.CallForwarder");
+            using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
+            using BinaryReader assemblyReader = new BinaryReader(assemblyStream);
+            byte[] assemblyData = assemblyReader.ReadBytes((int)assemblyStream.Length);
+
+            Assembly compiledAssembly = AppDomain.CurrentDomain.Load(assemblyData);
+
+            Type t = compiledAssembly.GetType("CompiledCode.CallForwarder");
             MethodInfo mi = t.GetMethod("ForwardCallCompiled", new Type[] { typeof(System.Action) });
             mi.Invoke(null, new object[] { new Action(CallHelloFromCompiledSource) });
+        }
+
+        private static void CallHelloFromCompiledSource()
+        {
+            // redirect to ensure that Jit Compilation does not occur until this method is called.
+            CallHelloFromCompiledSource2();
+        }
+
+        private static void CallHelloFromCompiledSource2()
+        {
+            Console.WriteLine("Hello from Compiled Source");
         }
 
         static void CallEmittedAssembly()
         {
             AssemblyName aname = new AssemblyName("DynamicEmitAssembly.dll");
-            AssemblyBuilder builder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+            AssemblyBuilder builder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
             ModuleBuilder mBuilder = builder.DefineDynamicModule("DynamicEmitAssembly.dll");
             TypeBuilder tbuilder = mBuilder.DefineType("EmittedCode.CallForwarder", TypeAttributes.Public | TypeAttributes.Class);
             MethodBuilder methodBuilder = tbuilder.DefineMethod("ForwardCallEmitted", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(void), new Type[] { typeof(System.Action) });
@@ -75,17 +89,6 @@ namespace CompiledCode
             mi.Invoke(null, new object[] { new Action(CallHelloFromEmittedAssembly) });
         }
 
-        private static void CallHelloFromCompiledSource()
-        {
-            // redirect to ensure that Jit Compilation does not occur until this method is called.
-            CallHelloFromCompiledSource2();
-        }
-
-        private static void CallHelloFromCompiledSource2()
-        {
-            Console.WriteLine("Hello from Compiled Source");
-        }
-
         private static void CallHelloFromEmittedAssembly()
         {
             // redirect to ensure that Jit Compilation does not occur until this method is called.
@@ -94,7 +97,7 @@ namespace CompiledCode
 
         private static void CallHelloFromEmittedAssembly2()
         {
-            Console.WriteLine("Hello from Compiled Source");
+            Console.WriteLine("Hello from Emitted Source");
         }
     }
 }

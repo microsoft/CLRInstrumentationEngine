@@ -3,7 +3,10 @@
 
 #include "stdafx.h"
 #include "NaglerInstrumentationMethod.h"
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
 #include <sstream>
+#pragma warning(pop)
 #include "Util.h"
 
 const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
@@ -49,7 +52,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 
         CComPtr<IProfilerManagerLogging> spLogger;
         pProfilerManager->GetLoggingInstance(&spLogger);
-        spLogger->LogDumpMessage(_T("<ExceptionTrace>\r\n"));
+        spLogger->LogDumpMessage(_T("<ExceptionTrace>"));
     }
 
     return S_OK;
@@ -778,7 +781,7 @@ HRESULT CInstrumentationMethod::OnShutdown()
     {
         CComPtr<IProfilerManagerLogging> spLogger;
         m_pProfilerManager->GetLoggingInstance(&spLogger);
-        spLogger->LogDumpMessage(_T("</ExceptionTrace>\r\n"));
+        spLogger->LogDumpMessage(_T("</ExceptionTrace>"));
     }
     else if (m_bTestInstrumentationMethodLogging)
     {
@@ -1438,9 +1441,12 @@ HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionCatcherEnter>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionCatcherEnter>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionCatcherEnter>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionCatcherEnter>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1449,7 +1455,7 @@ HRESULT CInstrumentationMethod::ExceptionCatcherLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionCatcherLeave/>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionCatcherLeave/>"));
 
     return S_OK;
 }
@@ -1463,9 +1469,12 @@ HRESULT CInstrumentationMethod::ExceptionSearchCatcherFound(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionSearchCatcherFound>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionSearchCatcherFound>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionSearchCatcherFound>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionSearchCatcherFound>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1479,9 +1488,12 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterEnter(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionSearchFilterEnter>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionSearchFilterEnter>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionSearchFilterEnter>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionSearchFilterEnter>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1490,7 +1502,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionCatcherLeave/>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionCatcherLeave/>"));
 
     return S_OK;
 }
@@ -1504,9 +1516,12 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionEnter(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionEnter>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionSearchFunctionEnter>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionSearchFunctionEnter>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionSearchFunctionEnter>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1515,7 +1530,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionLeave/>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionSearchFunctionLeave/>"));
 
     return S_OK;
 }
@@ -1527,7 +1542,7 @@ HRESULT CInstrumentationMethod::ExceptionThrown(
     HRESULT hr = S_OK;
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionThrown>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionThrown>"));
 
     CComPtr<ICorProfilerInfo> pCorProfilerInfo;
     IfFailRet(m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo));
@@ -1543,7 +1558,7 @@ HRESULT CInstrumentationMethod::ExceptionThrown(
         nullptr,
         0));
 
-    spLogger->LogDumpMessage(_T("</ExceptionThrown>\r\n"));
+    spLogger->LogDumpMessage(_T("    </ExceptionThrown>"));
 
     return S_OK;
 }
@@ -1599,10 +1614,12 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<MethodName>"));
-    spLogger->LogDumpMessage(bstrMethodName);
-    spLogger->LogDumpMessage(_T("</MethodName>\r\n"));
 
+    tstring strMessage(_T("        <MethodName>"));
+    strMessage.append(bstrMethodName);
+    strMessage.append(_T("</MethodName>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     // verify other code paths that don't contribute to actual baseline
     // This is just to get coverage on althernative code paths to obtain method infos
@@ -1638,9 +1655,12 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyEnter(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionSearchFunctionEnter>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionSearchFunctionEnter>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionSearchFunctionEnter>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionSearchFunctionEnter>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1649,7 +1669,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionUnwindFinallyLeave/>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionUnwindFinallyLeave/>"));
 
     return S_OK;
 }
@@ -1663,9 +1683,12 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionEnter(
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionUnwindFunctionEnter>"));
-    spLogger->LogDumpMessage(bstrFullName);
-    spLogger->LogDumpMessage(_T("</ExceptionUnwindFunctionEnter>\r\n"));
+
+    tstring strMessage(_T("    <ExceptionUnwindFunctionEnter>"));
+    strMessage.append(bstrFullName);
+    strMessage.append(_T("</ExceptionUnwindFunctionEnter>"));
+
+    spLogger->LogDumpMessage(strMessage.c_str());
 
     return S_OK;
 }
@@ -1674,7 +1697,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionLeave()
 {
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
-    spLogger->LogDumpMessage(_T("<ExceptionUnwindFunctionLeave/>\r\n"));
+    spLogger->LogDumpMessage(_T("    <ExceptionUnwindFunctionLeave/>"));
 
     return S_OK;
 }

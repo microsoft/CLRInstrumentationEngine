@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
 {
@@ -15,31 +17,42 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestMultiReturn
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_IfTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_IfTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "MultiReturnTests_Release_x64",
+                "MultiReturn_IfTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_ExceptionTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_ExceptionTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "MultiReturnTests_Release_x64",
+                "MultiReturn_ExceptionTest.xml");
         }
 
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void MultiReturn_SwitchTest()
         {
-            ProfilerHelpers.LaunchAppAndCompareResult("MultiReturnTests_Release_x64.exe", "MultiReturn_SwitchTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "MultiReturnTests_Release_x64",
+                "MultiReturn_SwitchTest.xml");
         }
     }
 }
