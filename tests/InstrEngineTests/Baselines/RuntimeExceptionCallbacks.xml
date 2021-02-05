@@ -1,9 +1,9 @@
 <ExceptionTrace>
     <ExceptionThrown>
-        <MethodName>ThrowSomeExceptions3</MethodName>
-        <MethodName>ThrowSomeExceptions2</MethodName>
-        <MethodName>ThrowSomeExceptions1</MethodName>
-        <MethodName>Main</MethodName>
+        <MethodName>RuntimeExceptionCallbacks_Debug_x64.exe!ThrowSomeExceptions3</MethodName>
+        <MethodName>RuntimeExceptionCallbacks_Debug_x64.exe!ThrowSomeExceptions2</MethodName>
+        <MethodName>RuntimeExceptionCallbacks_Debug_x64.exe!ThrowSomeExceptions1</MethodName>
+        <MethodName>RuntimeExceptionCallbacks_Debug_x64.exe!Main</MethodName>
     </ExceptionThrown>
     <ExceptionSearchFunctionEnter>TestRuntimeExceptionCallbacks.Program.ThrowSomeExceptions3</ExceptionSearchFunctionEnter>
     <ExceptionSearchFunctionLeave/>

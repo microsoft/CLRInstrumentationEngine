@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
 {
+#if !NETCOREAPP
     [TestClass]
     [DeploymentItem(PathUtils.BaselinesBinPath, PathUtils.BaselinesBinPath)]
     [DeploymentItem(PathUtils.TestScriptsBinPath, PathUtils.TestScriptsBinPath)]
@@ -44,4 +45,5 @@ namespace InstrEngineTests
                 "InjectToMscorlibTest32.xml");
         }
     }
+#endif
 }

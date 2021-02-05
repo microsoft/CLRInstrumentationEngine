@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -189,8 +190,16 @@ namespace InstrEngineTests
             {
                 hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "dotnet", "dotnet.exe");
             }
+
+            // The compiled test apps cannot be run directly by dotnet.exe because they are missing
+            // the *.runtimeconfig.json files that contain framework version and dependency information.
+            // Use a pre-compiled executable to bootstrap executing these assemblies.
+            string runnerPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "TestAppRunner.dll");
+
             psi.FileName = hostPath;
-            psi.Arguments = $"{appPath}.dll {args}";
+            psi.Arguments = $"\"{runnerPath}\" \"{appPath}.dll\" {args}";
 #else
             psi.FileName = $"{appPath}.exe";
             psi.Arguments = args;
