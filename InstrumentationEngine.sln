@@ -67,7 +67,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.Profi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Attach", "src\InstrumentationEngine.Attach\InstrumentationEngine.Attach.csproj", "{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAppRunner", "tests\InstrEngineTests\TestAppRunner\TestAppRunner.csproj", "{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAppRunner", "tests\InstrEngineTests\TestAppRunner\TestAppRunner.csproj", "{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -101,7 +101,6 @@ Global
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Debug|x64.Build.0 = Debug|Any CPU
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -511,15 +510,11 @@ Global
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|x64.Build.0 = Debug|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Debug|x86.Build.0 = Debug|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|x64.ActiveCfg = Release|Any CPU
-		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|x64.Build.0 = Release|Any CPU
 		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|x86.ActiveCfg = Release|Any CPU
-		{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,10 +6,11 @@
 parameters:
   IsMicroBuildInternal: false
   MatrixStrategy: {}
+  TestType: 'Native'
 
 jobs:
-- job: Test_Windows_Binaries
-  displayName: Windows Tests
+- job: Test_Windows_Binaries_${{ parameters.TestType }}
+  displayName: Windows Tests ${{ parameters.TestType }}
 
   strategy:
     matrix:
@@ -31,26 +32,46 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: UseDotNet@2
-    displayName: Install .NET Core 3.1 Runtime
-    inputs:
-      packageType: 'runtime'
-      version: '3.1.x'
-
-  - task: UseDotNet@2
-    displayName: Install .NET 5.0 Runtime
-    inputs:
-      packageType: 'runtime'
-      version: '5.0.x'
-
   - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
-  - template: ../../steps/windows/tests.yaml
-    parameters:
-      WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
-      Platform: $(Platform)
+  # When running native tests, include all tests
+  # from all folders recursively
+  - ${{ if eq('Native', parameters.TestType) }}:
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        TestType: ${{ parameters.TestType }}
+        SubFolder: '**\'
+  
+  # All of the .NET tests need to be run separately
+  # otherwise vstest will fallback to running
+  # .NET Framework tests only. Minimize by grouping
+  # by their runtime version.
+  - ${{ if eq('Managed', parameters.TestType) }}:
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        TestType: ${{ parameters.TestType }}
+
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        TestType: ${{ parameters.TestType }}
+        SubFolder: 'net4*\'
+
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        TestType: ${{ parameters.TestType }}
+        SubFolder: 'netcoreapp3.1\'
+    
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        TestType: ${{ parameters.TestType }}
+        SubFolder: 'net50\'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

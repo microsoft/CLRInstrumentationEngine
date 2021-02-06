@@ -19,10 +19,7 @@ namespace TestAppRunner
                 throw new InvalidOperationException("Expected at least one argument with name of assembly to execute.");
             }
 
-            string assemblyName = args[0];
-            string assemblyPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                assemblyName);
+            string assemblyPath = args[0];
 
             using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
             using BinaryReader assemblyReader = new BinaryReader(assemblyStream);
