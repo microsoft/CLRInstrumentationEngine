@@ -71,8 +71,8 @@ jobs:
     - template: ../../steps/windows/tests.yaml
       parameters:
         Platform: $(Platform)
-        TestType: ${{ parameters.TestType }}
         SubFolder: '**\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Native_$(Configuration)_$(Platform)'
   
   # All of the .NET tests need to be run separately
   # otherwise vstest will fallback to running
@@ -82,25 +82,25 @@ jobs:
     - template: ../../steps/windows/tests.yaml
       parameters:
         Platform: $(Platform)
-        TestType: ${{ parameters.TestType }}
+        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)_$(Platform)'
 
     - template: ../../steps/windows/tests.yaml
       parameters:
         Platform: $(Platform)
-        TestType: ${{ parameters.TestType }}
         SubFolder: 'net4*\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)_$(Platform)'
 
     - template: ../../steps/windows/tests.yaml
       parameters:
         Platform: $(Platform)
-        TestType: ${{ parameters.TestType }}
         SubFolder: 'netcoreapp3.1\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)_$(Platform)'
     
     - template: ../../steps/windows/tests.yaml
       parameters:
         Platform: $(Platform)
-        TestType: ${{ parameters.TestType }}
         SubFolder: 'net50\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)_$(Platform)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

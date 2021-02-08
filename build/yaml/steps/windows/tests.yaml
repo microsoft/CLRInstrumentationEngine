@@ -5,8 +5,8 @@
 
 parameters:
   Platform: ''
-  TestType: ''
   SubFolder: ''
+  RunTitle: ''
 
 steps:
 - task: VSTest@2
@@ -21,5 +21,5 @@ steps:
     runInParallel: false
     codeCoverageEnabled: false
     runSettingsFile: tests/TestSettings/$(RunSettingsFile)
-    testRunTitle: '$(Build.BuildNumber)_Windows_${{ parameters.TestType }}_$(Configuration)_$(Platform)'
+    testRunTitle: ${{ parameters.RunTitle }}
   condition: succeededOrFailed()
