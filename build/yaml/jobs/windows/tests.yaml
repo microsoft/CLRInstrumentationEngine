@@ -36,6 +36,35 @@ jobs:
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
+  # The UseDotNet task is not sufficient because it will only install the X64 runtimes
+  # whereas the tests require both X64 and X86 since they test different bitnesses.
+  - ${{ if eq('Managed', parameters.TestType) }}:
+    - powershell: |
+        # Get install script
+        $scriptDir = Join-Path -Path $env:AGENT_TEMPDIRECTORY -ChildPath ([Guid]::NewGuid())
+        $scriptPath = Join-Path -Path $scriptDir -ChildPath 'dotnet-install.ps1'
+        New-Item -Path $scriptDir -ItemType 'Directory' | Out-Null
+        Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile $scriptPath
+        # Install runtimes
+        $dotnetDir = Join-Path -Path $env:AGENT_TEMPDIRECTORY -ChildPath ([Guid]::NewGuid())
+        New-Item -Path $dotnetDir -ItemType 'Directory' | Out-Null
+        # Install x64 runtimes
+        $dotnetX64Dir = Join-Path -Path $dotnetDir -ChildPath 'x64'
+        New-Item -Path $dotnetX64Dir -ItemType 'Directory' | Out-Null
+        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        $dotnetX64Path = Join-Path -Path $dotnetX64Dir -ChildPath 'dotnet.exe' -Resolve
+        # Install x86 runtimes
+        $dotnetX86Dir = Join-Path -Path $dotnetDir -ChildPath 'x86'
+        New-Item -Path $dotnetX86Dir -ItemType 'Directory' | Out-Null
+        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        $dotnetX86Path = Join-Path -Path $dotnetX86Dir -ChildPath 'dotnet.exe' -Resolve
+        # Set job variables
+        Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
+        Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X86;]$dotnetX86Path"
+      displayName: 'Get Dotnet Runtimes'
+
   # When running native tests, include all tests
   # from all folders recursively
   - ${{ if eq('Native', parameters.TestType) }}:
