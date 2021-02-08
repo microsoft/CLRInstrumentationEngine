@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>MultiReturnToSingleReturnMethodTest</Name>
+    <FullName>AddExceptionHandlerTests.Program.MultiReturnToSingleReturnMethodTest</FullName>
+    <ClassID Volatile="True">0x700a5ab0</ClassID>
+    <FunctionID>0x00000001</FunctionID>
+    <MethodToken>0x06000007</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_STRING</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x00 0x0e </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x00002212</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x02 0x0e 0x0e </LocalSignature>
+    <MaxStack>0x00000002</MaxStack>
+    <Instructions><![CDATA[
+IL_0000 ldsfld 0x04000001
+IL_0005 ldc.i4.m1
+IL_0006 bne.un IL_0019
+IL_000b ldstr 0x70000033
+IL_0010 stloc 0x0
+IL_0014 br IL_0027
+IL_0019 ldstr 0x7000002f
+IL_001e stloc 0x0
+IL_0022 br IL_0027
+IL_0027 ldloc 0x0
+IL_002b stloc.1
+IL_002c leave.s IL_0031
+IL_002e pop
+IL_002f leave.s IL_0031
+IL_0031 nop
+IL_0032 ldloc.1
+IL_0033 ret
+    ]]></Instructions>
+    <ExceptionClauses>
+        <ExceptionClause>
+            <Flags>0x00000000</Flags>
+            <FirstTryOffset>0x00000000</FirstTryOffset>
+            <LastTryOffset>0x0000002c</LastTryOffset>
+            <FirstHandlerOffset>0x0000002e</FirstHandlerOffset>
+            <LastHandlerOffset>0x0000002f</LastHandlerOffset>
+            <FilterOffset>0x00000000</FilterOffset>
+            <ExceptionToken>0x01000006</ExceptionToken>
+        </ExceptionClause>
+    </ExceptionClauses>
+    <CorIlMap>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000000</oldOffset>
+            <newOffset>0x00000000</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000005</oldOffset>
+            <newOffset>0x00000005</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000006</oldOffset>
+            <newOffset>0x00000006</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000008</oldOffset>
+            <newOffset>0x0000000b</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000e</oldOffset>
+            <newOffset>0x00000010</newOffset>
+        </CorIlMapEntry>
+    </CorIlMap>
+</InstrumentedMethod>

@@ -9,7 +9,7 @@ jobs:
   displayName: Code Analysis - PoliCheck
 
   pool:
-    name: VSEng-MicroBuildVS2019
+    name: VSEngSS-MicroBuild2019
 
   workspace:
     clean: all

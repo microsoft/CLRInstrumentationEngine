@@ -7,13 +7,14 @@ parameters:
   Platform: AnyCPU
   Analyzer: csharp
   PublishReport: true
+  FileBugs: true
 
 jobs:
 - job: BuildAnalyzer_${{ parameters.Analyzer }}_${{ parameters.Platform }}
   displayName: Run build analyzer (${{ parameters.Analyzer }}, ${{ parameters.Platform }})
 
   pool:
-      name: VSEng-MicroBuildVS2019
+      name: VSEngSS-MicroBuild2019
       demands:
       - msbuild
       - vstest
@@ -51,10 +52,10 @@ jobs:
     - template: ../../steps/codeanalysis/publishreports.yaml
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
-
-  - template: ../../steps/codeanalysis/filebugs.yaml
-    parameters:
-      BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
-      Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+  - ${{ if eq(parameters.FileBugs, true) }}:
+    - template: ../../steps/codeanalysis/filebugs.yaml
+      parameters:
+        BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
+        Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
   - template: ../../steps/microbuild/cleanup.yaml

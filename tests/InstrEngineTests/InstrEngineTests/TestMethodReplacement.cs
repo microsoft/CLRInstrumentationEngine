@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
@@ -17,10 +16,12 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class MethodReplacement
     {
+        private static TestContext Context;
+
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
-            TestParameters.Initialize(context);
+            Context = context;
         }
 
         [Owner("wiktork")]
@@ -67,7 +68,10 @@ namespace InstrEngineTests
             //IL_000e ldloc.0
             //IL_000f ret
 
-            ProfilerHelpers.LaunchAppAndCompareResult("MethodReplacementTests_Release_x64", "Instru_MethodBaselineTest.xml");
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "MethodReplacementTests_Release_x64",
+                "Instru_MethodBaselineTest.xml");
         }
     }
 }

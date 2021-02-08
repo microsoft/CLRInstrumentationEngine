@@ -37,19 +37,19 @@
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
       <Instruction>
-        <Offset>54</Offset>
+        <Offset>52</Offset>
+        <InstrumentationType>Remove</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Offset>57</Offset>
+        <InstrumentationType>Remove</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Offset>58</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
       <Instruction>
         <Offset>59</Offset>
-        <InstrumentationType>Remove</InstrumentationType>
-      </Instruction>
-      <Instruction>
-        <Offset>60</Offset>
-        <InstrumentationType>Remove</InstrumentationType>
-      </Instruction>
-      <Instruction>
-        <Offset>61</Offset>
         <InstrumentationType>Remove</InstrumentationType>
       </Instruction>
     </Instructions>

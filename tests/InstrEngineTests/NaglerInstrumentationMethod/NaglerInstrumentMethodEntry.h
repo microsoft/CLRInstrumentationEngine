@@ -74,7 +74,7 @@ public:
         {
             size_t index = buffer.size();
             buffer.resize(buffer.size() + m_opcodeInfo.m_operandLength);
-            memcpy(&buffer[index], (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
+            memcpy_s(&buffer[index], m_opcodeInfo.m_operandLength, (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
         }
         return S_OK;
     }
@@ -147,20 +147,22 @@ private:
     BOOL m_isReplacement;
     BOOL m_bMakeSingleRetFirst;
     BOOL m_bMakeSingleRetLast;
+    BOOL m_bAddExceptionHandler;
 
     vector<shared_ptr<CInstrumentInstruction>> m_instructions;
     vector<COR_IL_MAP> m_baselineMap;
     vector<CLocalType> m_locals;
     shared_ptr<CInstrumentMethodPointTo> m_pointTo;
 public:
-    CInstrumentMethodEntry(BSTR bstrModuleName, BSTR bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast)
+    CInstrumentMethodEntry(BSTR bstrModuleName, BSTR bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast, BOOL addExceptionHandler)
         : m_pointTo(nullptr),
         m_bstrModuleName(bstrModuleName),
         m_bstrMethodName(bstrMethodName),
         m_bIsRejit(isRejit),
         m_isReplacement(FALSE),
         m_bMakeSingleRetFirst(makeSingleRetFirst),
-        m_bMakeSingleRetLast(makeSingleRetLast)
+        m_bMakeSingleRetLast(makeSingleRetLast),
+        m_bAddExceptionHandler(addExceptionHandler)
     {
     }
 
@@ -238,6 +240,11 @@ public:
     BOOL IsSingleRetLast()
     {
         return m_bMakeSingleRetLast;
+    }
+
+    BOOL IsAddExceptionHandler()
+    {
+        return m_bAddExceptionHandler;
     }
 
     std::shared_ptr<CInstrumentMethodPointTo>& GetPointTo()

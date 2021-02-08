@@ -17,7 +17,7 @@ jobs:
 
   pool:
     ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-      name: VSEng-MicroBuildVS2019
+      name: VSEngSS-MicroBuild2019
       demands:
       - msbuild
       - vstest

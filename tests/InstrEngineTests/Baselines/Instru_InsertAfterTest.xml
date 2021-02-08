@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>Instru_InsertAfterTest</Name>
     <FullName>InstruOperationsTests.Program.Instru_InsertAfterTest</FullName>
-    <ClassID Volatile="True">0xb4615a48</ClassID>
+    <ClassID Volatile="True">0x70085a90</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,50 +19,48 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020b0</CodeRVA>
+    <CodeRVA>0x000020a8</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
-    <LocalSignature>0x07 0x02 0x08 0x08 </LocalSignature>
+    <LocalSignature>0x07 0x01 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
     <Instructions><![CDATA[
-IL_0000 ldsfld 0x4000001
+IL_0000 ldsfld 0x04000001
 IL_0005 nop
 IL_0006 ldc.i4.1
 IL_0007 nop
 IL_0008 add
-IL_0009 stsfld 0x4000001
+IL_0009 stsfld 0x04000001
 IL_000e ldc.i4.5
 IL_000f stloc.0
 IL_0010 ldloc.0
-IL_0011 stloc.1
-IL_0012 ldloc.1
-IL_0013 ldc.i4.1
-IL_0014 sub
-IL_0015 switch (
- IL_0030,
- IL_0030,
- IL_0030,
- IL_003f)
-IL_002a br IL_004d
-IL_002f nop
-IL_0030 ldsfld 0x4000001
-IL_0035 ldc.i4.1
-IL_0036 add
-IL_0037 stsfld 0x4000001
-IL_003c nop
-IL_003d ret
-IL_003e nop
-IL_003f ldsfld 0x4000001
-IL_0044 ldc.i4.2
-IL_0045 add
-IL_0046 stsfld 0x4000001
-IL_004b ret
-IL_004c nop
-IL_004d ldsfld 0x4000001
-IL_0052 ldc.i4.1
-IL_0053 sub
-IL_0054 stsfld 0x4000001
-IL_0059 nop
-IL_005a ret
+IL_0011 ldc.i4.1
+IL_0012 sub
+IL_0013 ldc.i4.2
+IL_0014 ble.un IL_0026
+IL_0019 ldloc.0
+IL_001a ldc.i4.4
+IL_001b beq IL_0035
+IL_0020 br IL_0043
+IL_0025 nop
+IL_0026 ldsfld 0x04000001
+IL_002b ldc.i4.1
+IL_002c add
+IL_002d stsfld 0x04000001
+IL_0032 nop
+IL_0033 ret
+IL_0034 nop
+IL_0035 ldsfld 0x04000001
+IL_003a ldc.i4.2
+IL_003b add
+IL_003c stsfld 0x04000001
+IL_0041 ret
+IL_0042 nop
+IL_0043 ldsfld 0x04000001
+IL_0048 ldc.i4.1
+IL_0049 sub
+IL_004a stsfld 0x04000001
+IL_004f nop
+IL_0050 ret
     ]]></Instructions>
     <ExceptionClauses>
     </ExceptionClauses>
@@ -124,88 +122,98 @@ IL_005a ret
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000013</oldOffset>
-            <newOffset>0x00000015</newOffset>
+            <oldOffset>0x00000014</oldOffset>
+            <newOffset>0x00000019</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000028</oldOffset>
-            <newOffset>0x0000002a</newOffset>
+            <oldOffset>0x00000015</oldOffset>
+            <newOffset>0x0000001a</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000002a</oldOffset>
-            <newOffset>0x0000002f</newOffset>
+            <oldOffset>0x00000016</oldOffset>
+            <newOffset>0x0000001b</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000002f</oldOffset>
-            <newOffset>0x00000035</newOffset>
+            <oldOffset>0x00000018</oldOffset>
+            <newOffset>0x00000020</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000030</oldOffset>
-            <newOffset>0x00000036</newOffset>
+            <oldOffset>0x0000001a</oldOffset>
+            <newOffset>0x00000025</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000031</oldOffset>
-            <newOffset>0x00000037</newOffset>
+            <oldOffset>0x0000001f</oldOffset>
+            <newOffset>0x0000002b</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000036</oldOffset>
+            <oldOffset>0x00000020</oldOffset>
+            <newOffset>0x0000002c</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000021</oldOffset>
+            <newOffset>0x0000002d</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000026</oldOffset>
+            <newOffset>0x00000032</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000027</oldOffset>
+            <newOffset>0x00000034</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002c</oldOffset>
+            <newOffset>0x0000003a</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002d</oldOffset>
+            <newOffset>0x0000003b</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002e</oldOffset>
             <newOffset>0x0000003c</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000037</oldOffset>
-            <newOffset>0x0000003e</newOffset>
+            <oldOffset>0x00000033</oldOffset>
+            <newOffset>0x00000041</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000003c</oldOffset>
-            <newOffset>0x00000044</newOffset>
+            <oldOffset>0x00000034</oldOffset>
+            <newOffset>0x00000042</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000003d</oldOffset>
-            <newOffset>0x00000045</newOffset>
+            <oldOffset>0x00000039</oldOffset>
+            <newOffset>0x00000048</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x0000003e</oldOffset>
-            <newOffset>0x00000046</newOffset>
+            <oldOffset>0x0000003a</oldOffset>
+            <newOffset>0x00000049</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000043</oldOffset>
-            <newOffset>0x0000004b</newOffset>
+            <oldOffset>0x0000003b</oldOffset>
+            <newOffset>0x0000004a</newOffset>
         </CorIlMapEntry>
         <CorIlMapEntry>
             <fAccurate>1</fAccurate>
-            <oldOffset>0x00000044</oldOffset>
-            <newOffset>0x0000004c</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x00000049</oldOffset>
-            <newOffset>0x00000052</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x0000004a</oldOffset>
-            <newOffset>0x00000053</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x0000004b</oldOffset>
-            <newOffset>0x00000054</newOffset>
-        </CorIlMapEntry>
-        <CorIlMapEntry>
-            <fAccurate>1</fAccurate>
-            <oldOffset>0x00000050</oldOffset>
-            <newOffset>0x00000059</newOffset>
+            <oldOffset>0x00000040</oldOffset>
+            <newOffset>0x0000004f</newOffset>
         </CorIlMapEntry>
     </CorIlMap>
 </InstrumentedMethod>

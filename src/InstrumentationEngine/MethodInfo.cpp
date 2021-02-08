@@ -1426,7 +1426,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
         return;
     }
 
-    CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA[\r\n"));
+    CLogging::LogDumpMessage(_T("[TestIgnore]<OriginalInstructions><![CDATA["));
 
     CInstruction* pInstruction = pInstructionGraph->OriginalFirstInstructionInternal();
 
@@ -1436,9 +1436,9 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
         pInstruction = pInstruction->OriginalNextInstructionInternal();
     }
 
-    CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>\r\n"));
+    CLogging::LogDumpMessage(_T("[TestIgnore]]]></OriginalInstructions>"));
 
-    CLogging::LogDumpMessage(_T("    <Instructions><![CDATA[\r\n"));
+    CLogging::LogDumpMessage(_T("    <Instructions><![CDATA["));
 
     pInstruction = pInstructionGraph->FirstInstructionInternal();
 
@@ -1448,7 +1448,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogInstructionGraph(_In_ CInst
         pInstruction = pInstruction->NextInstructionInternal();
     }
 
-    CLogging::LogDumpMessage(_T("    ]]></Instructions>\r\n"));
+    CLogging::LogDumpMessage(_T("    ]]></Instructions>"));
 }
 
 // static
@@ -1459,7 +1459,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogExceptionSection(_In_ CExce
         return;
     }
 
-    CLogging::LogDumpMessage(_T("    <ExceptionClauses>\r\n"));
+    CLogging::LogDumpMessage(_T("    <ExceptionClauses>"));
 
     CComPtr<IEnumExceptionClauses> pEnum;
     pExceptionSection->GetExceptionClauses(&pEnum);
@@ -1519,21 +1519,21 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogExceptionSection(_In_ CExce
         // The token of the type in the catch block
         pExceptionClause->GetExceptionHandlerType(&tokException);
 
-        CLogging::LogDumpMessage(_T("        <ExceptionClause>\r\n"));
-        CLogging::LogDumpMessage(_T("            <Flags>0x%08x</Flags>\r\n"), flags);
-        CLogging::LogDumpMessage(_T("            <FirstTryOffset>0x%08x</FirstTryOffset>\r\n"), offsetFirstTry);
-        CLogging::LogDumpMessage(_T("            <LastTryOffset>0x%08x</LastTryOffset>\r\n"), offsetLastTry);
-        CLogging::LogDumpMessage(_T("            <FirstHandlerOffset>0x%08x</FirstHandlerOffset>\r\n"), offsetFirstHandler);
-        CLogging::LogDumpMessage(_T("            <LastHandlerOffset>0x%08x</LastHandlerOffset>\r\n"), offsetLastHandler);
-        CLogging::LogDumpMessage(_T("            <FilterOffset>0x%08x</FilterOffset>\r\n"), offsetFilter);
-        CLogging::LogDumpMessage(_T("            <ExceptionToken>0x%08x</ExceptionToken>\r\n"), tokException);
-        CLogging::LogDumpMessage(_T("        </ExceptionClause>\r\n"));
+        CLogging::LogDumpMessage(_T("        <ExceptionClause>"));
+        CLogging::LogDumpMessage(_T("            <Flags>0x%08x</Flags>"), flags);
+        CLogging::LogDumpMessage(_T("            <FirstTryOffset>0x%08x</FirstTryOffset>"), offsetFirstTry);
+        CLogging::LogDumpMessage(_T("            <LastTryOffset>0x%08x</LastTryOffset>"), offsetLastTry);
+        CLogging::LogDumpMessage(_T("            <FirstHandlerOffset>0x%08x</FirstHandlerOffset>"), offsetFirstHandler);
+        CLogging::LogDumpMessage(_T("            <LastHandlerOffset>0x%08x</LastHandlerOffset>"), offsetLastHandler);
+        CLogging::LogDumpMessage(_T("            <FilterOffset>0x%08x</FilterOffset>"), offsetFilter);
+        CLogging::LogDumpMessage(_T("            <ExceptionToken>0x%08x</ExceptionToken>"), tokException);
+        CLogging::LogDumpMessage(_T("        </ExceptionClause>"));
 
         pExceptionClause.Release();
         pEnum->Next(1, &pExceptionClause, &cActual);
     }
 
-    CLogging::LogDumpMessage(_T("    </ExceptionClauses>\r\n"));
+    CLogging::LogDumpMessage(_T("    </ExceptionClauses>"));
 }
 
 // static
@@ -1544,18 +1544,18 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogCorIlMap(_In_reads_(dwCorIL
         return;
     }
 
-    CLogging::LogDumpMessage(_T("    <CorIlMap>\r\n"));
+    CLogging::LogDumpMessage(_T("    <CorIlMap>"));
 
     for (DWORD i = 0; i < dwCorILMapmLen; i++)
     {
-        CLogging::LogDumpMessage(_T("        <CorIlMapEntry>\r\n"));
-        CLogging::LogDumpMessage(_T("            <fAccurate>%01d</fAccurate>\r\n"), pCorIlMap[i].fAccurate);
-        CLogging::LogDumpMessage(_T("            <oldOffset>0x%08x</oldOffset>\r\n"), pCorIlMap[i].oldOffset);
-        CLogging::LogDumpMessage(_T("            <newOffset>0x%08x</newOffset>\r\n"), pCorIlMap[i].newOffset);
-        CLogging::LogDumpMessage(_T("        </CorIlMapEntry>\r\n"));
+        CLogging::LogDumpMessage(_T("        <CorIlMapEntry>"));
+        CLogging::LogDumpMessage(_T("            <fAccurate>%01d</fAccurate>"), pCorIlMap[i].fAccurate);
+        CLogging::LogDumpMessage(_T("            <oldOffset>0x%08x</oldOffset>"), pCorIlMap[i].oldOffset);
+        CLogging::LogDumpMessage(_T("            <newOffset>0x%08x</newOffset>"), pCorIlMap[i].newOffset);
+        CLogging::LogDumpMessage(_T("        </CorIlMapEntry>"));
     }
 
-    CLogging::LogDumpMessage(_T("    </CorIlMap>\r\n"));
+    CLogging::LogDumpMessage(_T("    </CorIlMap>"));
 }
 
 // static
@@ -1669,45 +1669,67 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
     DWORD maxStack;
     this->GetMaxStack(&maxStack);
 
-    CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n"));
-    CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>\r\n"), GetCurrentProcessId());
-    CLogging::LogDumpMessage(_T("<InstrumentedMethod>\r\n"));
-    CLogging::LogDumpMessage(_T("    <Name>%s</Name>\r\n"), bstrMethodName.m_str);
-    CLogging::LogDumpMessage(_T("    <FullName>%s</FullName>\r\n"), bstrMethodFullName.m_str);
-    CLogging::LogDumpMessage(_T("    <ClassID Volatile=\"True\">0x%08x</ClassID>\r\n"), classId);
-    CLogging::LogDumpMessage(_T("    <FunctionID>0x%08x</FunctionID>\r\n"), isStatic);
-    CLogging::LogDumpMessage(_T("    <MethodToken>0x%08x</MethodToken>\r\n"), methodToken);
-    CLogging::LogDumpMessage(_T("    <GenericParameterCount>0x%08x</GenericParameterCount>\r\n"), genericParamCount);
-    CLogging::LogDumpMessage(_T("    <IsStatic>%1d</IsStatic>\r\n"), isStatic);
-    CLogging::LogDumpMessage(_T("    <IsPublic>%1d</IsPublic>\r\n"), isPublic);
-    CLogging::LogDumpMessage(_T("    <IsPrivate>%1d</IsPrivate>\r\n"), isPrivate);
-    CLogging::LogDumpMessage(_T("    <IsPropGetter>%1d</IsPropGetter>\r\n"), isPropGetter);
-    CLogging::LogDumpMessage(_T("    <IsPropSetter>%1d</IsPropSetter>\r\n"), isPropSetter);
-    CLogging::LogDumpMessage(_T("    <IsFinalizer>%1d</IsFinalizer>\r\n"), isFinalizer);
-    CLogging::LogDumpMessage(_T("    <IsConstructor>%1d</IsConstructor>\r\n"), isConstructor);
-    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>\r\n"), isConstructor & isStatic);
-    CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>\r\n"), declaringTypeToken);
+    CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>"));
+    CLogging::LogDumpMessage(_T("[TestIgnore]<Pid>%5d</Pid>"), GetCurrentProcessId());
+    CLogging::LogDumpMessage(_T("<InstrumentedMethod>"));
+    CLogging::LogDumpMessage(_T("    <Name>%s</Name>"), bstrMethodName.m_str);
+    CLogging::LogDumpMessage(_T("    <FullName>%s</FullName>"), bstrMethodFullName.m_str);
+    CLogging::LogDumpMessage(_T("    <ClassID Volatile=\"True\">0x%08x</ClassID>"), classId);
+    CLogging::LogDumpMessage(_T("    <FunctionID>0x%08x</FunctionID>"), isStatic);
+    CLogging::LogDumpMessage(_T("    <MethodToken>0x%08x</MethodToken>"), methodToken);
+    CLogging::LogDumpMessage(_T("    <GenericParameterCount>0x%08x</GenericParameterCount>"), genericParamCount);
+    CLogging::LogDumpMessage(_T("    <IsStatic>%1d</IsStatic>"), isStatic);
+    CLogging::LogDumpMessage(_T("    <IsPublic>%1d</IsPublic>"), isPublic);
+    CLogging::LogDumpMessage(_T("    <IsPrivate>%1d</IsPrivate>"), isPrivate);
+    CLogging::LogDumpMessage(_T("    <IsPropGetter>%1d</IsPropGetter>"), isPropGetter);
+    CLogging::LogDumpMessage(_T("    <IsPropSetter>%1d</IsPropSetter>"), isPropSetter);
+    CLogging::LogDumpMessage(_T("    <IsFinalizer>%1d</IsFinalizer>"), isFinalizer);
+    CLogging::LogDumpMessage(_T("    <IsConstructor>%1d</IsConstructor>"), isConstructor);
+    CLogging::LogDumpMessage(_T("    <IsStaticConstructor>%1d</IsStaticConstructor>"), isConstructor & isStatic);
+    CLogging::LogDumpMessage(_T("    <DeclaringTypeToken>0x%08x</DeclaringTypeToken>"), declaringTypeToken);
 
     tstring strRetValType = GetCorElementTypeString(pReturnType);
-    CLogging::LogDumpMessage(_T("    <RetValueCorElementType>%s</RetValueCorElementType>\r\n"), strRetValType.c_str());
-    CLogging::LogDumpMessage(_T("    <RetTypeToken>0x%08x</RetTypeToken>\r\n"), retTypeToken);
+    CLogging::LogDumpMessage(_T("    <RetValueCorElementType>%s</RetValueCorElementType>"), strRetValType.c_str());
+    CLogging::LogDumpMessage(_T("    <RetTypeToken>0x%08x</RetTypeToken>"), retTypeToken);
 
-    CLogging::LogDumpMessage(_T("    <CorSignature>"));
+    const size_t HexByteBufferSize = 6;
+    WCHAR wszHexByteBuffer[HexByteBufferSize];
+
+    tstring strCorSigElement(_T("    <CorSignature>"));
     for (DWORD i = 0; i < cbCorSigActual; i++)
     {
-        CLogging::LogDumpMessage(_T("0x%02x "), pCorSig[i]);
+        ZeroMemory(wszHexByteBuffer, HexByteBufferSize);
+        _snwprintf_s(
+            wszHexByteBuffer,
+            HexByteBufferSize,
+            _TRUNCATE,
+            _T("0x%02x "),
+            pCorSig[i]);
+        strCorSigElement.append(wszHexByteBuffer);
     }
-    CLogging::LogDumpMessage(_T("</CorSignature>\r\n"), retTypeToken);
-    CLogging::LogDumpMessage(_T("    <CorMethodAttr>0x%08x</CorMethodAttr>\r\n"), corMethodAttr);
-    CLogging::LogDumpMessage(_T("    <CodeRVA>0x%08x</CodeRVA>\r\n"), rva);
-    CLogging::LogDumpMessage(_T("    <MethodImpl>0x%08x</MethodImpl>\r\n"), methodImpl);
-    CLogging::LogDumpMessage(_T("    <LocalSignature>"));
+    strCorSigElement.append(_T("</CorSignature>"));
+    CLogging::LogDumpMessage(strCorSigElement.c_str());
+
+    CLogging::LogDumpMessage(_T("    <CorMethodAttr>0x%08x</CorMethodAttr>"), corMethodAttr);
+    CLogging::LogDumpMessage(_T("    <CodeRVA>0x%08x</CodeRVA>"), rva);
+    CLogging::LogDumpMessage(_T("    <MethodImpl>0x%08x</MethodImpl>"), methodImpl);
+
+    tstring strLocalSigElement(_T("    <LocalSignature>"));
     for (DWORD i = 0; i < dwLocalSigCount; i++)
     {
-        CLogging::LogDumpMessage(_T("0x%02x "), pLocalSig[i]);
+        ZeroMemory(wszHexByteBuffer, HexByteBufferSize);
+        _snwprintf_s(
+            wszHexByteBuffer,
+            HexByteBufferSize,
+            _TRUNCATE,
+            _T("0x%02x "),
+            pLocalSig[i]);
+        strLocalSigElement.append(wszHexByteBuffer);
     }
-    CLogging::LogDumpMessage(_T("</LocalSignature>\r\n"));
-    CLogging::LogDumpMessage(_T("    <MaxStack>0x%08x</MaxStack>\r\n"), maxStack);
+    strLocalSigElement.append(_T("</LocalSignature>"));
+    CLogging::LogDumpMessage(strLocalSigElement.c_str());
+
+    CLogging::LogDumpMessage(_T("    <MaxStack>0x%08x</MaxStack>"), maxStack);
 
     if (SUCCEEDED(this->GetInstrumentationResults(&pInstructionGraph, &pExceptionSection, (COR_IL_MAP**)&pCorILMap, &dwCorILMapmLen)))
     {
@@ -1716,7 +1738,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
         LogCorIlMap(pCorILMap, dwCorILMapmLen);
     }
 
-    CLogging::LogDumpMessage(_T("</InstrumentedMethod>\r\n"));
+    CLogging::LogDumpMessage(_T("</InstrumentedMethod>"));
 }
 
 

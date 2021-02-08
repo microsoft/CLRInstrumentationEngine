@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>WhileTest</Name>
     <FullName>BasicManagedTest.Program.WhileTest</FullName>
-    <ClassID Volatile="True">0xd4a03968</ClassID>
+    <ClassID Volatile="True">0x70095a60</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020a8</CodeRVA>
+    <CodeRVA>0x000020a0</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x08 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>
@@ -28,8 +28,8 @@ IL_0000 ldc.i4.0
 IL_0001 stloc.0
 IL_0002 br IL_0017
 IL_0007 ldloca.s 0x0
-IL_0009 call 0xa000004
-IL_000e call 0xa000005
+IL_0009 call 0x0a000004
+IL_000e call 0x0a000005
 IL_0013 ldloc.0
 IL_0014 ldc.i4.1
 IL_0015 add

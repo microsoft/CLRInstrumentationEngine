@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>Instru_RemoveTest</Name>
     <FullName>InstruOperationsTests.Program.Instru_RemoveTest</FullName>
-    <ClassID Volatile="True">0xd4a13998</ClassID>
+    <ClassID Volatile="True">0x70075a90</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000005</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x00002143</CodeRVA>
+    <CodeRVA>0x0000212b</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000000</MaxStack>

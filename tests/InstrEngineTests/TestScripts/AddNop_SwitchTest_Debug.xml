@@ -6,7 +6,7 @@
     <Instructions>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>29</Offset>
+        <Offset>31</Offset>
       </Instruction>
     </Instructions>
   </InstrumentMethod>
