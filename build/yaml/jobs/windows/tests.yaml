@@ -36,9 +36,23 @@ jobs:
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
-  # The UseDotNet task is not sufficient because it will only install the X64 runtimes
-  # whereas the tests require both X64 and X86 since they test different bitnesses.
   - ${{ if eq('Managed', parameters.TestType) }}:
+    # Install dotnet runtimes to allow .NET Core and .NET 5+ based unit tests to run.
+    - task: UseDotNet@2
+      displayName: Install .NET Core 3.1 Runtime
+      inputs:
+        packageType: 'runtime'
+        version: '3.1.x'
+
+    - task: UseDotNet@2
+      displayName: Install .NET 5.0 Runtime
+      inputs:
+        packageType: 'runtime'
+        version: '5.0.x'
+
+    # The UseDotNet task is not sufficient because it will only install the X64 runtimes
+    # whereas the tests require both X64 and X86 since they run the test apps with different,
+    # specified bitnesses.
     - powershell: |
         # Get install script
         $scriptDir = Join-Path -Path $env:AGENT_TEMPDIRECTORY -ChildPath ([Guid]::NewGuid())
@@ -63,7 +77,7 @@ jobs:
         # Set job variables
         Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
         Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X86;]$dotnetX86Path"
-      displayName: 'Get Dotnet Runtimes'
+      displayName: 'Get .NET Runtimes'
 
   # When running native tests, include all tests
   # from all folders recursively
