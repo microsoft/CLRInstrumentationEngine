@@ -24,7 +24,11 @@ namespace InstrEngineTests
     {
         private const string SourceExtension = "cs";
         private const string DynamicallyLinkedLibraryExtension = "dll";
+
+#pragma warning disable CA1823 //Avoid unused private fields
         private const string ExecutableExtension = "exe";
+#pragma warning restore CA1823 //Avoid unused private fields
+
 
 #if NETCOREAPP
         private const string EntryPointAssemblyExtension = DynamicallyLinkedLibraryExtension;

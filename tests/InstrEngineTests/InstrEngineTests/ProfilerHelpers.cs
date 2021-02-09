@@ -383,7 +383,12 @@ namespace InstrEngineTests
         // but the test output files will always have Windows-style.
         private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
+            // Method overload string.Replace(string, string, StringComparison) was introduced in .NET Standard 2.1
+#if NETCOREAPP
             return s?.Replace("\r\n", "\n", StringComparison.Ordinal)?.Trim();
+#else
+            return s?.Replace("\r\n", "\n")?.Trim();
+#endif
         }
 
         private static XmlDocument LoadTestScript(string testScript)
