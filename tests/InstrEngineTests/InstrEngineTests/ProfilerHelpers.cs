@@ -383,7 +383,7 @@ namespace InstrEngineTests
         // but the test output files will always have Windows-style.
         private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
-            return s?.Replace("\r\n", "\n")?.Trim();
+            return s?.Replace("\r\n", "\n", StringComparison.Ordinal)?.Trim();
         }
 
         private static XmlDocument LoadTestScript(string testScript)
