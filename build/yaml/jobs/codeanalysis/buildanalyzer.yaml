@@ -52,10 +52,11 @@ jobs:
     - template: ../../steps/codeanalysis/publishreports.yaml
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
-  - ${{ if eq(parameters.FileBugs, true) }}:
+
     - template: ../../steps/codeanalysis/filebugs.yaml
       parameters:
         BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
         Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+        FileBugs: ${{ parameters.FileBugs }}
 
   - template: ../../steps/microbuild/cleanup.yaml
