@@ -7,7 +7,6 @@ parameters:
   Platform: AnyCPU
   Analyzer: csharp
   PublishReport: true
-  FileBugs: true
 
 jobs:
 - job: BuildAnalyzer_${{ parameters.Analyzer }}_${{ parameters.Platform }}
@@ -57,6 +56,5 @@ jobs:
       parameters:
         BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
         Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
-        FileBugs: ${{ parameters.FileBugs }}
 
   - template: ../../steps/microbuild/cleanup.yaml
