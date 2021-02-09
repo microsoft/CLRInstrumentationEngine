@@ -5,13 +5,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
 {
+#if !NETCOREAPP
     [TestClass]
     [DeploymentItem(PathUtils.BaselinesBinPath, PathUtils.BaselinesBinPath)]
     [DeploymentItem(PathUtils.TestScriptsBinPath, PathUtils.TestScriptsBinPath)]
     [DeploymentItem(PathUtils.InstrumentationEngineX64BinPath)]
     [DeploymentItem(PathUtils.InstrumentationEngineX86BinPath)]
-    [DeploymentItem(PathUtils.InstrumentationConfigX64BinPath)]
-    [DeploymentItem(PathUtils.InstrumentationConfigX86BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationConfigX64BinPath)]
+    [DeploymentItem(PathUtils.NaglerInstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
     public class TestInjectToMscorlib
@@ -44,4 +45,5 @@ namespace InstrEngineTests
                 "InjectToMscorlibTest32.xml");
         }
     }
+#endif
 }

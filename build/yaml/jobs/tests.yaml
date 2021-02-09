@@ -13,6 +13,7 @@ jobs:
 - template: windows/tests.yaml
   parameters:
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    TestType: 'Native'
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
         Debug_x86:
@@ -23,6 +24,13 @@ jobs:
           Configuration: 'Debug'
           Platform: 'x64'
           RunSettingsFile: 'x64.runsettings'
+
+- template: windows/tests.yaml
+  parameters:
+    IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    TestType: 'Managed'
+    MatrixStrategy:
+      ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Debug') )}}:
         Debug_AnyCPU:
           Configuration: 'Debug'
           Platform: 'AnyCPU'
