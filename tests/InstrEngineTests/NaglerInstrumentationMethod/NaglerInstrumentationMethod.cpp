@@ -750,6 +750,9 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
             BOOL bIsRejit = FALSE;
             IfFailRet(pInstrumentMethodEntry->GetIsRejit(&bIsRejit));
 
+            // Only request ReJIT if the method will modify code on ReJIT. On .NET Core, the runtime will
+            // only callback into the profiler for the ReJIT of the method if ReJIT is requested whereas the
+            // appropriate callbacks are made for both JIT and ReJIT on .NET Framework.
             if (bIsRejit)
             {
                 MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spTypeDefEnum(pMetadataImport, nullptr);

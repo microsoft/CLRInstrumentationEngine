@@ -38,6 +38,9 @@ namespace TestAppRunner
             // Create a delegate for the entry point and invoke it. This allows
             // direct invocation of the entry point and avoids putting more frames
             // on the callstack (important for exception tests).
+            // NOTE: All current test app entry points only return void or int. If one is
+            // added that returns Task, then the delegate creation and TestAppRunner entry
+            // point need to be updated to handle async method invocation.
             if (assembly.EntryPoint.ReturnType == typeof(void))
             {
                 Action<string[]> entryPointDelegate = (Action<string[]>)assembly.EntryPoint
