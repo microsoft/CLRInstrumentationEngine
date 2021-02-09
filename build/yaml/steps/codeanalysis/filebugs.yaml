@@ -29,4 +29,4 @@ steps:
     updateDuplicates: true
     updateRules: $(UpdateRules)
   continueOnError: true
-  condition: $[ and( failed(), eq(${{ parameters.FileBugs }}, 'true' ) ]
+  condition: and( failed(), eq(${{ parameters.FileBugs }}, true) )
