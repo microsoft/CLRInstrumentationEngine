@@ -50,8 +50,9 @@
 #include <experimental/filesystem>
 #pragma warning(pop)
 
+#include "../Common.Headers/CriticalSectionHolder.h"
+
 #include "../Common.Lib/Macros.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;

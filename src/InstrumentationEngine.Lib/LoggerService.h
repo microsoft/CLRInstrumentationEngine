@@ -5,9 +5,12 @@
 
 #include "stdafx.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
 #include <fstream>
 #include <sstream>
 #include <queue>
+#pragma warning(pop)
 
 #ifndef PLATFORM_UNIX
 #include <functional>
@@ -17,7 +20,7 @@
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "LoggerSink.h"
 
-#include "../Common.Lib/InitOnce.h"
+#include "../Common.Headers/InitOnce.h"
 
 using namespace CommonLib;
 

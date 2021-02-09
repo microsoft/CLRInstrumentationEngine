@@ -31,7 +31,7 @@ BOOL APIENTRY DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
         if (GetEnvironmentVariable(_T("EnableRefRecording"), nullptr, 0) > 0)
         {
-            recordOptions = MicrosoftInstrumentationEngine::CRefCount::EnableRecorder;
+            recordOptions = CommonLib::CRefCount::EnableRecorder;
         }
 #endif
 

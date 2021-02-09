@@ -6,15 +6,31 @@
 #ifndef __REFCOUNT_H__
 #define __REFCOUNT_H__
 
-namespace MicrosoftInstrumentationEngine
+#pragma warning(push)
+#pragma warning(disable: 4995)
+
+#include <atomic>
+
+// reference count recording is only implemented
+// for Windows for now because there is no debug
+// print on linux.
+#if defined(DEBUG) & defined(_WINDOWS_)
+#include <map>
+#include <array>
+#include <mutex>
+#endif
+
+#pragma warning(pop)
+
+namespace CommonLib
 {
     // ----------------------------------------------------------------------------
     // CRefCount macros
 
-#ifdef DEBUG
+#if defined(DEBUG) & defined(_WINDOWS_)
 
-#define INITIALIZE_REF_RECORDER(dwOptions) MicrosoftInstrumentationEngine::CRefCount::InitRecorder((dwOptions))
-#define TERMINATE_REF_RECORDER MicrosoftInstrumentationEngine::CRefCount::TerminateRecorder()
+#define INITIALIZE_REF_RECORDER(dwOptions) CommonLib::CRefCount::InitRecorder((dwOptions))
+#define TERMINATE_REF_RECORDER CommonLib::CRefCount::TerminateRecorder()
 
 #define DEFINE_REFCOUNT_NAME(cls) m_pszCRefCountClassName = (LPTSTR)_T(#cls)
 
@@ -25,7 +41,7 @@ namespace MicrosoftInstrumentationEngine
 #define RECORD_CREATED(rc)  if (g_fRecordingInitialized)  { RecordCreation(rc); }
 #define RECORD_DESTROY(rc)  if (m_ulcRef > 0 ) { if (g_fRecordingInitialized)  { RecordDestruction(rc); } }
 
-#else // !DEBUG
+#else // !(DEBUG & WINDOWS)
 
 #define INITIALIZE_REF_RECORDER(fOn)
 #define TERMINATE_REF_RECORDER
@@ -39,7 +55,7 @@ namespace MicrosoftInstrumentationEngine
 #define RECORD_CREATED(rc)
 #define RECORD_DESTROY(rc)
 
-#endif // DEBUG
+#endif // DEBUG & WINDOWS
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(a)    (sizeof(a)/sizeof((a)[0]))
@@ -58,12 +74,12 @@ namespace MicrosoftInstrumentationEngine
 }
 
 #define DEFINE_DELEGATED_REFCOUNT_ADDREF(cls) \
-    DEFINE_DELEGATED_METHOD(CRefCount, ULONG, AddRef, (void), ())
+    DEFINE_DELEGATED_METHOD(CommonLib::CRefCount, ULONG, AddRef, (void), ())
 #define DEFINE_DELEGATED_REFCOUNT_RELEASE(cls) \
-    DEFINE_DELEGATED_METHOD(CRefCount, ULONG, Release, (void), ())
+    DEFINE_DELEGATED_METHOD(CommonLib::CRefCount, ULONG, Release, (void), ())
 
-#define DEFINE_DELEGATED_REFCOUNT_ADDREF_DEBUG(cls) STDMETHOD_(ULONG, AddRef)() { ULONG result = CRefCount::AddRef(); VSASSERT(#cls); return result; }
-#define DEFINE_DELEGATED_REFCOUNT_RELEASE_DEBUG(cls) STDMETHOD_(ULONG, Release)() { ULONG result = CRefCount::Release(); VSASSERT(#cls); return result; }
+#define DEFINE_DELEGATED_REFCOUNT_ADDREF_DEBUG(cls) STDMETHOD_(ULONG, AddRef)() { ULONG result = CommonLib::CRefCount::AddRef(); VSASSERT(#cls); return result; }
+#define DEFINE_DELEGATED_REFCOUNT_RELEASE_DEBUG(cls) STDMETHOD_(ULONG, Release)() { ULONG result = CommonLib::CRefCount::Release(); VSASSERT(#cls); return result; }
 
     // ----------------------------------------------------------------------------
     // CRefCount
@@ -91,7 +107,7 @@ namespace MicrosoftInstrumentationEngine
         {
             //VSASSERT(m_ulcRef < ULONG_MAX, L"");
 
-            ULONG ulcRef = (ULONG)(InterlockedIncrement((LPLONG)(&m_ulcRef)));
+            ULONG ulcRef = ++m_ulcRef;
 
             RECORD_ADD_REF(this);
 
@@ -105,7 +121,7 @@ namespace MicrosoftInstrumentationEngine
         {
             //VSASSERT(m_ulcRef > 0, L"");
 
-            ULONG ulcRef = (ULONG)(InterlockedDecrement((LPLONG)(&m_ulcRef)));
+            ULONG ulcRef = --m_ulcRef;
 
             RECORD_RELEASE(this);
 
@@ -123,9 +139,9 @@ namespace MicrosoftInstrumentationEngine
 
         // ref count
     private:
-        ULONG m_ulcRef;
+        std::atomic<uint32_t> m_ulcRef;
 
-#ifdef DEBUG
+#if defined(DEBUG) & defined(_WINDOWS_)
 
         // ------------------------------------------------------------
         // CRefCount recording stuff (for finding leaks)
@@ -138,7 +154,7 @@ namespace MicrosoftInstrumentationEngine
         static DWORD g_dwRecorderOptions;     // Recording is optional.
         static bool g_fRecordingInitialized;
         static class CRefRBMap g_map;
-        static CRITICAL_SECTION g_crst;
+        static std::recursive_mutex g_mutex;
 
         static void RecordAddRef(CRefCount* pRefCount);
         static void RecordRelease(CRefCount* pRefCount);
@@ -156,7 +172,7 @@ namespace MicrosoftInstrumentationEngine
         static void InitRecorder(DWORD dwOptions);
         static void TerminateRecorder(void);
 
-#endif // DEBUG
+#endif // DEBUG & WINDOWS
     };
 
     // ----------------------------------------------------------------------------
@@ -180,21 +196,20 @@ namespace MicrosoftInstrumentationEngine
         static ULONG IncModuleUsage(void)
         {
             //VSASSERT(s_ulcModuleRef < ULONG_MAX, L"");
-
-            return (ULONG)InterlockedIncrement((PLONG)(&s_ulcModuleRef));
+            return ++s_ulcModuleRef;
         }
         static ULONG DecModuleUsage(void)
         {
             // This assert isn't thread-safe but its bug-catching ability is valuable
             // enough to risk a few nuisance alerts.
             //VSASSERT(s_ulcModuleRef > 0, L"");
-            ULONG ulcRef = InterlockedDecrement((PLONG)(&s_ulcModuleRef));
+            ULONG ulcRef = --s_ulcModuleRef;
 
             return ulcRef;
         }
         static ULONG GetModuleUsage(void);
     private:
-        static ULONG s_ulcModuleRef;
+        static std::atomic<uint32_t> s_ulcModuleRef;
     };
 }
 

@@ -87,6 +87,7 @@ target_link_libraries(${PROJECT_NAME}
     ${LINUXPAL}
     ${ATL}
     palrt
+    Common.Lib
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
     corguids

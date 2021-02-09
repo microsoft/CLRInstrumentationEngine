@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "refcount.h"
 #include "Instruction.h"
 #include "BranchTargetInfo.h"
 

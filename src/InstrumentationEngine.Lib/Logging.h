@@ -3,15 +3,18 @@
 
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
 #include <atomic>
 #include <sstream>
+#pragma warning(pop)
 
 #include "../InstrumentationEngine.Api/InstrumentationEngine.h"
 #include "LoggerService.h"
 
-#include "../Common.Lib/tstring.h"
-#include "../Common.Lib/InitOnce.h"
-#include "../Common.Lib/Singleton.h"
+#include "../Common.Headers/tstring.h"
+#include "../Common.Headers/InitOnce.h"
+#include "../Common.Headers/Singleton.h"
 
 // CLogging uses *wprintf* methods for formatting strings.
 #ifdef PLATFORM_UNIX

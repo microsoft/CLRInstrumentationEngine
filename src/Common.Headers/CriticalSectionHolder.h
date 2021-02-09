@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "stdafx.h"
-
 namespace CommonLib
 {
     class CCriticalSectionHolder

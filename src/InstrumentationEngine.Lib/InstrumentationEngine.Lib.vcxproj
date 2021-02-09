@@ -113,7 +113,6 @@
     <ClInclude Include="HostLoggerSink.h" />
     <ClInclude Include="RawProfilerHookLoader.h" />
     <ClInclude Include="RawProfilerHookSettingsReader.h" />
-    <ClInclude Include="refcount.h" />
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
     <ClInclude Include="stdafx.h" />
@@ -141,7 +140,6 @@
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="RawProfilerHookLoader.cpp" />
     <ClCompile Include="RawProfilerHookSettingsReader.cpp" />
-    <ClCompile Include="refcount.cpp" />
     <ClCompile Include="SignatureValidator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
