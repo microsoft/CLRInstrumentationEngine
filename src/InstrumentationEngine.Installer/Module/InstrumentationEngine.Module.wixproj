@@ -7,7 +7,7 @@
     <TargetExt>.msm</TargetExt>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
-  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
+  <Import Project="$(EnlistmentRoot)\build\MicroBuild.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
@@ -29,5 +29,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
-  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.targets')" />
+  <Import Project="$(EnlistmentRoot)\build\MicroBuild.targets" />
 </Project>

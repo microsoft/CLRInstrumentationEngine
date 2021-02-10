@@ -2,9 +2,9 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Common.Props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
-  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
-  <Import Project="Managed.Signing.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Common.props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
+  <Import Project="$(MSBuildThisFileDirectory)MicroBuild.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Managed.Signing.props" />
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,4 +21,9 @@
   <PropertyGroup>
     <DefineConstants Condition="'$(PublicRelease)' != 'True'">$(DefineConstants);ALLOWNOTSIGNED</DefineConstants>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <UseDotNetSdk Condition="'$(UseDotNetSdk)' == ''">true</UseDotNetSdk>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="'$(UseDotNetSdk)' == 'true'" />
 </Project>
