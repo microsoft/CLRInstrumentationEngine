@@ -4,12 +4,6 @@
 # Step Template: Install v5 of dotnet.core
 
 steps:
-  # Delete previous versions of dotnet
-  - task: CmdLine@2
-    inputs:
-      script: |
-        rm -rf $(Agent.ToolsDirectory)/dotnet
-
   - task: UseDotNet@2
     displayName: "Installing .NET Core - ${{ parameters.version }}"
     inputs:
