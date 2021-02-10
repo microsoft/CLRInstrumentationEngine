@@ -36,6 +36,7 @@ jobs:
   - ${{ if eq(parameters.Analyzer, 'csharp') }}:
     - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Managed"
       displayName: Set Configuration for Managed Code
+    - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
