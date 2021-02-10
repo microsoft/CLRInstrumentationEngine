@@ -41,14 +41,13 @@ namespace InstrEngineTests
         private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "CORECLR_PROFILER";
         private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
+        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
 #else
         private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "COR_PROFILER";
         private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
 #endif
-
-        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
-        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
 
         #endregion
 
