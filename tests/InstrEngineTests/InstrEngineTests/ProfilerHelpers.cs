@@ -41,14 +41,13 @@ namespace InstrEngineTests
         private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "CORECLR_PROFILER";
         private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
+        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
 #else
         private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "COR_PROFILER";
         private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
 #endif
-
-        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
-        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
 
         #endregion
 
@@ -398,7 +397,12 @@ namespace InstrEngineTests
         // but the test output files will always have Windows-style.
         private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
+            // Method overload string.Replace(string, string, StringComparison) was introduced in .NET Standard 2.1
+#if NETCOREAPP
+            return s?.Replace("\r\n", "\n", StringComparison.Ordinal)?.Trim();
+#else
             return s?.Replace("\r\n", "\n")?.Trim();
+#endif
         }
 
         private static XmlDocument LoadTestScript(string testScript)

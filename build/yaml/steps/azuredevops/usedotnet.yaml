@@ -1,0 +1,11 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Install v5 of dotnet.core
+
+steps:
+  - task: UseDotNet@2
+    displayName: "Installing .NET Core - ${{ parameters.version }}"
+    inputs:
+      packageType: sdk
+      version: 5.0.x # Use LTS: https://dotnet.microsoft.com/platform/support/policy/dotnet-core

@@ -7,7 +7,6 @@ parameters:
   Platform: AnyCPU
   Analyzer: csharp
   PublishReport: true
-  FileBugs: true
 
 jobs:
 - job: BuildAnalyzer_${{ parameters.Analyzer }}_${{ parameters.Platform }}
@@ -37,6 +36,7 @@ jobs:
   - ${{ if eq(parameters.Analyzer, 'csharp') }}:
     - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Managed"
       displayName: Set Configuration for Managed Code
+    - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
@@ -52,7 +52,7 @@ jobs:
     - template: ../../steps/codeanalysis/publishreports.yaml
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
-  - ${{ if eq(parameters.FileBugs, true) }}:
+
     - template: ../../steps/codeanalysis/filebugs.yaml
       parameters:
         BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
