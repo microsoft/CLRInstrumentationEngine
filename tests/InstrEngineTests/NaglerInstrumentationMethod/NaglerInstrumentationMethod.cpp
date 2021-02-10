@@ -747,21 +747,29 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
             CComPtr<IMetaDataImport2> pMetadataImport;
             IfFailRet(pModuleInfo->GetMetaDataImport((IUnknown**)&pMetadataImport));
 
+            BOOL bIsRejit = FALSE;
+            IfFailRet(pInstrumentMethodEntry->GetIsRejit(&bIsRejit));
 
-            MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spTypeDefEnum(pMetadataImport, nullptr);
-            mdTypeDef typeDef = mdTypeDefNil;
-            ULONG cTokens = 0;
-            while (S_OK == (hr = pMetadataImport->EnumTypeDefs(spTypeDefEnum.Get(), &typeDef, 1, &cTokens)))
+            // Only request ReJIT if the method will modify code on ReJIT. On .NET Core, the runtime will
+            // only callback into the profiler for the ReJIT of the method if ReJIT is requested whereas the
+            // appropriate callbacks are made for both JIT and ReJIT on .NET Framework.
+            if (bIsRejit)
             {
-                MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
-                mdToken methodDefs[16];
-                ULONG cMethod = 0;
-                pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, bstrMethodName, methodDefs, _countof(methodDefs), &cMethod);
-
-                if (cMethod > 0)
+                MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spTypeDefEnum(pMetadataImport, nullptr);
+                mdTypeDef typeDef = mdTypeDefNil;
+                ULONG cTokens = 0;
+                while (S_OK == (hr = pMetadataImport->EnumTypeDefs(spTypeDefEnum.Get(), &typeDef, 1, &cTokens)))
                 {
-                    pModuleInfo->RequestRejit(methodDefs[0]);
-                    break;
+                    MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
+                    mdToken methodDefs[16];
+                    ULONG cMethod = 0;
+                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, bstrMethodName, methodDefs, _countof(methodDefs), &cMethod);
+
+                    if (cMethod > 0)
+                    {
+                        pModuleInfo->RequestRejit(methodDefs[0]);
+                        break;
+                    }
                 }
             }
         }
@@ -1612,10 +1620,25 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CComBSTR bstrMethodName;
     IfFailRet(pMethodInfo->GetName(&bstrMethodName));
 
+    CComPtr<IModuleInfo> pModuleInfo;
+    IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+
+    CComBSTR bstrModuleName;
+    IfFailRet(pModuleInfo->GetModuleName(&bstrModuleName));
+
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
-    tstring strMessage(_T("        <MethodName>"));
+    tstring strMessage;
+    // Add [TestIgnore] for the TestAppRunner. This module is used for bootstrapping
+    // .NET Core test assemblies and is not intended to be used in test baselines.
+    if (wcscmp(bstrModuleName, _T("TestAppRunner.dll")) == 0)
+    {
+        strMessage.append(_T("[TestIgnore]"));
+    }
+    strMessage.append(_T("        <MethodName>"));
+    strMessage.append(bstrModuleName);
+    strMessage.append(_T("!"));
     strMessage.append(bstrMethodName);
     strMessage.append(_T("</MethodName>"));
 
@@ -1623,8 +1646,6 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
 
     // verify other code paths that don't contribute to actual baseline
     // This is just to get coverage on althernative code paths to obtain method infos
-    CComPtr<IModuleInfo> pModuleInfo;
-    IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
     mdToken methodToken;
     IfFailRet(pMethodInfo->GetMethodToken(&methodToken));
 

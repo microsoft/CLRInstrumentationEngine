@@ -46,7 +46,7 @@ namespace CompiledCode
         private static void CallCompiledAssembly()
         {
             string assemblyPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                 "DynamicCodeAssembly.dll");
 
             using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
