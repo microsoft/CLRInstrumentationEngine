@@ -10,10 +10,14 @@
     <owners>$authors$</owners>
     <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
     <license type="file">$licenseFile$</license>
-    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <icon>icon.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>NuGet package for the Microsoft Instrumentation Engine Headers.</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>native</tags>
+    <dependencies>
+      <group targetFramework="native0.0" />
+    </dependencies>
   </metadata>
   <files>
     <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
@@ -27,5 +31,8 @@
 
     <!-- Licensing -->
     <file src="$enlistmentroot$\$licenseFile$*" target="" />
+
+    <!-- Icon -->
+    <file src="$enlistmentroot$\src\SharedNuGetAssets\icon.png" target="" />
   </files>
 </package>

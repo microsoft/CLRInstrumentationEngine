@@ -23,6 +23,8 @@
     <TargetFramework>net461</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- CS2008: Project is used for restoring NuGet packages only. -->
+    <NoWarn>CS2008</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(LegacyApplicationInsightsAgentInterceptVersion)">

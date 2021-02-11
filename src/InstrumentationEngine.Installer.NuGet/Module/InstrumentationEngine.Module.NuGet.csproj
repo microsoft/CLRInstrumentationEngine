@@ -26,7 +26,8 @@
     <ProjectGuid>{59CC768D-2E07-4FD9-8013-2EBC3898FEED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.InstrumentationEngine.Module</RootNamespace>
-    <NoWarn>2008</NoWarn>
+    <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
+    <NoWarn>CS2008</NoWarn>
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>

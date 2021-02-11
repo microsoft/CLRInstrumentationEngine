@@ -17,7 +17,7 @@ steps:
   displayName: 'Build solution InstrumentationEngine.Packages.sln $(Platform)'
   inputs:
     solution: src/InstrumentationEngine.Packages.sln
-    msbuildVersion: 15.0
+    msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)
     msbuildArguments: /p:InputBinCfgRoot="${{ parameters.WindowsBinRoot }}"
