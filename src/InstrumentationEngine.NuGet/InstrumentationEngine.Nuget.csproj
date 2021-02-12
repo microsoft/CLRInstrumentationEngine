@@ -29,7 +29,7 @@
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
     <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
     <!-- NU5100: Package is used as a means to acquire the engine and not to have its assets referenced directly. -->
-    <NoWarn>CS2008;NU5100</NoWarn>
+    <NoWarn>2008;NU5100</NoWarn>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>

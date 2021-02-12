@@ -24,7 +24,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- CS2008: Project is used for restoring NuGet packages only. -->
-    <NoWarn>CS2008</NoWarn>
+    <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <Choose>
     <When Condition="!$([MSBuild]::IsOsPlatform('Windows'))">

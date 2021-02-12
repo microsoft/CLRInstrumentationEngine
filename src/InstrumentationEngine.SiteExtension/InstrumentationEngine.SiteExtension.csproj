@@ -20,7 +20,7 @@
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
-    <NoWarn>CS2008</NoWarn>
+    <NoWarn>2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>

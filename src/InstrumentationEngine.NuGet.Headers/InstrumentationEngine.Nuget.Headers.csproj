@@ -26,7 +26,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</RootNamespace>
     <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
-    <NoWarn>CS2008</NoWarn>
+    <NoWarn>2008</NoWarn>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
