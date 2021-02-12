@@ -10,6 +10,5 @@ steps:
     continueOnError: true
     rulesetName: Custom
     msBuildArchitecture: x86
-    customRuleset: DevDivRoslynRequired.ruleset
+    customRuleset: $(Build.SourcesDirectory)\build\rulesets\CodeAnalysis.ruleset
     msBuildCommandline: msbuild $(Build.SourcesDirectory)\InstrumentationEngine.sln /p:Platform="$(Platform)" /p:Configuration=$(Configuration)
-    suppressionFileForCompilerWarnings: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\csharpsuppressions.txt

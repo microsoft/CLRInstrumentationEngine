@@ -23,6 +23,18 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <CodeAnalysisRuleset>$(MSBuildThisFileDirectory)rulesets\CodeAnalysis.ruleset</CodeAnalysisRuleset>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
     <UseDotNetSdk Condition="'$(UseDotNetSdk)' == ''">true</UseDotNetSdk>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="'$(UseDotNetSdk)' == 'true'" />

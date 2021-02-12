@@ -4,6 +4,8 @@
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 
 namespace Microsoft.InstrumentationEngine
@@ -16,6 +18,10 @@ namespace Microsoft.InstrumentationEngine
                 .AddCommand(AttachCommandHandler.GetCommand())
                 .UseDefaults()
                 .Build();
+
+            var stream = new MemoryStream();
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Deserialize(stream);
 
             return parser.InvokeAsync(args);
         }

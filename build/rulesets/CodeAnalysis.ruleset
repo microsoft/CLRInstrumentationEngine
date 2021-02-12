@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="CLRIE Ruleset"
+         Description="CLRIE Ruleset"
+         ToolsVersion="16.0">
+    <!-- Baseline ruleset -->
+    <Include Path="DevDivRoslynRequired.ruleset" Action="Default" />
+</RuleSet>
