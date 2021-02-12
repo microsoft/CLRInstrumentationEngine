@@ -25,8 +25,8 @@
     <ProjectGuid>{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet.Headers</RootNamespace>
-    <NoWarn>2008</NoWarn>
-
+    <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
+    <NoWarn>CS2008</NoWarn>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
