@@ -18,7 +18,7 @@
 #include "../Common.Headers/InitOnce.h"
 #include "../Common.Headers/Singleton.h"
 #include "../Common.Headers/SafeFindFileHandle.h"
-#include "..//Common.Headers/banned.h"
+#include "../Common.Headers/banned.h"
 
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/EventLoggingBase.h"
