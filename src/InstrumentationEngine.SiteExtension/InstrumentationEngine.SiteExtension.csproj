@@ -19,6 +19,8 @@
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
+    <NoWarn>CS2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -45,8 +47,7 @@
   <!-- Common Files -->
   <ItemGroup>
     <!-- Tools -->
-    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*"
-                           Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*" Exclude="$(InputBinCfgRoot)\AnyCPU\Tools\Attach\*.pdb">
       <RootPath>Tools\Attach</RootPath>
     </SiteExtensionContents>
     <!-- Instrumentationx86Files -->

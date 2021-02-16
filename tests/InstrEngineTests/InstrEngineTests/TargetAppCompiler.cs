@@ -24,11 +24,11 @@ namespace InstrEngineTests
     {
         private const string SourceExtension = "cs";
         private const string DynamicallyLinkedLibraryExtension = "dll";
-        private const string ExecutableExtension = "exe";
 
 #if NETCOREAPP
         private const string EntryPointAssemblyExtension = DynamicallyLinkedLibraryExtension;
 #else
+        private const string ExecutableExtension = "exe";
         private const string EntryPointAssemblyExtension = ExecutableExtension;
 #endif
 

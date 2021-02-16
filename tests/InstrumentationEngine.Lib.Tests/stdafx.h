@@ -45,7 +45,10 @@
 #include "Logging.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
 #include <experimental/filesystem>
+#pragma warning(pop)
 
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/CriticalSectionHolder.h"

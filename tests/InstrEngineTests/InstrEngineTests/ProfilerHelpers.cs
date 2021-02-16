@@ -37,6 +37,18 @@ namespace InstrEngineTests
         private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath";
         private const string IsRejitEnvName = "Nagler_IsRejit";
 
+#if NETCOREAPP
+        private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "CORECLR_PROFILER";
+        private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
+        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
+#else
+        private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "COR_PROFILER";
+        private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
+#endif
+
         #endregion
 
         public const int TestAppTimeoutMs = 10000;
@@ -51,16 +63,6 @@ namespace InstrEngineTests
 
         // Enable ref recording to track down memory leaks. For debug only.
         private static bool EnableRefRecording = false;
-
-#if NETCOREAPP
-        private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
-        private const string ProfilerEnvVarName = "CORECLR_PROFILER";
-        private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
-#else
-        private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
-        private const string ProfilerEnvVarName = "COR_PROFILER";
-        private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
-#endif
 
         public static void LaunchAppAndCompareResult(TestParameters parameters, string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
@@ -182,17 +184,29 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputFileEnvName, outputPath);
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
-            string appPath = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+            string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
 #if NETCOREAPP
-            string hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "dotnet.exe");
-            if (is32bitTest)
+            string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
+            string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
+            if (string.IsNullOrEmpty(hostPath))
             {
-                hostPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "dotnet", "dotnet.exe");
+                Environment.SpecialFolder programFilesFolder = is32bitTest ?
+                    Environment.SpecialFolder.ProgramFilesX86 :
+                    Environment.SpecialFolder.ProgramFiles;
+
+                hostPath = Path.Combine(Environment.GetFolderPath(programFilesFolder), "dotnet", "dotnet.exe");
             }
+            Assert.IsTrue(File.Exists(hostPath), "dotnet.exe path '{0}' does not exist.", hostPath);
+
+            // The compiled test apps cannot be run directly by dotnet.exe because they are missing
+            // the *.runtimeconfig.json files that contain framework version and dependency information.
+            // Use a pre-compiled executable to bootstrap executing these assemblies.
+            string runnerPath = Path.Combine(PathUtils.GetAssetsPath(), "TestAppRunner.dll");
+
             psi.FileName = hostPath;
-            psi.Arguments = $"{appPath}.dll {args}";
+            psi.Arguments = $"\"{runnerPath}\" \"{appPathWithoutExtension}.dll\" {args}";
 #else
-            psi.FileName = $"{appPath}.exe";
+            psi.FileName = $"{appPathWithoutExtension}.exe";
             psi.Arguments = args;
 #endif
 
@@ -383,7 +397,12 @@ namespace InstrEngineTests
         // but the test output files will always have Windows-style.
         private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
+            // Method overload string.Replace(string, string, StringComparison) was introduced in .NET Standard 2.1
+#if NETCOREAPP
+            return s?.Replace("\r\n", "\n", StringComparison.Ordinal)?.Trim();
+#else
             return s?.Replace("\r\n", "\n")?.Trim();
+#endif
         }
 
         private static XmlDocument LoadTestScript(string testScript)

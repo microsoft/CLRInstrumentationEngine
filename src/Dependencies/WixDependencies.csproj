@@ -23,10 +23,14 @@
     <TargetFramework>net461</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- CS2008: Project is used for restoring NuGet packages only. -->
+    <NoWarn>CS2008</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Wix" Version="$(WixVersion)" />
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />

@@ -10,7 +10,7 @@
     <owners>$authors$</owners>
     <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
     <license type="file">$licenseFile$</license>
-    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <icon>icon.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Microsoft Instrumentation Engine Package containing the MergeModule</description>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
@@ -20,5 +20,8 @@
 
     <!-- Licensing -->
     <file src="$enlistmentroot$\$licenseFile$*" target="" />
+
+    <!-- Icon -->
+    <file src="$enlistmentroot$\src\SharedNuGetAssets\icon.png" target="" />
   </files>
 </package>
