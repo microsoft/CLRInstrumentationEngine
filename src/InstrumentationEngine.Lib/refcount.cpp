@@ -219,7 +219,7 @@ namespace MicrosoftInstrumentationEngine
     // ----------------------------------------------------------------------------
     // CModuleRefCount
 
-    ULONG CModuleRefCount::s_ulcModuleRef = 0;
+    volatile ULONG CModuleRefCount::s_ulcModuleRef = 0;
 
     // ----------------------------------------------------------------------------
     // module ref count support

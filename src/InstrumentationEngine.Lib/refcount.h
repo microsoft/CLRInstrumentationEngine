@@ -194,7 +194,7 @@ namespace MicrosoftInstrumentationEngine
         }
         static ULONG GetModuleUsage(void);
     private:
-        static ULONG s_ulcModuleRef;
+        static volatile ULONG s_ulcModuleRef;
     };
 }
 
