@@ -4,10 +4,6 @@
 #include "stdafx.h"
 
 #include "refcount.h"
-// TODO:
-// Clean this up. It was pulled from Debugger\inc and Debugger\common in order to get leak detection on
-// ref counted objects. I didn't just use the compiled lib becase it isn't clear to me where this code
-// is eventually going to live and if it turns out to be on a CDM server, the debugger lib won't exist.
 
 namespace CommonLib
 {
