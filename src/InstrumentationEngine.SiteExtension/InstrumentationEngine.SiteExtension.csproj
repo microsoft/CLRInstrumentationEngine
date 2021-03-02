@@ -6,8 +6,6 @@
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <Title>InstrumentationEngine</Title>
@@ -19,8 +17,6 @@
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <!-- CS2008: Project is used for packaging only and does not produce its own assembly. -->
-    <NoWarn>CS2008</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -78,4 +74,6 @@
     </SiteExtensionContents>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\SiteExtensions.targets" />
+  <!-- Project does not compile assembly; override to avoid CS2008. -->
+  <Target Name="Compile" />
 </Project>
