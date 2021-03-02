@@ -233,3 +233,16 @@ void CLogging::XmlDumpHelper::WriteUlongNode(const WCHAR* name, const ULONG32 va
 
     m_result << m_childrenIndent << _T('<') << name << _T('>') << hex << setw(10) << value << _T("</") << name << _T('>') << _T("\r\n");
 }
+
+// Implemenation of Assert functions found in Macros.h
+void AssertLogFailure(_In_ const WCHAR* wszError, ...)
+{
+    LoggingFlags flag;
+    if (SUCCEEDED(CLogging::GetLoggingFlags(&flag)) && (flag & LoggingFlags_Errors) != 0)
+    {
+        va_list argptr;
+        va_start(argptr, wszError);
+        CLogging::VLogError(wszError, argptr);
+        va_end(argptr);
+    }
+}

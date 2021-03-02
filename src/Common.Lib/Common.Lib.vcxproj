@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">X86;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -92,24 +92,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="banned.h" />
-    <ClInclude Include="CriticalSectionHolder.h" />
     <ClInclude Include="EventLoggingBase.h" />
-    <ClInclude Include="InitOnce.h" />
-    <ClInclude Include="Macros.h" />
     <ClInclude Include="ModuleHandle.h" />
     <ClInclude Include="ModuleUtils.h" />
     <ClInclude Include="PathUtils.h" />
-    <ClInclude Include="SafeFindFileHandle.h" />
-    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="tstring.h" />
+    <ClInclude Include="refcount.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EventLoggingBase.cpp" />
     <ClCompile Include="ModuleHandle.cpp" />
     <ClCompile Include="ModuleUtils.cpp" />
     <ClCompile Include="PathUtils.cpp" />
+    <ClCompile Include="refcount.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

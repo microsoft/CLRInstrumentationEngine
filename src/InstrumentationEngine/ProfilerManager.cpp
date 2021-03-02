@@ -21,9 +21,9 @@
 #include "RawProfilerHookSettingsReader.h"
 #include "../Common.Lib/PathUtils.h"
 #endif
-#include "../InstrumentationEngine.Lib/Encoding.h"
+#include "StringUtils.h"
+#include "Encoding.h"
 #include <algorithm>
-#include <XmlDocWrapper.h>
 
 using namespace ATL;
 

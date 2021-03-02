@@ -2,7 +2,11 @@
 // Licensed under the MIT License.
 
 #pragma once
-
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
+#include <string>
+#include <sstream>
+#pragma warning(pop)
 namespace CommonLib
 {
     class PathUtils

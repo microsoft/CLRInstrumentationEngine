@@ -54,7 +54,7 @@
       <Project>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <Name>..\Dependencies\NativeDependencies.csproj</Name>
+      <Name>NativeDependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

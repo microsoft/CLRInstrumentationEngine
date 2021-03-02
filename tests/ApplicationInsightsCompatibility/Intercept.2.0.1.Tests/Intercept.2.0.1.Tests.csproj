@@ -52,7 +52,7 @@
       <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <Name>..\Dependencies\LegacyDependencies.csproj</Name>
+      <Name>LegacyDependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

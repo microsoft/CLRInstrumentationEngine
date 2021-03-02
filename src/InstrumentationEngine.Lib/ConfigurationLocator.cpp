@@ -4,9 +4,9 @@
 #include "stdafx.h"
 #include "ConfigurationLocator.h"
 #ifndef PLATFORM_UNIX
-#include "../Common.Lib/ModuleUtils.h"
 #include "../Common.Lib/PathUtils.h"
-#include "../Common.Lib/SafeFindFileHandle.h"
+#include "../Common.Lib/ModuleUtils.h"
+#include "../Common.Headers/SafeFindFileHandle.h"
 #endif
 
 using namespace CommonLib;

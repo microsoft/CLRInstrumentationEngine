@@ -46,6 +46,7 @@ using namespace ATL;
 #include <clrprofiler.h>
 #include <sal.h>
 
+// TODO: We should use the CommonLib xml doc wrapper instead.
 #ifndef PLATFORM_UNIX
 #include <msxml6.h>
 #include <Pathcch.h>
@@ -53,7 +54,6 @@ using namespace ATL;
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #endif
-
 
 #ifdef PLATFORM_UNIX
 #include <string>
@@ -68,6 +68,8 @@ using namespace ATL;
 #define wcsnlen_s     PAL_wcsnlen_s
 #endif
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
 #include <queue>
 #include <vector>
 #include <memory>
@@ -91,18 +93,20 @@ using namespace ATL;
 
 #include <functional>
 
+#pragma warning(pop)
+
 #include "Logging.h"
 #include "ImplQueryInterface.h"
-#include "refcount.h"
+#include "../Common.Lib/refcount.h"
 #include "SharedArray.h"
 
-#include "../Common.Lib/tstring.h"
+#include "../Common.Headers/tstring.h"
 #include "../Common.Lib/Macros.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
-#include "../Common.Lib/InitOnce.h"
-#include "../Common.Lib/Singleton.h"
+#include "../Common.Headers/CriticalSectionHolder.h"
+#include "../Common.Headers/InitOnce.h"
+#include "../Common.Headers/Singleton.h"
 
-#include "../Common.Lib/banned.h"
+#include "../Common.Headers/banned.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;

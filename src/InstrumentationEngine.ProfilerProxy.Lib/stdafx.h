@@ -13,12 +13,12 @@
     do { errno_t ifFailRetErrno_result = EXPR; IfFailRet_Proxy(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
 #endif
 
-#include "../Common.Lib/tstring.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
-#include "../Common.Lib/InitOnce.h"
-#include "../Common.Lib/Singleton.h"
+#include "../Common.Headers/tstring.h"
+#include "../Common.Headers/CriticalSectionHolder.h"
+#include "../Common.Headers/InitOnce.h"
+#include "../Common.Headers/Singleton.h"
+#include "../Common.Headers/SafeFindFileHandle.h"
+#include "../Common.Headers/banned.h"
+
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/EventLoggingBase.h"
-#include "../Common.Lib/SafeFindFileHandle.h"
-
-#include "..//Common.Lib/banned.h"

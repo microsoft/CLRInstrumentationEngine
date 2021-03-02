@@ -69,8 +69,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Attac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAppRunner", "tests\InstrEngineTests\TestAppRunner\TestAppRunner.csproj", "{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common.Headers", "src\Common.Headers\Common.Headers.vcxitems", "{0D4A6CAA-80D9-4E41-859F-C14205FD45C4}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Common.Headers\Common.Headers.vcxitems*{0d4a6caa-80d9-4e41-859f-c14205fd45c4}*SharedItemsImports = 9
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{c1aaa703-5e32-45c0-a69d-f46d1c659ae4}*SharedItemsImports = 13
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{e4d25b2c-e362-4660-a2fd-ada2b7c1fd77}*SharedItemsImports = 4
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{ead25b2c-e362-4660-a2fd-ad82b7c1fd77}*SharedItemsImports = 4

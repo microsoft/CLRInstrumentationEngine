@@ -11,8 +11,8 @@
 #include <queue>
 #pragma warning(pop)
 
-#include "tstring.h"
-#include "CriticalSectionHolder.h"
+#include "../Common.Headers/tstring.h"
+#include "../Common.Headers/CriticalSectionHolder.h"
 
 namespace CommonLib
 {

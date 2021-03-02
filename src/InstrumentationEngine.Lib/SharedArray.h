@@ -4,7 +4,10 @@
 #pragma once
 
 #include <type_traits>
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
 #include <atomic>
+#pragma warning(pop)
 
 namespace MicrosoftInstrumentationEngine
 {
