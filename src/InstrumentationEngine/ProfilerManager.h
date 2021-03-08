@@ -121,6 +121,15 @@ namespace MicrosoftInstrumentationEngine
         // caching the qi results.
         class CProfilerCallbackHolder
         {
+            // !!! Do NOT reference these fields directly !!!
+            // The CLR allows real-world profilers to return just the highest ICorProfilerCallback version in their QI
+            // which can cause nullptrs to appear when casting to a CComPTR of a different interface:
+            //
+            //    // This code will implicitly QI the raw profiler for ICorProfilerCallback.
+            //    CComPtr<ICorProfilerCallback> a = CProfilerCallbackHolder.m_CorProfilerCallback2;
+            //
+            // You should instead call GetMemberForInterface which will return the field matching the
+            // interface. The fields are populated via interface inheritance in order to match the CLR contract (see AddRawProfilerHook()).
         public:
             CComPtr<ICorProfilerCallback> m_CorProfilerCallback;
             CComPtr<ICorProfilerCallback2> m_CorProfilerCallback2;
@@ -130,6 +139,7 @@ namespace MicrosoftInstrumentationEngine
             CComPtr<ICorProfilerCallback6> m_CorProfilerCallback6;
             CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
 
+        public:
             IUnknown* GetMemberForInterface(REFGUID guidInterface)
             {
                 if (guidInterface == __uuidof(ICorProfilerCallback))
@@ -380,7 +390,7 @@ namespace MicrosoftInstrumentationEngine
 
             if (pProfilerCallbackHolder != nullptr)
             {
-                pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+                pCallback = (TInterfaceType*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
             }
 
             if (pCallback != nullptr)
