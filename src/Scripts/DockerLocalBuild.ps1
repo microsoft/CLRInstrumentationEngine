@@ -30,6 +30,9 @@ param
     [String] $Type="Debug",
 
     [Parameter()]
+    [Switch] $Interactive,
+
+    [Parameter()]
     [Switch] $CreateSemaphore,
 
     [Parameter()]
@@ -69,7 +72,11 @@ else
     $EnlistmentMountPath = $EnlistmentRoot
 }
 
-if (-not $CreateSemaphore)
+if ($Interactive)
+{
+    docker run --rm -ti --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host -w "/root/ClrInstrumentationEngine" $BaseImage bash 
+}
+elseif (-not $CreateSemaphore)
 {
     docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /root/ClrInstrumentationEngine/src/build.sh $Type clean
 }

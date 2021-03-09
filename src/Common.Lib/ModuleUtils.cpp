@@ -2,9 +2,8 @@
 // Licensed under the MIT License.
 
 #include "stdafx.h"
-
-#include "ModuleUtils.h"
 #include "PathUtils.h"
+#include "ModuleUtils.h"
 
 namespace CommonLib
 {

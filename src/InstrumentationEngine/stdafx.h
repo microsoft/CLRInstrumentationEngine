@@ -22,7 +22,6 @@
 #include <errorrep.h>       // for pfn_REPORTFAULT
 #include <eh.h>
 
-
 #include <sal.h>
 
 #include <atlcomcli.h>
@@ -63,17 +62,21 @@ using namespace ATL;
 #include <unordered_map>
 #include <unordered_set>
 
+#include "../Common.Headers/tstring.h"
+#include "../Common.Headers/CriticalSectionHolder.h"
+#include "../Common.Headers/banned.h"
+
+#include "../Common.Lib/Macros.h"
+#include "../Common.Lib/refcount.h"
+#include "XmlNode.h"
+#include "XmlDocWrapper.h"
+
 #include "InstrumentationEngine.h"
 #include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
-#include "../InstrumentationEngine.Lib/refcount.h"
-
 #include "resource.h"
 
-#include "../Common.Lib/tstring.h"
-#include "../Common.Lib/Macros.h"
-#include "../Common.Lib/CriticalSectionHolder.h"
 
-#include "../Common.Lib/banned.h"
 
 using namespace std;
+using namespace CommonLib;

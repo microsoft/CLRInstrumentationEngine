@@ -46,4 +46,4 @@ using namespace ATL;
     do { if (FAILED(hr = (EXPR))) { ATLASSERT(FALSE); return hr; } } while (false)
 #endif
 
-#include "../../../src/Common.Lib/tstring.h"
+#include "../../../src/Common.Headers/tstring.h"
