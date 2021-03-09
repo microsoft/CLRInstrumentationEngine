@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.37
++ New:
+  + Add build ID to binaries in linux
+
 ## 1.0.36
 + BugFixes:
   + Make configuration environment variables case-insensitive on Windows.
