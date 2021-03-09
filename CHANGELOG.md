@@ -7,9 +7,13 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
-## 1.0.37
+## 1.0.38
 + New:
   + Add build ID to binaries in linux
+
+## 1.0.37
++ BugFixes:
+  + Fix RPH Bug - Support raw profiler QI that only return the highest ICorProfilerCallback
 
 ## 1.0.36
 + BugFixes:
