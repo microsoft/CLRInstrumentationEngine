@@ -968,16 +968,16 @@ HRESULT CProfilerManager::Initialize(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    CComPtr<ICorProfilerCallback2> pCallback;
+    CComPtr<ICorProfilerCallback> pCallback;
 
-    const CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
         nullptr,
         nullptr));
 
     if (pProfilerCallbackHolder != nullptr)
     {
-        pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback)
