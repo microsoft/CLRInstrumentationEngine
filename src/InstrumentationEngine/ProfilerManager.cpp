@@ -970,7 +970,7 @@ HRESULT CProfilerManager::Initialize(
 
     CComPtr<ICorProfilerCallback> pCallback;
 
-    const CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
         nullptr,
         nullptr));
