@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
-#include "../InstrumentationEngine.Lib/refcount.h"
+#include "../Common.Lib/refcount.h"
 
 namespace InstrumentationEngineLibTests
 {

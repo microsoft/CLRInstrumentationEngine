@@ -22,15 +22,21 @@
 #define __FUNCTIONT__
 #endif
 
+// Asserts and optionally logs that a failure occured with the given hresult.
+// Note, this library does not define the implementation of this function. It
+// is up to the binary executable that links this library to supply a definition
+// otherwise, linkage errors will be expected.
+void AssertLogFailure(_In_ const WCHAR* wszError, ...);
+
     // Log an error without returning.
 #ifndef IfFailLog
 #define IfFailLog(EXPR) \
-    do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailLog(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__ _T(": %d"), hr); } } while (false)
+    do { if (FAILED(hr = (EXPR))) { AssertLogFailure(_T("IfFailLog(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__ _T(": %d"), hr); } } while (false)
 #endif
 
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
-    do { if (FAILED(hr = (EXPR))) { CLogging::LogError(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
+    do { if (FAILED(hr = (EXPR))) { AssertLogFailure(_T("IfFailRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return hr; } } while (false)
 #endif
 
 // Wrap errno_t result of EXPR in HRESULT and then IfFailRet.
@@ -52,7 +58,7 @@
 
 #ifndef IfNullRetPointer
 #define IfNullRetPointer(EXPR) \
-    do { if (NULL == (EXPR)) { CLogging::LogError(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_POINTER; } } while (false)
+    do { if (NULL == (EXPR)) { AssertLogFailure(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_POINTER; } } while (false)
 #endif
 
 #ifndef IfNullRetPointerNoLog
@@ -62,12 +68,12 @@
 
 #ifndef IfNullRet
 #define IfNullRet(EXPR) \
-    do { if (NULL == (EXPR)) { CLogging::LogError(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_FAIL; } } while (false)
+    do { if (NULL == (EXPR)) { AssertLogFailure(_T(#EXPR) _T(" is null in function ") __FUNCTIONT__); return E_FAIL; } } while (false)
 #endif
 
 #ifndef IfFalseRet
 #define IfFalseRet(EXPR, HR) \
-    do { if (FALSE == (EXPR)) { CLogging::LogError(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return (HR); } } while (false)
+    do { if (FALSE == (EXPR)) { AssertLogFailure(_T("IfFalseRet(") _T(#EXPR) _T(") failed in function ") __FUNCTIONT__); return (HR); } } while (false)
 #endif
 
 #ifndef IsFlagSet

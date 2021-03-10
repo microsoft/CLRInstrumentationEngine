@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "../Common.Lib/InitOnce.h"
-#include "../Common.Lib/Singleton.h"
-#include "../Common.Lib/Macros.h"
+#include "../Common.Headers/InitOnce.h"
+#include "../Common.Headers/Singleton.h"
+#include "../Common.Headers/banned.h"
 
-#include "../Common.Lib/banned.h"
+#include "../Common.Lib/Macros.h"

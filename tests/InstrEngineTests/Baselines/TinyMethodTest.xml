@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>TinyMethodTest</Name>
     <FullName>BasicManagedTest2.Program.TinyMethodTest</FullName>
-    <ClassID Volatile="True">0xd49f3938</ClassID>
+    <ClassID Volatile="True">0x70095a30</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000003</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,7 +19,7 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x01 0x08 0x08 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x000020dc</CodeRVA>
+    <CodeRVA>0x000020cc</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000002</MaxStack>

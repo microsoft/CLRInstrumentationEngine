@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>CallHelloFromEmittedAssembly2</Name>
     <FullName>DynamicCodeTests.Program.CallHelloFromEmittedAssembly2</FullName>
-    <ClassID Volatile="True">0x66f75a58</ClassID>
+    <ClassID Volatile="True">0x70075a88</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000007</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -19,15 +19,15 @@
     <RetTypeToken>0x00000000</RetTypeToken>
     <CorSignature>0x00 0x00 0x01 </CorSignature>
     <CorMethodAttr>0x00000091</CorMethodAttr>
-    <CodeRVA>0x00002284</CodeRVA>
+    <CodeRVA>0x00002286</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000001</MaxStack>
     <Instructions><![CDATA[
 IL_0000 nop
 IL_0001 nop
-IL_0002 ldstr 0x70000324
-IL_0007 call 0xa00001f
+IL_0002 ldstr 0x700001ab
+IL_0007 call 0x0a000016
 IL_000c nop
 IL_000d ret
     ]]></Instructions>

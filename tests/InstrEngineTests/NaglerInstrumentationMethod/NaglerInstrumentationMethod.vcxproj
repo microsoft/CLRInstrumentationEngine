@@ -127,6 +127,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

@@ -44,7 +44,8 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportAll(bool importC
     IfFalseRet(m_pTargetEmit != nullptr, E_FAIL);
     IfFalseRet(m_pTargetMethodMalloc != nullptr, E_FAIL);
 
-    CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>\r\n<ImportModule>\r\n"));
+    CLogging::LogDumpMessage(_T("<?xml version=\"1.0\"?>"));
+    CLogging::LogDumpMessage(_T("<ImportModule>"));
 
     CMetadataEnumCloser<IMetaDataImport2> spHEnSourceTypeDefs(m_pSourceImport, nullptr);
 
@@ -69,7 +70,7 @@ HRESULT MicrosoftInstrumentationEngine::AssemblyInjector::ImportAll(bool importC
         IfFailRet(hr);
     }
 
-    CLogging::LogDumpMessage(_T("</ImportModule>\r\n"));
+    CLogging::LogDumpMessage(_T("</ImportModule>"));
 
     return hr;
 }

@@ -16,8 +16,6 @@
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -27,7 +25,8 @@
     <ProjectGuid>{0B12FD8F-83DE-4A80-9BC1-ABE67E0E808A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
-    <NoWarn>2008</NoWarn>
+    <!-- NU5100: Package is used as a means to acquire the engine and not to have its assets referenced directly. -->
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
@@ -39,7 +38,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
     <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
@@ -83,4 +84,6 @@
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Target Name="VerifyPackCompleteEngine" AfterTargets="Pack" />
+  <!-- Project does not compile assembly; override to avoid CS2008. -->
+  <Target Name="Compile" />
 </Project>

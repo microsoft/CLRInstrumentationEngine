@@ -2,7 +2,7 @@
 <InstrumentedMethod>
     <Name>ForwardCallCompiled</Name>
     <FullName>CompiledCode.CallForwarder.ForwardCallCompiled</FullName>
-    <ClassID Volatile="True">0x66fa80d0</ClassID>
+    <ClassID Volatile="True">0x70e7b850</ClassID>
     <FunctionID>0x00000001</FunctionID>
     <MethodToken>0x06000001</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
@@ -17,17 +17,15 @@
     <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
     <RetValueCorElementType>ELEMENT_TYPE_VOID</RetValueCorElementType>
     <RetTypeToken>0x00000000</RetTypeToken>
-    <CorSignature>0x00 0x01 0x01 0x12 0x09 </CorSignature>
+    <CorSignature>0x00 0x01 0x01 0x12 0x19 </CorSignature>
     <CorMethodAttr>0x00000096</CorMethodAttr>
     <CodeRVA>0x00002050</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000000</MaxStack>
-    <Instructions>
-        <![CDATA[
+    <Instructions><![CDATA[
 IL_0000 ret
-    ]]>
-    </Instructions>
+    ]]></Instructions>
     <ExceptionClauses>
     </ExceptionClauses>
     <CorIlMap>

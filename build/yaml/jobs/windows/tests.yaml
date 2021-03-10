@@ -6,10 +6,11 @@
 parameters:
   IsMicroBuildInternal: false
   MatrixStrategy: {}
+  TestType: 'Native'
 
 jobs:
-- job: Test_Windows_Binaries
-  displayName: Windows Tests
+- job: Test_Windows_Binaries_${{ parameters.TestType }}
+  displayName: Windows Tests ${{ parameters.TestType }}
 
   strategy:
     matrix:
@@ -35,10 +36,85 @@ jobs:
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
-  - template: ../../steps/windows/tests.yaml
-    parameters:
-      WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
-      Platform: $(Platform)
+  - ${{ if eq('Managed', parameters.TestType) }}:
+    # Install dotnet runtimes to allow .NET Core and .NET 5+ based unit tests to run.
+    - task: UseDotNet@2
+      displayName: Install .NET Core 3.1 Runtime
+      inputs:
+        packageType: 'runtime'
+        version: '3.1.x'
+
+    - task: UseDotNet@2
+      displayName: Install .NET 5.0 Runtime
+      inputs:
+        packageType: 'runtime'
+        version: '5.0.x'
+
+    # The UseDotNet task is not sufficient because it will only install the X64 runtimes
+    # whereas the tests require both X64 and X86 since they run the test apps with different,
+    # specified bitnesses.
+    - powershell: |
+        # Get install script
+        $scriptDir = Join-Path -Path $env:AGENT_TEMPDIRECTORY -ChildPath ([Guid]::NewGuid())
+        $scriptPath = Join-Path -Path $scriptDir -ChildPath 'dotnet-install.ps1'
+        New-Item -Path $scriptDir -ItemType 'Directory' | Out-Null
+        Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile $scriptPath
+        # Install runtimes
+        $dotnetDir = Join-Path -Path $env:AGENT_TEMPDIRECTORY -ChildPath ([Guid]::NewGuid())
+        New-Item -Path $dotnetDir -ItemType 'Directory' | Out-Null
+        # Install x64 runtimes
+        $dotnetX64Dir = Join-Path -Path $dotnetDir -ChildPath 'x64'
+        New-Item -Path $dotnetX64Dir -ItemType 'Directory' | Out-Null
+        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        $dotnetX64Path = Join-Path -Path $dotnetX64Dir -ChildPath 'dotnet.exe' -Resolve
+        # Install x86 runtimes
+        $dotnetX86Dir = Join-Path -Path $dotnetDir -ChildPath 'x86'
+        New-Item -Path $dotnetX86Dir -ItemType 'Directory' | Out-Null
+        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        $dotnetX86Path = Join-Path -Path $dotnetX86Dir -ChildPath 'dotnet.exe' -Resolve
+        # Set job variables
+        Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
+        Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X86;]$dotnetX86Path"
+      displayName: 'Get .NET Runtimes'
+
+  # When running native tests, include all tests
+  # from all folders recursively
+  - ${{ if eq('Native', parameters.TestType) }}:
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        SubFolder: '**\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Native_$(Configuration)_$(Platform)'
+  
+  # All of the .NET tests need to be run separately
+  # otherwise vstest will fallback to running
+  # .NET Framework tests only. Minimize by grouping
+  # by their runtime version.
+  - ${{ if eq('Managed', parameters.TestType) }}:
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)_$(Platform)'
+
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        SubFolder: 'net4*\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)_$(Platform)'
+
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        SubFolder: 'netcoreapp3.1\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)_$(Platform)'
+    
+    - template: ../../steps/windows/tests.yaml
+      parameters:
+        Platform: $(Platform)
+        SubFolder: 'net50\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)_$(Platform)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

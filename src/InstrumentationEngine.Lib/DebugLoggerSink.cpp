@@ -27,6 +27,7 @@ void CDebugLoggerSink::LogError(_In_ LPCWSTR wszMessage)
 void CDebugLoggerSink::LogDumpMessage(_In_ LPCWSTR wszMessage)
 {
     OutputDebugString(wszMessage);
+    OutputDebugString(_T("\r\n"));
 }
 
 HRESULT CDebugLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlags* pEffectiveFlags)

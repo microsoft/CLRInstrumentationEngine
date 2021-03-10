@@ -113,7 +113,6 @@
     <ClInclude Include="HostLoggerSink.h" />
     <ClInclude Include="RawProfilerHookLoader.h" />
     <ClInclude Include="RawProfilerHookSettingsReader.h" />
-    <ClInclude Include="refcount.h" />
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
     <ClInclude Include="stdafx.h" />
@@ -141,7 +140,6 @@
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="RawProfilerHookLoader.cpp" />
     <ClCompile Include="RawProfilerHookSettingsReader.cpp" />
-    <ClCompile Include="refcount.cpp" />
     <ClCompile Include="SignatureValidator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -155,6 +153,6 @@
       <Project>{A0585FAB-548F-44B3-BCBE-9242CBC26A19}</Project>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

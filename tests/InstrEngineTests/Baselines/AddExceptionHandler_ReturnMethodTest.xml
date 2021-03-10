@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>ReturnMethodTest</Name>
+    <FullName>AddExceptionHandlerTests.Program.ReturnMethodTest</FullName>
+    <ClassID Volatile="True">0x70075ab0</ClassID>
+    <FunctionID>0x00000001</FunctionID>
+    <MethodToken>0x06000004</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_STRING</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x00 0x0e </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x00002209</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x01 0x0e </LocalSignature>
+    <MaxStack>0x00000001</MaxStack>
+    <Instructions><![CDATA[
+IL_0000 ldstr 0x7000002f
+IL_0005 stloc.0
+IL_0006 leave.s IL_000b
+IL_0008 pop
+IL_0009 leave.s IL_000b
+IL_000b nop
+IL_000c ldloc.0
+IL_000d ret
+    ]]></Instructions>
+    <ExceptionClauses>
+        <ExceptionClause>
+            <Flags>0x00000000</Flags>
+            <FirstTryOffset>0x00000000</FirstTryOffset>
+            <LastTryOffset>0x00000006</LastTryOffset>
+            <FirstHandlerOffset>0x00000008</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000009</LastHandlerOffset>
+            <FilterOffset>0x00000000</FilterOffset>
+            <ExceptionToken>0x01000006</ExceptionToken>
+        </ExceptionClause>
+    </ExceptionClauses>
+    <CorIlMap>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000000</oldOffset>
+            <newOffset>0x00000000</newOffset>
+        </CorIlMapEntry>
+    </CorIlMap>
+</InstrumentedMethod>

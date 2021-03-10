@@ -34,6 +34,9 @@
 #include <atlbase.h>
 #include <atlcom.h>
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy can be used
+
 // stl misc
 #include <limits>
 #include <utility>
@@ -55,12 +58,16 @@
 #include <memory>
 
 // stl threading
+
 #include <atomic>
+
 #include <mutex>
 #include <thread>
 #include <future>
 
-#include "../Common.Lib/banned.h"
+#pragma warning(pop)
+
+#include "../Common.Headers/banned.h"
 
 // Microsoft Instrumentation Engine encludes
 #include "InstrumentationEngineDefs.h"

@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "../Common.Lib/EventLoggingBase.h"
-#include "../Common.Lib/InitOnce.h"
+#include "../Common.Headers/InitOnce.h"
 
 using namespace CommonLib;
 

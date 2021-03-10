@@ -46,22 +46,22 @@
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
-        <Offset>54</Offset>
+        <Offset>52</Offset>
+        <InstrumentationType>Replace</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>57</Offset>
+        <InstrumentationType>Replace</InstrumentationType>
+      </Instruction>
+      <Instruction>
+        <Opcode>nop</Opcode>
+        <Offset>58</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
       <Instruction>
         <Opcode>nop</Opcode>
         <Offset>59</Offset>
-        <InstrumentationType>Replace</InstrumentationType>
-      </Instruction>
-      <Instruction>
-        <Opcode>nop</Opcode>
-        <Offset>60</Offset>
-        <InstrumentationType>Replace</InstrumentationType>
-      </Instruction>
-      <Instruction>
-        <Opcode>nop</Opcode>
-        <Offset>61</Offset>
         <InstrumentationType>Replace</InstrumentationType>
       </Instruction>
     </Instructions>

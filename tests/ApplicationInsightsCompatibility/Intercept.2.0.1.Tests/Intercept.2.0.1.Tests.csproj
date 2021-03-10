@@ -52,7 +52,7 @@
       <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <Name>..\Dependencies\LegacyDependencies.csproj</Name>
+      <Name>LegacyDependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +74,7 @@
     <Compile Include="Constants.cs" />
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

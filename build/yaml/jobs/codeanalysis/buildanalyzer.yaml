@@ -36,6 +36,7 @@ jobs:
   - ${{ if eq(parameters.Analyzer, 'csharp') }}:
     - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Managed"
       displayName: Set Configuration for Managed Code
+    - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
@@ -52,9 +53,9 @@ jobs:
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
 
-  - template: ../../steps/codeanalysis/filebugs.yaml
-    parameters:
-      BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
-      Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+    - template: ../../steps/codeanalysis/filebugs.yaml
+      parameters:
+        BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
+        Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
   - template: ../../steps/microbuild/cleanup.yaml

@@ -2,8 +2,8 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="Common.Props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
-  <Import Project="$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props" Condition="Exists('$(PackagesDir)\Microsoft.VisualStudioEng.MicroBuild.Core\$(MicroBuildCoreVersion)\build\Microsoft.VisualStudioEng.MicroBuild.Core.props')" />
+  <Import Project="$(MSBuildThisFileDirectory)Common.Props" Condition="$(CommonBuildPropsIncluded) == '' or $(CommonBuildPropsIncluded) != 'True'" />
+  <Import Project="$(MSBuildThisFileDirectory)MicroBuild.props" />
 
   <PropertyGroup Condition="'$(buildtarget)'!=''">
     <Platform Condition="'$(buildtarget)'=='amd64'">x64</Platform>

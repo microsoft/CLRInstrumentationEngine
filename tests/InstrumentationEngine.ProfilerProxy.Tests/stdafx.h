@@ -15,7 +15,7 @@
 
 #include <windows.h>
 
-#include "../../src/Common.Lib/Macros.h"
-#include "../../src/Common.Lib/CriticalSectionHolder.h"
+#include "../../src/Common.Headers/CriticalSectionHolder.h"
+#include "../../src/Common.LIb/Macros.h"
 
 using namespace std;

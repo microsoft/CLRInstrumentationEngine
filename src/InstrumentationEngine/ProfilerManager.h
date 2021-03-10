@@ -12,7 +12,6 @@
 #ifndef PLATFORM_UNIX
 #include "../Common.Lib/ModuleHandle.h"
 #endif
-#include <XmlDocWrapper.h>
 
 using namespace ATL;
 

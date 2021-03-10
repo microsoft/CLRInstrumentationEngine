@@ -4,14 +4,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -39,6 +37,18 @@ namespace InstrEngineTests
         private const string TestOutputFileEnvName = "MicrosoftInstrumentationEngine_FileLogPath";
         private const string IsRejitEnvName = "Nagler_IsRejit";
 
+#if NETCOREAPP
+        private const string EnableProfilingEnvVarName = "CORECLR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "CORECLR_PROFILER";
+        private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
+        private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
+        private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
+#else
+        private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
+        private const string ProfilerEnvVarName = "COR_PROFILER";
+        private const string ProfilerPathEnvVarName = "COR_PROFILER_PATH";
+#endif
+
         #endregion
 
         public const int TestAppTimeoutMs = 10000;
@@ -54,14 +64,14 @@ namespace InstrEngineTests
         // Enable ref recording to track down memory leaks. For debug only.
         private static bool EnableRefRecording = false;
 
-        public static void LaunchAppAndCompareResult(string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
+        public static void LaunchAppAndCompareResult(TestParameters parameters, string testApp, string fileName, string args = null, bool regexCompare = false, int timeoutMs = TestAppTimeoutMs)
         {
             // Usually we use the same file name for test script, baseline and test result
-            ProfilerHelpers.LaunchAppUnderProfiler(testApp, fileName, fileName, false, args, timeoutMs);
+            ProfilerHelpers.LaunchAppUnderProfiler(parameters, testApp, fileName, fileName, false, args, timeoutMs);
             ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
         }
 
-        public static void LaunchAppUnderProfiler(string testApp, string testScript, string output, bool isRejit, string args, int timeoutMs = TestAppTimeoutMs)
+        public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
             {
@@ -83,16 +93,16 @@ namespace InstrEngineTests
 
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
-            psi.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
-            psi.EnvironmentVariables.Add("COR_PROFILER", ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add("COR_PROFILER_PATH", Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
+            psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
+            psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
 
             if (EnableRefRecording)
             {
                 psi.EnvironmentVariables.Add("EnableRefRecording", "1");
             }
 
-            if (!TestParameters.DisableLogLevel)
+            if (!parameters.DisableLogLevel)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_LogLevel", "Dumps");
             }
@@ -110,42 +120,42 @@ namespace InstrEngineTests
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", @"1");
             }
 
-            if (TestParameters.DisableMethodSignatureValidation)
+            if (parameters.DisableMethodSignatureValidation)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", @"1");
             }
 
-            if (TestParameters.DisableMethodPrefix)
+            if (parameters.DisableMethodPrefix)
             {
                 psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DisableLogMethodPrefix", @"1");
             }
 
-            if (TestParameters.MethodLogLevel != LogLevel.Unset)
+            if (parameters.MethodLogLevel != LogLevel.Unset)
             {
                 StringBuilder methodLogLevelBuilder = new StringBuilder();
-                if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
+                if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.None)
                 {
                     methodLogLevelBuilder.Append("|None");
                 }
                 else
                 {
-                    if ((TestParameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
+                    if ((parameters.MethodLogLevel & LogLevel.All) == LogLevel.All)
                     {
                         methodLogLevelBuilder.Append("|All");
                     }
                     else
                     {
-                        if ((TestParameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
+                        if ((parameters.MethodLogLevel & LogLevel.Errors) == LogLevel.Errors)
                         {
                             methodLogLevelBuilder.Append("|Errors");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
+                        if ((parameters.MethodLogLevel & LogLevel.Trace) == LogLevel.Trace)
                         {
                             methodLogLevelBuilder.Append("|Messages");
                         }
 
-                        if ((TestParameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
+                        if ((parameters.MethodLogLevel & LogLevel.InstrumentationResults) == LogLevel.InstrumentationResults)
                         {
                             methodLogLevelBuilder.Append("|Dumps");
                         }
@@ -174,8 +184,31 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputFileEnvName, outputPath);
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
-            psi.FileName = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+            string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+#if NETCOREAPP
+            string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
+            string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
+            if (string.IsNullOrEmpty(hostPath))
+            {
+                Environment.SpecialFolder programFilesFolder = is32bitTest ?
+                    Environment.SpecialFolder.ProgramFilesX86 :
+                    Environment.SpecialFolder.ProgramFiles;
+
+                hostPath = Path.Combine(Environment.GetFolderPath(programFilesFolder), "dotnet", "dotnet.exe");
+            }
+            Assert.IsTrue(File.Exists(hostPath), "dotnet.exe path '{0}' does not exist.", hostPath);
+
+            // The compiled test apps cannot be run directly by dotnet.exe because they are missing
+            // the *.runtimeconfig.json files that contain framework version and dependency information.
+            // Use a pre-compiled executable to bootstrap executing these assemblies.
+            string runnerPath = Path.Combine(PathUtils.GetAssetsPath(), "TestAppRunner.dll");
+
+            psi.FileName = hostPath;
+            psi.Arguments = $"\"{runnerPath}\" \"{appPathWithoutExtension}.dll\" {args}";
+#else
+            psi.FileName = $"{appPathWithoutExtension}.exe";
             psi.Arguments = args;
+#endif
 
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
 
@@ -336,12 +369,19 @@ namespace InstrEngineTests
             // NOTE: Eventually this should also be made to do regexp matching against
             if (!isVolatile)
             {
-                if (CompareOrdinalNormalizeLineEndings(baselineNode.Value, outputNode.Value) != 0)
+                var baselineString = NormalizeLineEndingsAndTrimWhitespace(baselineNode.Value);
+                var outputString = NormalizeLineEndingsAndTrimWhitespace(outputNode.Value);
+                if (String.CompareOrdinal(baselineString, outputString) != 0)
                 {
-                    Assert.Fail("Baseline value does not equal output value\n" + baselineNode.Value + "\n" + outputNode.Value);
+                    int index = baselineString.Zip(outputString, (c1, c2) => c1 == c2).TakeWhile(b => b).Count() + 1;
+                    string assertError = $"Baseline value does not equal output value{Environment.NewLine}" +
+                        $"{baselineString} (Length: {baselineString.Length}){Environment.NewLine}" +
+                        $"{outputString} (Length: {outputString.Length}){Environment.NewLine}" +
+                        $"Index of first diff: {index}";
+                    Assert.Fail(assertError);
                 }
 
-                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count);
+                Assert.AreEqual(baselineNode.ChildNodes.Count, outputNode.ChildNodes.Count, $"Child node counts are different on node '{baselineNode.Name}'.");
 
                 for (int i = 0; i < baselineNode.ChildNodes.Count; i++)
                 {
@@ -355,11 +395,14 @@ namespace InstrEngineTests
 
         // Do this because we are doing git autocrlf stuff so the baselines will have ???
         // but the test output files will always have Windows-style.
-        private static int CompareOrdinalNormalizeLineEndings(string a, string b)
+        private static string NormalizeLineEndingsAndTrimWhitespace(string s)
         {
-            string normalA = a?.Replace("\r\n", "\n");
-            string normalB = b?.Replace("\r\n", "\n");
-            return String.CompareOrdinal(normalA, normalB);
+            // Method overload string.Replace(string, string, StringComparison) was introduced in .NET Standard 2.1
+#if NETCOREAPP
+            return s?.Replace("\r\n", "\n", StringComparison.Ordinal)?.Trim();
+#else
+            return s?.Replace("\r\n", "\n")?.Trim();
+#endif
         }
 
         private static XmlDocument LoadTestScript(string testScript)

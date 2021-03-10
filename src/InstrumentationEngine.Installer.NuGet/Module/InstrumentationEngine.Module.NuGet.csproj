@@ -14,8 +14,6 @@
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -26,7 +24,6 @@
     <ProjectGuid>{59CC768D-2E07-4FD9-8013-2EBC3898FEED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.InstrumentationEngine.Module</RootNamespace>
-    <NoWarn>2008</NoWarn>
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
@@ -38,9 +35,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
+      <ExcludeAssets>All</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Target Name="VerifyPackCompleteEngine" AfterTargets="Pack" />
+  <!-- Project does not compile assembly; override to avoid CS2008. -->
+  <Target Name="Compile" />
 </Project>

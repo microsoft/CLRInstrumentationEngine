@@ -54,7 +54,7 @@
       <Project>{D1F6A1A5-D8D1-44B3-B59F-6BFE236F7F46}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <Name>..\Dependencies\NativeDependencies.csproj</Name>
+      <Name>NativeDependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -77,7 +77,7 @@
     <Compile Include="InterceptDecorateTests.cs" />
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
