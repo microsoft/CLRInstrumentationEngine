@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.38
++ New:
+  + Add build ID to binaries in linux
 
 ## 1.0.37
 + BugFixes:
