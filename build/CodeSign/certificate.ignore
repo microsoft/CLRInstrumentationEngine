@@ -5,7 +5,6 @@ bin\*\instrumentationengine.profilerproxy.tests.dll, Ignore test assembly
 bin\*\instrenginetests_anycpu.dll, Ignore test assembly
 bin\*\instrenginetests.dll, Ignore test assembly
 bin\*\testapprunner.dll, Ignore test assembly
-bin\*\testapprunner.exe, Ignore test assembly
 
 bin\*\naglerinstrumentationmethod*, Ignore naglerInstrumentationMethod
 bin\*\*.xml, Ignore xml files
