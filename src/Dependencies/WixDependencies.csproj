@@ -24,7 +24,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Wix" Version="$(WixVersion)" />
-    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)" />
+    <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
