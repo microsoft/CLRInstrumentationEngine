@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.39
+
 ## 1.0.38
 + New:
   + Add build ID to binaries in linux
