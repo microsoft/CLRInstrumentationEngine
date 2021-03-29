@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.39
++ BugFixes:
+  + Remove MethodInfo creation from JitComplete events. This fixes a race condition when accessing method info map.
 
 ## 1.0.38
 + New:
