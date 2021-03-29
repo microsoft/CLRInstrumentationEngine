@@ -3706,12 +3706,14 @@ HRESULT CProfilerManager::AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CM
         return E_FAIL;
     }
 
+    CCriticalSectionHolder holder(&m_cs);
     m_methodInfos.insert({ functionId, pMethodInfo });
     return S_OK;
 }
 
 HRESULT CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
 {
+    CCriticalSectionHolder holder(&m_cs);
     m_methodInfos.erase(functionId);
     return S_OK;
 }
