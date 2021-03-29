@@ -3,6 +3,9 @@ obj\*, Ignore Intermediates
 bin\*\instrumentationengine.lib.tests.dll, Ignore test assembly
 bin\*\instrumentationengine.profilerproxy.tests.dll, Ignore test assembly
 bin\*\instrenginetests_anycpu.dll, Ignore test assembly
+bin\*\instrenginetests.dll, Ignore test assembly
+bin\*\testapprunner.dll, Ignore test assembly
+bin\*\testapprunner.exe, Ignore test assembly
 
 bin\*\naglerinstrumentationmethod*, Ignore naglerInstrumentationMethod
 bin\*\*.xml, Ignore xml files
@@ -16,3 +19,5 @@ bin\*\*.wixpdb, Ignore wix artifact
 bin\*\*.msidir\*.cab, Ignore embedded cab files
 
 binaries-windows-release\*, Ignore downloaded binary artifacts
+
+bin\*\newtonsoft.json.dll, Ignore Newtonsoft.Json
