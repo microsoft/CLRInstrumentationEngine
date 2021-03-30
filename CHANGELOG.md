@@ -10,6 +10,7 @@ Please format the changes as follows:
 ## 1.0.39
 + BugFixes:
   + Remove MethodInfo creation from JitComplete events. This fixes a race condition when accessing method info map.
+  + Fix CFileLoggerSink to flush writes before closing the file.
 
 ## 1.0.38
 + New:
