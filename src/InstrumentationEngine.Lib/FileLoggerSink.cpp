@@ -137,10 +137,10 @@ void CFileLoggerSink::CloseLogFile()
     FILE* pOutputFile = m_pOutputFile.get();
     if (pOutputFile)
     {
-        m_pOutputFile.reset(nullptr);
-
         fflush(pOutputFile);
-        fclose(pOutputFile);
+
+        // Pointer has deleter that will close the file.
+        m_pOutputFile.reset(nullptr);
     }
 }
 
