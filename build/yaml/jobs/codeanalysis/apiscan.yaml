@@ -13,7 +13,11 @@ jobs:
   # No dependencies. Requires Build Stages to ensure that binaries are built
 
   pool:
-    name: VSEngSS-MicroBuild2019
+    name: VSEng-ReleasePool
+    demands:
+    - msbuild
+    - visualstudio
+    - DotNetFramework
 
   workspace:
     clean: all
