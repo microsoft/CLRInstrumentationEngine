@@ -14,6 +14,14 @@ const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScrip
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
 
+ILOpcodeInfo ilOpcodeInfo[] =
+{
+#define OPDEF(ord, code, name,  opcodeLen, operandLen, type, alt, flags, pop, push) \
+    { name, (DWORD)opcodeLen, (DWORD)operandLen, ##type, alt, flags, (DWORD)pop, (DWORD)push},
+#include "ILOpcodes.h"
+#undef OPDEF
+};
+
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {
     m_pProfilerManager = pProfilerManager;
