@@ -16,8 +16,6 @@ public:
     DWORD m_pushSlots;            // Number of slots this instruction pushes on the instruction graph
 };
 
-extern ILOpcodeInfo ilOpcodeInfo[];
-
 enum InstrumentationType
 {
     InsertBefore,
