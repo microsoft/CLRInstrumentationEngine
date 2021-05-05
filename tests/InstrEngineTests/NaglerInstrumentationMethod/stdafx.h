@@ -46,10 +46,10 @@ using namespace ATL;
     do { if (FAILED(hr = (EXPR))) { ATLASSERT(FALSE); return hr; } } while (false)
 #endif
 
-#include "../Common.Headers/tstring.h"
-#include "../Common.Lib/Macros.h"
-#include "../Common.Lib/refcount.h"
-#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
+#include "../../../src/Common.Headers/tstring.h"
+#include "../../../src/Common.Lib/Macros.h"
+#include "../../../src/Common.Lib/refcount.h"
+#include "../../../src/InstrumentationEngine.Lib/ImplQueryInterface.h"
 
 using namespace CommonLib;
 using namespace MicrosoftInstrumentationEngine;
