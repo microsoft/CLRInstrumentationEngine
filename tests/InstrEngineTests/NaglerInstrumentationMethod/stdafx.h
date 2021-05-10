@@ -49,7 +49,6 @@ using namespace ATL;
 #include "../../../src/Common.Headers/tstring.h"
 #include "../../../src/Common.Lib/Macros.h"
 #include "../../../src/Common.Lib/refcount.h"
-#include "../../../src/InstrumentationEngine.Lib/ImplQueryInterface.h"
+#include "../../../src/Common.Lib/ImplQueryInterface.h"
 
 using namespace CommonLib;
-using namespace MicrosoftInstrumentationEngine;
