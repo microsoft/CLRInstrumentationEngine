@@ -106,7 +106,6 @@
     <ClInclude Include="DebugLoggerSink.h" />
     <ClInclude Include="EventLoggerSink.h" />
     <ClInclude Include="File.h" />
-    <ClInclude Include="ImplQueryInterface.h" />
     <ClInclude Include="FileLoggerSink.h" />
     <ClInclude Include="InstrumentationMethod.h" />
     <ClInclude Include="LoggerService.h" />
@@ -130,7 +129,6 @@
     <ClCompile Include="Encoding.cpp" />
     <ClCompile Include="EventLoggerSink.cpp" />
     <ClCompile Include="ConfigurationLoader.cpp" />
-    <ClCompile Include="ImplQueryInterface.cpp" />
     <ClCompile Include="FileLoggerSink.cpp" />
     <ClCompile Include="InstrumentationMethod.cpp" />
     <ClCompile Include="InstrumentationMethodAttachContext.cpp" />
