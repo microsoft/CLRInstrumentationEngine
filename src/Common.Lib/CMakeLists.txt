@@ -13,6 +13,7 @@ build_init(CPP Common.Lib)
 #including ModuleHandle.cpp, EventLoggingBase.cpp, and PathUtils.cpp
 set(src_files
     ./stdafx.cpp
+    ./ImplQueryInterface.cpp
     ./refcount.cpp
 )
 
