@@ -12,23 +12,37 @@
 #       "musl" CLib for the Alpine 3.7 sample. More generally, use "gnu" build output for glibc-
 #       based distros and "musl" build output for musl-libc-based distros.
 
+<#
+.SYNOPSIS
+ Launch a local Linux build using docker.
+#>
 param
 (
+    # Optionally change the enlistment root. 
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({$_ -and (Test-Path $_)})]
     [String] $EnlistmentRoot = $(Resolve-Path -Path "$PSScriptRoot\..\.."),
 
+    # Indicates what version of the c runtime will be used for the build.
+    # This determines the version of Linux that will be used for the build.
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('gnu', 'musl')]
     [String] $CLib = 'gnu',
 
+    # What flavor to build. Debug or release. Default is Debug.
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('Debug', 'Release')]
     [String] $Type="Debug",
 
+    # Use a local docker image. Default is to download the official image
+    # that is used for released builds.
+    [Parameter()]
+    [Switch] $LocalDockerImage,
+
+    # Launch with an interactive shell. Does not run the build.
     [Parameter()]
     [Switch] $Interactive,
 
@@ -41,17 +55,39 @@ param
 
 $ErrorActionPreference = "Stop"
 
+if ($LocalDockerImage) {
+    & $PSScriptRoot\DockerLocalImage -EnlistmentRoot $EnlistmentRoot -CLib $CLib
+    if (-not $?) {
+        write-error "Error creating docker image"
+        exit 1
+    }
+}
+
 if ($CLib -eq "gnu")
 {
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+    if ($LocalDockerImage)
+    {
+        $BaseImage="clrielocal:gnu"
+    } else 
+    {
+        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+    }
 }
 elseif ($CLib -eq "musl")
 {
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
+    if ($LocalDockerImage)
+    {
+        $BaseImage="clrielocal:musl"
+    } 
+    else 
+    {
+        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
+    }
 }
 else
 {
     write-error "Unrecognized C library: $CLib."
+    exit 1
 }
 
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
