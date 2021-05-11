@@ -4,7 +4,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
+#include "../Common.Lib/ImplQueryInterface.h"
 #include "../Common.Lib/refcount.h"
 
 namespace InstrumentationEngineLibTests

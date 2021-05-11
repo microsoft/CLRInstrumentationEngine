@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EventLoggingBase.h" />
+    <ClInclude Include="ImplQueryInterface.h" />
     <ClInclude Include="ModuleHandle.h" />
     <ClInclude Include="ModuleUtils.h" />
     <ClInclude Include="PathUtils.h" />
@@ -101,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EventLoggingBase.cpp" />
+    <ClCompile Include="ImplQueryInterface.cpp" />
     <ClCompile Include="ModuleHandle.cpp" />
     <ClCompile Include="ModuleUtils.cpp" />
     <ClCompile Include="PathUtils.cpp" />

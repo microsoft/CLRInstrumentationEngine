@@ -96,7 +96,7 @@ using namespace ATL;
 #pragma warning(pop)
 
 #include "Logging.h"
-#include "ImplQueryInterface.h"
+#include "../Common.Lib/ImplQueryInterface.h"
 #include "../Common.Lib/refcount.h"
 #include "SharedArray.h"
 

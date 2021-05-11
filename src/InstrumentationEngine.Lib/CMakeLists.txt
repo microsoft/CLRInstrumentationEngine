@@ -19,7 +19,6 @@ set(src_files
     ./Encoding.cpp
     ./FileLoggerSink.cpp
     ./HostLoggerSink.cpp
-    ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
     ./InstrumentationMethodAttachContext.cpp
     ./InstrumentationMethodSetting.cpp

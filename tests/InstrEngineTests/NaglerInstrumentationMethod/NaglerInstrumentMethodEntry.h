@@ -16,14 +16,6 @@ public:
     DWORD m_pushSlots;            // Number of slots this instruction pushes on the instruction graph
 };
 
-ILOpcodeInfo ilOpcodeInfo[] =
-{
-#define OPDEF(ord, code, name,  opcodeLen, operandLen, type, alt, flags, pop, push) \
-    { name, (DWORD)opcodeLen, (DWORD)operandLen, ##type, alt, flags, (DWORD)pop, (DWORD)push},
-#include "ILOpcodes.h"
-#undef OPDEF
-};
-
 enum InstrumentationType
 {
     InsertBefore,

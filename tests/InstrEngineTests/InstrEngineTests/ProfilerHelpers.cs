@@ -96,6 +96,7 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
             psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
             psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            psi.RedirectStandardError = true;
 
             if (EnableRefRecording)
             {
@@ -210,6 +211,7 @@ namespace InstrEngineTests
             psi.Arguments = args;
 #endif
 
+            Console.WriteLine($"Launch command: {psi.FileName} {psi.Arguments}");
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
 
             // test processes are short. They should not run for more than a few seconds.
@@ -223,6 +225,12 @@ namespace InstrEngineTests
             catch
             {
                 // failure expecected if the process is already ended.
+            }
+
+            var stderr = testProcess.StandardError.ReadToEnd();
+            if (!string.IsNullOrEmpty(stderr))
+            {
+                Console.WriteLine($"stderr: {stderr}");
             }
 
             Assert.AreEqual(0, testProcess.ExitCode, "Test application failed");

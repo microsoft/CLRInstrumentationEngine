@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace MicrosoftInstrumentationEngine
+namespace CommonLib
 {
     #ifndef ARRAYSIZE
     #define ARRAYSIZE(a)    (sizeof(a)/sizeof((a)[0]))
