@@ -14,33 +14,39 @@
 
 <#
 .SYNOPSIS
- Launch a local Linux build using docker.
+    Launch a local Linux build using docker.
+.EXAMPLE
+    .\DockerLocalBuild.ps1 D:\ClrInstrumentationEngine musl Debug
 #>
 param
 (
-    # Optionally change the enlistment root. 
+    # Optionally change the enlistment root
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({$_ -and (Test-Path $_)})]
     [String] $EnlistmentRoot = $(Resolve-Path -Path "$PSScriptRoot\..\.."),
-
-    # Indicates what version of the c runtime will be used for the build.
-    # This determines the version of Linux that will be used for the build.
+    
+    # Indicates which version of the c runtime will be used for the build.
+    # This determines the flavor of Linux that will be used for the build.
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('gnu', 'musl')]
     [String] $CLib = 'gnu',
 
-    # What flavor to build. Debug or release. Default is Debug.
+    # Which configuration to build. Debug or release. Default is Debug.
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('Debug', 'Release')]
     [String] $Type="Debug",
 
-    # Use a local docker image. Default is to download the official image
-    # that is used for released builds.
+    # Build docker image from local docker files. Docker file used is determined based on the value
+    # of CLib. Default is to download the official image that is used for released builds
     [Parameter()]
-    [Switch] $LocalDockerImage,
+    [Switch] $BuildDockerImage,
+
+    # When -BuildDockerImage is supplied, this will rebuild images that were already created.
+    [Parameter()]
+    [Switch] $RebuildImage,
 
     # Launch with an interactive shell. Does not run the build.
     [Parameter()]
@@ -55,39 +61,36 @@ param
 
 $ErrorActionPreference = "Stop"
 
-if ($LocalDockerImage) {
-    & $PSScriptRoot\DockerLocalImage -EnlistmentRoot $EnlistmentRoot -CLib $CLib
+$BaseImage = "";
+
+if ($BuildDockerImage) {
+    $RebuildImageSwitch = ""
+    if ($RebuildImage) {
+        $RebuildImageSwitch = "-Rebuild"
+    }
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot $EnlistmentRoot -CLib $CLib $RebuildImageSwitch"
+    $BaseImage = Invoke-Expression $Command
     if (-not $?) {
         write-error "Error creating docker image"
         exit 1
     }
 }
 
-if ($CLib -eq "gnu")
+if ([string]::IsNullOrEmpty($BaseImage))
 {
-    if ($LocalDockerImage)
-    {
-        $BaseImage="clrielocal:gnu"
-    } else 
+    if ($CLib -eq "gnu")
     {
         $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
     }
-}
-elseif ($CLib -eq "musl")
-{
-    if ($LocalDockerImage)
-    {
-        $BaseImage="clrielocal:musl"
-    } 
-    else 
+    elseif ($CLib -eq "musl")
     {
         $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
     }
-}
-else
-{
-    write-error "Unrecognized C library: $CLib."
-    exit 1
+    else
+    {
+        write-error "Unrecognized C library: $CLib."
+        exit 1
+    }
 }
 
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
@@ -108,6 +111,7 @@ else
     $EnlistmentMountPath = $EnlistmentRoot
 }
 
+Write-Host "Executing inside container using docker image '$BaseImage'"
 if ($Interactive)
 {
     docker run --rm -ti --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host -w "/root/ClrInstrumentationEngine" $BaseImage bash 

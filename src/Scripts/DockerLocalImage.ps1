@@ -52,21 +52,13 @@ if (-not $?) {
 }
 
 if ($exists -eq "yes") {
-    Write-Output "Image '$imageName' already exists."
+    Write-Host "Image '$imageName' already exists."
     if (-not $Rebuild) {
+        Write-Output $imageName
         exit 0
-    }
-
-    # Delete the current image
-    docker image rm $imageName
-
-    if (-not $?) {
-        Write-Error "Error removing image '$imageName'"
-        exit 1
     }
 }
 
-$EnlistmentRoot = $(Resolve-Path -Path "$PSScriptRoot\..\..")
 $dockerDir = "$EnlistmentRoot\src\unix\docker\dockerfiles\build\$linux"
 
 if (-not (Test-Path "$dockerDir\DockerFile" -PathType Leaf)) {
@@ -74,17 +66,14 @@ if (-not (Test-Path "$dockerDir\DockerFile" -PathType Leaf)) {
     exit 1
 }
 
-pushd $dockerDir
-
-try {
-    docker build -t "$imageName" .
-    if (-not $?) {
-        Write-Error "Error building image '$imageName'"
-        exit 0
-    }
-} finally {
-    popd
+$Expression = "Get-Content '$dockerDir\DockerFile' | docker build - -t '$imageName'"
+Write-Host $Expression
+Invoke-Expression $Expression | Write-Host
+if (-not $?) {
+    Write-Error "Error building image '$imageName'"
+    exit 1
 }
 
-Write-Output "Created image '$imageName'"
+Write-Host "$Created '$imageName'"
+Write-Output $imageName
 
