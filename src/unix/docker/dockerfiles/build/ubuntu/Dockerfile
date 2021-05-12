@@ -7,7 +7,8 @@ FROM ubuntu:18.04
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
-        curl
+        curl \
+        software-properties-common
 
 # Install .NET Core 2.1 SDK
 # https://www.microsoft.com/net/download/linux-package-manager/ubuntu18-04/sdk-2.1.403
@@ -22,7 +23,15 @@ RUN apt-get install -y --no-install-recommends apt-transport-https \
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
 
+# get the signing key for the kitware (cmake) repository
+RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+
+# Add the repository (ubuntu 18.04) to get the newest version of cmake
+# NOTE: the repository will need to be changed if we update the version of ubuntu
+RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+
 # CLR Instrumentation Engine Build Prerequisites
+# CMake will be retrieved from the kitware repo
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         clang-3.9 \
