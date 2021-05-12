@@ -64,11 +64,9 @@ $ErrorActionPreference = "Stop"
 $BaseImage = "";
 
 if ($BuildDockerImage) {
-    $RebuildImageSwitch = ""
-    if ($RebuildImage) {
-        $RebuildImageSwitch = "-Rebuild"
-    }
-    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot $EnlistmentRoot -CLib $CLib $RebuildImageSwitch"
+
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage"
+    write-host $Command
     $BaseImage = Invoke-Expression $Command
     if (-not $?) {
         write-error "Error creating docker image"
