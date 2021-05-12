@@ -74,6 +74,6 @@ if (-not $?) {
     exit 1
 }
 
-Write-Host "$Created '$imageName'"
+Write-Host "Created '$imageName'"
 Write-Output $imageName
 
