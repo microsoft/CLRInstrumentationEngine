@@ -40,4 +40,5 @@ RUN apt-get update \
         libunwind8-dev \
         libxml2-dev \
         make \
-        uuid-dev
+        uuid-dev \
+        jq

@@ -60,13 +60,19 @@ if ($exists -eq "yes") {
 }
 
 $dockerDir = "$EnlistmentRoot\src\unix\docker\dockerfiles\build\$linux"
+$dockerContext = "$EnlistmentRoot\src\unix\docker\context"
 
 if (-not (Test-Path "$dockerDir\DockerFile" -PathType Leaf)) {
     Write-Error "Could not find path to required DockerFile in '$dockerDir"
     exit 1
 }
 
-$Expression = "Get-Content '$dockerDir\DockerFile' | docker build - -t '$imageName'"
+if (-not (Test-Path "$dockerContext" -PathType Container)) {
+    Write-Error "Could not find Docker context path '$dockerContext'"
+    exit 1
+}
+
+$Expression = "Get-Content '$dockerDir\DockerFile' | docker build -t '$imageName' -f - '$dockerContext'"
 Write-Host $Expression
 Invoke-Expression $Expression | Write-Host
 if (-not $?) {
