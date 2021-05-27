@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "ImplQueryInterface.h"
 
-namespace MicrosoftInstrumentationEngine
+namespace CommonLib
 {
 namespace InternalImplQueryInterface
 {

@@ -68,11 +68,11 @@ using namespace ATL;
 
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/refcount.h"
+#include "../Common.Lib/ImplQueryInterface.h"
 #include "XmlNode.h"
 #include "XmlDocWrapper.h"
 
 #include "InstrumentationEngine.h"
-#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
 #include "resource.h"
 

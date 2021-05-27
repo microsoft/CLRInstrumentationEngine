@@ -968,16 +968,16 @@ HRESULT CProfilerManager::Initialize(
         return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
     }
 
-    CComPtr<ICorProfilerCallback2> pCallback;
+    CComPtr<ICorProfilerCallback> pCallback;
 
-    const CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
+    CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
         nullptr,
         nullptr));
 
     if (pProfilerCallbackHolder != nullptr)
     {
-        pCallback = pProfilerCallbackHolder->m_CorProfilerCallback2;
+        pCallback = (ICorProfilerCallback*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(ICorProfilerCallback)));
     }
 
     if (pCallback)
@@ -1905,17 +1905,6 @@ HRESULT CProfilerManager::JITCompilationStarted(
                 // We cannot instrument modules that have no image base
                 if (!isDynamic)
                 {
-                    //Get Name Here and output
-                    CComBSTR name;
-                    if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
-                    {
-                        CLogging::LogMessage(_T("JITCompilation FullMethodName %s"), name.m_str);
-                    }
-                    else
-                    {
-                        CLogging::LogMessage(_T("Method name failed"));
-                    }
-
                     // Query if the instrumentation methods want to instrument and then have them actually instrument.
                     vector<CComPtr<IInstrumentationMethod>> toInstrument;
                     IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
@@ -1963,18 +1952,6 @@ HRESULT CProfilerManager::JITCompilationFinished(
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
-
-    CComPtr<CMethodInfo> pMethodInfo;
-    hr = CreateMethodInfo(functionId, &pMethodInfo);
-    CComBSTR name;
-    if (SUCCEEDED(pMethodInfo->GetFullName(&name)))
-    {
-        CLogging::LogMessage(_T("JITCompilationFinished FullMethodName %s, hr = %X"), name.m_str, hrStatus);
-    }
-    else
-    {
-        CLogging::LogMessage(_T("Method name failed"));
-    }
 
     IGNORE_IN_NET20_BEGIN
 

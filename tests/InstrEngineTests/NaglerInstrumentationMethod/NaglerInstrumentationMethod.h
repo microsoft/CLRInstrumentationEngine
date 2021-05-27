@@ -4,13 +4,13 @@
 #pragma once
 
 #include "NaglerInstrumentMethodEntry.h"
+#include "stdafx.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :
     public IInstrumentationMethod,
     public IInstrumentationMethodExceptionEvents,
-    public CComObjectRootEx<CComMultiThreadModel>,
-    public CComCoClass<CInstrumentationMethod, &__uuidof(CInstrumentationMethod)>
+    public CModuleRefCount
 {
 private:
     static const WCHAR TestOutputPathEnvName[];
@@ -32,6 +32,20 @@ private:
     std::wstring m_strBinaryDir;
 
     CComPtr<IProfilerManager> m_pProfilerManager;
+
+    // CModuleRefCount
+public:
+    DEFINE_DELEGATED_REFCOUNT_ADDREF(CInstrumentationMethod);
+    DEFINE_DELEGATED_REFCOUNT_RELEASE(CInstrumentationMethod);
+    STDMETHOD(QueryInterface)(_In_ REFIID riid, _Out_ void** ppvObject) override
+    {
+        return ImplQueryInterface(
+            static_cast<IInstrumentationMethod*>(this),
+            static_cast<IInstrumentationMethodExceptionEvents*>(this),
+            riid,
+            ppvObject
+        );
+    }
 
 public:
     CInstrumentationMethod() : m_typeMap
@@ -64,17 +78,6 @@ public:
     {
     }
 
-    BEGIN_COM_MAP(CInstrumentationMethod)
-        COM_INTERFACE_ENTRY(IInstrumentationMethod)
-        COM_INTERFACE_ENTRY(IInstrumentationMethodExceptionEvents)
-    END_COM_MAP()
-
-    DECLARE_REGISTRY_RESOURCEID(IDR_CINSTRMETHOD)
-
-    // Ensure only a single instance of CInstrumentationMethod is created
-    DECLARE_CLASSFACTORY_SINGLETON(CInstrumentationMethod)
-
-    DECLARE_PROTECT_FINAL_CONSTRUCT()
 
     HRESULT FinalConstruct()
     {
@@ -189,7 +192,3 @@ private:
         _In_reads_(contextSize) BYTE context[]
         );
 };
-
-#ifndef PLATFORM_UNIX
-OBJECT_ENTRY_AUTO(__uuidof(CInstrumentationMethod), CInstrumentationMethod)
-#endif

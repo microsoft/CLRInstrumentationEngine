@@ -5,6 +5,8 @@
 # REFERENCE: https://github.com/dotnet/coreclr/blob/v2.1.0-preview2-26406-04/buildpipeline/pipelines.json
 FROM microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
 
+WORKDIR /
+
 # Install .NET Core 2.1 SDK
 # REFERENCE: https://github.com/dotnet/dotnet-docker/blob/master/2.1/sdk/alpine3.10/amd64/Dockerfile
 
@@ -39,3 +41,29 @@ RUN dotnet help
 # CLR Instrumentation Engine Build Prerequisites
 RUN apk update \
     && apk add --no-cache libxml2-dev
+
+# Add jq to make it easer to read json in shell scripts
+RUN apk add --no-cache jq
+
+# Install newer version of cmake. We need to run make commands inside the directory
+# that it is extracted to, so WORKDIR is the easiest context to use.
+WORKDIR /usr/share/cmakeinst
+
+# Copy manifest json to the target so that we can extract the download url and
+# version of cmake
+COPY "components/cmake/cgmanifest.json" /usr/share/cmakeinst
+RUN cmakeurl=$(cat cgmanifest.json | cat cgmanifest.json | jq '.Registrations[0].Component.other.DownloadUrl' | sed 's/^\"\s*//;s/\"*$//') \
+    && cmakever=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.Version' | sed 's/^\"\s*//;s/\"*$//') \
+    && cmakesha256=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.SHA256CHECK' | sed 's/^\"\s*//;s/\"*$//') \
+    && echo found cmake version "$cmakever" at url "$cmakeurl" \
+    && wget -O cmake.tar.gz $cmakeurl \
+    && echo "$cmakesha256 cmake.tar.gz" | sha256sum -c - \
+    && tar -xzf cmake.tar.gz \
+    && cd cmake-$cmakever \
+    && ./bootstrap \
+    && make \
+    && make install 
+
+# Delete the cmake installer it is no longer needed.
+WORKDIR /
+RUN rm -rf /usr/share/cmakeinst

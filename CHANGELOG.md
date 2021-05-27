@@ -7,6 +7,24 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.41
+
+## 1.0.40
++ No new changes.
+
+## 1.0.39
++ BugFixes:
+  + Remove MethodInfo creation from JitComplete events. This fixes a race condition when accessing method info map.
+  + Fix CFileLoggerSink to flush writes before closing the file.
+
+## 1.0.38
++ New:
+  + Add build ID to binaries in linux
+
+## 1.0.37
++ BugFixes:
+  + Fix RPH Bug - Support raw profiler QI that only return the highest ICorProfilerCallback
+
 ## 1.0.36
 + BugFixes:
   + Make configuration environment variables case-insensitive on Windows.

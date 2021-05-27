@@ -12,23 +12,43 @@
 #       "musl" CLib for the Alpine 3.7 sample. More generally, use "gnu" build output for glibc-
 #       based distros and "musl" build output for musl-libc-based distros.
 
+<#
+.SYNOPSIS
+    Launch a local Linux build using docker.
+.EXAMPLE
+    .\DockerLocalBuild.ps1 D:\ClrInstrumentationEngine musl Debug
+#>
 param
 (
+    # Optionally change the enlistment root
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateScript({$_ -and (Test-Path $_)})]
     [String] $EnlistmentRoot = $(Resolve-Path -Path "$PSScriptRoot\..\.."),
-
+    
+    # Indicates which version of the c runtime will be used for the build.
+    # This determines the flavor of Linux that will be used for the build.
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('gnu', 'musl')]
     [String] $CLib = 'gnu',
 
+    # Which configuration to build. Debug or release. Default is Debug.
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('Debug', 'Release')]
     [String] $Type="Debug",
 
+    # Build docker image from local docker files. Docker file used is determined based on the value
+    # of CLib. Default is to download the official image that is used for released builds
+    [Parameter()]
+    [Switch] $BuildDockerImage,
+
+    # When -BuildDockerImage is supplied, this will rebuild images that were already created.
+    [Parameter()]
+    [Switch] $RebuildImage,
+
+    # Launch with an interactive shell. Does not run the build.
     [Parameter()]
     [Switch] $Interactive,
 
@@ -41,17 +61,33 @@ param
 
 $ErrorActionPreference = "Stop"
 
-if ($CLib -eq "gnu")
-{
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+$BaseImage = "";
+
+if ($BuildDockerImage) {
+
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage"
+    $BaseImage = Invoke-Expression $Command
+    if (-not $?) {
+        write-error "Error creating docker image"
+        exit 1
+    }
 }
-elseif ($CLib -eq "musl")
+
+if ([string]::IsNullOrEmpty($BaseImage))
 {
-    $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
-}
-else
-{
-    write-error "Unrecognized C library: $CLib."
+    if ($CLib -eq "gnu")
+    {
+        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+    }
+    elseif ($CLib -eq "musl")
+    {
+        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-alpine:latest"
+    }
+    else
+    {
+        write-error "Unrecognized C library: $CLib."
+        exit 1
+    }
 }
 
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
@@ -72,6 +108,7 @@ else
     $EnlistmentMountPath = $EnlistmentRoot
 }
 
+Write-Host "Executing inside container using docker image '$BaseImage'"
 if ($Interactive)
 {
     docker run --rm -ti --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host -w "/root/ClrInstrumentationEngine" $BaseImage bash 
