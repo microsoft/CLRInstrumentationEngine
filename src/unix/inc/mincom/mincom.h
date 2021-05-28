@@ -54,3 +54,5 @@
 #include "hresults.h"
 
 #include "minunknwn.h"
+
+#define _T(X) u ## X

@@ -5,6 +5,7 @@
 
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
+#pragma warning(disable: 6285) // bug in <functional> that compares 0 to 0, resulting in a warning.
 #include <atomic>
 #include <functional>
 #include <atlsync.h>

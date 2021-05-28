@@ -52,7 +52,7 @@ WORKDIR /usr/share/cmakeinst
 # Copy manifest json to the target so that we can extract the download url and
 # version of cmake
 COPY "components/cmake/cgmanifest.json" /usr/share/cmakeinst
-RUN cmakeurl=$(cat cgmanifest.json | cat cgmanifest.json | jq '.Registrations[0].Component.other.DownloadUrl' | sed 's/^\"\s*//;s/\"*$//') \
+RUN cmakeurl=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.DownloadUrl' | sed 's/^\"\s*//;s/\"*$//') \
     && cmakever=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.Version' | sed 's/^\"\s*//;s/\"*$//') \
     && cmakesha256=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.SHA256CHECK' | sed 's/^\"\s*//;s/\"*$//') \
     && echo found cmake version "$cmakever" at url "$cmakeurl" \

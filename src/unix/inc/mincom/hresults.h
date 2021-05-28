@@ -17,3 +17,7 @@
 #define E_FAIL                           (HRESULT)(0x80004005L)
 #define E_ACCESSDENIED                   (HRESULT)(0x80070005L)
 #define E_PENDING                        (HRESULT)(0x8000000AL)
+#define E_BOUNDS                         (HRESULT)(0x8000000BL)
+
+#define FAILED(_HR) (((HRESULT)(_HR)) < 0)
+#define SUCCEEDED(_HR) (((HRESULT)(_HR)) >= 0)
