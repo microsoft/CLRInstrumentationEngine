@@ -77,8 +77,7 @@ check_prereqs()
 {
     echo "Checking pre-requisites..."
 
-    # Check presence of CMake on the path
-    hash cmake 2>/dev/null || { echo >&2 "Please install cmake before running this script"; print_install_instructions; exit 1; }
+    get_cmake
 
     # Check for dotnet
     hash dotnet 2>/dev/null || { echo >&2 "Please install dotnet before running this script"; print_install_instructions; exit 1; }
@@ -109,6 +108,44 @@ locate_llvm_exec()
     exit 1
     fi
 }
+
+
+locate_google_test()
+{
+    manifest="$EnlistmentRoot/src/unix/docker/context/components/googletest/cgmanifest.json"
+    __GoogleTestUrl=$(cat $manifest | jq '.Registrations[0].Component.git.RepositoryUrl' | sed 's/^\"\s*//;s/\"*$//')
+    __GoogleTestTag=$(cat $manifest | jq '.Registrations[0].Component.git.Tag' | sed 's/^\"\s*//;s/\"*$//')
+}
+
+get_cmake()
+{
+    cmakeLocation=cmake
+
+    #if cmake is not on this machine just download it.
+    hash cmake 2>/dev/null || {
+         $cmakeLocation=download_cmake
+         echo cmakeLocation
+         return; 
+    }
+
+    # get the current version of cmake, and see if it is high enough
+    cmakeVersion=$(cmake --version)
+    cmakeVersion=$(echo $cmakeVersion | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/g')
+    echo "found cmake version $cmakeVersion"
+    cmakeMajor=$(echo $cmakeVersion | sed 's/^.*[^0-9]\([0-9]*\)\..*$/\1'/)
+    cmakeMinor=$(echo $cmakeVersion | sed 's/^.*[^0-9]*\.\([0-9]*\)\..*$/\1'/)
+    if (( $cmakeMajor > 3 )); then
+        if (( $cmakeMinor >= 14 )); then
+            # found sufficient cmake, continue.
+            echo $cmakeLocation
+            return
+        fi
+    fi
+
+    echo "Insufficient cmake version. Ensure cmake version 3.14 or later is installed"
+    exit 1
+}
+
 
 locate_build_tools()
 {
@@ -154,6 +191,9 @@ locate_build_tools()
         source $linux_id_file
         cmake_extra_defines="$cmake_extra_defines -DCLR_CMAKE_LINUX_ID=$ID"
     fi
+
+    locate_google_test
+    $echo "found google version '$__GoogleTestTag' test at '$__GoogleTestUrl'"
 }
 
 invoke_build()
@@ -177,6 +217,8 @@ invoke_build()
       "-DREPOSITORY_ROOT=$EnlistmentRoot" \
       "-DINTERMEDIATES_DIR=$__IntermediatesDir" \
       "-DENGINEBINARIES_DIR=$__ClrInstrumentationEngineBinDir" \
+      "-DGOOGLE_TEST_URL=$__GoogleTestUrl" \
+      "-DGOOGLE_TEST_TAG=$__GoogleTestTag" \
       $cmake_extra_defines \
       "$EnlistmentRoot/src"
 
@@ -212,6 +254,8 @@ invoke_build()
         exit 1
     fi
 
+    echo "Running tests"
+    ctest
 }
 
 write_commit_file()
@@ -527,6 +571,8 @@ setup_dirs
 check_prereqs
 
 restore_build_dependencies
+
+pwd
 
 invoke_build
 

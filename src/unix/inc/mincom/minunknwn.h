@@ -4,7 +4,7 @@
 // ccomptrs.h Defines the 
 
 #pragma once
-
+#include "mincom.h"
 #include <cstring>
 
 #define DECLARE_INTERFACE(iface)    interface DECLSPEC_NOVTABLE iface

@@ -1,0 +1,15 @@
+{
+    "Registrations": [ 
+        {
+            "Component": { 
+                "Type": "git", 
+                "git": {
+                    "RepositoryUrl": "https://github.com/google/googletest",
+                    "CommitHash": "ec44c6c1675c25b9827aacd08c02433cccde7780",
+                    "Tag": "release-1.8.0"
+                }
+            },
+            "DevelopmentDependency": true
+        }
+    ]
+}

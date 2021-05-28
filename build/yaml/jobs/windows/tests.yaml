@@ -84,9 +84,13 @@ jobs:
   - ${{ if eq('Native', parameters.TestType) }}:
     - template: ../../steps/windows/tests.yaml
       parameters:
-        Platform: $(Platform)
         SubFolder: '**\'
         RunTitle: '$(Build.BuildNumber)_Windows_Native_$(Configuration)_$(Platform)'
+    - template: ../../steps/windows/googletests.yaml
+      parameters:
+        Exes:
+        - CommonLibTests.exe
+        - InstrumentationEngineLibTests.exe
   
   # All of the .NET tests need to be run separately
   # otherwise vstest will fallback to running
@@ -95,18 +99,15 @@ jobs:
   - ${{ if eq('Managed', parameters.TestType) }}:
     - template: ../../steps/windows/tests.yaml
       parameters:
-        Platform: $(Platform)
         RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)_$(Platform)'
 
     - template: ../../steps/windows/tests.yaml
       parameters:
-        Platform: $(Platform)
         SubFolder: 'net4*\'
         RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)_$(Platform)'
 
     - template: ../../steps/windows/tests.yaml
       parameters:
-        Platform: $(Platform)
         SubFolder: 'netcoreapp3.1\'
         RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)_$(Platform)'
     
