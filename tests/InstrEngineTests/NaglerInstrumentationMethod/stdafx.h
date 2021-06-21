@@ -36,7 +36,8 @@ do { if (FAILED(hr = (EXPR))) { ATLASSERT(!L"IfFailRet(" L#EXPR L") failed"); re
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <Pathcch.h>
+#include <Shlwapi.h>
+//#include <Pathcch.h> // For Windows 7 support, we cannot use PathCch functions.
 
 using namespace std;
 using namespace ATL;

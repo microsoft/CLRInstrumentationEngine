@@ -83,7 +83,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     WCHAR wszModuleFullPath[MAX_PATH];
     memset(wszModuleFullPath, 0, MAX_PATH);
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
-    PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule);
+
+    // For Windows 7 support, we cannot use PathCch functions.
+    //PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule);
+    if (!wcslen(wszModuleFullPath) + m_bstrModule.Length() < MAX_PATH - 1 ||
+        !PathCombine(wszModuleFullPath, wszModuleFullPath, m_bstrModule) ||
+        !PathCanonicalize(wszModuleFullPath, wszModuleFullPath))
+    {
+        DWORD dwLastError = GetLastError();
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - configuration file path '%s' + '%s' is too long, PID: %u"), wszModuleFullPath, m_bstrModuleFolder.m_str, GetCurrentProcessId());
+        return dwLastError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dwLastError);
+    }
 
     m_hmod = ::LoadLibrary(wszModuleFullPath);
 

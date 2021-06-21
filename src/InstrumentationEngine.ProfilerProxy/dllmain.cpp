@@ -5,7 +5,8 @@
 
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
-#include "PathCch.h"
+//#include "PathCch.h"
+#include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
@@ -112,8 +113,19 @@ namespace ProfilerProxy
         WCHAR wszEngineFullPath[MAX_PATH];
         IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
 
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
+        if (!wcslen(wszEngineFullPath) + wcslen(wszVersionFolder) + wcslen(profilerRelativeFileName) < MAX_PATH - 1||
+            !PathCombine(wszEngineFullPath, wszEngineFullPath, wszVersionFolder) ||
+            !PathCombine(wszEngineFullPath, wszEngineFullPath, profilerRelativeFileName) ||
+            !PathCanonicalize(wszEngineFullPath, wszEngineFullPath))
+        {
+            DWORD dwLastError = GetLastError();
+            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll."));
+            return dwLastError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dwLastError);
+        }
+
+        // For Windows 7 support, we cannot use PathCch functions.
+        //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
+        //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&

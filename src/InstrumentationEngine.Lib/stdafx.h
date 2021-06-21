@@ -49,7 +49,8 @@ using namespace ATL;
 // TODO: We should use the CommonLib xml doc wrapper instead.
 #ifndef PLATFORM_UNIX
 #include <msxml6.h>
-#include <Pathcch.h>
+//#include <Pathcch.h> // For Windows 7 support, we cannot use PathCch functions.
+#include <Shlwapi.h>
 #else
 #include <libxml/parser.h>
 #include <libxml/tree.h>
