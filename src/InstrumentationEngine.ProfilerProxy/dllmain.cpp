@@ -124,7 +124,7 @@ namespace ProfilerProxy
             wcslen(wszBuffer) >= MAX_PATH)
         {
             dError = GetLastError();
-            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll: '%s' + '%s' + '%s'", wszEngineFullPath, wszVersionFolder, profilerRelativeFileName));
+            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll: '%s' + '%s' + '%s'"), wszEngineFullPath, wszVersionFolder, profilerRelativeFileName);
             return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
         }
 
@@ -328,11 +328,11 @@ namespace ProfilerProxy
         // For Windows 7 support, we cannot use PathCch functions.
         //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
         if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
-            !PathAppend(wszBuffer, instrumentationEngineFolder) ||
+            !PathAppend(wszBuffer, profilerRelativeFileName) ||
             wcslen(wszBuffer) >= MAX_PATH)
         {
             dError = GetLastError();
-            eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to append instrumentationEngine folder to profiler path: '%s' + '%s'"), wszProfilerPath, instrumentationEngineFolder);
+            eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to append dll to profiler path: '%s' + '%s'"), wszProfilerPath, profilerRelativeFileName);
             return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
         }
 
