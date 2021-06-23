@@ -109,23 +109,26 @@ namespace ProfilerProxy
         HRESULT hr = S_OK;
 
         *pHasProfiler = FALSE;
+        DWORD dError = 0;
 
         WCHAR wszEngineFullPath[MAX_PATH];
         IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
 
-        if (!wcslen(wszEngineFullPath) + wcslen(wszVersionFolder) + wcslen(profilerRelativeFileName) < MAX_PATH - 1||
-            !PathCombine(wszEngineFullPath, wszEngineFullPath, wszVersionFolder) ||
-            !PathCombine(wszEngineFullPath, wszEngineFullPath, profilerRelativeFileName) ||
-            !PathCanonicalize(wszEngineFullPath, wszEngineFullPath))
-        {
-            DWORD dwLastError = GetLastError();
-            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll."));
-            return dwLastError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dwLastError);
-        }
-
         // For Windows 7 support, we cannot use PathCch functions.
         //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
         //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
+        WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
+        if (!PathCanonicalize(wszBuffer, wszEngineFullPath) ||
+            !PathAppend(wszBuffer, wszVersionFolder) ||
+            !PathAppend(wszBuffer, profilerRelativeFileName) ||
+            wcslen(wszBuffer) >= MAX_PATH)
+        {
+            dError = GetLastError();
+            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll: '%s' + '%s' + '%s'", wszEngineFullPath, wszVersionFolder, profilerRelativeFileName));
+            return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
+        }
+
+        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszBuffer));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -235,6 +238,7 @@ namespace ProfilerProxy
     static HRESULT LoadProfiler(_In_ CEventLogger& eventLogger)
     {
         HRESULT hr = S_OK;
+        DWORD dError = 0;
 
         //
         // Determine "Program Files" folder
@@ -264,7 +268,19 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
+        // For Windows 7 support, we cannot use PathCch functions.
+        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
+        WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
+        if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
+            !PathAppend(wszBuffer, instrumentationEngineFolder) ||
+            wcslen(wszBuffer) >= MAX_PATH)
+        {
+            dError = GetLastError();
+            eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to append to profiler path: '%s' + '%s'"), wszProfilerPath, instrumentationEngineFolder);
+            return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
+        }
+
+        IfFailRetErrno_Proxy(wcscpy_s(wszProfilerPath, MAX_PATH, wszBuffer));
 
         //
         // Determine Version folder
@@ -292,13 +308,35 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
+        // For Windows 7 support, we cannot use PathCch functions.
+        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
+        if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
+            !PathAppend(wszBuffer, versionFolder.c_str()) ||
+            wcslen(wszBuffer) >= MAX_PATH)
+        {
+            dError = GetLastError();
+            eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to append folder version to profiler path: '%s' + '%s'"), wszProfilerPath, versionFolder.c_str());
+            return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
+        }
+
+        IfFailRetErrno_Proxy(wcscpy_s(wszProfilerPath, MAX_PATH, wszBuffer));
 
         //
         // Determine and Load Profiler
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
+        // For Windows 7 support, we cannot use PathCch functions.
+        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
+        if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
+            !PathAppend(wszBuffer, instrumentationEngineFolder) ||
+            wcslen(wszBuffer) >= MAX_PATH)
+        {
+            dError = GetLastError();
+            eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to append instrumentationEngine folder to profiler path: '%s' + '%s'"), wszProfilerPath, instrumentationEngineFolder);
+            return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
+        }
+
+        IfFailRetErrno_Proxy(wcscpy_s(wszProfilerPath, MAX_PATH, wszBuffer));
 
         eventLogger.LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
 

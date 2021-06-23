@@ -86,15 +86,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
 
     // For Windows 7 support, we cannot use PathCch functions.
     //PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule);
-    if (!wcslen(wszModuleFullPath) + m_bstrModule.Length() < MAX_PATH - 1 ||
-        !PathCombine(wszModuleFullPath, wszModuleFullPath, m_bstrModule) ||
-        !PathCanonicalize(wszModuleFullPath, wszModuleFullPath))
+    WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
+    if (!PathCanonicalize(wszBuffer, wszModuleFullPath) ||
+        !PathAppend(wszBuffer, m_bstrModule) ||
+        wcslen(wszBuffer) >= MAX_PATH)
     {
         DWORD dwLastError = GetLastError();
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - configuration file path '%s' + '%s' is too long, PID: %u"), wszModuleFullPath, m_bstrModuleFolder.m_str, GetCurrentProcessId());
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to generate method configuration fullpath '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
         return dwLastError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dwLastError);
     }
 
+    wcscpy_s(wszModuleFullPath, MAX_PATH, wszBuffer);
     m_hmod = ::LoadLibrary(wszModuleFullPath);
 
     if (m_hmod == NULL)
