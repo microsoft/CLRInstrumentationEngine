@@ -1,0 +1,76 @@
+{
+  "version": "latest",
+  "suppressionSets": {
+    "BinSkimSuppression": {
+      "name": "BinSkimSuppression",
+      "createdDate": "2021-06-29 20:47:18Z",
+      "lastUpdatedDate": "2021-06-29 20:47:18Z"
+    }
+  },
+  "results": {
+    "67c5533291875bf56cdca19105b6b22411ecdd7c22e8abec4f1a22090580f80b": {
+      "signature": "67c5533291875bf56cdca19105b6b22411ecdd7c22e8abec4f1a22090580f80b",
+      "alternativeSignatures": [
+        "0be1212e84fab7e7fc54c95109c22ca392d5302d4baa265e94814ccdf2d7cd25"
+      ],
+      "target": "binaries-windows-Release/x64/CommonLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2024",
+      "justification": "linking to gtest will give this warning, which we cannot change.",
+      "createdDate": "2021-06-29 20:47:18Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "9c0c38899ed52e119bfdd7008daa44537a70d0d0c818a9023130931c716172a5": {
+      "signature": "9c0c38899ed52e119bfdd7008daa44537a70d0d0c818a9023130931c716172a5",
+      "alternativeSignatures": [
+        "1700d381b7f1ed5e65c6dbcb66cea323df1bdc568f5cd53578e3a5c46cdb075d"
+      ],
+      "target": "binaries-windows-Release/x64/InstrumentationEngineLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2024",
+      "justification": "linking to gtest will give this warning, which we cannot change.",
+      "createdDate": "2021-06-29 20:47:18Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "736849a4a3e9a3dadef236e1889e3f1733009721c6f49ef3526deec8712ed8b9": {
+      "signature": "736849a4a3e9a3dadef236e1889e3f1733009721c6f49ef3526deec8712ed8b9",
+      "alternativeSignatures": [
+        "e10babc8ad89fb88a86a14a15ca4c3d0b95fba7f734c034e7436fdfe04bb8b50"
+      ],
+      "target": "binaries-windows-Release/x86/CommonLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2024",
+      "justification": "linking to gtest will give this warning, which we cannot change.",
+      "createdDate": "2021-06-29 20:47:18Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "77cd5e20a402c668dbaf20ac67f358fd9da6faef00befaad0ce91f5f431a8f0f": {
+      "signature": "77cd5e20a402c668dbaf20ac67f358fd9da6faef00befaad0ce91f5f431a8f0f",
+      "alternativeSignatures": [
+        "3e2aa7602d9c152b7c093f87f07e622265bcc2fed5e396e5160a149ea979f0f9"
+      ],
+      "target": "binaries-windows-Release/x86/InstrumentationEngineLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2024",
+      "justification": "linking to gtest will give this warning, which we cannot change.",
+      "createdDate": "2021-06-29 20:47:18Z",
+      "expirationDate": null,
+      "type": null
+    }
+  }
+}

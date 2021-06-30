@@ -31,4 +31,6 @@ steps:
     GdnBreakOutputSuppressionSet: MySupp1
     GdnBreakBaselineFiles: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\baseline
     GdnBreakBaselines: ApiScanBaseline
+    GdnBreakSuppressionFiles: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\suppress
+    GdnBreakSuppressionSets: BinSkimSuppression
   condition: succeededOrFailed()
