@@ -57,7 +57,7 @@ TEST(ConfigurationTests, LoadConfigurationLoadsOneInstrumentationMethodCorrectly
 {
     // Initialze for COM, if needed.
     CoInit co;
-    auto fileName = fs::current_path() / _ST("ConfigLoads.xml");
+    auto fileName = fs::current_path() / _SS("ConfigLoads.xml");
     if (exists(fileName))
     {
         remove(fileName);
@@ -69,15 +69,15 @@ TEST(ConfigurationTests, LoadConfigurationLoadsOneInstrumentationMethodCorrectly
 
     ASSERT_TRUE(!output.fail() && !output.bad());
 
-    output << _ST("<InstrumentationEngineConfiguration>") << std::endl;
-    output << _ST("  <InstrumentationMethod>") << std::endl;
-    output << _ST("    <Name>Squid Instrumentation</Name>") << std::endl;
-    output << _ST("    <Description>Dynamically make squids swim</Description>") << std::endl;
-    output << _ST("    <Module>SeafoodInstrumentation.dll</Module>") << std::endl;
-    output << _ST("    <ClassGuid>{249E89A6-12D9-4E03-82FF-7FEAA41310E9}</ClassGuid>") << std::endl;
-    output << _ST("    <Priority>50</Priority>") << std::endl;
-    output << _ST("  </InstrumentationMethod>") << std::endl;
-    output << _ST("</InstrumentationEngineConfiguration>") << std::endl;
+    output << _SS("<InstrumentationEngineConfiguration>") << std::endl;
+    output << _SS("  <InstrumentationMethod>") << std::endl;
+    output << _SS("    <Name>Squid Instrumentation</Name>") << std::endl;
+    output << _SS("    <Description>Dynamically make squids swim</Description>") << std::endl;
+    output << _SS("    <Module>SeafoodInstrumentation.dll</Module>") << std::endl;
+    output << _SS("    <ClassGuid>{249E89A6-12D9-4E03-82FF-7FEAA41310E9}</ClassGuid>") << std::endl;
+    output << _SS("    <Priority>50</Priority>") << std::endl;
+    output << _SS("  </InstrumentationMethod>") << std::endl;
+    output << _SS("</InstrumentationEngineConfiguration>") << std::endl;
 
     output.close();
 
@@ -98,7 +98,7 @@ TEST(ConfigurationTests, LoadConfigurationLoadsOneInstrumentationMethodCorrectly
 TEST(ConfigurationTests, LoadConfigurationDoesNotCrashWhenDescriptionIsMissing)
 {
     CoInit co;
-    auto fileName = fs::current_path() / _ST("ConfigFails.xml");
+    auto fileName = fs::current_path() / _SS("ConfigFails.xml");
     if (exists(fileName))
     {
         remove(fileName);
@@ -108,14 +108,14 @@ TEST(ConfigurationTests, LoadConfigurationDoesNotCrashWhenDescriptionIsMissing)
     output.open(fileName, ios_base::app | ios_base::out);
     ASSERT_TRUE(!output.fail() && !output.bad());
 
-    output << _ST("<InstrumentationEngineConfiguration>") << std::endl;
-    output << _ST("<InstrumentationMethod>") << std::endl;
-    output << _ST("  <Name>Squid Instrumentation</Name>") << std::endl;
-    output << _ST("  <Module>SeafoodInstrumentation.dll</Module>") << std::endl;
-    output << _ST("  <ClassGuid>{249E89A6-12D9-4E03-82FF-7FEAA41310E9}</ClassGuid>") << std::endl;
-    output << _ST("  <Priority>50</Priority>") << std::endl;
-    output << _ST("</InstrumentationMethod>") << std::endl;
-    output << _ST("</InstrumentationEngineConfiguration>") << std::endl;
+    output << _SS("<InstrumentationEngineConfiguration>") << std::endl;
+    output << _SS("<InstrumentationMethod>") << std::endl;
+    output << _SS("  <Name>Squid Instrumentation</Name>") << std::endl;
+    output << _SS("  <Module>SeafoodInstrumentation.dll</Module>") << std::endl;
+    output << _SS("  <ClassGuid>{249E89A6-12D9-4E03-82FF-7FEAA41310E9}</ClassGuid>") << std::endl;
+    output << _SS("  <Priority>50</Priority>") << std::endl;
+    output << _SS("</InstrumentationMethod>") << std::endl;
+    output << _SS("</InstrumentationEngineConfiguration>") << std::endl;
 
     output.close();
 

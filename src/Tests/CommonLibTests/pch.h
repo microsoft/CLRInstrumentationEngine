@@ -25,11 +25,11 @@
 #include "Common.Lib/refcount.h"
 
 #if defined(PLATFORM_UNIX)
-#define _WT(X) u ## X
-#define _ST(X) u8 ## X
+#define _WS(X) u ## X
+#define _SS(X) u8 ## X
 #else
-#define _WT(X) L ## X
-#define _ST(X) L ## X
+#define _WS(X) L ## X
+#define _SS(X) L ## X
 #endif
 
 #define ASSERT_OK(X) ASSERT_EQ(S_OK, (X))
