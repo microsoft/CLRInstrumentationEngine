@@ -15,6 +15,7 @@ steps:
     workItemType: Bug
     title: 'CLR Instrumentation Engine ${{ parameters.BuildName}} Build Failed'
     areaPath: '$(AreaPath)'
+    iterationPath: '$(IterationPath)'
     fieldMappings: |
      Repro Steps=See linked builds for more information
      Tags=${{ parameters.Tags}}

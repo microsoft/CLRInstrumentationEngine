@@ -53,9 +53,9 @@ jobs:
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
 
-    - template: ../../steps/codeanalysis/filebugs.yaml
-      parameters:
-        BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
-        Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
+      Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
   - template: ../../steps/microbuild/cleanup.yaml
