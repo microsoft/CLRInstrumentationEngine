@@ -1515,12 +1515,12 @@ library MicrosoftInstrumentationEngine
         // Note, for desktop CLR, this function is only valid if the current reJIT ID is
         // 0. In such cases, if the ReJIT id is greater than 0, then this function will return E_NOT_IMPL. For
         // CoreCLR 2 and above, this function should return valid maps on rejit.
-        HRESULT GetILNativeMapping([in] ULONG32 cMaps, [out] COR_DEBUG_IL_TO_NATIVE_MAP* pMap, [out] ULONG32* pcNeeded);
+        HRESULT GetILNativeMapping([in] ULONG32 cMaps, [in, out, size_is(cMaps)] COR_DEBUG_IL_TO_NATIVE_MAP pMap[], [out] ULONG32* pcNeeded);
 
         // Retrieves a mapping of original IL to final instrumented IL for this jitted method.
         // If cMaps is 0 or pMap is NULL, then this function will simply set *pcNeeded to the number of
         // COR_IL_MAP instances that are available.
-        HRESULT GetILInstrumentationMap([in] ULONG32 cMaps, [out] COR_IL_MAP* pMap, [out] ULONG32* pcNeeded);
+        HRESULT GetILInstrumentationMap([in] ULONG32 cMaps, [in, out, size_is(cMaps)] COR_IL_MAP pMap[], [out] ULONG32* pcNeeded);
 
         // Gets the method token for the jitted method.
         HRESULT GetMethodToken([out] mdMethodDef* pToken);

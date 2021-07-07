@@ -54,8 +54,8 @@ stages:
   - template: ../jobs/codeanalysis/apiscan.yaml
   - template: ../jobs/codeanalysis/binskim.yaml
 
-- stage: Run_Build_Analyzers
-  displayName: Code Analysis (Build Time)
+- stage: Run_CS_Analyzers
+  displayName: Code Analysis (Build Time Managed)
   dependsOn: []
 
   jobs:
@@ -64,18 +64,26 @@ stages:
       Platform: AnyCPU
       Analyzer: csharp
 
-# Semmle is the future for C++ code analysis, but it doesn't
-# seem to be working right now. Run prefast instead.
-#  - template: ../jobs/codeanalysis/buildanalyzer.yaml
-#    parameters:
-#      Platform: x64
-#      Analyzer: cpp
+- stage: Run_Semmle_Analyzers
+  displayName: Code Analysis (Build Time C++ CodeQL)
+  dependsOn: []
 
-#  - template: ../jobs/codeanalysis/buildanalyzer.yaml
-#    parameters:
-#      Platform: x86
-#      Analyzer: cpp
+  jobs:
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+    parameters:
+      Platform: x64
+      Analyzer: cpp
 
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+    parameters:
+      Platform: x86
+      Analyzer: cpp
+
+- stage: Run_PreFast_Analyzers
+  displayName: Code Analysis (Build Time C++ PreFast )
+  dependsOn: []
+
+  jobs:
   - template: ../jobs/codeanalysis/buildanalyzer.yaml
     parameters:
       Platform: x64

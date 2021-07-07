@@ -63,9 +63,9 @@ namespace MicrosoftInstrumentationEngine
         HRESULT DecodeInstructions(_In_ LPCBYTE pCodeBase, _In_ LPCBYTE pEndOfCode);
 
         HRESULT EncodeIL(
-            _Out_ CAutoVectorPtr<BYTE>* ppILBuffer,
+            _Inout_ vector<BYTE>& ppILBuffer,
             _Out_ DWORD* pdwILStreamLen,
-            _Out_ CAutoVectorPtr<COR_IL_MAP>* ppCorILMap,
+            _Inout_ vector<COR_IL_MAP>& ppCorILMap,
             _Out_ DWORD* pdwCorILMapmLen
             );
 

@@ -62,7 +62,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetAppDomainById(_
 
     if (iter == m_appDomains.end())
     {
-        CLogging::LogMessage(_T("CAppDomainCollection::GetAppDomainById - Failed to find specified appdomain %04x"), appDomainId);
+        CLogging::LogMessage(_T("CAppDomainCollection::GetAppDomainById - Failed to find specified appdomain %08" PRIxPTR), appDomainId);
         return E_FAIL;
     }
 
@@ -85,7 +85,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::RemoveAppDomainInf
 
     if (iter == m_appDomains.end())
     {
-        CLogging::LogError(_T("CAppDomainCollection::RemoveAppDomainInfo - Failed to find specified appdomain %04x"), appDomainId);
+        CLogging::LogError(_T("CAppDomainCollection::RemoveAppDomainInfo - Failed to find specified appdomain %08" PRIxPTR),appDomainId);
         return E_FAIL;
     }
 
