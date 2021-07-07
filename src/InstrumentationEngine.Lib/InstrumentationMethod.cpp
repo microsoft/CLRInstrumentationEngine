@@ -84,8 +84,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     memset(wszModuleFullPath, 0, MAX_PATH);
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
 
-    // For Windows 7 support, we cannot use PathCch functions.
-    //PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule);
     WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
     if (!PathCanonicalize(wszBuffer, wszModuleFullPath) ||
         !PathAppend(wszBuffer, m_bstrModule) ||

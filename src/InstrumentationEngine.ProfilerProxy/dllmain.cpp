@@ -5,7 +5,6 @@
 
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
-//#include "PathCch.h"
 #include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
 
@@ -114,9 +113,6 @@ namespace ProfilerProxy
         WCHAR wszEngineFullPath[MAX_PATH];
         IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
 
-        // For Windows 7 support, we cannot use PathCch functions.
-        //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
-        //IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
         WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
         if (!PathCanonicalize(wszBuffer, wszEngineFullPath) ||
             !PathAppend(wszBuffer, wszVersionFolder) ||
@@ -268,8 +264,6 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        // For Windows 7 support, we cannot use PathCch functions.
-        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
         WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
         if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
             !PathAppend(wszBuffer, instrumentationEngineFolder) ||
@@ -308,8 +302,6 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        // For Windows 7 support, we cannot use PathCch functions.
-        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
         if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
             !PathAppend(wszBuffer, versionFolder.c_str()) ||
             wcslen(wszBuffer) >= MAX_PATH)
@@ -325,8 +317,6 @@ namespace ProfilerProxy
         // Determine and Load Profiler
         //
 
-        // For Windows 7 support, we cannot use PathCch functions.
-        //IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
         if (!PathCanonicalize(wszBuffer, wszProfilerPath) ||
             !PathAppend(wszBuffer, profilerRelativeFileName) ||
             wcslen(wszBuffer) >= MAX_PATH)
