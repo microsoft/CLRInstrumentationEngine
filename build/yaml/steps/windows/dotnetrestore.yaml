@@ -1,0 +1,18 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Restore NuGet Packages
+
+parameters:
+  Solution: ''
+  Condition: 'succeeded()'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Restore ${{ parameters.Solution }}
+  inputs:
+    command: restore
+    projects: ${{ parameters.Solution }}
+    feedsToUse: config
+    nugetConfigPath: NuGet.config
+  condition: ${{ parameters.Condition }}

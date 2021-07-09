@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <PropertyGroup>
     <SubComponent>Intercept.2.0.1.Tests</SubComponent>
   </PropertyGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup Condition="'$(Platform)' == 'x86'">
     <DefineConstants>$(DefineConstants);X86</DefineConstants>
   </PropertyGroup>
@@ -13,68 +13,24 @@
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <DefineConstants Condition="'$(PublicRelease)' != 'True'">$(DefineConstants);ALLOWNOTSIGNED</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EAD25B2C-E362-4660-A2FD-AD82B7C1FD77}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
     <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Dependencies\LegacyDependencies.csproj">
-      <Project>{C9F8EA17-5B45-4327-8640-7F2C82217DC2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <Name>LegacyDependencies</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AI.Agent.Intercept">
-      <HintPath>$(PackagesDir)\Microsoft.ApplicationInsights.Agent.Intercept\$(LegacyApplicationInsightsAgentInterceptVersion)\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RemoteUnitTestExecutor">
-      <HintPath>$(PackagesDir)\RemoteUnitTestExecutor\$(RemoteUnitExecutorVersion)\lib\net40\RemoteUnitTestExecutor.exe</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.XML" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Constants.cs" />
+    <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(LegacyApplicationInsightsAgentInterceptVersion)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
+    <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
+    <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
+    <PackageReference Include="RemoteUnitTestExecutor" Version="$(RemoteUnitExecutorVersion)" />
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
-  <Import Project="$(EnlistmentRoot)\build\Common.targets" />
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

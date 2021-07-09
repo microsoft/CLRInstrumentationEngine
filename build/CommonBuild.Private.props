@@ -48,6 +48,9 @@
         <ApplicationInsightsAgentInterceptVersion>2.4.0</ApplicationInsightsAgentInterceptVersion>
         <LegacyApplicationInsightsAgentInterceptVersion>2.0.1</LegacyApplicationInsightsAgentInterceptVersion>
         <MicroBuildCoreVersion>0.4.1</MicroBuildCoreVersion>
+        <MicrosoftNETTestSdkVersion>16.9.1</MicrosoftNETTestSdkVersion>
+        <MSTestTestAdapterVersion>2.1.2</MSTestTestAdapterVersion>
+        <MSTestTestFrameworkVersion>2.1.2</MSTestTestFrameworkVersion>
         <WixVersion>3.11.1</WixVersion>
     </PropertyGroup>
 

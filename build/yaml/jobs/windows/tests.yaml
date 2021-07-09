@@ -38,17 +38,7 @@ jobs:
 
   - ${{ if eq('Managed', parameters.TestType) }}:
     # Install dotnet runtimes to allow .NET Core and .NET 5+ based unit tests to run.
-    - task: UseDotNet@2
-      displayName: Install .NET Core 3.1 Runtime
-      inputs:
-        packageType: 'runtime'
-        version: '3.1.x'
-
-    - task: UseDotNet@2
-      displayName: Install .NET 5.0 Runtime
-      inputs:
-        packageType: 'runtime'
-        version: '5.0.x'
+    - template: ../../steps/azuredevops/usedotnet.yaml
 
     # The UseDotNet task is not sufficient because it will only install the X64 runtimes
     # whereas the tests require both X64 and X86 since they run the test apps with different,
@@ -67,12 +57,14 @@ jobs:
         New-Item -Path $dotnetX64Dir -ItemType 'Directory' | Out-Null
         & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x64' -InstallDir $dotnetX64Dir
         & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
         $dotnetX64Path = Join-Path -Path $dotnetX64Dir -ChildPath 'dotnet.exe' -Resolve
         # Install x86 runtimes
         $dotnetX86Dir = Join-Path -Path $dotnetDir -ChildPath 'x86'
         New-Item -Path $dotnetX86Dir -ItemType 'Directory' | Out-Null
         & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x86' -InstallDir $dotnetX86Dir
         & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
         $dotnetX86Path = Join-Path -Path $dotnetX86Dir -ChildPath 'dotnet.exe' -Resolve
         # Set job variables
         Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
@@ -82,10 +74,11 @@ jobs:
   # When running native tests, include all tests
   # from all folders recursively
   - ${{ if eq('Native', parameters.TestType) }}:
-    - template: ../../steps/windows/tests.yaml
+    - template: ../../steps/windows/vstest.yaml
       parameters:
         SubFolder: '**\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Native_$(Configuration)_$(Platform)'
+        RunTitle: '$(Build.BuildNumber)_Windows_$(Platform)_$(Configuration)'
+
     - template: ../../steps/windows/googletests.yaml
       parameters:
         Exes:
@@ -97,25 +90,29 @@ jobs:
   # .NET Framework tests only. Minimize by grouping
   # by their runtime version.
   - ${{ if eq('Managed', parameters.TestType) }}:
-    - template: ../../steps/windows/tests.yaml
+    - template: ../../steps/windows/dotnettest.yaml
       parameters:
-        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)_$(Platform)'
+        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)'
 
-    - template: ../../steps/windows/tests.yaml
+    - template: ../../steps/windows/dotnettest.yaml
       parameters:
         SubFolder: 'net4*\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)_$(Platform)'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)'
 
-    - template: ../../steps/windows/tests.yaml
+    - template: ../../steps/windows/dotnettest.yaml
       parameters:
         SubFolder: 'netcoreapp3.1\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)_$(Platform)'
+        RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)'
     
-    - template: ../../steps/windows/tests.yaml
+    - template: ../../steps/windows/dotnettest.yaml
       parameters:
-        Platform: $(Platform)
         SubFolder: 'net50\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)_$(Platform)'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)'
+    
+    - template: ../../steps/windows/dotnettest.yaml
+      parameters:
+        SubFolder: 'net60\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net60_$(Configuration)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

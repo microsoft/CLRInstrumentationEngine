@@ -36,6 +36,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+  
+  - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/signing.yaml
