@@ -45,7 +45,12 @@
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
   <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
-    <Exec Command="&quot;$(SDK40ToolsPath)\xsd.exe&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
+    <PropertyGroup>
+      <XsdToolPath Condition = "!Exists('$(XsdToolPath)')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
+      <XsdToolPath Condition = "!Exists('$(XsdToolPath)')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(XsdToolPath)')" Text="Unable to locate xsd.exe tool." />
+    <Exec Command="&quot;$(XsdToolPath)&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
   <ItemGroup>
     <!-- dotnet core 3.1 produces both a dll and exe -->
