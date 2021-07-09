@@ -370,7 +370,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::CreateILFunctionBody()
 {
     HRESULT hr = S_OK;
 
-    if (m_pIntermediateRenderedMethod.empty())
+    if (!m_pIntermediateRenderedMethod.empty())
     {
         CLogging::LogError(_T("CMethodInfo::CreateILFunctionBody - intermediate method body has already been set."));
         return E_FAIL;
@@ -1672,7 +1672,7 @@ void MicrosoftInstrumentationEngine::CMethodInfo::LogMethodInfo()
     CLogging::LogDumpMessage(_T("    <Name>%s</Name>"), bstrMethodName.m_str);
     CLogging::LogDumpMessage(_T("    <FullName>%s</FullName>"), bstrMethodFullName.m_str);
     CLogging::LogDumpMessage(_T("    <ClassID Volatile=\"True\">0x%08" PRIxPTR "</ClassID>"), classId);
-    CLogging::LogDumpMessage(_T("    <FunctionID>0x%08" PRIxPTR "</FunctionID>"), functionId);
+    CLogging::LogDumpMessage(_T("    <FunctionID Volatile=\"True\">0x%08" PRIxPTR "</FunctionID>"), functionId);
     CLogging::LogDumpMessage(_T("    <MethodToken>0x%08x</MethodToken>"), methodToken);
     CLogging::LogDumpMessage(_T("    <GenericParameterCount>0x%08x</GenericParameterCount>"), genericParamCount);
     CLogging::LogDumpMessage(_T("    <IsStatic>%1d</IsStatic>"), isStatic);
