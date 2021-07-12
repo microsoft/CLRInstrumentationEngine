@@ -59,7 +59,7 @@ namespace RemoteUnitTestExecutor
 
                 try
                 {
-                    Assert.AreEqual(line, "Done");
+                    Assert.AreEqual("Done", line);
 
                     testResult = TestResult.CreateFromFile(testOutputFileName);
 
