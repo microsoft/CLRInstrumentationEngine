@@ -8,7 +8,7 @@
     <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
 
     <PropertyGroup>
-        <TargetFramework>net45</TargetFramework>
+        <TargetFrameworks>net45</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <RootNamespace>RemoteUnitTestExecutor.Host</RootNamespace>
         <!-- Make assembly PE32 (32-bit PE header; forces .NET Framework 32-bit) -->
