@@ -1,79 +1,98 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-
 namespace RemoteUnitTestExecutor
 {
-    public abstract class TestEngineBase
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using System.Diagnostics;
+    using System.Runtime.CompilerServices;
+
+    /// <summary>
+    ///     Summary description for TestsExtensionHostLoading
+    /// </summary>
+    public class TestEngineBase
     {
-        public ITestResult ExecuteTest(string testName, bool isX86 = false, string[] expectedErrors = null)
+        public ITestResult ExecuteTest(
+            string testName,
+            bool isX86 = false,
+            string[] expectedErrors = null)
         {
-            if (string.IsNullOrWhiteSpace(testName))
+            if (true == string.IsNullOrWhiteSpace(testName))
             {
-                throw new ArgumentNullException(nameof(testName));
+                throw new ArgumentNullException("testName");
             }
-            string testOutputFileName = string.Concat("testOutput_", Guid.NewGuid(), ".xml");
-            ProcessStartInfo startInfo = new ProcessStartInfo
+
+            string testOutputFileName = "testOutput_" + Guid.NewGuid() + ".xml";
+
+            var startInfo = new ProcessStartInfo
             {
                 Arguments = "\"" + testName + "\" " + testOutputFileName,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
-                CreateNoWindow = true
+                CreateNoWindow = true,
             };
+
             if (!isX86)
             {
                 startInfo.FileName = typeof(TestEngineBase).Assembly.Location;
             }
             else
             {
-                startInfo.FileName = GetX86HostProcessName();
+                startInfo.FileName = this.GetX86HostProcessName();
             }
-            using Process debugee = new Process
+
+
+            using (var debugee = new Process { StartInfo = startInfo })
             {
-                StartInfo = startInfo
-            };
-            OnBeforeStarted(debugee);
-            if (!debugee.Start())
-            {
-                throw new InvalidOperationException("Unable to create test container process");
-            }
-            string line = debugee.StandardOutput.ReadLine();
-            TestResult testResult = null;
-            try
-            {
-                Assert.AreEqual(line, "Done");
-                testResult = TestResult.LoadFromFile(testOutputFileName);
-                if (!testResult.Succeeded)
+                OnBeforeStarted(debugee);
+
+                if (false == debugee.Start())
                 {
-                    Assert.Fail(testResult.ExceptionString);
+                    throw new InvalidOperationException("Unable to create test container process");
                 }
+
+                var line = debugee.StandardOutput.ReadLine();
+
+                ITestResult testResult = null;
+
+                try
+                {
+                    Assert.AreEqual(line, "Done");
+
+                    testResult = TestResult.CreateFromFile(testOutputFileName);
+
+                    if (!testResult.Succeeded)
+                    {
+                        Assert.Fail(testResult.ExceptionString);
+                    }
+                }
+                finally
+                {
+                    debugee.StandardInput.WriteLine("");
+                    debugee.StandardInput.Flush();
+
+                    OnComplete(debugee, expectedErrors);
+                }
+
+                return testResult;
             }
-            finally
-            {
-                debugee.StandardInput.WriteLine("");
-                debugee.StandardInput.Flush();
-                OnComplete(debugee, expectedErrors);
-            }
-            return testResult;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private string GetX86HostProcessName()
+        protected virtual void OnComplete(Process debugee, string[] expectedErrors = null)
         {
-            return typeof(Host.Program).Assembly.Location;
         }
 
         protected virtual void OnBeforeStarted(Process debugee)
         {
         }
 
-        protected virtual void OnComplete(Process debugee, string[] expectedErrors = null)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private string GetX86HostProcessName()
         {
+            // this method should not be inlined so in case of x64 CLR will not attempt to load x86 dependency (Host)
+            return typeof(RemoteUnitTestExecutor.Host.Program).Assembly.Location;
         }
     }
 }

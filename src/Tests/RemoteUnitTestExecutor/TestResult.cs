@@ -1,51 +1,75 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-
 namespace RemoteUnitTestExecutor
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
+
+    /// <summary>
+    ///     Class describing test execution.
+    /// </summary>
     [Serializable]
-    public sealed class TestResult : ITestResult
+    public class TestResult : ITestResult
     {
         public TestResult()
         {
-            Succeeded = true;
             InvokedMethods = new List<MethodInvocationInfo>();
         }
 
-        public static TestResult LoadFromFile(string path)
-        {
-            using FileStream stream = File.Open(path, FileMode.Open);
-            return (TestResult)new BinaryFormatter().Deserialize(stream);
-        }
+        public IList<MethodInvocationInfo> InvokedMethods { get; set; }
 
-        public void SaveToFile(string path)
-        {
-            using FileStream stream = File.Open(path, FileMode.OpenOrCreate);
-            new BinaryFormatter().Serialize(stream, this);
-        }
+        public bool Succeeded { get; set; }
 
         public string ExceptionString { get; set; }
 
-        public IList<MethodInvocationInfo> InvokedMethods { get; }
+        private List<string> ProfilerTraces = new List<string>();
+
+        public void Serialize(string filename)
+        {
+            using (FileStream stream = File.Open(filename, FileMode.OpenOrCreate))
+            {
+                new BinaryFormatter().Serialize(stream, this);
+            }
+        }
+
+        public static ITestResult CreateFromFile(string testOutputFileName)
+        {
+            using (FileStream deserializationStream = File.OpenRead(testOutputFileName))
+            {
+                return (ITestResult) new BinaryFormatter().Deserialize(deserializationStream);
+            }
+        }
+
+        public void AddProfilerTraces(IEnumerable<string> tracesIterator)
+        {
+            foreach (var trace in tracesIterator)
+            {
+                this.ProfilerTraces.Add(trace);
+            }
+        }
+
+        public IList<string> GetProfilerTraces()
+        {
+            return this.ProfilerTraces;
+        }
 
         public string InvokedMethodsSequence
         {
             get
             {
-                if (InvokedMethods != null)
+                if (this.InvokedMethods != null)
                 {
-                    return InvokedMethods.Aggregate(string.Empty, (string current, MethodInvocationInfo methodInvocationInfo) => current + "->" + methodInvocationInfo.MethodName);
+                    return this.InvokedMethods.Aggregate(
+                        string.Empty,
+                        (current, methodInvocationInfo) => current + "->" + methodInvocationInfo.MethodName);
                 }
+
                 return string.Empty;
             }
         }
-
-        public bool Succeeded { get; set; }
     }
 }

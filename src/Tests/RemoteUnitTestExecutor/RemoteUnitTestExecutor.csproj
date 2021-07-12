@@ -11,14 +11,12 @@
         <TargetFrameworks>net45</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <RootNamespace>RemoteUnitTestExecutor</RootNamespace>
-        <!-- Make assembly PE32+ (64-bit PE header; forces .NET Framework 64-bit) -->
-        <PlatformTarget>x64</PlatformTarget>
         <LangVersion>9.0</LangVersion>
         <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RemoteUnitTestExecutor.Host_x86\RemoteUnitTestExecutor.Host_x86.csproj" />
+        <ProjectReference Include="..\RemoteUnitTestExecutor.Host\RemoteUnitTestExecutor.Host.csproj" />
     </ItemGroup>
 
     <ItemGroup>

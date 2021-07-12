@@ -7,10 +7,11 @@ namespace RemoteUnitTestExecutor.Host
 {
     public class Program
     {
-        [LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public static void Main(string[] args)
         {
-            Type.GetType("RemoteUnitTestExecutor.Program, RemoteUnitTestExecutor").GetMethod("Main").Invoke(null, new object[1] { args });
+            Type t = Type.GetType("RemoteUnitTestExecutor.Program, RemoteUnitTestExecutor");
+            var method = t.GetMethod("Main");
+            method.Invoke(null, new object[] { args });
         }
     }
 }

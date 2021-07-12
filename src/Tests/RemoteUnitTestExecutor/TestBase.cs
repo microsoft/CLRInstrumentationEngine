@@ -3,14 +3,18 @@
 
 namespace RemoteUnitTestExecutor
 {
-    public abstract class TestBase
+    /// <summary>
+    ///     Base class for all tests.
+    ///     Exposes test's lifecycle methods and TestResult.
+    /// </summary>
+    public abstract class TestBase : ITestBase
     {
-        protected TestBase()
+        public TestBase()
         {
             TestResult = new TestResult();
         }
 
-        public abstract void Execute();
+        public ITestResult TestResult { get; private set; }
 
         public void Initialize()
         {
@@ -18,18 +22,18 @@ namespace RemoteUnitTestExecutor
             TestInitialize();
         }
 
+        public abstract void Execute();
+
         public virtual void TestCleanup()
         {
         }
 
-        protected virtual void TestInitialize()
+        public virtual void TestPreInitialize()
         {
         }
 
-        protected virtual void TestPreInitialize()
+        public virtual void TestInitialize()
         {
         }
-
-        public TestResult TestResult { get; }
     }
 }

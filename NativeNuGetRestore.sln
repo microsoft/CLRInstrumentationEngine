@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawProfilerHook.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor", "src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj", "{A8769A89-0850-47A9-ABD6-A561AB8E9D05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor.Host_x86", "src\Tests\RemoteUnitTestExecutor.Host_x86\RemoteUnitTestExecutor.Host_x86.csproj", "{9B388F59-4000-43CF-9080-0C1340420D1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor.Host", "src\Tests\RemoteUnitTestExecutor.Host\RemoteUnitTestExecutor.Host.csproj", "{9B388F59-4000-43CF-9080-0C1340420D1A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

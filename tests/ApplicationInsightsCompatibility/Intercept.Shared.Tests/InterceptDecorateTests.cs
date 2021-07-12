@@ -18,13 +18,13 @@ namespace InstrEngineTests
     {
         private class SimpleDecorate : TestBase
         {
-            protected override void TestPreInitialize()
+            public override void TestPreInitialize()
             {
                 Trace.WriteLine("Preinitialized executed");
                 InterceptAssemblyRedirector.EnsureInitialize();
             }
 
-            protected override void TestInitialize()
+            public override void TestInitialize()
             {
                 Decorator.InitializeExtension(Environment.CurrentDirectory);
 #pragma warning disable CS0612 // Type or member is obsolete

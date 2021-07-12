@@ -3,10 +3,22 @@
 
 namespace RemoteUnitTestExecutor
 {
+    using System.Collections.Generic;
+
     public interface ITestResult
     {
-        bool Succeeded { get; }
+        IList<MethodInvocationInfo> InvokedMethods { get; }
 
-        string ExceptionString { get; }
+        bool Succeeded { get; set; }
+
+        string ExceptionString { get; set; }
+
+        void Serialize(string filename);
+
+        void AddProfilerTraces(IEnumerable<string> tracesIterator);
+
+        IList<string> GetProfilerTraces();
+
+        string InvokedMethodsSequence { get; }
     }
 }

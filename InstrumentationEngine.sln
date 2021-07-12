@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeTestDependencies", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor", "src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj", "{182D00C1-705F-4FF6-8620-8EEF29936C7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteUnitTestExecutor.Host_x86", "src\Tests\RemoteUnitTestExecutor.Host_x86\RemoteUnitTestExecutor.Host_x86.csproj", "{F356AF58-F432-415D-BE13-44228F265CEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteUnitTestExecutor.Host", "src\Tests\RemoteUnitTestExecutor.Host\RemoteUnitTestExecutor.Host.csproj", "{F356AF58-F432-415D-BE13-44228F265CEF}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -592,18 +592,14 @@ Global
 		{9F97B063-5ACF-409A-8DCC-4BD9FF817D1D}.Release|x64.Build.0 = Release|Any CPU
 		{9F97B063-5ACF-409A-8DCC-4BD9FF817D1D}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F97B063-5ACF-409A-8DCC-4BD9FF817D1D}.Release|x86.Build.0 = Release|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|Any CPU.Build.0 = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x64.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x64.Build.0 = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x86.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x86.Build.0 = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|Any CPU.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|Any CPU.Build.0 = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x64.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x64.Build.0 = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x86.ActiveCfg = Debug|Any CPU
-		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x86.Build.0 = Debug|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|Any CPU.Build.0 = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x64.ActiveCfg = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Managed|x86.ActiveCfg = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|Any CPU.ActiveCfg = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|Any CPU.Build.0 = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x64.ActiveCfg = Release|Any CPU
+		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.CodeAnalysis.Native|x86.ActiveCfg = Release|Any CPU
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -616,18 +612,14 @@ Global
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Release|x64.Build.0 = Release|Any CPU
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Release|x86.ActiveCfg = Release|Any CPU
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A}.Release|x86.Build.0 = Release|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|Any CPU.Build.0 = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x64.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x64.Build.0 = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x86.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x86.Build.0 = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|Any CPU.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|Any CPU.Build.0 = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x64.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x64.Build.0 = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x86.ActiveCfg = Debug|Any CPU
-		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x86.Build.0 = Debug|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|Any CPU.Build.0 = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x64.ActiveCfg = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Managed|x86.ActiveCfg = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|Any CPU.ActiveCfg = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|Any CPU.Build.0 = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x64.ActiveCfg = Release|Any CPU
+		{F356AF58-F432-415D-BE13-44228F265CEF}.CodeAnalysis.Native|x86.ActiveCfg = Release|Any CPU
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Debug|x64.ActiveCfg = Debug|Any CPU
