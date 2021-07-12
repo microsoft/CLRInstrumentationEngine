@@ -9,7 +9,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>net45</TargetFrameworks>
+        <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
+        <AssemblyName>RemoteUnitTestExecutor.Host_x86</AssemblyName>
         <RootNamespace>RemoteUnitTestExecutor.Host</RootNamespace>
         <!-- Make assembly PE32 (32-bit PE header; forces .NET Framework 32-bit) -->
         <PlatformTarget>x86</PlatformTarget>
