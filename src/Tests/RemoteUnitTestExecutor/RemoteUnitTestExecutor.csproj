@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<Project>
+    <PropertyGroup>
+        <SubComponent>$(TargetFramework)</SubComponent>
+    </PropertyGroup>
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net45</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>RemoteUnitTestExecutor</RootNamespace>
+        <!-- Make assembly PE32+ (64-bit PE header; forces .NET Framework 64-bit) -->
+        <PlatformTarget>x64</PlatformTarget>
+        <LangVersion>9.0</LangVersion>
+        <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\RemoteUnitTestExecutor.Host_x86\RemoteUnitTestExecutor.Host_x86.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
+        <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
+        <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
+    </ItemGroup>
+
+    <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
+</Project>

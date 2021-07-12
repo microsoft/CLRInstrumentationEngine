@@ -18,13 +18,13 @@ namespace InstrEngineTests
     {
         private class SimpleDecorate : TestBase
         {
-            public override void TestPreInitialize()
+            protected override void TestPreInitialize()
             {
                 Trace.WriteLine("Preinitialized executed");
                 InterceptAssemblyRedirector.EnsureInitialize();
             }
 
-            public override void TestInitialize()
+            protected override void TestInitialize()
             {
                 Decorator.InitializeExtension(Environment.CurrentDirectory);
 #pragma warning disable CS0612 // Type or member is obsolete
@@ -90,15 +90,14 @@ namespace InstrEngineTests
             }
         }
 
-        // TODO: RemoteUnitTestExecutor does not run properly due to strong name signing verification
-        // failing. Need to find updated version or replace it.
-        //[TestMethod]
+        [TestMethod]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
         public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse()
         {
             TestEngine.ExecuteTest<SimpleDecorate>();

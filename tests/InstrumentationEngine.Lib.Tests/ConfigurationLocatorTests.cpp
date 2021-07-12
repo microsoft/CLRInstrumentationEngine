@@ -16,6 +16,7 @@ namespace InstrumentationEngineLibTests
     TEST_CLASS(ConfigurationLocatorTests)
     {
     private:
+        static constexpr const WCHAR* s_wszTestFilePathVariable = _T("TEST_FILE_PATH");
 #ifdef _WIN64
         static constexpr const WCHAR* s_wszFeatureAVariable = _T("MicrosoftInstrumentationEngine_ConfigPath64_FeatureA");
         static constexpr const WCHAR* s_wszFeatureBVariable = _T("MicrosoftInstrumentationEngine_ConfigPath64_FeatureB");
@@ -42,7 +43,7 @@ namespace InstrumentationEngineLibTests
             ATL::CHandle hFile2(CreateFile(filePath2.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_FLAG_DELETE_ON_CLOSE, nullptr));
 
             // This variable will be used by other variables that are processed by GetConfigurationPaths
-            SetEnvironmentVariable(_T("TEST_FILE_PATH"), filePath1.c_str());
+            SetEnvironmentVariable(s_wszTestFilePathVariable, filePath1.c_str());
             // This variable will be picked up, but should be excluded from results since the path does not exist.
             SetEnvironmentVariable(s_wszFeatureAVariable, _T("%NON_EXISTING_VAR%"));
             // This variable will be picked up and included since the CWD exists.
@@ -54,9 +55,16 @@ namespace InstrumentationEngineLibTests
 
             std::unique_ptr<WCHAR[]> pszCurrentWorkingDirectory(_wgetcwd(nullptr, 0));
 
-            HRESULT hr = S_OK;
             std::vector<ATL::CComPtr<CConfigurationSource>> sources;
-            Assert::AreEqual<HRESULT>(S_OK, hr = CConfigurationLocator::GetFromEnvironment(sources));
+            HRESULT hr = CConfigurationLocator::GetFromEnvironment(sources);
+
+            // Clear environment variable so that they do not interfere with other tests
+            SetEnvironmentVariable(s_wszTestFilePathVariable, nullptr);
+            SetEnvironmentVariable(s_wszFeatureAVariable, nullptr);
+            SetEnvironmentVariable(s_wszFeatureBVariable, nullptr);
+            SetEnvironmentVariable(s_wszFeatureCVariable, nullptr);
+
+            Assert::AreEqual<HRESULT>(S_OK, hr);
             Assert::AreEqual<size_t>(3, sources.size(), _T("Should return 3 paths."));
 
             CComBSTR firstSourcePath;
