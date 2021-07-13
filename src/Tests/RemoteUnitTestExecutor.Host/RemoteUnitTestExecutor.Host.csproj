@@ -9,7 +9,6 @@
 
     <PropertyGroup>
         <TargetFrameworks>net45</TargetFrameworks>
-        <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
         <AssemblyName>RemoteUnitTestExecutor.Host_x86</AssemblyName>
         <RootNamespace>RemoteUnitTestExecutor.Host</RootNamespace>

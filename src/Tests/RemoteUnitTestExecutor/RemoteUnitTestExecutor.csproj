@@ -9,6 +9,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net45</TargetFrameworks>
+        <RuntimeIdentifiers>win7-x86</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
         <RootNamespace>RemoteUnitTestExecutor</RootNamespace>
         <LangVersion>9.0</LangVersion>
