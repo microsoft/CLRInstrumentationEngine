@@ -9,10 +9,11 @@ namespace InstrEngineTests
     public static class PathUtils
     {
         private const string BaselinesFolder = "Baselines";
+        private const string DebugeesFolder = "Debugees";
         private const string TestResultsFolder = "TestResults";
         private const string TestScriptsFolder = "TestScripts";
 
-        // All paths are relative to the AnyCPU binaries directory e.g. bin\Debug\AnyCPU
+        // All paths are relative to the target framework binaries directory e.g. bin\Debug\AnyCPU\netcoreapp3.1
         public const string BaselinesBinPath = @".\" + BaselinesFolder;
         public const string TestScriptsBinPath = @".\" + TestScriptsFolder;
         public const string InstrumentationEngineX64BinPath = @"..\..\x64\MicrosoftInstrumentationEngine_x64.dll";
@@ -30,6 +31,11 @@ namespace InstrEngineTests
         public static string GetBaselinesPath()
         {
             return Path.Combine(GetAssetsPath(), BaselinesFolder);
+        }
+
+        public static string GetDebugeesPath()
+        {
+            return Path.Combine(GetAssetsPath(), DebugeesFolder);
         }
 
         public static string GetTestResultsPath()

@@ -42,8 +42,9 @@ jobs:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
       displayName: Set Platform for Any CPU
 
-  - template: ../../steps/windows/enginerestore.yaml
+  - template: ../../steps/windows/dotnetrestore.yaml
     parameters:
+      Solution: InstrumentationEngine.sln
       BinLogCategory: CodeAnalysis
 
   - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml

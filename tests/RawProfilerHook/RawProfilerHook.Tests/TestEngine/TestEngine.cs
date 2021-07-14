@@ -11,33 +11,21 @@ namespace RawProfilerHook.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
     using System.Threading;
+    using Intercept.Tests;
 
     /// <summary>
     ///     Summary description for TestsExtensionHostLoading
     /// </summary>
-    public class TestEngine : RemoteUnitTestExecutor.TestEngineBase
+    public class TestEngine : TestEngineBase
     {
-        public static bool IgnoreBitness { get; set; }
-#if X64
-        public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
-        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_64";
-        private const bool IsX86 = false;
-        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
-        public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
-#else
-        public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
-        public const string InstrumentationEngineEnvVar = "COR_PROFILER_PATH_32";
-        private const bool IsX86 = true;
-        public const string RawProfilerHookPathEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
-        public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
-#endif
+        public const string InstrumentationEngineEnvVar64 = "COR_PROFILER_PATH_64";
+        public const string RawProfilerHookPathEnvVar64 = "MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
 
-        public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
+        public const string InstrumentationEngineProfilerModuleName32 = "MicrosoftInstrumentationEngine_x86.dll";
+        public const string InstrumentationEngineEnvVar32 = "COR_PROFILER_PATH_32";
+        public const string RawProfilerHookPathEnvVar32 = "MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
 
         public const string InstrumentationEngineNoBitnessEnvVar = "COR_PROFILER_PATH";
-        public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
         private const string InstrumentationEngineProfilerId = "{324F817A-7420-4E6D-B3C1-143FBED6D855}";
 
         public const string RawProfilerHookEnvVar = "MicrosoftInstrumentationEngine_RawProfilerHook";
@@ -48,34 +36,30 @@ namespace RawProfilerHook.Tests
 
         private readonly string traceFilePath;
 
-        public static ITestResult ExecuteTest<T>() where T : new()
+        private bool IgnoreBitness { get; }
+
+        private string InstrumentationEngineEnvVar => Is32Bit ?
+            InstrumentationEngineEnvVar32 :
+            InstrumentationEngineEnvVar64;
+
+        private string RawProfilerHookPathEnvVar => Is32Bit ?
+            RawProfilerHookPathEnvVar32 :
+            RawProfilerHookPathEnvVar64;
+
+        public static ITestResult ExecuteTest<T>(bool run32Bit, bool ignoreBitness) where T : new()
         {
-            var executor = new TestEngine();
+            var executor = new TestEngine(run32Bit, ignoreBitness);
 
             return executor.ExecuteTest(
                 typeof(T).AssemblyQualifiedName,
-                IsX86,
                 null);
         }
 
-        public TestEngine()
+        public TestEngine(bool is32Bit, bool ignoreBitness)
+            : base(is32Bit)
         {
+            this.IgnoreBitness = ignoreBitness;
             this.traceFilePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), $"profiler_trace_{Guid.NewGuid().ToString()}.txt"));
-        }
-
-        public ITestResult ExecuteTest<T>(string[] expectedErrors = null)
-        {
-            return ExecuteTest(typeof(T).AssemblyQualifiedName, IsX86, expectedErrors);
-        }
-
-        public ITestResult ExecuteTest(Type t, string[] expectedErrors = null)
-        {
-            if (null == t)
-            {
-                throw new ArgumentNullException(nameof(t));
-            }
-
-            return ExecuteTest(t.AssemblyQualifiedName, IsX86, expectedErrors);
         }
 
         protected override void OnBeforeStarted(Process debugee)
@@ -102,25 +86,28 @@ namespace RawProfilerHook.Tests
 #endif
             };
 
+            string enginePath = TestFiles.GetEngineModulePath(Is32Bit);
+            string rawProfilerPath = TestFiles.GetRawProfilerModulePath(Is32Bit);
+
             if (IgnoreBitness)
             {
                 hostEnvironment.Add(
                     InstrumentationEngineNoBitnessEnvVar,
-                    GetFullPath(InstrumentationEngineProfilerModuleName));
+                    enginePath);
 
                 hostEnvironment.Add(
                     RawProfilerHookPathNoBitnessEnvVar,
-                    GetFullPath(RawProfilerHookModuleName));
+                    rawProfilerPath);
             }
             else
             {
                 hostEnvironment.Add(
                     InstrumentationEngineEnvVar,
-                    GetFullPath(InstrumentationEngineProfilerModuleName));
+                    enginePath);
 
                 hostEnvironment.Add(
                     RawProfilerHookPathEnvVar,
-                    GetFullPath(RawProfilerHookModuleName));
+                    rawProfilerPath);
             }
 
             foreach (var variable in hostEnvironment)

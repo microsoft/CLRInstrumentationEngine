@@ -3,28 +3,16 @@
      Licensed under the MIT License. -->
 <Project>
   <PropertyGroup>
-    <SubComponent>Intercept.Latest.Tests</SubComponent>
+    <SubComponent>$(TargetFramework)\Intercept.Latest.Tests</SubComponent>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <DefineConstants>$(DefineConstants);X86</DefineConstants>
-    <AssemblyName>Intercept.Latest.Tests_x86</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x64'">
-    <DefineConstants>$(DefineConstants);X64</DefineConstants>
-    <AssemblyName>Intercept.Latest.Tests_x64</AssemblyName>
-  </PropertyGroup>
   <PropertyGroup>
+    <TargetFrameworks>net462</TargetFrameworks>
     <RootNamespace>Intercept.Latest.Tests</RootNamespace>
-    <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <DefineConstants>INTERCEPT_TESTS;$(DefineConstants)</DefineConstants>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Dependencies\NativeDependencies.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj" />
   </ItemGroup>
   <ItemGroup>

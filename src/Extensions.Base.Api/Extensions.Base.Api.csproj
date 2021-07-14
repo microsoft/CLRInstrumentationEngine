@@ -2,11 +2,14 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <Project>
+  <PropertyGroup>
+    <SubComponent>$(TargetFramework)</SubComponent>
+  </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup>
     <RootNamespace>Microsoft.Diagnostics.Instrumentation.Extensions.Base</RootNamespace>
     <AssemblyName>Microsoft.Diagnostics.Instrumentation.Extensions.Base</AssemblyName>
-    <TargetFramework>net40</TargetFramework>
+    <TargetFrameworks>net40</TargetFrameworks>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

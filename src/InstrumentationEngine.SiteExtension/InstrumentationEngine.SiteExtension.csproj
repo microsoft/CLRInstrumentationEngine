@@ -56,7 +56,7 @@
     <SiteExtensionContents Include="$(InputBinCfgRoot)\x86\Microsoft.InstrumentationEngine.Extensions.config">
       <RootPath>Instrumentation32\base</RootPath>
     </SiteExtensionContents>
-    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\net40\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <RootPath>Instrumentation32\base</RootPath>
     </SiteExtensionContents>
     <!-- Instrumentationx64Files -->
@@ -69,7 +69,7 @@
     <SiteExtensionContents Include="$(InputBinCfgRoot)\x64\Microsoft.InstrumentationEngine.Extensions.config">
       <RootPath>Instrumentation64\base</RootPath>
     </SiteExtensionContents>
-    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    <SiteExtensionContents Include="$(InputBinCfgRoot)\AnyCPU\net40\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <RootPath>Instrumentation64\base</RootPath>
     </SiteExtensionContents>
   </ItemGroup>

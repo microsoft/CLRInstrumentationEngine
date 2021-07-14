@@ -4,13 +4,11 @@
 using Microsoft.Diagnostics.Instrumentation.Extensions.Intercept;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
-namespace Intercept.Shared.Tests
+namespace Intercept.Tests
 {
     internal static class InterceptAssemblyRedirector
     {

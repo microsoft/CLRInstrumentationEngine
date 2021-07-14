@@ -1,17 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace InstrEngineTests
+namespace Intercept.Tests
 {
-    using System;
-    using ApplicationInsightsCompatibility;
+    using Microsoft.Diagnostics.Instrumentation.Extensions.Intercept;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
-    using Microsoft.Diagnostics.Instrumentation.Extensions.Intercept;
-    using System.Net;
-    using Intercept.Shared.Tests;
+    using System;
     using System.Diagnostics;
-    using Intercept.Tests;
+    using System.Net;
 
     [TestClass]
     public class InterceptDecorateTests
@@ -91,16 +88,25 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
-        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
-        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse()
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule32, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig32, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule32, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_AgentInterceptModule, Constants.InterceptVersion)]
+        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse32()
         {
-            TestEngine.ExecuteTest<SimpleDecorate>();
+            TestEngine.ExecuteTest<SimpleDecorate>(run32Bit: true);
+        }
+
+        [TestMethod]
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule64, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig64, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule64, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_AgentInterceptModule, Constants.InterceptVersion)]
+        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse64()
+        {
+            TestEngine.ExecuteTest<SimpleDecorate>(run32Bit: false);
         }
     }
 }

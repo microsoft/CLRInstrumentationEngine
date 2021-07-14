@@ -23,7 +23,7 @@ namespace TestsHostExtension
             END_TEST_METHOD_ATTRIBUTE()
             TEST_METHOD(TestSimpleLoading)
         {
-            std::wstring strPath = L"..\\AnyCPU\\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
+            std::wstring strPath = L"..\\AnyCPU\\net40\\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
             CModuleMetaDataLoader loader(strPath);
 
             Assert::AreEqual<HRESULT>(S_OK, loader.Load());

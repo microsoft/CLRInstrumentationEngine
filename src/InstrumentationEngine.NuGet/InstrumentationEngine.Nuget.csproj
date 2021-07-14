@@ -55,11 +55,11 @@
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
+    <Content Include="$(InputBinCfgRoot)\AnyCPU\net40\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
+    <Content Include="$(InputBinCfgRoot)\AnyCPU\net40\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

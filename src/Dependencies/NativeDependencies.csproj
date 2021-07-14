@@ -32,10 +32,6 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(ApplicationInsightsAgentInterceptVersion)">
-          <ExcludeAssets>All</ExcludeAssets>
-          <PrivateAssets>All</PrivateAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.VisualStudioEng.MicroBuild.Core" Version="$(MicroBuildCoreVersion)">
           <PrivateAssets>All</PrivateAssets>
         </PackageReference>

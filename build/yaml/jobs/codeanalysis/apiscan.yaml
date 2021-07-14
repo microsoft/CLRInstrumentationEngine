@@ -47,12 +47,7 @@ jobs:
       Contents: |
         **\?(*.pdb|*.dll|*.exe)
         !**\AnyCPU\**
-        !**\RawProfilerHook.Tests\**
-        !**\Intercept.Latest.Tests\**
-        !**\Intercept.2.0.1.Tests\**
-        !**\Tools\**
-        !**\*Nagler*
-        !**\*Test*
+        !**\*Tests*
       TargetFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
 
   # Run API Scan

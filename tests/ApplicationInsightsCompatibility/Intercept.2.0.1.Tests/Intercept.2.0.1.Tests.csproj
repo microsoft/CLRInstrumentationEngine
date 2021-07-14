@@ -3,26 +3,16 @@
      Licensed under the MIT License. -->
 <Project>
   <PropertyGroup>
-    <SubComponent>Intercept.2.0.1.Tests</SubComponent>
+    <SubComponent>$(TargetFramework)\Intercept.2.0.1.Tests</SubComponent>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <DefineConstants>$(DefineConstants);X86</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x64'">
-    <DefineConstants>$(DefineConstants);X64</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup>
+    <TargetFrameworks>net462</TargetFrameworks>
     <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
-    <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <DefineConstants>INTERCEPT_TESTS;$(DefineConstants)</DefineConstants>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Dependencies\LegacyDependencies.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj" />
   </ItemGroup>
   <ItemGroup>

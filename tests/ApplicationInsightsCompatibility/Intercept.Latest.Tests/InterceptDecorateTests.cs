@@ -1,16 +1,14 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace InstrEngineTests
+namespace Intercept.Tests
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using RemoteUnitTestExecutor;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
-    using ApplicationInsightsCompatibility;
-    using Intercept.Tests;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using RemoteUnitTestExecutor;
 
     [TestClass]
     public class CustomAttributesTest
@@ -47,16 +45,23 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
-        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
-        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes()
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule32, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig32, TestFiles.DeploymentTarget_Instrumentation32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule32, TestFiles.DeploymentTarget_Instrumentation32)]
+        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes32()
         {
-            TestEngine.ExecuteTest<CustomAttributesTestBase>();
+            TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: true);
+        }
+
+        [TestMethod]
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule64, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig64, TestFiles.DeploymentTarget_Instrumentation64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule64, TestFiles.DeploymentTarget_Instrumentation64)]
+        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes64()
+        {
+            TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: false);
         }
     }
 }

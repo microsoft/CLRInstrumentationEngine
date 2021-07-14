@@ -47,6 +47,7 @@ namespace CompiledCode
         {
             string assemblyPath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                "Debugees",
                 "DynamicCodeAssembly.dll");
 
             using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);

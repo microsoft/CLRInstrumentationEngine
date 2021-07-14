@@ -92,12 +92,8 @@ jobs:
   - ${{ if eq('Managed', parameters.TestType) }}:
     - template: ../../steps/windows/dotnettest.yaml
       parameters:
-        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)'
-
-    - template: ../../steps/windows/dotnettest.yaml
-      parameters:
         SubFolder: 'net4*\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)'
+        RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)'
 
     - template: ../../steps/windows/dotnettest.yaml
       parameters:

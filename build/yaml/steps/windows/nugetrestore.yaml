@@ -5,7 +5,6 @@
 
 parameters:
   Solution: ''
-  Condition: 'succeeded()'
 
 steps:
 # NuGet Tool Installer
@@ -13,7 +12,6 @@ steps:
 - task: NuGetToolInstaller@0
   inputs:
     versionSpec: '5.8.0'
-  condition: ${{ parameters.Condition }}
 
 # nuget restore
 - task: NuGetCommand@2
@@ -22,4 +20,3 @@ steps:
     restoreSolution: ${{ parameters.Solution }}
     feedsToUse: config
     nugetConfigPath: NuGet.config
-  condition: ${{ parameters.Condition }}

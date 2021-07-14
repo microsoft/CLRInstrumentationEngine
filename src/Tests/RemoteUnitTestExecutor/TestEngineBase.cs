@@ -13,9 +13,15 @@ namespace RemoteUnitTestExecutor
     /// </summary>
     public class TestEngineBase
     {
+        public TestEngineBase(bool is32Bit)
+        {
+            Is32Bit = is32Bit;
+        }
+
+        protected bool Is32Bit { get; }
+
         public ITestResult ExecuteTest(
             string testName,
-            bool isX86 = false,
             string[] expectedErrors = null)
         {
             if (true == string.IsNullOrWhiteSpace(testName))
@@ -34,7 +40,7 @@ namespace RemoteUnitTestExecutor
                 CreateNoWindow = true,
             };
 
-            if (!isX86)
+            if (!Is32Bit)
             {
                 startInfo.FileName = typeof(TestEngineBase).Assembly.Location;
             }
@@ -92,7 +98,7 @@ namespace RemoteUnitTestExecutor
         private string GetX86HostProcessName()
         {
             // this method should not be inlined so in case of x64 CLR will not attempt to load x86 dependency (Host)
-            return typeof(RemoteUnitTestExecutor.Host.Program).Assembly.Location;
+            return typeof(Host.Program).Assembly.Location;
         }
     }
 }

@@ -8,8 +8,9 @@ parameters:
 steps:
 # nuget restore InstrumentationEngine.sln
 - ${{ if eq(parameters.NuGetRestore, true) }}:
-  - template: enginerestore.yaml
+  - template: dotnetrestore.yaml
     parameters:
+      Solution: InstrumentationEngine.sln
       BinLogCategory: Build
 
 # msbuild InstrumentationEngine.sln

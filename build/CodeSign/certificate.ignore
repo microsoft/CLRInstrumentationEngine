@@ -4,17 +4,16 @@ bin\*\commonlibtests.exe, Ignore test assembly
 bin\*\instrumentationenginelibtests.exe, Ignore test assembly
 bin\*\instrumentationengine.lib.tests.dll, Ignore test assembly
 bin\*\instrumentationengine.profilerproxy.tests.dll, Ignore test assembly
-bin\*\instrenginetests_anycpu.dll, Ignore test assembly
-bin\*\instrenginetests.dll, Ignore test assembly
-bin\*\testapprunner.dll, Ignore test assembly
-bin\*\testapprunner.exe, Ignore test assembly
+bin\AnyCPU\*\instrenginetests.dll, Ignore test assembly
+bin\AnyCPU\*\testapprunner.dll, Ignore test assembly
+bin\AnyCPU\*\testapprunner.exe, Ignore test assembly
+bin\AnyCPU\net462\rawprofilerhook.tests.dll, Ignore test assembly
 
 bin\*\naglerinstrumentationmethod*, Ignore naglerInstrumentationMethod
 bin\*\*.xml, Ignore xml files
 
-bin\*\intercept.2.0.1.tests\*, Ignore test folder
-bin\*\intercept.latest.tests\*, Ignore test folder
-bin\*\rawprofilerhook.tests\*, Ignore test folder
+bin\AnyCPU\net462\intercept.2.0.1.tests\*, Ignore test folder
+bin\AnyCPU\net462\intercept.latest.tests\*, Ignore test folder
 
 bin\*\*.wixlib, Ignore wix artifact
 bin\*\*.wixpdb, Ignore wix artifact
