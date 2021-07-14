@@ -28,22 +28,37 @@ namespace RawProfilerHook.Tests
         }
 
         [TestMethod]
-        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName32, ".")]
         [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName32, ".")]
         [DeploymentItem(@"..\..\AnyCPU\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName, ".")]
-        public void TestRawProfilerHookIsLoadedIfEnvVariableIsSet()
+        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName32, ".")]
+        public void TestRawProfilerHookIsLoadedIfEnvVariableIsSet32()
         {
             Assert.IsFalse(
                 Process.GetCurrentProcess().IsModuleLoaded("Microsoft.RawProfilerHook"),
                 "Exception extensions module is loaded");
 
-            TestEngine.IgnoreBitness = true;
-            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
+            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>(run32Bit: true, ignoreBitness: true);
 
-            TestEngine.IgnoreBitness = false;
-            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>();
+            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>(run32Bit: true, ignoreBitness: false);
+        }
+
+        [TestMethod]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName64, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName64, ".")]
+        [DeploymentItem(@"..\..\AnyCPU\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
+        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName64, ".")]
+        public void TestRawProfilerHookIsLoadedIfEnvVariableIsSet64()
+        {
+            Assert.IsFalse(
+                Process.GetCurrentProcess().IsModuleLoaded("Microsoft.RawProfilerHook"),
+                "Exception extensions module is loaded");
+
+            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>(run32Bit: false, ignoreBitness: true);
+
+            TestEngine.ExecuteTest<TestsRawProfilerHookIsLoadedIfEnvVariableIsSet>(run32Bit: false, ignoreBitness: false);
         }
 
         private class TestRawProfilerHookCallsGetAssemblyReferencesBase : TestBase
@@ -64,22 +79,40 @@ namespace RawProfilerHook.Tests
         // See https://github.com/microsoft/CLRInstrumentationEngine/issues/414 for details.
         [TestMethod]
         [Ignore("https://github.com/microsoft/CLRInstrumentationEngine/issues/414")]
-        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName32, ".")]
         [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName32, ".")]
         [DeploymentItem(@"..\..\AnyCPU\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName, ".")]
-        public void TestRawProfilerHookCallsGetAssemblyReferences()
+        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName32, ".")]
+        public void TestRawProfilerHookCallsGetAssemblyReferences32()
         {
             Assert.IsFalse(
                 Process.GetCurrentProcess().IsModuleLoaded("Microsoft.RawProfilerHook"),
                 "Exception extensions module is loaded");
 
-            TestEngine.IgnoreBitness = true;
-            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>(run32Bit: true, ignoreBitness: true);
 
-            TestEngine.IgnoreBitness = false;
-            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>();
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>(run32Bit: true, ignoreBitness: false);
+        }
+
+        // BUG: CLRIE does not receive ICorProfilerCallback6::GetAssemblyReferences callback.
+        // See https://github.com/microsoft/CLRInstrumentationEngine/issues/414 for details.
+        [TestMethod]
+        [Ignore("https://github.com/microsoft/CLRInstrumentationEngine/issues/414")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName64, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
+        [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName64, ".")]
+        [DeploymentItem(@"..\..\AnyCPU\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
+        [DeploymentItem(@".\" + TestEngine.RawProfilerHookModuleName64, ".")]
+        public void TestRawProfilerHookCallsGetAssemblyReferences64()
+        {
+            Assert.IsFalse(
+                Process.GetCurrentProcess().IsModuleLoaded("Microsoft.RawProfilerHook"),
+                "Exception extensions module is loaded");
+
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>(run32Bit: false, ignoreBitness: true);
+
+            TestEngine.ExecuteTest<TestRawProfilerHookCallsGetAssemblyReferencesBase>(run32Bit: false, ignoreBitness: false);
         }
     }
 }

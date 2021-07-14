@@ -5,37 +5,37 @@ namespace ApplicationInsightsCompatibility
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
+    using System;
     using System.Diagnostics;
     using System.IO;
 
     class TestEngine : TestEngineBase
     {
-#if X64
-        public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x64.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
-        private const bool IsX86 = false;
-        public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x64.dll";
-#else
-        public const string InstrumentationEngineProfilerModuleName = "MicrosoftInstrumentationEngine_x86.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
-        private const bool IsX86 = true;
-        public const string RawProfilerHookModuleName = "Microsoft.RawProfilerHook_x86.dll";
-#endif
+
+        public const string InstrumentationEngineProfilerModuleName64 = "MicrosoftInstrumentationEngine_x64.dll";
+        public const string InstrumentationEngineDefaultMethodModuleName64 = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
+
+        public const string InstrumentationEngineProfilerModuleName32 = "MicrosoftInstrumentationEngine_x86.dll";
+        public const string InstrumentationEngineDefaultMethodModuleName32 = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
 
         public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
         public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
 
-        private TestEngine()
+        private string InstrumentationEngineProfilerModuleName => Is32Bit ?
+            InstrumentationEngineProfilerModuleName32 :
+            InstrumentationEngineProfilerModuleName64;
+
+        private TestEngine(bool is32Bit)
+            : base(is32Bit)
         {
         }
 
-        public static ITestResult ExecuteTest<T>() where T : new()
+        public static ITestResult ExecuteTest<T>(bool run32Bit) where T : new()
         {
-            var executor = new TestEngine();
+            var executor = new TestEngine(run32Bit);
 
             return executor.ExecuteTest(
                 typeof(T).AssemblyQualifiedName,
-                IsX86,
                 null);
         }
 

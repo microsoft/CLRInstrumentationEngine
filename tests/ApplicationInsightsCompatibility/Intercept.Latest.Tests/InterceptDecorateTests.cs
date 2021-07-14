@@ -47,16 +47,29 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName32, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName32, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
         [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
         [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
-        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes()
+        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes32()
         {
-            TestEngine.ExecuteTest<CustomAttributesTestBase>();
+            TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: true);
+        }
+
+        [TestMethod]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName64, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName64, ".")]
+        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
+        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
+        public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes64()
+        {
+            TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: false);
         }
     }
 }

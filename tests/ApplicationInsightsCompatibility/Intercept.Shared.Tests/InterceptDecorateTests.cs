@@ -91,16 +91,29 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName32, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName32, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
         [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
         [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
-        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse()
+        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse32()
         {
-            TestEngine.ExecuteTest<SimpleDecorate>();
+            TestEngine.ExecuteTest<SimpleDecorate>(run32Bit: true);
+        }
+
+        [TestMethod]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName64, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
+        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName64, ".")]
+        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
+        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
+        public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse64()
+        {
+            TestEngine.ExecuteTest<SimpleDecorate>(run32Bit: false);
         }
     }
 }
