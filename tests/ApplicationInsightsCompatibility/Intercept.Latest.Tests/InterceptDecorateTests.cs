@@ -46,15 +46,14 @@ namespace InstrEngineTests
             }
         }
 
-        // TODO: RemoteUnitTestExecutor does not run properly due to strong name signing verification
-        // failing. Need to find updated version or replace it.
-        //[TestMethod]
+        [TestMethod]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
         public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes()
         {
             TestEngine.ExecuteTest<CustomAttributesTestBase>();

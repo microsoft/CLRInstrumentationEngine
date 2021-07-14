@@ -5,6 +5,7 @@ namespace ApplicationInsightsCompatibility
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
+    using System.Diagnostics;
     using System.IO;
 
     class TestEngine : TestEngineBase
@@ -38,7 +39,7 @@ namespace ApplicationInsightsCompatibility
                 null);
         }
 
-        protected override void OnBeforeStarted(DebugeeProcess debugee)
+        protected override void OnBeforeStarted(Process debugee)
         {
             var vars = debugee.StartInfo.EnvironmentVariables;
             vars.Add("COR_ENABLE_PROFILING", "1");
@@ -58,14 +59,6 @@ namespace ApplicationInsightsCompatibility
             var result = Path.Combine(Directory.GetCurrentDirectory(), moduleName);
             Assert.IsTrue(File.Exists(result), $"File {result} doesn't exists");
             return result;
-        }
-
-        protected override void OnStarted(DebugeeProcess debugee)
-        {
-        }
-
-        protected override void OnComplete(DebugeeProcess debugee, string[] expectedErrors = null)
-        {
         }
     }
 }
