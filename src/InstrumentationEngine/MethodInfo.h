@@ -88,7 +88,6 @@ namespace MicrosoftInstrumentationEngine
         // Raw IL stream. Set after instrumentation methods are finished, but before raw profiler callbacks.
         // This does not include method headers or exception handlers
         vector<BYTE> m_pILStream;
-        DWORD m_dwILStreamLen;
 
         // map of old offsets to new offsets. Originally set when instrumentation methods have finished.
         // Updated if raw callbacks modify il. Note, this is a CSharedArray because it is also cached by this

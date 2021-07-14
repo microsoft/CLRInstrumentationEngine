@@ -80,7 +80,7 @@ stages:
       Analyzer: cpp
 
 - stage: Run_PreFast_Analyzers
-  displayName: Code Analysis (Build Time C++ PreFast )
+  displayName: Code Analysis (Build Time C++ PreFast)
   dependsOn: []
 
   jobs:

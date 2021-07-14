@@ -64,9 +64,7 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT EncodeIL(
             _Inout_ vector<BYTE>& ppILBuffer,
-            _Out_ DWORD* pdwILStreamLen,
-            _Inout_ vector<COR_IL_MAP>& ppCorILMap,
-            _Out_ DWORD* pdwCorILMapmLen
+            _Inout_ vector<COR_IL_MAP>& ppCorILMap
             );
 
         HRESULT CalculateInstructionOffsets();

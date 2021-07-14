@@ -364,16 +364,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
 // Generate an IL image from a list of instructions. At the same time produce a map from the old instructions to the new ones.
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     _Inout_ vector<BYTE>& ppILBuffer,
-    _Out_ DWORD* pdwILStreamLen,
-    _Inout_ vector<COR_IL_MAP>& ppCorILMap,
-    _Out_ DWORD* pdwCorILMapmLen
+    _Inout_ vector<COR_IL_MAP>& ppCorILMap
     )
 {
     HRESULT hr = S_OK;
     ULONG cCorILMap = 0;
     ULONG cbBuffer = 0;
-    *pdwILStreamLen = 0;
-    *pdwCorILMapmLen = 0;
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -487,9 +483,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     // was
 
     ppILBuffer = std::move(pILArray);
-    *pdwILStreamLen = cbBuffer;
     ppCorILMap = std::move(pCorILMap);
-    *pdwCorILMapmLen = cCorILMap;
 
     return S_OK;
 }

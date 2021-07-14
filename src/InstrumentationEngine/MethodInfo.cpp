@@ -33,7 +33,6 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_rva(0),
     m_pSig(nullptr),
     m_cbSigBlob(0),
-    m_dwILStreamLen(0),
     m_localVariables(nullptr),
     m_origLocalVariables(nullptr),
     m_bIsInstrumented(false),
@@ -346,9 +345,9 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyIntermediateMethodInst
     }
 
     vector<COR_IL_MAP> pCorILMap;
-    DWORD mapSize;
-    IfFailRet(m_pInstructionGraph->EncodeIL(m_pILStream, &m_dwILStreamLen, pCorILMap, &mapSize));
-    IfFailRet(MergeILInstrumentedCodeMap(mapSize, pCorILMap.data()));
+    IfFailRet(m_pInstructionGraph->EncodeIL(m_pILStream, pCorILMap));
+    IfFalseRet(pCorILMap.size() <= ULONG_MAX, E_BOUNDS);
+    IfFailRet(MergeILInstrumentedCodeMap((ULONG)pCorILMap.size(), pCorILMap.data()));
 
     if (m_localVariables)
     {
@@ -389,7 +388,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::CreateILFunctionBody()
     cbNewMethodSize = m_newCorHeader.Size * 4;
 
     // get method IL body size
-    cbNewMethodSize += m_dwILStreamLen; // IL code size
+    cbNewMethodSize += (ULONG)m_pILStream.size(); // IL code size
 
     // new method: delta between last IL byte and first SEH header
     int nNewDelta = (4 - ((cbNewMethodSize) & 0x3)) & 3;

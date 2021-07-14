@@ -185,10 +185,7 @@ void CFileLoggerSink::WritePrefix(_In_ LoggingFlags flags)
 #else
                 WCHAR szFormatted[MAX_PATH];
                 wcsftime(szFormatted, MAX_PATH, szFormat, &localTime);
-
-                // Static analysis will complain that the following line prints a non-constant
-                // string, but there are no inputs to the string. Ignore.
-                fwprintf(pOutputFile, szFormatted);  // lgtm[cpp/non-constant-format]
+                fwprintf(pOutputFile, L"%s", szFormatted);  
 #endif
             }
         }
