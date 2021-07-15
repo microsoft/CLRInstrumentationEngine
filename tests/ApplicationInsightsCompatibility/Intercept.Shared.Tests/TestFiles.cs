@@ -27,7 +27,7 @@
         public const string DeploymentItem_NativeExtensionsBaseConfig32 = BasePathX86 + InstrumentationEngineHostConfigName;
         public const string DeploymentItem_NativeExtensionsBaseConfig64 = BasePathX64 + InstrumentationEngineHostConfigName;
 
-        public const string DeploymentItem_ManagedExtensionsBaseModule = BasePathAnyCpu + MscorlibExtensionMethodsBaseModuleName;
+        public const string DeploymentItem_ManagedExtensionsBaseModule = BasePathAnyCpu + "net40\\" + MscorlibExtensionMethodsBaseModuleName;
 
         public const string DeploymentItem_AgentInterceptModule = AgentInterceptModuleName;
 
