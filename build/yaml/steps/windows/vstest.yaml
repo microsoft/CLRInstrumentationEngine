@@ -9,10 +9,10 @@ parameters:
 
 steps:
 - task: VSTest@2
-  displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
+  displayName: 'Run Tests: $(Platform)\Tests\**\*Tests*.dll'
   inputs:
-    testAssemblyVer2: '${{ parameters.SubFolder }}*Tests*.dll'
-    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)'
+    testAssemblyVer2: '**\*Tests*.dll'
+    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)\Tests'
     vsTestVersion: 16.0
     runInParallel: false
     codeCoverageEnabled: false

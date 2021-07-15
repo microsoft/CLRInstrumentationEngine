@@ -5,26 +5,11 @@ namespace ApplicationInsightsCompatibility
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
-    using System;
     using System.Diagnostics;
     using System.IO;
 
     class TestEngine : TestEngineBase
     {
-
-        public const string InstrumentationEngineProfilerModuleName64 = "MicrosoftInstrumentationEngine_x64.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName64 = "Microsoft.InstrumentationEngine.Extensions.Base_x64.dll";
-
-        public const string InstrumentationEngineProfilerModuleName32 = "MicrosoftInstrumentationEngine_x86.dll";
-        public const string InstrumentationEngineDefaultMethodModuleName32 = "Microsoft.InstrumentationEngine.Extensions.Base_x86.dll";
-
-        public const string MscorlibExtensionMethodsBaseModuleName = "Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll";
-        public const string InstrumentationEngineHostConfigName = "Microsoft.InstrumentationEngine.Extensions.config";
-
-        private string InstrumentationEngineProfilerModuleName => Is32Bit ?
-            InstrumentationEngineProfilerModuleName32 :
-            InstrumentationEngineProfilerModuleName64;
-
         private TestEngine(bool is32Bit)
             : base(is32Bit)
         {
@@ -44,7 +29,7 @@ namespace ApplicationInsightsCompatibility
             var vars = debugee.StartInfo.EnvironmentVariables;
             vars.Add("COR_ENABLE_PROFILING", "1");
             vars.Add("COR_PROFILER", "{324F817A-7420-4E6D-B3C1-143FBED6D855}");
-            vars.Add("COR_PROFILER_PATH", GetFullPath(InstrumentationEngineProfilerModuleName));
+            vars.Add("COR_PROFILER_PATH", GetFullPath(TestFiles.GetInstrumentationEngineProfilerModuleName(Is32Bit)));
 
             vars.Add("MicrosoftInstrumentationEngine_FileLog",  "Dumps|Errors");
             //vars.Add("MicrosoftInstrumentationEngine_FileLogPath", ""); //can be overridden if needed

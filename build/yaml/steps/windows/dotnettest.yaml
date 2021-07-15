@@ -9,7 +9,7 @@ parameters:
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
+  displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}\Tests\**\*Tests*.dll'
   inputs:
     command: test
     arguments: >-
@@ -18,7 +18,7 @@ steps:
       $(Configuration)
       --settings
       "tests/TestSettings/$(RunSettingsFile)"
-      $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)\${{ parameters.SubFolder }}*Tests*.dll
+      $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)\${{ parameters.SubFolder }}\Tests\**\*Tests*.dll
     testRunTitle: ${{ parameters.RunTitle }}
     publishTestResults: true
   condition: succeededOrFailed()

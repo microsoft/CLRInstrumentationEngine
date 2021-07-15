@@ -4,11 +4,13 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 
 namespace InstrEngineTests
@@ -76,8 +78,9 @@ namespace InstrEngineTests
             if (!BinaryRecompiled)
             {
                 BinaryRecompiled = true;
-                TargetAppCompiler.DeleteExistingBinary(PathUtils.GetAssetsPath());
-                TargetAppCompiler.ComplileCSharpTestCode(PathUtils.GetAssetsPath());
+                Directory.CreateDirectory(PathUtils.GetDebugeesPath());
+                TargetAppCompiler.DeleteExistingBinary(PathUtils.GetDebugeesPath());
+                TargetAppCompiler.ComplileCSharpTestCode(PathUtils.GetDebugeesPath());
             }
 
             DeleteOutputFileIfExist(output);
@@ -185,7 +188,7 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(TestOutputFileEnvName, outputPath);
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
-            string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+            string appPathWithoutExtension = Path.Combine(PathUtils.GetDebugeesPath(), testApp);
 #if NETCOREAPP
             string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
             string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);

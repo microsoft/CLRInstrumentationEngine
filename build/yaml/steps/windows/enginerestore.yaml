@@ -30,5 +30,5 @@ steps:
 
 - template: nugetrestore.yaml
   parameters:
-    Solution: NativeNugetRestore.sln
+    Solution: InstrumentationEngine.sln
     Condition: and(succeeded(), ne(variables['Platform'], 'Any CPU'))

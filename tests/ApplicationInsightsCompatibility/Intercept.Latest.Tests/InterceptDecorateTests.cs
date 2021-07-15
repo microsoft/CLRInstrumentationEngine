@@ -47,26 +47,20 @@ namespace InstrEngineTests
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName32, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName32, ".")]
-        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule)]
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig32)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule32)]
         public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes32()
         {
             TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: true);
         }
 
         [TestMethod]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineProfilerModuleName64, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
-        [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName64, ".")]
-        [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
-        [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
-        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
+        [DeploymentItem(TestFiles.DeploymentItem_ManagedExtensionsBaseModule)]
+        [DeploymentItem(TestFiles.DeploymentItem_InstrumentationEngineModule64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseConfig64)]
+        [DeploymentItem(TestFiles.DeploymentItem_NativeExtensionsBaseModule64)]
         public void InstrumentationEngineDoNotAddUnnecessaryCustomAttributes64()
         {
             TestEngine.ExecuteTest<CustomAttributesTestBase>(run32Bit: false);
