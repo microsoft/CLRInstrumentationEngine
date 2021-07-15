@@ -4,6 +4,9 @@
      Licensed under the MIT License. -->
 
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SubComponent>Tests</SubComponent>
+  </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\build\MicroBuild.props" />
   <ItemGroup Label="ProjectConfigurations">

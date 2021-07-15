@@ -2,11 +2,13 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <Project>
+  <PropertyGroup>
+    <SubComponent>$(TargetFramework)\Tests</SubComponent>
+  </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup>
+    <TargetFrameworks>net45</TargetFrameworks>
     <RootNamespace>Extensions.Base.Api.Tests</RootNamespace>
-    <AssemblyName>Extensions.Base.Api.Tests</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
   <ItemGroup>

@@ -105,9 +105,8 @@
         <BinRoot Condition="$(BinRoot) == '' Or $(BinRoot) == '*Undefined*'">$(EnlistmentRoot)\bin</BinRoot>
         <BinRoot>$([System.IO.Path]::GetFullPath( $(BinRoot) ))</BinRoot>
 
-        <OutputPath>$(BinRoot)\$(Configuration)\$(ArchitectureFolderName)</OutputPath>
-        <OutputPath Condition=" $(SubComponent) != '' ">$(OutputPath)\$(SubComponent)</OutputPath>
-        <OutputPath>$([System.IO.Path]::GetFullPath( $(OutputPath) ))\</OutputPath>
+        <BaseOutputPath>$([System.IO.Path]::GetFullPath( $(BinRoot)\$(Configuration)\$(ArchitectureFolderName) ))\</BaseOutputPath>
+        <OutputPath>$([System.IO.Path]::GetFullPath( $(BaseOutputPath)$(SubComponent) ))\</OutputPath>
 
         <AppxPackageDir>$(OutputPath)</AppxPackageDir>
 

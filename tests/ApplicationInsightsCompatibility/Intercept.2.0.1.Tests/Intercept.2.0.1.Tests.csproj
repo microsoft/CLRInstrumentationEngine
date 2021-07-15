@@ -3,7 +3,7 @@
      Licensed under the MIT License. -->
 <Project>
   <PropertyGroup>
-    <SubComponent>$(TargetFramework)\Intercept.2.0.1.Tests</SubComponent>
+    <SubComponent>$(TargetFramework)\Tests\Intercept.2.0.1.Tests</SubComponent>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup>
