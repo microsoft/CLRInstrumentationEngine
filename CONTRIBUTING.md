@@ -22,14 +22,14 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 ## Branches
 
-Active development is happening in `develop` branch.
+Active development is happening in `main` branch.
 
-Last released version is in `main` branch.
+Last released version is in `release` branch.
 
 ## Submitting your Pull Request:
 
 - Build solution in both `Release` and `Debug` configurations (see *Building locally* section)
-- Create a Pull Request against the `develop` branch and add clrieowners@microsoft.com as a reviewer
+- Create a Pull Request against the `main` branch and add clrieowners@microsoft.com as a reviewer
 
 ## Instrumentation Engine Api Changes
 

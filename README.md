@@ -1,8 +1,8 @@
 ﻿# CLR Instrumentation Engine
 
-Develop Branch: [![Build Status](https://dev.azure.com/ms/CLRInstrumentationEngine/_apis/build/status/CI-Yaml?branchName=develop)](https://dev.azure.com/ms/CLRInstrumentationEngine/_build/latest?definitionId=275&branchName=develop)
+Main Branch: [![Build Status](https://dev.azure.com/ms/CLRInstrumentationEngine/_apis/build/status/CI-Yaml?branchName=main)](https://dev.azure.com/ms/CLRInstrumentationEngine/_build/latest?definitionId=275&branchName=main)
 
-Main Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=main)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=main)
+Release Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=release)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=release)
 
 ## Overview
 
