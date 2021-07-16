@@ -23,13 +23,13 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(LegacyApplicationInsightsAgentInterceptVersion)" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
-    <PackageReference Include="RemoteUnitTestExecutor" Version="$(RemoteUnitExecutorVersion)" />
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />

@@ -21,6 +21,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Intercept.Shared.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawProfilerHook.Tests", "tests\RawProfilerHook\RawProfilerHook.Tests\RawProfilerHook.Tests.csproj", "{1EE71C9D-3D30-4AC7-B208-F68E9793E669}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor", "src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj", "{A8769A89-0850-47A9-ABD6-A561AB8E9D05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor.Host", "src\Tests\RemoteUnitTestExecutor.Host\RemoteUnitTestExecutor.Host.csproj", "{9B388F59-4000-43CF-9080-0C1340420D1A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{144b3730-b1d7-4552-8a5b-c92ab8356823}*SharedItemsImports = 5
@@ -64,6 +68,14 @@ Global
 		{1EE71C9D-3D30-4AC7-B208-F68E9793E669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EE71C9D-3D30-4AC7-B208-F68E9793E669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EE71C9D-3D30-4AC7-B208-F68E9793E669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8769A89-0850-47A9-ABD6-A561AB8E9D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8769A89-0850-47A9-ABD6-A561AB8E9D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8769A89-0850-47A9-ABD6-A561AB8E9D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8769A89-0850-47A9-ABD6-A561AB8E9D05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B388F59-4000-43CF-9080-0C1340420D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B388F59-4000-43CF-9080-0C1340420D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B388F59-4000-43CF-9080-0C1340420D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B388F59-4000-43CF-9080-0C1340420D1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,7 +24,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
-    <PackageReference Include="RemoteUnitTestExecutor" Version="$(RemoteUnitExecutorVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Tests\RemoteUnitTestExecutor\RemoteUnitTestExecutor.csproj" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>
