@@ -45,6 +45,7 @@
 #define __RPC__in_opt
 #define __RPC__inout_xcount(x)
 #define __RPC__in_ecount_full(x)
+#define __RPC__inout_ecount_full(x)
 #define __RPC__out_ecount_part(x, y)
 #define __RPC__in_xcount(x)
 #define __RPC__inout

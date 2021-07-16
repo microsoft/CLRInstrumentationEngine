@@ -9,27 +9,20 @@ using namespace CommonLib;
 
 namespace MicrosoftInstrumentationEngine
 {
-    typedef HRESULT (__stdcall *PfnDllGetClassObject)(
-        _In_   REFCLSID rclsid,
-        _In_   REFIID riid,
-        _Out_  LPVOID *ppv);
-
-
-    CRawProfilerHookLoader::CRawProfilerHookLoader() noexcept
-    {
-    }
-
     _Check_return_ HRESULT CRawProfilerHookLoader::LoadRawProfilerHookComponentFrom(
         _In_ const std::wstring& strModulePath,
         _In_ const GUID& clsidRawProfilerHook,
         _Out_ CComPtr<IUnknown>& spRawProfilerHook,
         _Out_ CModuleHandle& hRawProfilerHookModule)
     {
+
+        using PfnDllGetClassObject = HRESULT(__stdcall*)(_In_ REFCLSID, _In_ REFIID, _Out_ LPVOID*);
+
         IfFalseRet(strModulePath.size() >= 0, E_INVALIDARG);
 
         HRESULT hr = S_OK;
 
-        CLogging::LogMessage(_T("Looking up RawProfilerHook component module '%s'"), strModulePath);
+        CLogging::LogMessage(_T("Looking up RawProfilerHook component module '%s'"), strModulePath.c_str());
 
         // trying to obtain handle if a module is already loaded
         // call of GetModuleHandleEx with default (0) flags !increments! module ref count

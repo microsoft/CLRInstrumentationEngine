@@ -458,7 +458,7 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
         return 1;
     }
 
-    for (UINT i = 0; i < pProfilerManager->m_configSources.size(); i++)
+    for (size_t i = 0; i < pProfilerManager->m_configSources.size(); i++)
     {
         IfFailRet(pProfilerManager->LoadInstrumentationMethods(pProfilerManager->m_configSources[i]));
     }
@@ -721,8 +721,9 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
 }
 
 HRESULT CProfilerManager::RemoveInstrumentationMethod(
-    _In_ IInstrumentationMethod* pInstrumentationMethod)
+    _In_opt_ IInstrumentationMethod* pInstrumentationMethod)
 {
+    IfNullRet(pInstrumentationMethod);
     HRESULT hr = S_OK;
     {
         DWORD dwFlags = 0;
@@ -3583,7 +3584,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 
@@ -3606,7 +3607,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
         ModuleID existingModuleId;
         IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
 
-        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%" PRIxPTR ", ModuleId:0x%" PRIxPTR ", FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%" PRIxPTR),
             functionId,
             moduleId,
             bstrMethodFullName.m_str,
@@ -3650,7 +3651,7 @@ HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ 
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 

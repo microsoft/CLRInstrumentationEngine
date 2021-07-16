@@ -22,6 +22,22 @@ ILOpcodeInfo ilOpcodeInfo[] =
 #undef OPDEF
 };
 
+struct ComInitializer
+{
+    HRESULT _hr;
+    ComInitializer(DWORD mode = COINIT_APARTMENTTHREADED)
+    {
+        _hr = CoInitializeEx(NULL, mode);
+    }
+    ~ComInitializer()
+    {
+        if (SUCCEEDED(_hr))
+        {
+            CoUninitialize();
+        }
+    }
+};
+
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {
     m_pProfilerManager = pProfilerManager;
@@ -71,23 +87,17 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 // method to co create a free threaded version of msxml on a thread that it owns to avoid this.
 DWORD WINAPI CInstrumentationMethod::InstrumentationMethodThreadProc(
     _In_  LPVOID lpParameter
-    )
+)
 {
-    CoInitialize(NULL);
-
+    ComInitializer coInit;
     CInstrumentationMethod* pThis = (CInstrumentationMethod*)lpParameter;
-    HRESULT hr = pThis->LoadTestScript();
 
-    CoUninitialize();
-
-    if (FAILED(hr))
+    if (FAILED(pThis->LoadTestScript()))
     {
         return (DWORD)-1;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }
 
 HRESULT CInstrumentationMethod::LoadTestScript()
@@ -717,7 +727,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
     if ((m_spInjectAssembly != nullptr) && (wcscmp(bstrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
     {
         CComPtr<IMetaDataDispenserEx> pDisp;
-        CoInitializeEx(0, COINIT_MULTITHREADED);
+        ComInitializer coInit(COINIT_MULTITHREADED);
         IfFailRet(CoCreateInstance(CLSID_CorMetaDataDispenser, NULL, CLSCTX_INPROC_SERVER,
             IID_IMetaDataDispenserEx, (void **)&pDisp));
 
@@ -888,7 +898,7 @@ HRESULT CInstrumentationMethod::BeforeInstrumentMethod(_In_ IMethodInfo* pMethod
         // TODO: (wiktor) add sequence points to test
         vector<DWORD> baselineSequencePoints;
         baselineSequencePoints.resize(corIlMap.size());
-        for (DWORD i = 0; i < baselineSequencePoints.size(); i++)
+        for (size_t i = 0; i < baselineSequencePoints.size(); i++)
         {
             baselineSequencePoints[i] = corIlMap[i].newOffset;
         }

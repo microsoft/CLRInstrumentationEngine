@@ -61,6 +61,8 @@ using namespace ATL;
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <inttypes.h>
+#include <stdint.h>
 
 #include "../Common.Headers/tstring.h"
 #include "../Common.Headers/CriticalSectionHolder.h"

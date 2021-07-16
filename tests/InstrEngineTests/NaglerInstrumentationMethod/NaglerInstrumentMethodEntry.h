@@ -160,13 +160,15 @@ public:
 
     HRESULT GetModuleName(BSTR* pbstrModuleName)
     {
-        m_bstrModuleName.CopyTo(pbstrModuleName);
+        HRESULT hr;
+        IfFailRet(m_bstrModuleName.CopyTo(pbstrModuleName));
         return S_OK;
     }
 
     HRESULT GetMethodName(BSTR* pbstrMethodName)
     {
-        m_bstrMethodName.CopyTo(pbstrMethodName);
+        HRESULT hr;
+        IfFailRet(m_bstrMethodName.CopyTo(pbstrMethodName));
         return S_OK;
     }
 

@@ -480,7 +480,7 @@ namespace MicrosoftInstrumentationEngine
         // instrumentation method
         STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown);
 
-        STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod));
+        STDMETHOD(RemoveInstrumentationMethod)(_In_opt_ IInstrumentationMethod* pInstrumentationMethod);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);

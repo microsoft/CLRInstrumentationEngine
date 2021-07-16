@@ -3,7 +3,7 @@
     <Name>IfTest</Name>
     <FullName>BasicManagedTest.Program.IfTest</FullName>
     <ClassID Volatile="True">0x00e64db4</ClassID>
-    <FunctionID>0x00000001</FunctionID>
+    <FunctionID Volatile="True">0x00000001</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
     <IsStatic>1</IsStatic>

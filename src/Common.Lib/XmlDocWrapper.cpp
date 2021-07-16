@@ -104,7 +104,7 @@ namespace CommonLib
                 errorText.append(_T("\r\nLine Number:"));
                 errorText.append(wszLineNumber);
 
-                AssertLogFailure(errorText.c_str());
+                AssertLogFailure(_T("%s"), errorText.c_str());
             }
             else
             {

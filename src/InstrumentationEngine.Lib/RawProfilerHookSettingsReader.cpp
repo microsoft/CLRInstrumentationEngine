@@ -38,7 +38,7 @@ namespace MicrosoftInstrumentationEngine
 
         IfFalseRet(strRawProfilerHookClsid.size() > 0, HRESULT_FROM_WIN32(ERROR_ENVVAR_NOT_FOUND));
 
-        CLogging::LogMessage(_T("RawProfilerHookComponent specified, CLSID = %s"), strRawProfilerHookClsid);
+        CLogging::LogMessage(_T("RawProfilerHookComponent specified, CLSID = %s"), strRawProfilerHookClsid.c_str());
 
         IfFailRet(CLSIDFromString(strRawProfilerHookClsid.c_str(), &clsidRawProfilerHookComponent));
 
@@ -55,7 +55,7 @@ namespace MicrosoftInstrumentationEngine
             IfFailRet(GetEnvironmentVariable(cszRawProfilerHookPathVariableNameNoBitness, strRawProfilerHookModulePath));
         }
 
-        CLogging::LogMessage(_T("RawProfilerHookModulePath specified, path = %s"), strRawProfilerHookModulePath);
+        CLogging::LogMessage(_T("RawProfilerHookModulePath specified, path = %s"), strRawProfilerHookModulePath.c_str());
 
         // if cszRawProfilerHookPathVariableName and cszRawProfilerHookPathVariableNameNoBitness are not set then we consider it as error;
         // there's no path to the component module to load
