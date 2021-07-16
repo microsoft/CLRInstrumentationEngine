@@ -8,6 +8,7 @@
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
+#include "StringUtils.h"
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
@@ -80,21 +81,34 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return E_INVALIDARG;
     }
 
-    WCHAR wszModuleFullPath[MAX_PATH];
-    memset(wszModuleFullPath, 0, MAX_PATH);
-    wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
-
-    WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
-    if (!PathCanonicalize(wszBuffer, wszModuleFullPath) ||
-        !PathAppend(wszBuffer, m_bstrModule) ||
-        wcslen(wszBuffer) >= MAX_PATH)
+    if ((m_bstrModuleFolder.Length() >= MAX_PATH))
     {
-        DWORD dwLastError = GetLastError();
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to generate method configuration fullpath '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
-        return dwLastError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dwLastError);
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long, PID: %u"), GetCurrentProcessId());
+        return E_BOUNDS;
     }
 
-    wcscpy_s(wszModuleFullPath, MAX_PATH, wszBuffer);
+    WCHAR wszModuleFullPath[MAX_PATH];
+    memset(wszModuleFullPath, 0, MAX_PATH);
+    if (!PathCanonicalize(wszModuleFullPath, m_bstrModuleFolder))
+    {
+        DWORD dwLastError = GetLastError();
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to canonicalize method configuration folder: '%s', PID: %u"), m_bstrModuleFolder.m_str, GetCurrentProcessId());
+        return HRESULT_FROM_WIN32(dwLastError);
+    }
+
+    // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
+    if (StringUtils::WStringLen(wszModuleFullPath) + StringUtils::WStringLen(m_bstrModule) >= MAX_PATH)
+    {
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - method configuration fullpath is too long: '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
+        return E_BOUNDS;
+    }
+
+    if (!PathAppend(wszModuleFullPath, m_bstrModule))
+    {
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to append module to method configuration folder: '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
+        return E_FAIL;
+    }
+
     m_hmod = ::LoadLibrary(wszModuleFullPath);
 
     if (m_hmod == NULL)
