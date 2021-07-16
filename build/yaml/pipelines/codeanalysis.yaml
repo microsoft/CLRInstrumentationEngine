@@ -8,15 +8,6 @@
 
 name: $(date:yyyyMMdd)$(rev:rr)
 
-# Trigger every Sunday at 8am UTC (Sunday at midnight PST)
-# See https://docs.microsoft.com/azure/devops/pipelines/build/triggers?tabs=yaml&view=azure-devops#scheduled-triggers
-schedules:
-- cron: "0 8 * * Sun"
-  displayName: Weekly Static Analysis
-  branches:
-    include:
-    - release
-
 variables:
   TeamName: ClrInstrumentationEngine
 
