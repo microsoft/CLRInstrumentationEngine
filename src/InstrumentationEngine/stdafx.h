@@ -61,6 +61,8 @@ using namespace ATL;
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <inttypes.h>
+#include <stdint.h>
 
 #include "../Common.Headers/tstring.h"
 #include "../Common.Headers/CriticalSectionHolder.h"
@@ -68,11 +70,11 @@ using namespace ATL;
 
 #include "../Common.Lib/Macros.h"
 #include "../Common.Lib/refcount.h"
-#include "XmlNode.h"
-#include "XmlDocWrapper.h"
+#include "../Common.Lib/ImplQueryInterface.h"
+#include "../Common.Lib/XmlNode.h"
+#include "../Common.Lib/XmlDocWrapper.h"
 
 #include "InstrumentationEngine.h"
-#include "../InstrumentationEngine.Lib/ImplQueryInterface.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
 #include "resource.h"
 

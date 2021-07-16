@@ -3,11 +3,10 @@
 
 namespace RawProfilerHook.Tests
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using RemoteUnitTestExecutor;
+    using System;
+    using System.Diagnostics;
     using System.Xml;
 
     [TestClass]
@@ -61,7 +60,10 @@ namespace RawProfilerHook.Tests
             }
         }
 
+        // BUG: CLRIE does not receive ICorProfilerCallback6::GetAssemblyReferences callback.
+        // See https://github.com/microsoft/CLRInstrumentationEngine/issues/414 for details.
         [TestMethod]
+        [Ignore("https://github.com/microsoft/CLRInstrumentationEngine/issues/414")]
         [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineProfilerModuleName, ".")]
         [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineHostConfigName, ".")]
         [DeploymentItem(@"..\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]

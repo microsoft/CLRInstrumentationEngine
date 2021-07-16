@@ -22,8 +22,5 @@
     <DefineConstants Condition="'$(PublicRelease)' != 'True'">$(DefineConstants);ALLOWNOTSIGNED</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <UseDotNetSdk Condition="'$(UseDotNetSdk)' == ''">true</UseDotNetSdk>
-  </PropertyGroup>
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="'$(UseDotNetSdk)' == 'true'" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 </Project>

@@ -1,8 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Require at least version 2.8.12 of CMake
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.14)
 project(InstrumentationEngine.Lib)
 find_package(LibXml2 REQUIRED)
 
@@ -16,18 +15,14 @@ set(src_files
     ./ConfigurationLocator.cpp
     ./ConfigurationSource.cpp
     ./DataContainer.cpp
-    ./Encoding.cpp
     ./FileLoggerSink.cpp
     ./HostLoggerSink.cpp
-    ./ImplQueryInterface.cpp
     ./InstrumentationMethod.cpp
     ./InstrumentationMethodAttachContext.cpp
     ./InstrumentationMethodSetting.cpp
     ./LoggerService.cpp
     ./Logging.cpp
     ./StringUtils.cpp
-    ./XmlDocWrapper.cpp
-    ./XmlNode.cpp
 )
 
 add_lib(${PROJECT_NAME}

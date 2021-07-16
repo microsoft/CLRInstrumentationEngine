@@ -895,7 +895,7 @@ EXTERN_C const IID IID_IProfilerManager;
             /* [out] */ __RPC__deref_out_opt IUnknown **ppUnknown) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveInstrumentationMethod( 
-            /* [in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod) = 0;
+            /* [ref][in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddInstrumentationMethod( 
             /* [in] */ __RPC__in BSTR bstrModulePath,
@@ -973,7 +973,7 @@ EXTERN_C const IID IID_IProfilerManager;
         
         HRESULT ( STDMETHODCALLTYPE *RemoveInstrumentationMethod )( 
             __RPC__in IProfilerManager * This,
-            /* [in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod);
+            /* [ref][in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod);
         
         HRESULT ( STDMETHODCALLTYPE *AddInstrumentationMethod )( 
             __RPC__in IProfilerManager * This,
@@ -8720,12 +8720,12 @@ EXTERN_C const IID IID_IMethodJitInfo2;
     public:
         virtual HRESULT STDMETHODCALLTYPE GetILNativeMapping( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_DEBUG_IL_TO_NATIVE_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILInstrumentationMap( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_IL_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodToken( 
@@ -8782,13 +8782,13 @@ EXTERN_C const IID IID_IMethodJitInfo2;
         HRESULT ( STDMETHODCALLTYPE *GetILNativeMapping )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_DEBUG_IL_TO_NATIVE_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetILInstrumentationMap )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_IL_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 

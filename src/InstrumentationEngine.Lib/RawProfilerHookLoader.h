@@ -12,7 +12,7 @@ namespace MicrosoftInstrumentationEngine
         CRawProfilerHookLoader(const CRawProfilerHookLoader&) = delete;
         CRawProfilerHookLoader& operator=(const CRawProfilerHookLoader&) = delete;
     public:
-        CRawProfilerHookLoader() noexcept;
+        CRawProfilerHookLoader() noexcept = default;
 
         _Check_return_ HRESULT LoadRawProfilerHookComponentFrom(
             _In_ const std::wstring& strModulePath,

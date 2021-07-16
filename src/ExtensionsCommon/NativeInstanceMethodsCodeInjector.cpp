@@ -160,7 +160,7 @@ namespace Instrumentation
 		_In_ int iArgsCount,
 		_Inout_ IInstructionSptr& spCurrentInstruction)
 	{
-		for (USHORT idx = 0; idx < iArgsCount; ++idx)
+		for (int idx = 0; idx < iArgsCount; ++idx)
 		{
 			IInstructionSptr sptrLoadArg;
 

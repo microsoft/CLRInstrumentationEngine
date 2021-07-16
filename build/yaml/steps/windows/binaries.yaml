@@ -8,15 +8,22 @@ parameters:
 steps:
 # nuget restore InstrumentationEngine.sln
 - ${{ if eq(parameters.NuGetRestore, true) }}:
-  - template: nugetrestore.yaml
-    parameters:
-      Solution: InstrumentationEngine.sln
+  - template: enginerestore.yaml
 
 # msbuild InstrumentationEngine.sln
+- task: DotNetCoreCLI@2
+  displayName: 'Build InstrumentationEngine.sln'
+  inputs:
+    command: build
+    projects: InstrumentationEngine.sln
+    arguments: -c $(Configuration)
+  condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+
 - task: MSBuild@1
-  displayName: 'Build solution InstrumentationEngine.sln'
+  displayName: 'Build InstrumentationEngine.sln'
   inputs:
     solution: InstrumentationEngine.sln
     msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)
+  condition: and(succeeded(), ne(variables['Platform'], 'Any CPU'))

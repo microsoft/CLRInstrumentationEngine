@@ -34,7 +34,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::FinishInitialization(_In
 
     if(FAILED(pRawICorProfilerInfo->GetAppDomainInfo(m_appDomainId, cchName, &cchNameLength, NULL, &processID)))
     {
-        CLogging::LogError(_T("Unable to get AppDomain info for id %04x"), m_appDomainId);
+        CLogging::LogError(_T("Unable to get AppDomain info for id %08" PRIxPTR), m_appDomainId);
         return E_FAIL;
     }
     if (cchNameLength == 0)
@@ -351,7 +351,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetAssemblyInfoById(_In_
 
     if (iter == m_assemblyInfos.end())
     {
-        CLogging::LogMessage(_T("CAppDomainCollection::GetAssemblyById - Failed to find specified assembly %04x"), assemblyID);
+        CLogging::LogMessage(_T("CAppDomainCollection::GetAssemblyById - Failed to find specified assembly %08" PRIxPTR),assemblyID);
         return E_FAIL;
     }
 
@@ -435,7 +435,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainInfo::GetModuleInfoById(_In_ M
 
     if (iter == m_moduleInfos.end())
     {
-        CLogging::LogMessage(_T("CAppDomainCollection::GetModuleById - Failed to find specified assembly %04x"), moduleId);
+        CLogging::LogMessage(_T("CAppDomainCollection::GetModuleById - Failed to find specified assembly %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 

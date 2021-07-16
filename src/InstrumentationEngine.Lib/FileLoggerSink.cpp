@@ -107,7 +107,9 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
 #ifdef PLATFORM_UNIX
         m_pOutputFile.reset(_wfopen(wszFilePath, _T("a")));
 #else
-        m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR));
+        // will create a new file if there is permission to in the
+        // given path, and permissions will be inherited.
+        m_pOutputFile.reset(_wfsopen(wszFilePath, _T("a"), _SH_DENYWR)); // lgtm[cpp/world-writable-file-creation]
 #endif
 
         m_tsPathActual.clear();
@@ -183,7 +185,7 @@ void CFileLoggerSink::WritePrefix(_In_ LoggingFlags flags)
 #else
                 WCHAR szFormatted[MAX_PATH];
                 wcsftime(szFormatted, MAX_PATH, szFormat, &localTime);
-                fwprintf(pOutputFile, szFormatted);
+                fwprintf(pOutputFile, L"%s", szFormatted);  
 #endif
             }
         }
