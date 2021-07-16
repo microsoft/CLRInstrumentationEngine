@@ -8,7 +8,7 @@
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
-#include "StringUtils.h"
+#include "../Common.Lib/PathUtils.h"
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
@@ -83,7 +83,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
 
     if ((m_bstrModuleFolder.Length() >= MAX_PATH))
     {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long, PID: %u"), GetCurrentProcessId());
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long: '%s', PID: %u"), m_bstrModuleFolder.m_str, GetCurrentProcessId());
         return E_BOUNDS;
     }
 
@@ -96,17 +96,13 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return HRESULT_FROM_WIN32(dwLastError);
     }
 
-    // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-    if (StringUtils::WStringLen(wszModuleFullPath) + StringUtils::WStringLen(m_bstrModule) >= MAX_PATH)
+    hr = PathUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
+    if (FAILED(hr))
     {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - method configuration fullpath is too long: '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
-        return E_BOUNDS;
-    }
-
-    if (!PathAppend(wszModuleFullPath, m_bstrModule))
-    {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to append module to method configuration folder: '%s' + '%s', PID: %u"), m_bstrModuleFolder.m_str, m_bstrModule.m_str, GetCurrentProcessId());
-        return E_FAIL;
+        CLogging::LogError(
+            _T("CInstrumentationMethod::Initialize - failed to append method dll to method configuration folder, PID: %u, hr: %x, target: '%s' + '%s'"),
+            GetCurrentProcessId(), hr, m_bstrModuleFolder.m_str, m_bstrModule.m_str);
+        return hr;
     }
 
     m_hmod = ::LoadLibrary(wszModuleFullPath);

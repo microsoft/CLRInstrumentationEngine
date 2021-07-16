@@ -7,7 +7,7 @@
 #include "InstrumentationEngineVersion.h"
 #include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
-#include "../InstrumentationEngine.Lib/StringUtils.h"
+#include "../Common.Lib/PathUtils.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
@@ -112,20 +112,16 @@ namespace ProfilerProxy
         DWORD dError = 0;
 
         WCHAR wszEngineFullPath[MAX_PATH];
-        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
-
-        WCHAR wszBuffer[2 * MAX_PATH]; // set to 2x the MAX_PATH in order to prevent buffer overflow.
-        if (!PathCanonicalize(wszBuffer, wszEngineFullPath) ||
-            !PathAppend(wszBuffer, wszVersionFolder) ||
-            !PathAppend(wszBuffer, profilerRelativeFileName) ||
-            wcslen(wszBuffer) >= MAX_PATH)
+        memset(wszEngineFullPath, 0, MAX_PATH);
+        if (!PathCanonicalize(wszEngineFullPath, wszProfilerPath))
         {
-            dError = GetLastError();
-            eventLogger.LogError(_T("dllmain::HasProfilerDll - Unable to generate fullpath to CLRIE dll: '%s' + '%s' + '%s'"), wszEngineFullPath, wszVersionFolder, profilerRelativeFileName);
-            return dError == 0 ? E_FAIL : HRESULT_FROM_WIN32(dError);
+            DWORD dwLastError = GetLastError();
+            eventLogger.LogError(_T("dllmain::HasProfilerDll - unable to canonicalize profiler folder: '%s'"), wszProfilerPath);
+            return HRESULT_FROM_WIN32(dwLastError);
         }
 
-        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszBuffer));
+        IfFailRet_Proxy(PathUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
+        IfFailRet_Proxy(PathUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -265,18 +261,7 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(wszProfilerPath) + StringUtils::WStringLen(instrumentationEngineFolder) >= MAX_PATH)
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - engine common path is too long: '%s' + '%s', PID: %u"), wszProfilerPath, instrumentationEngineFolder, GetCurrentProcessId());
-            return E_BOUNDS;
-        }
-
-        if (!PathAppend(wszProfilerPath, instrumentationEngineFolder))
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - unable to append instrumentation folder to profiler folder: '%s' + '%s', PID: %u"), wszProfilerPath, instrumentationEngineFolder, GetCurrentProcessId());
-            return E_FAIL;
-        }
+        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, instrumentationEngineFolder, MAX_PATH));
 
         //
         // Determine Version folder
@@ -304,35 +289,13 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(wszProfilerPath) + StringUtils::WStringLen(versionFolder.c_str()) >= MAX_PATH)
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - engine version path is too long: '%s' + '%s', PID: %u"), wszProfilerPath, versionFolder, GetCurrentProcessId());
-            return E_BOUNDS;
-        }
-
-        if (!PathAppend(wszProfilerPath, versionFolder.c_str()))
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - unable to append version folder to engine common path: '%s' + '%s', PID: %u"), wszProfilerPath, instrumentationEngineFolder, GetCurrentProcessId());
-            return E_FAIL;
-        }
+        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, versionFolder.c_str(), MAX_PATH));
 
         //
         // Determine and Load Profiler
         //
 
-        // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(wszProfilerPath) + StringUtils::WStringLen(profilerRelativeFileName) >= MAX_PATH)
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - engine full path is too long: '%s' + '%s', PID: %u"), wszProfilerPath, profilerRelativeFileName, GetCurrentProcessId());
-            return E_BOUNDS;
-        }
-
-        if (!PathAppend(wszProfilerPath, profilerRelativeFileName))
-        {
-            eventLogger.LogError(_T("dllmain::LoadProfiler - unable to append dll to engine fullpath: '%s' + '%s', PID: %u"), wszProfilerPath, profilerRelativeFileName, GetCurrentProcessId());
-            return E_FAIL;
-        }
+        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, profilerRelativeFileName, MAX_PATH));
 
         eventLogger.LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
 

@@ -4,11 +4,6 @@
 #include "stdafx.h"
 #include "StringUtils.h"
 
-#ifndef E_BOUNDS
-// Apparantly, Linux builds don't have E_BOUNDS defined.
-#define E_BOUNDS 0x8000000BL
-#endif
-
 // Somewhat arbitrary.
 const size_t StringUtils::MAX_STRING_LEN = 10000;
 

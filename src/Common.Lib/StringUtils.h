@@ -3,7 +3,10 @@
 
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
 #include <string>
+#pragma warning(pop)
 
 class StringUtils
 {

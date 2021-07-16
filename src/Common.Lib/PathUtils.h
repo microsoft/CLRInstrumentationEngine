@@ -23,5 +23,7 @@ namespace CommonLib
         static std::wstring GetDirFromPath(LPCWSTR path);
 
         static std::wstring Combine(const std::wstring& strPath1, const std::wstring& strPath2);
+
+        static HRESULT SafePathAppend(LPWSTR pwszPath, LPCWSTR pwszMore, size_t cBounds);
     };
 }
