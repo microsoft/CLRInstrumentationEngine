@@ -190,7 +190,7 @@ HRESULT MicrosoftInstrumentationEngine::CAssemblyInfo::GetModuleById(_In_ Module
 
     if (iter == m_moduleInfos.end())
     {
-        CLogging::LogError(_T("CAssemblyInfo::GetModuleById - Failed to find specified assembly %04x"), moduleId);
+        CLogging::LogError(_T("CAssemblyInfo::GetModuleById - Failed to find specified assembly %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 

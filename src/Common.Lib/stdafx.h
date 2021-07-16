@@ -3,8 +3,13 @@
 
 // stdafx.h : include file for standard system include files,
 // or project specific include files that are used frequently, but
-// are changed infrequently
+// are changed infrequently.
 //
+// NOTE: Do note include this header in any other header files.
+// The types declared in mincom will conflict with the types 
+// that are declared by the CLR in libraries that use the PAL.
+// Instead, all headers in this library should stand-alone as
+// much as possible. Use forward-declarations if needed.
 
 #pragma once
 
@@ -20,14 +25,19 @@
 #include "mincom/mincom.h"
 #include "mincom/ccomptrs.h"
 #define __ATL_MIN_COM__
+
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 #else 
 #include <windows.h>
 #include <atlbase.h>
 #include <atlcom.h>
+
+#include <msxml6.h>
 #endif
 
-
 #include "Macros.h"
+#include "refcount.h"
 
 #include "../Common.Headers/banned.h"
 

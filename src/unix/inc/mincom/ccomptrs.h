@@ -7,16 +7,14 @@
 
 #pragma once
 
-class IUnknown;
+#include "minunknwn.h"
 
-static inline  IUnknown* _MinComPtrAssign(
-    IUnknown** pp, 
-    IUnknown* lp)
+template <class T>
+static inline  T* _MinComPtrAssign(
+    T** pp, 
+    T* lp)
 {
-    if (pp == NULL)
-        return NULL;
-        
-    if (lp != NULL)
+    if (lp != nullptr)
         lp->AddRef();
     if (*pp)
         (*pp)->Release();
@@ -148,11 +146,11 @@ public:
 
     T* operator=(T* lp)
     {
-        return static_cast<T*>(_MinComPtrAssign((IUnknown**)&this->p, lp));
+        return static_cast<T*>(_MinComPtrAssign(&this->p, lp.p));
     }
 
     T* operator=(const CComPtr<T>& lp)
     {
-        return static_cast<T*>(_MinComPtrAssign((IUnknown**)&this->p, lp));
+        return static_cast<T*>(_MinComPtrAssign(&this->p, lp.p));
     }
 };

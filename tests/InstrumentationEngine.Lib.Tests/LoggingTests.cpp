@@ -201,7 +201,7 @@ namespace InstrumentationEngineLibTests
 
             // Log an error
             tstring tsError1(L"Error1");
-            loggerService.LogError(tsError1.c_str());
+            loggerService.LogError(L"%s", tsError1.c_str());
 
             // Log file shall exist
             AssertLogFileExists(loggerService);
@@ -215,7 +215,7 @@ namespace InstrumentationEngineLibTests
 
             // Write an message
             tstring tsMessage1(L"Message1");
-            loggerService.LogMessage(tsMessage1.c_str());
+            loggerService.LogMessage(L"%s", tsMessage1.c_str());
 
             // Get contents of log file
             ReadAllLines(fileName, lines);
@@ -333,11 +333,11 @@ namespace InstrumentationEngineLibTests
 
             // Write message to log
             tstring tsMessage1(L"Message1");
-            loggerService.LogMessage(tsMessage1.c_str());
+            loggerService.LogMessage(L"%s", tsMessage1.c_str());
 
             // Write dump to log
             tstring tsDump1(L"<Data>Value1</Data>");
-            loggerService.LogDumpMessage(tsDump1.c_str());
+            loggerService.LogDumpMessage(L"%s", tsDump1.c_str());
 
             // Check log counts are correct (nothing)
             Assert::AreEqual((size_t)0, pLoggingHost->m_dumps.size());
@@ -361,11 +361,11 @@ namespace InstrumentationEngineLibTests
 
             // Write message to log
             tstring tsMessage1(L"Message1");
-            loggerService.LogMessage(tsMessage1.c_str());
+            loggerService.LogMessage(L"%s", tsMessage1.c_str());
 
             // Write dump to log
             tstring tsDump1(L"<Data>Value1</Data>");
-            loggerService.LogDumpMessage(tsDump1.c_str());
+            loggerService.LogDumpMessage(L"%s", tsDump1.c_str());
 
             // Check log counts are correct (1 message)
             Assert::AreEqual((size_t)0, pLoggingHost->m_dumps.size());
@@ -391,11 +391,11 @@ namespace InstrumentationEngineLibTests
 
             // Write message to log
             tstring tsMessage1(L"Message1");
-            loggerService.LogMessage(tsMessage1.c_str());
+            loggerService.LogMessage(L"%s", tsMessage1.c_str());
 
             // Write dump to log
             tstring tsDump1(L"<Data>Value1</Data>");
-            loggerService.LogDumpMessage(tsDump1.c_str());
+            loggerService.LogDumpMessage(L"%s", tsDump1.c_str());
 
             // Check log counts are correct (1 message)
             Assert::AreEqual((size_t)0, pLoggingHost->m_dumps.size());
@@ -410,11 +410,11 @@ namespace InstrumentationEngineLibTests
 
             // Write message to log
             tstring tsMessage2(L"Message2");
-            loggerService.LogMessage(tsMessage2.c_str());
+            loggerService.LogMessage(L"%s", tsMessage2.c_str());
 
             // Write dump to log
             tstring tsDump2(L"<Data>Value2</Data>");
-            loggerService.LogDumpMessage(tsDump2.c_str());
+            loggerService.LogDumpMessage(L"%s", tsDump2.c_str());
 
             // Check log counts are correct (1 dump)
             Assert::AreEqual((size_t)1, pLoggingHost->m_dumps.size());
@@ -440,7 +440,7 @@ namespace InstrumentationEngineLibTests
 
             // Write message to log
             tstring tsMessage1(L"Message1");
-            loggerService.LogMessage(tsMessage1.c_str());
+            loggerService.LogMessage(L"%s", tsMessage1.c_str());
 
             // Check log counts are correct (1 message)
             Assert::AreEqual((size_t)0, pLoggingHost->m_dumps.size());
@@ -471,7 +471,7 @@ namespace InstrumentationEngineLibTests
 
             // Write error to log
             tstring tsError1(L"Error1");
-            loggerService.LogError(tsError1.c_str());
+            loggerService.LogError(L"%s", tsError1.c_str());
 
             // Give event logger time to process messages
             Sleep(100); // ms
@@ -501,7 +501,7 @@ namespace InstrumentationEngineLibTests
             {
                 tstring tsError(L"Error");
                 tsError.append(to_wstring(i));
-                loggerService.LogError(tsError.c_str());
+                loggerService.LogError(L"%s", tsError.c_str());
             }
 
             const vector<tstring> entries = loggerService.GetEventEntries();
@@ -531,7 +531,7 @@ namespace InstrumentationEngineLibTests
 
             // Write error to log
             tstring tsError1(L"Error1");
-            loggerService.LogError(tsError1.c_str());
+            loggerService.LogError(L"%s", tsError1.c_str());
 
             // Give event logger time to process messages
             Sleep(10); // ms
@@ -579,11 +579,11 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.SetLoggingFlags(LoggingFlags_None));
 
             GUID testGuid;
-            IIDFromString(L"{00000000-0000-0000-0000-000000000000}", &testGuid);
+            ASSERTOK(IIDFromString(L"{00000000-0000-0000-0000-000000000000}", &testGuid));
             loggerService.UpdateInstrumentationMethodLoggingFlags(testGuid, LoggingFlags_Errors);
 
             GUID testGuid2;
-            IIDFromString(L"{00000000-0000-0000-0000-000000000001}", &testGuid2);
+            ASSERTOK(IIDFromString(L"{00000000-0000-0000-0000-000000000001}", &testGuid2));
             loggerService.UpdateInstrumentationMethodLoggingFlags(testGuid2, LoggingFlags_Trace);
 
             loggerService.LogError(L"Error1");

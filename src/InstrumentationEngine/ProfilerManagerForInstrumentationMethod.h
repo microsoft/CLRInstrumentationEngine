@@ -70,7 +70,7 @@ namespace MicrosoftInstrumentationEngine
 
         STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown) override;
 
-        STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod)) override;
+        STDMETHOD(RemoveInstrumentationMethod)(_In_opt_ IInstrumentationMethod* pInstrumentationMethod) override;
 
         STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod) override;
 

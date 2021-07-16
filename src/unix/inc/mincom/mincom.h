@@ -51,4 +51,8 @@
 #include "no_sal.h"
 #include "no_sal2.h"
 
+#include "hresults.h"
+
 #include "minunknwn.h"
+
+#define _T(X) u ## X

@@ -46,13 +46,8 @@ using namespace ATL;
 #include <clrprofiler.h>
 #include <sal.h>
 
-// TODO: We should use the CommonLib xml doc wrapper instead.
 #ifndef PLATFORM_UNIX
-#include <msxml6.h>
-#include <Pathcch.h>
-#else
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include <PathCch.h>
 #endif
 
 #ifdef PLATFORM_UNIX
@@ -66,10 +61,13 @@ using namespace ATL;
 #define wcsstr        PAL_wcsstr
 #define wcslen        PAL_wcslen
 #define wcsnlen_s     PAL_wcsnlen_s
+#define wcsstr        PAL_wcsstr
+#define wcscmp        PAL_wcscmp
 #endif
 
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
+#pragma warning(disable: 6285) // bug in <functional> that compares 0 to 0, resulting in a warning.
 #include <queue>
 #include <vector>
 #include <memory>
@@ -96,7 +94,7 @@ using namespace ATL;
 #pragma warning(pop)
 
 #include "Logging.h"
-#include "ImplQueryInterface.h"
+#include "../Common.Lib/ImplQueryInterface.h"
 #include "../Common.Lib/refcount.h"
 #include "SharedArray.h"
 

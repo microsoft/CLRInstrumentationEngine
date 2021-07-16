@@ -56,3 +56,5 @@
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;
+
+#define ASSERTOK(X) Assert::AreEqual(S_OK, (X))

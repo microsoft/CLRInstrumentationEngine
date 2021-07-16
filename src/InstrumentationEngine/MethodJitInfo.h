@@ -60,8 +60,8 @@ namespace MicrosoftInstrumentationEngine
         STDMETHOD(GetModuleInfo)(_Out_ IModuleInfo** ppModuleInfo) override;
 
         // IMethodJitInfo2
-        STDMETHOD(GetILNativeMapping)(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
-        STDMETHOD(GetILInstrumentationMap)(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
+        STDMETHOD(GetILNativeMapping)(_In_ ULONG32 cMap, _Out_writes_opt_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
+        STDMETHOD(GetILInstrumentationMap)(_In_ ULONG32 cMap, _Out_writes_opt_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded) override;
         STDMETHOD(GetMethodToken)(_Out_ mdMethodDef* pMethodDef) override;
         STDMETHOD(GetNativeCodeAddress)(_Out_ UINT_PTR *pCodeAddress) override;
     private:

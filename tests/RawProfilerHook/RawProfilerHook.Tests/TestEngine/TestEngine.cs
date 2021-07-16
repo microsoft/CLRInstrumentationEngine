@@ -78,7 +78,7 @@ namespace RawProfilerHook.Tests
             return ExecuteTest(t.AssemblyQualifiedName, IsX86, expectedErrors);
         }
 
-        protected override void OnBeforeStarted(DebugeeProcess debugee)
+        protected override void OnBeforeStarted(Process debugee)
         {
             if (debugee == null)
             {
@@ -143,7 +143,7 @@ namespace RawProfilerHook.Tests
             return result;
         }
 
-        protected override void OnComplete(DebugeeProcess debugee, string[] expectedErrors = null)
+        protected override void OnComplete(Process debugee, string[] expectedErrors = null)
         {
             string errors = string.Empty;
             try

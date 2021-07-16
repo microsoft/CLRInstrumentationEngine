@@ -7,7 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.41
+
 ## 1.0.40
++ No new changes.
 
 ## 1.0.39
 + BugFixes:

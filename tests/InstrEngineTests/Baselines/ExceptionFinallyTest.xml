@@ -3,7 +3,7 @@
     <Name>ExceptionFinallyTest</Name>
     <FullName>ExceptionTests.Program.ExceptionFinallyTest</FullName>
     <ClassID Volatile="True">0x700a5a88</ClassID>
-    <FunctionID>0x00000001</FunctionID>
+    <FunctionID Volatile="True">0x00000001</FunctionID>
     <MethodToken>0x06000006</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
     <IsStatic>1</IsStatic>

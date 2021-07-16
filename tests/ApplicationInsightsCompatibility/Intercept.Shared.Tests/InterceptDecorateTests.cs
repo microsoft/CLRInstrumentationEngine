@@ -96,7 +96,8 @@ namespace InstrEngineTests
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
         public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse()
         {
             TestEngine.ExecuteTest<SimpleDecorate>();

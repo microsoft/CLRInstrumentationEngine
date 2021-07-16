@@ -22,7 +22,7 @@
 #include "../Common.Lib/PathUtils.h"
 #endif
 #include "StringUtils.h"
-#include "Encoding.h"
+#include "../Common.Lib/systemstring.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -458,7 +458,7 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
         return 1;
     }
 
-    for (UINT i = 0; i < pProfilerManager->m_configSources.size(); i++)
+    for (size_t i = 0; i < pProfilerManager->m_configSources.size(); i++)
     {
         IfFailRet(pProfilerManager->LoadInstrumentationMethods(pProfilerManager->m_configSources[i]));
     }
@@ -507,10 +507,10 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     CComPtr<CXmlNode> pCurrChildNode;
     IfFailRet(pDocumentNode->GetChildNode(&pCurrChildNode));
 
-    CComBSTR bstrCurrChildNodeName;
-    IfFailRet(pDocumentNode->GetName(&bstrCurrChildNodeName));
+    tstring currChildNodeName;
+    IfFailRet(pDocumentNode->GetName(currChildNodeName));
 
-    if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngineConfiguration")) != 0)
+    if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationEngineConfiguration")) != 0)
     {
         CLogging::LogError(_T("CConfigurationLocator::ParseAttachConfigurationThreadProc - Invalid configuration. Root element should be InstrumentationEngineConfiguration"));
         return E_FAIL;
@@ -518,17 +518,17 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
     while (pCurrChildNode != nullptr)
     {
-        IfFailRet(pCurrChildNode->GetName(&bstrCurrChildNodeName));
-        if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngine")) == 0)
+        IfFailRet(pCurrChildNode->GetName(currChildNodeName));
+        if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationEngine")) == 0)
         {
             CComPtr<CXmlNode> pSettingsNode;
             IfFailRet(pCurrChildNode->GetChildNode(&pSettingsNode));
             if (pSettingsNode != nullptr)
             {
-                CComBSTR bstrSettingsNodeName;
-                IfFailRet(pSettingsNode->GetName(&bstrSettingsNodeName));
+                tstring settingsNodeName;
+                IfFailRet(pSettingsNode->GetName(settingsNodeName));
 
-                if (wcscmp(bstrSettingsNodeName, _T("Settings")) == 0)
+                if (wcscmp(settingsNodeName.c_str(), _T("Settings")) == 0)
                 {
                     unordered_map<tstring, tstring> settingsMap;
                     IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
@@ -553,24 +553,24 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                 }
             }
         }
-        else if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationMethods")) == 0)
+        else if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationMethods")) == 0)
         {
             CComPtr<CXmlNode> pInstrumentationMethodNode;
             IfFailRet(pCurrChildNode->GetChildNode(&pInstrumentationMethodNode));
 
             while (pInstrumentationMethodNode != nullptr)
             {
-                CComBSTR bstrInstrumentationMethodNodeName;
-                IfFailRet(pInstrumentationMethodNode->GetName(&bstrInstrumentationMethodNodeName));
+                tstring instrumentationMethodNodeName;
+                IfFailRet(pInstrumentationMethodNode->GetName(instrumentationMethodNodeName));
 
-                if (wcscmp(bstrInstrumentationMethodNodeName, _T("AddInstrumentationMethod")) == 0)
+                if (wcscmp(instrumentationMethodNodeName.c_str(), _T("AddInstrumentationMethod")) == 0)
                 {
-                    CComBSTR bstrConfigPath;
-                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), &bstrConfigPath));
-                    IfFalseRet(bstrConfigPath.Length() != 0, E_FAIL);
+                    tstring configPath;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), configPath));
+                    IfFalseRet(configPath.length() != 0, E_FAIL);
 
                     CComPtr<CConfigurationSource> pSource;
-                    pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
+                    pSource.Attach(new (nothrow) CConfigurationSource(configPath.c_str()));
                     IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
                     CComPtr<CXmlNode> pInstrumentationMethodChildNode;
@@ -578,10 +578,10 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
                     while (pInstrumentationMethodChildNode != nullptr)
                     {
-                        CComBSTR bstrInstrumentationMethodChildNodeName;
-                        IfFailRet(pInstrumentationMethodChildNode->GetName(&bstrInstrumentationMethodChildNodeName));
+                        tstring instrumentationMethodChildNodeName;
+                        IfFailRet(pInstrumentationMethodChildNode->GetName(instrumentationMethodChildNodeName));
 
-                        if (wcscmp(bstrInstrumentationMethodChildNodeName, _T("Settings")) == 0)
+                        if (wcscmp(instrumentationMethodChildNodeName.c_str(), _T("Settings")) == 0)
                         {
                             unordered_map<tstring, tstring> settingsMap;
                             IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
@@ -632,22 +632,22 @@ HRESULT CProfilerManager::ParseSettingsConfigurationNode(
     IfFailRet(parentNode->GetChildNode(&pSettingNode));
     while (pSettingNode != nullptr)
     {
-        CComBSTR bstrSettingNodeName;
-        IfFailRet(pSettingNode->GetName(&bstrSettingNodeName));
+        tstring settingNodeName;
+        IfFailRet(pSettingNode->GetName(settingNodeName));
 
-        IfFalseRet(wcscmp(bstrSettingNodeName, _T("Setting")) == 0, E_FAIL);
+        IfFalseRet(wcscmp(settingNodeName.c_str(), _T("Setting")) == 0, E_FAIL);
 
-        CComBSTR bstrSettingName;
-        IfFailRet(pSettingNode->GetAttribute(_T("Name"), &bstrSettingName));
-        IfFalseRet(bstrSettingName.Length() != 0, E_FAIL);
+        tstring settingName;
+        IfFailRet(pSettingNode->GetAttribute(_T("Name"), settingName));
+        IfFalseRet(settingName.length() != 0, E_FAIL);
 
-        CComBSTR bstrSettingValue;
-        IfFailRet(pSettingNode->GetAttribute(_T("Value"), &bstrSettingValue));
-        IfFalseRet(bstrSettingValue.Length() != 0, E_FAIL);
+        tstring settingValue;
+        IfFailRet(pSettingNode->GetAttribute(_T("Value"), settingValue));
+        IfFalseRet(settingValue.length() != 0, E_FAIL);
 
-        if (settings.find(bstrSettingName.m_str) == settings.end())
+        if (settings.find(settingName) == settings.end())
         {
-            settings.insert(std::pair<tstring, tstring>(bstrSettingName.m_str, bstrSettingValue.m_str));
+            settings.insert(std::pair<tstring, tstring>(std::move(settingName), std::move(settingValue)));
         }
 
         CXmlNode* nextSetting = pSettingNode->Next();
@@ -721,8 +721,9 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
 }
 
 HRESULT CProfilerManager::RemoveInstrumentationMethod(
-    _In_ IInstrumentationMethod* pInstrumentationMethod)
+    _In_opt_ IInstrumentationMethod* pInstrumentationMethod)
 {
+    IfNullRet(pInstrumentationMethod);
     HRESULT hr = S_OK;
     {
         DWORD dwFlags = 0;
@@ -3046,14 +3047,8 @@ HRESULT CProfilerManager::InitializeForAttach(
     pszConfigXml[bufferSize - 1] = 0;
 
     // The data is UTF8 encoded; convert it to UTF16
-    CAutoVectorPtr<WCHAR> pwszConfigXml;
-    IfFailRet(CEncoding::ConvertUtf8ToUtf16(
-        pszConfigXml.get(),
-        pwszConfigXml
-        ));
 
-    m_tstrConfigXml = pwszConfigXml.m_p;
-
+    IfFailRet(SystemString::Convert(pszConfigXml.get(), m_tstrConfigXml));
     IfFailRet(InvokeThreadRoutine(ParseAttachConfigurationThreadProc));
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
@@ -3589,7 +3584,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 
@@ -3612,7 +3607,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
         ModuleID existingModuleId;
         IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
 
-        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%" PRIxPTR ", ModuleId:0x%" PRIxPTR ", FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%" PRIxPTR),
             functionId,
             moduleId,
             bstrMethodFullName.m_str,
@@ -3656,7 +3651,7 @@ HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ 
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 

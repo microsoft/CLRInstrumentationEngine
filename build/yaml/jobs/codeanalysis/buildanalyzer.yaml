@@ -42,9 +42,7 @@ jobs:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
       displayName: Set Platform for Any CPU
 
-  - template: ../../steps/windows/nugetrestore.yaml
-    parameters:
-      Solution: InstrumentationEngine.sln
+  - template: ../../steps/windows/enginerestore.yaml
 
   - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml
 
@@ -53,9 +51,9 @@ jobs:
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
 
-    - template: ../../steps/codeanalysis/filebugs.yaml
-      parameters:
-        BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
-        Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
+      Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
   - template: ../../steps/microbuild/cleanup.yaml

@@ -56,7 +56,7 @@ namespace MicrosoftInstrumentationEngine
         return S_OK;
     }
 
-    HRESULT CMethodJitInfo::GetILNativeMapping(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded)
+    HRESULT CMethodJitInfo::GetILNativeMapping(_In_ ULONG32 cMap, _Out_writes_opt_(cMap) COR_DEBUG_IL_TO_NATIVE_MAP* pMap, _Out_ ULONG32* pcNeeded)
     {
         HRESULT hr;
         IfNullRet(pcNeeded);
@@ -95,7 +95,7 @@ namespace MicrosoftInstrumentationEngine
         return E_NOTIMPL;
     }
 
-    HRESULT CMethodJitInfo::GetILInstrumentationMap(_In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
+    HRESULT CMethodJitInfo::GetILInstrumentationMap(_In_ ULONG32 cMap, _Out_writes_opt_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded)
     {
         HRESULT hr;
         IfNullRet(pcNeeded);

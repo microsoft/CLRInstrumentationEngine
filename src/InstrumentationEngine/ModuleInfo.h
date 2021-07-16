@@ -162,7 +162,7 @@ namespace MicrosoftInstrumentationEngine
         // Sets the instrumentation map for normal, non rejit scenarios.
         void SetILInstrumentationMap(_In_ CMethodInfo* pMethodInfo, _In_ CSharedArray<COR_IL_MAP> map);
 
-        HRESULT GetILInstrumentationMap(_In_ CMethodJitInfo* pMethodJitInfo, _In_ ULONG32 cMap, _Out_writes_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded);
+        HRESULT GetILInstrumentationMap(_In_ CMethodJitInfo* pMethodJitInfo, _In_ ULONG32 cMap, _Out_writes_opt_(cMap) COR_IL_MAP* pMap, _Out_ ULONG32* pcNeeded);
         void SetMethodIsTransformed(_In_ mdMethodDef methodDef, bool isInstrumented);
         bool GetIsMethodInstrumented(_In_ mdMethodDef methodDef);
 

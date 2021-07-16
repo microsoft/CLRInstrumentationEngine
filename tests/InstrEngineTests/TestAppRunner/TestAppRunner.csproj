@@ -8,7 +8,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net50</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net50;net60</TargetFrameworks>
   </PropertyGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

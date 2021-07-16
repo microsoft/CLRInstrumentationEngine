@@ -4,19 +4,15 @@
 # Step Template: Test Windows Binaries
 
 parameters:
-  Platform: ''
   SubFolder: ''
   RunTitle: ''
 
 steps:
 - task: VSTest@2
-  displayName: 'Run Tests: **\$(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
+  displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
   inputs:
-    testAssemblyVer2: |
-     **\$(Platform)\${{ parameters.SubFolder }}*Tests*.dll
-     !**\*TestAdapter.dll
-     !**\obj\**
-    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)'
+    testAssemblyVer2: '${{ parameters.SubFolder }}*Tests*.dll'
+    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)'
     vsTestVersion: 16.0
     runInParallel: false
     codeCoverageEnabled: false

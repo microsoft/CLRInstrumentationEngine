@@ -208,7 +208,7 @@ CLogging::XmlDumpHelper::~XmlDumpHelper()
 
     m_result << m_indent << _T("</") << m_tag << _T(">") << _T("\r\n") << std::flush;
 
-    CLogging::LogDumpMessage(m_result.str().c_str());
+    CLogging::LogDumpMessage(_T("%s"), m_result.str().c_str());
 }
 
 void CLogging::XmlDumpHelper::WriteStringNode(const WCHAR* name, const WCHAR* value)
