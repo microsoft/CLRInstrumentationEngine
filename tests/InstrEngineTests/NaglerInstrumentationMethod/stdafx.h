@@ -36,7 +36,7 @@ do { if (FAILED(hr = (EXPR))) { ATLASSERT(!L"IfFailRet(" L#EXPR L") failed"); re
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <Pathcch.h>
+#include <Shlwapi.h>
 
 using namespace std;
 using namespace ATL;

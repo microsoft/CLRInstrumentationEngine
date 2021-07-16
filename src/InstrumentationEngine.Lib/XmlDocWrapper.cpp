@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "XmlDocWrapper.h"
 #include "Encoding.h"
-#include "StringUtils.h"
+#include "../Common.Lib/StringUtils.h"
 
 using namespace ATL;
 

@@ -25,7 +25,6 @@ set(src_files
     ./InstrumentationMethodSetting.cpp
     ./LoggerService.cpp
     ./Logging.cpp
-    ./StringUtils.cpp
     ./XmlDocWrapper.cpp
     ./XmlNode.cpp
 )
