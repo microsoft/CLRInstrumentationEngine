@@ -5,11 +5,6 @@
 
 #include <string>
 
-#ifndef E_BOUNDS
-// Apparantly, Linux builds don't have E_BOUNDS defined.
-#define E_BOUNDS 0x8000000BL
-#endif
-
 class StringUtils
 {
 public:
@@ -39,7 +34,7 @@ public:
 
     // Modifies pwszPath by appending pwszMore.
     // Checks cBounds before appending to prevent buffer overflows.
-    //
-    // Consider moving to CommonLib & make PathAppend available in the PAL.
-    static HRESULT SafePathAppend(_Inout_ LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds);
+    // 
+    // This function wraps PathAppend since supporting Win7 means PathCchAppend is not available.
+    static HRESULT SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds);
 };
