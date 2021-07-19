@@ -40,3 +40,19 @@ size_t StringUtils::StringLen(_In_ const char* szString)
 {
     return strnlen(szString, MAX_STRING_LEN);
 }
+
+HRESULT StringUtils::SafePathAppend(_Inout_ LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds)
+{
+    // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
+    if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) >= cBounds)
+    {
+        return E_BOUNDS;
+    }
+
+    if (!PathAppend(pwszPath, pwszMore))
+    {
+        return E_FAIL;
+    }
+
+    return S_OK;
+}

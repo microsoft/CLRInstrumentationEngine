@@ -116,6 +116,7 @@
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="XmlDocWrapper.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="XmlDocWrapper.cpp" />
     <ClCompile Include="XmlNode.cpp" />
   </ItemGroup>

@@ -8,7 +8,7 @@
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
-#include "../Common.Lib/PathUtils.h"
+#include "StringUtils.h"
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
@@ -83,7 +83,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
 
     if ((m_bstrModuleFolder.Length() >= MAX_PATH))
     {
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long: '%s', PID: %u"), m_bstrModuleFolder.m_str, GetCurrentProcessId());
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long, PID: %u"), GetCurrentProcessId());
         return E_BOUNDS;
     }
 
@@ -96,7 +96,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return HRESULT_FROM_WIN32(dwLastError);
     }
 
-    hr = PathUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
+    hr = StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
     if (FAILED(hr))
     {
         CLogging::LogError(

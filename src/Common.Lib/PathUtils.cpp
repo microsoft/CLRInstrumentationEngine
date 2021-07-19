@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "PathUtils.h"
-#include "StringUtils.h"
 
 
 namespace CommonLib
@@ -36,21 +35,5 @@ namespace CommonLib
         strFormat << strPath2;
 
         return strFormat.str();
-    }
-
-    HRESULT PathUtils::SafePathAppend(LPWSTR pwszPath, LPCWSTR pwszMore, size_t cBounds)
-    {
-        // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) >= cBounds)
-        {
-            return E_BOUNDS;
-        }
-
-        if (!PathAppend(pwszPath, pwszMore))
-        {
-            return E_FAIL;
-        }
-
-        return S_OK;
     }
 }

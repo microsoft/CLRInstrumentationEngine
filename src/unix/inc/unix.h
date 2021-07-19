@@ -50,11 +50,6 @@ typedef __builtin_va_list va_list;
 
 #include "palrt2.h"
 
-#ifndef E_BOUNDS
-// Apparantly, the PAL does not have E_BOUNDS defined
-#define E_BOUNDS 0x8000000BL
-#endif
-
 #include "oaidl.h"
 #include "ole.h"
 #include "Dbghelp.h"

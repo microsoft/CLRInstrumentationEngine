@@ -3,10 +3,12 @@
 
 #pragma once
 
-#pragma warning(push)
-#pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
 #include <string>
-#pragma warning(pop)
+
+#ifndef E_BOUNDS
+// Apparantly, Linux builds don't have E_BOUNDS defined.
+#define E_BOUNDS 0x8000000BL
+#endif
 
 class StringUtils
 {
@@ -34,4 +36,10 @@ public:
     // Yields the same result as calling strnlen(szString, MAX_STRING_LEN);
     // For use with untrusted data which may not have a null terminator.
     static size_t StringLen(_In_ const char* szString);
+
+    // Modifies pwszPath by appending pwszMore.
+    // Checks cBounds before appending to prevent buffer overflows.
+    //
+    // Consider moving to CommonLib & make PathAppend available in the PAL.
+    static HRESULT SafePathAppend(_Inout_ LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds);
 };

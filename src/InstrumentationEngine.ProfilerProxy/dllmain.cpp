@@ -7,7 +7,7 @@
 #include "InstrumentationEngineVersion.h"
 #include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
-#include "../Common.Lib/PathUtils.h"
+#include "../InstrumentationEngine.Lib/StringUtils.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
@@ -120,8 +120,8 @@ namespace ProfilerProxy
             return HRESULT_FROM_WIN32(dwLastError);
         }
 
-        IfFailRet_Proxy(PathUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
-        IfFailRet_Proxy(PathUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -261,7 +261,7 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, instrumentationEngineFolder, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, instrumentationEngineFolder, MAX_PATH));
 
         //
         // Determine Version folder
@@ -289,13 +289,13 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, versionFolder.c_str(), MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, versionFolder.c_str(), MAX_PATH));
 
         //
         // Determine and Load Profiler
         //
 
-        IfFailRet_Proxy(PathUtils::SafePathAppend(wszProfilerPath, profilerRelativeFileName, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, profilerRelativeFileName, MAX_PATH));
 
         eventLogger.LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
 

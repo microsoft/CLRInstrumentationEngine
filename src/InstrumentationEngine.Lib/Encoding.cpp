@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "Encoding.h"
-#include "../Common.Lib/StringUtils.h"
+#include "StringUtils.h"
 
 using namespace ATL;
 
