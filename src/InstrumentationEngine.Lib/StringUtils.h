@@ -31,4 +31,10 @@ public:
     // Yields the same result as calling strnlen(szString, MAX_STRING_LEN);
     // For use with untrusted data which may not have a null terminator.
     static size_t StringLen(_In_ const char* szString);
+
+    // Modifies pwszPath by appending pwszMore.
+    // Checks cBounds before appending to prevent buffer overflows.
+    // 
+    // This function wraps PathAppend since supporting Win7 means PathCchAppend is not available.
+    static HRESULT SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds);
 };

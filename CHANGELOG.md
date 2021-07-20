@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.41
++ Updates:
+  + Remove PathCch functions in order to support Win7
 
 ## 1.0.40
 + No new changes.
