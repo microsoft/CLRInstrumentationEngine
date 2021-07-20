@@ -9,7 +9,10 @@
 name: $(date:yyyyMMdd)$(rev:rr)
 
 variables:
-  TeamName: ClrInstrumentationEngine
+- group: CLRIE-ApiScan
+- name: TeamName
+  value: ClrInstrumentationEngine
+  readonly: true
 
 stages:
 
