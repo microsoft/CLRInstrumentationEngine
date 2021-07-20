@@ -144,7 +144,6 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="XmlDocWrapper.cpp" />
     <ClCompile Include="XmlNode.cpp" />
   </ItemGroup>
