@@ -5,8 +5,9 @@
 
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
-#include "PathCch.h"
+#include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
+#include "../InstrumentationEngine.Lib/StringUtils.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
@@ -108,12 +109,19 @@ namespace ProfilerProxy
         HRESULT hr = S_OK;
 
         *pHasProfiler = FALSE;
+        DWORD dError = 0;
 
         WCHAR wszEngineFullPath[MAX_PATH];
-        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
+        memset(wszEngineFullPath, 0, MAX_PATH);
+        if (!PathCanonicalize(wszEngineFullPath, wszProfilerPath))
+        {
+            DWORD dwLastError = GetLastError();
+            eventLogger.LogError(_T("dllmain::HasProfilerDll - unable to canonicalize profiler folder: '%s'"), wszProfilerPath);
+            return HRESULT_FROM_WIN32(dwLastError);
+        }
 
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -223,6 +231,7 @@ namespace ProfilerProxy
     static HRESULT LoadProfiler(_In_ CEventLogger& eventLogger)
     {
         HRESULT hr = S_OK;
+        DWORD dError = 0;
 
         //
         // Determine "Program Files" folder
@@ -252,7 +261,7 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, instrumentationEngineFolder, MAX_PATH));
 
         //
         // Determine Version folder
@@ -280,13 +289,13 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, versionFolder.c_str(), MAX_PATH));
 
         //
         // Determine and Load Profiler
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, profilerRelativeFileName, MAX_PATH));
 
         eventLogger.LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
 

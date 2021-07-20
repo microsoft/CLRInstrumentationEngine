@@ -7,7 +7,12 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.41
++ Updates:
+  + Remove PathCch functions in order to support Win7
+
 ## 1.0.40
+Intentionally left unchanged with v1.0.39 due to App Service mitigation.
 
 ## 1.0.39
 + BugFixes:

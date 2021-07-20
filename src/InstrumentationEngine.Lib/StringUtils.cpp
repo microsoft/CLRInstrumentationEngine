@@ -4,11 +4,6 @@
 #include "stdafx.h"
 #include "StringUtils.h"
 
-#ifndef E_BOUNDS
-// Apparantly, Linux builds don't have E_BOUNDS defined.
-#define E_BOUNDS 0x8000000BL
-#endif
-
 // Somewhat arbitrary.
 const size_t StringUtils::MAX_STRING_LEN = 10000;
 
@@ -44,4 +39,20 @@ size_t StringUtils::WStringLen(_In_ const WCHAR* wszString)
 size_t StringUtils::StringLen(_In_ const char* szString)
 {
     return strnlen(szString, MAX_STRING_LEN);
+}
+
+HRESULT StringUtils::SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds)
+{
+    // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
+    if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) >= cBounds)
+    {
+        return E_BOUNDS;
+    }
+
+    if (!PathAppend(pwszPath, pwszMore))
+    {
+        return E_FAIL;
+    }
+
+    return S_OK;
 }
