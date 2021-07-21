@@ -7,6 +7,7 @@ namespace RemoteUnitTestExecutor
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
@@ -40,7 +41,9 @@ namespace RemoteUnitTestExecutor
         {
             using (FileStream deserializationStream = File.OpenRead(testOutputFileName))
             {
-                return (ITestResult) new BinaryFormatter().Deserialize(deserializationStream);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Binder = new TestResultSerializationBinder();
+                return (ITestResult)formatter.Deserialize(deserializationStream);
             }
         }
 
@@ -69,6 +72,26 @@ namespace RemoteUnitTestExecutor
                 }
 
                 return string.Empty;
+            }
+        }
+
+        private class TestResultSerializationBinder : SerializationBinder
+        {
+            private static IEnumerable<string> s_supportedTypes = new List<string>()
+            {
+                typeof(TestResult).FullName,
+                typeof(MethodInvocationInfo).FullName
+            };
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                if (s_supportedTypes.Contains(typeName, StringComparer.Ordinal))
+                {
+                    // Tells serializer to use type from deserialized data.
+                    return null;
+                }
+
+                throw new NotSupportedException("Attempted to deserialize unexpected type: " + nameof(typeName));
             }
         }
     }

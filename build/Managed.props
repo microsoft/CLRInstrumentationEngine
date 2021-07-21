@@ -20,6 +20,9 @@
 
   <PropertyGroup>
     <DefineConstants Condition="'$(PublicRelease)' != 'True'">$(DefineConstants);ALLOWNOTSIGNED</DefineConstants>
+    <EnableNetAnalyzers>true</EnableNetAnalyzers>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeAnalysis\Sdl.Recommended.Error.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
