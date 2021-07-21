@@ -19,6 +19,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)InitOnce.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SafeFindFileHandle.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Singleton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StringUtils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)tstring.h" />
   </ItemGroup>
 </Project>
