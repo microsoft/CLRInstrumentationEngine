@@ -79,8 +79,10 @@ namespace RemoteUnitTestExecutor
         {
             private static IEnumerable<string> s_supportedTypes = new List<string>()
             {
-                typeof(TestResult).FullName,
-                typeof(MethodInvocationInfo).FullName
+                typeof(List<MethodInvocationInfo>).FullName,
+                typeof(List<string>).FullName,
+                typeof(MethodInvocationInfo).FullName,
+                typeof(TestResult).FullName
             };
 
             public override Type BindToType(string assemblyName, string typeName)
@@ -91,7 +93,7 @@ namespace RemoteUnitTestExecutor
                     return null;
                 }
 
-                throw new NotSupportedException("Attempted to deserialize unexpected type: " + nameof(typeName));
+                throw new NotSupportedException("Attempted to deserialize unexpected type: " + typeName);
             }
         }
     }
