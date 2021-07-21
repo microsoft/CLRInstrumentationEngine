@@ -30,7 +30,7 @@
      -->
     <ProxyFileVersionMajor>$(SemanticVersionMajor)</ProxyFileVersionMajor>
     <ProxyFileVersionMinor>0</ProxyFileVersionMinor>
-    <ProxyFileVersionPatch>2</ProxyFileVersionPatch>
+    <ProxyFileVersionPatch>3</ProxyFileVersionPatch>
     <ProxyFileVersion>$(ProxyFileVersionMajor).$(ProxyFileVersionMinor).$(ProxyFileVersionPatch)</ProxyFileVersion>
 
     <!--

@@ -8,7 +8,7 @@
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
-#include "StringUtils.h"
+#include "../Common.Headers/StringUtils.h"
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(

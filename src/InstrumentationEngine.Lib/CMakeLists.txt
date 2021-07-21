@@ -22,7 +22,6 @@ set(src_files
     ./InstrumentationMethodSetting.cpp
     ./LoggerService.cpp
     ./Logging.cpp
-    ./StringUtils.cpp
 )
 
 add_lib(${PROJECT_NAME}
