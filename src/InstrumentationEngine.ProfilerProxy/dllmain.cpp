@@ -7,7 +7,7 @@
 #include "InstrumentationEngineVersion.h"
 #include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
-#include "../InstrumentationEngine.Lib/StringUtils.h"
+#include "../Common.Headers/StringUtils.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
