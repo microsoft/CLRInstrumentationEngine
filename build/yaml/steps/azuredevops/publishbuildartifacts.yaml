@@ -10,7 +10,7 @@ parameters:
 steps:
 # publish Artifacts
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifacts
+  displayName: 'Publish Artifact: ${{ parameters.ArtifactName }}'
   inputs:
     PathToPublish: ${{ parameters.PathToPublish }}
     ArtifactName: ${{ parameters.ArtifactName }}

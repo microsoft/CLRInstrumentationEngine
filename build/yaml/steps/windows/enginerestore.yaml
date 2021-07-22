@@ -21,12 +21,16 @@
 # moved to the 'Any CPU' platform, which will allow usage of 'dotnet restore'
 # for all platforms. 
 
+parameters:
+  BinLogCategory: ''
+
 steps:
 # nuget restore InstrumentationEngine.sln
 - template: dotnetrestore.yaml
   parameters:
     Solution: InstrumentationEngine.sln
     Condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+    BinLogCategory: ${{ parameters.BinLogCategory }}
 
 - template: nugetrestore.yaml
   parameters:
