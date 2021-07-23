@@ -28,6 +28,11 @@ namespace RemoteUnitTestExecutor
                 throw new ArgumentNullException(nameof(actual));
             }
 
+            if (null == expectedMethodNames)
+            {
+                throw new ArgumentNullException(nameof(expectedMethodNames));
+            }
+
             Assert.AreEqual(expectedMethodNames.Length, actual.Count, "Actual and expected invoked methods count mismatch.");
 
             for (int i = 0; i < expectedMethodNames.Length; ++i)

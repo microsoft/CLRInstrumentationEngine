@@ -4,19 +4,21 @@
 namespace RemoteUnitTestExecutor
 {
     using System;
+    using System.Collections.Generic;
 
     [Serializable]
     public class MethodInvocationInfo
     {
         [NonSerialized]
-        private object[] _arguments;
+        private List<object> _arguments = new List<object>();
 
         public string MethodName { get; set; }
 
-        public object[] Arguments
+        public IEnumerable<object> Arguments => _arguments;
+
+        public void AddArgument(object value)
         {
-            get => _arguments;
-            set => _arguments = value;
+            _arguments.Add(value);
         }
     }
 }
