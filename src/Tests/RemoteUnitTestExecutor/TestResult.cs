@@ -38,7 +38,7 @@ namespace RemoteUnitTestExecutor
             }
         }
 
-        /// CA2300 is set a Info level, which will not cause a build break. However, RoslynAnalyzer and PostAnalysis
+        /// CA2300 is set to Info level, which will not cause a build break. However, RoslynAnalyzer and PostAnalysis
         /// pipeline tasks will fail on any level reported above None. Recommendation is to disable CA2300 and enable
         /// CA2301 and CA2302 as mitigations. However, these are part of the SDL ruleset and we should not modify its
         /// behavior. Thus, mitigate CA2301 and CA2302 and then suppress CA2300.
