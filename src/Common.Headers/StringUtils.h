@@ -59,6 +59,7 @@ public:
         return strnlen(szString, MAX_STRING_LEN);
     }
 
+#ifndef PLATFORM_UNIX
     // Modifies pwszPath by appending pwszMore.
     // Checks cBounds before appending to prevent buffer overflows.
     //
@@ -72,6 +73,7 @@ public:
             return E_BOUNDS;
         }
 
+        // This winapi call is not supported by the PAL.
         if (!PathAppend(pwszPath, pwszMore))
         {
             return E_FAIL;
@@ -79,4 +81,5 @@ public:
 
         return S_OK;
     }
+#endif
 };
