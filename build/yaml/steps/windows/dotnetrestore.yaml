@@ -6,13 +6,20 @@
 parameters:
   Solution: ''
   Condition: 'succeeded()'
+  BinLogCategory: ''
 
 steps:
+  # 'command: restore' does not take additional arguments, thus set
+  # 'command: custom' and 'custom: restore' which then requires setting
+  # of all arguments.
 - task: DotNetCoreCLI@2
   displayName: Restore ${{ parameters.Solution }}
   inputs:
-    command: restore
-    projects: ${{ parameters.Solution }}
-    feedsToUse: config
-    nugetConfigPath: NuGet.config
+    command: custom
+    custom: restore
+    arguments: >-
+      $(Build.SourcesDirectory)\${{ parameters.Solution }}
+      --configfile
+      $(Build.SourcesDirectory)\NuGet.Config
+      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_AnyCPU_$(Configuration)_Restore.binlog"
   condition: ${{ parameters.Condition }}

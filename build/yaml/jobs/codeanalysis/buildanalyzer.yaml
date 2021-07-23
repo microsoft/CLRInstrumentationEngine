@@ -43,8 +43,16 @@ jobs:
       displayName: Set Platform for Any CPU
 
   - template: ../../steps/windows/enginerestore.yaml
+    parameters:
+      BinLogCategory: CodeAnalysis
 
   - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml
+
+  - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+      parameters:
+        PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
+        ArtifactName: 'logs'
 
   - ${{ if eq(parameters.PublishReport, true) }}:
     - template: ../../steps/codeanalysis/publishreports.yaml
