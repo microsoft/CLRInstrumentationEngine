@@ -89,15 +89,22 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
 
     WCHAR wszModuleFullPath[MAX_PATH];
     memset(wszModuleFullPath, 0, MAX_PATH);
+#ifndef PLATFORM_UNIX
     if (!PathCanonicalize(wszModuleFullPath, m_bstrModuleFolder))
+#else
+    if (FAILED(PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder)))
+#endif
     {
         DWORD dwLastError = GetLastError();
         CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to canonicalize method configuration folder: '%s', PID: %u"), m_bstrModuleFolder.m_str, GetCurrentProcessId());
         return HRESULT_FROM_WIN32(dwLastError);
     }
 
-    hr = StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
-    if (FAILED(hr))
+#ifndef PLATFORM_UNIX
+    if (FAILED(StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH)))
+#else
+    if (FAILED(PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule)))
+#endif
     {
         CLogging::LogError(
             _T("CInstrumentationMethod::Initialize - failed to append method dll to method configuration folder, PID: %u, hr: %x, target: '%s' + '%s'"),
