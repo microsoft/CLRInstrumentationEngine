@@ -89,17 +89,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
 
     WCHAR wszModuleFullPath[MAX_PATH];
     memset(wszModuleFullPath, 0, MAX_PATH);
-#ifndef PLATFORM_UNIX
-    if (!PathCanonicalize(wszModuleFullPath, m_bstrModuleFolder))
-    {
-        DWORD dwLastError = GetLastError();
-        CLogging::LogError(_T("CInstrumentationMethod::Initialize - unable to canonicalize method configuration folder: '%s', PID: %u"), m_bstrModuleFolder.m_str, GetCurrentProcessId());
-        return HRESULT_FROM_WIN32(dwLastError);
-    }
-#else
+    ZeroMemory(wszModuleFullPath, MAX_PATH * sizeof(WCHAR));
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
-#endif
-
 
 #ifndef PLATFORM_UNIX
     if (FAILED(StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH)))
