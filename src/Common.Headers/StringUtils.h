@@ -66,7 +66,8 @@ public:
     static HRESULT SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds)
     {
         // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) >= cBounds)
+        // +1 for additional directory separator character, +1 for null terminator.
+        if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) + 2 > cBounds)
         {
             return E_BOUNDS;
         }

@@ -88,7 +88,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     }
 
     WCHAR wszModuleFullPath[MAX_PATH];
-    memset(wszModuleFullPath, 0, MAX_PATH);
     ZeroMemory(wszModuleFullPath, MAX_PATH * sizeof(WCHAR));
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
 
