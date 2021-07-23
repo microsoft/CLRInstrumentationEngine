@@ -22,7 +22,7 @@ namespace RemoteUnitTestExecutor
             InvokedMethods = new List<MethodInvocationInfo>();
         }
 
-        public IList<MethodInvocationInfo> InvokedMethods { get; set; }
+        public IList<MethodInvocationInfo> InvokedMethods { get; }
 
         public bool Succeeded { get; set; }
 
@@ -55,6 +55,11 @@ namespace RemoteUnitTestExecutor
 
         public void AddProfilerTraces(IEnumerable<string> tracesIterator)
         {
+            if (null == tracesIterator)
+            {
+                throw new ArgumentNullException(nameof(tracesIterator));
+            }
+
             foreach (var trace in tracesIterator)
             {
                 this.ProfilerTraces.Add(trace);

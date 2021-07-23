@@ -8,8 +8,15 @@ namespace RemoteUnitTestExecutor
     [Serializable]
     public class MethodInvocationInfo
     {
+        [NonSerialized]
+        private object[] _arguments;
+
         public string MethodName { get; set; }
 
-        [NonSerialized] public object[] Arguments;
+        public object[] Arguments
+        {
+            get => _arguments;
+            set => _arguments = value;
+        }
     }
 }
