@@ -5,10 +5,15 @@ namespace RemoteUnitTestExecutor
 {
     using System;
 
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
+            if (null == args)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
             if (args.Length < 2 || string.IsNullOrWhiteSpace(args[1]))
             {
                 throw new ArgumentException("Wrong number of arguments provided - expecting at least 2 arguments:\r\n arg[0] - test name; \r\n arg[1] - test results file name");

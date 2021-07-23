@@ -9,7 +9,7 @@ steps:
   inputs:
     continueOnError: true
     rulesetName: Custom
-    msBuildArchitecture: x64
+    msBuildArchitecture: amd64
     customRuleset: DevDivRoslynRequired.ruleset
     msBuildCommandline: >-
       dotnet
