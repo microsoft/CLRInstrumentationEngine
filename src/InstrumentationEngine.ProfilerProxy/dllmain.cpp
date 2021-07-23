@@ -112,13 +112,8 @@ namespace ProfilerProxy
         DWORD dError = 0;
 
         WCHAR wszEngineFullPath[MAX_PATH];
-        memset(wszEngineFullPath, 0, MAX_PATH);
-        if (!PathCanonicalize(wszEngineFullPath, wszProfilerPath))
-        {
-            DWORD dwLastError = GetLastError();
-            eventLogger.LogError(_T("dllmain::HasProfilerDll - unable to canonicalize profiler folder: '%s'"), wszProfilerPath);
-            return HRESULT_FROM_WIN32(dwLastError);
-        }
+        ZeroMemory(wszEngineFullPath, MAX_PATH * sizeof(WCHAR));
+        wcscpy_s(wszEngineFullPath, wszProfilerPath);
 
         IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
         IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
@@ -142,10 +137,10 @@ namespace ProfilerProxy
         //
 
         WCHAR wszBuffer[2];
-        ZeroMemory(wszBuffer, 2);
+        ZeroMemory(wszBuffer, 2 * sizeof(WCHAR));
         bool useDebug = GetEnvironmentVariable(useDebugVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
-        ZeroMemory(wszBuffer, 2);
+        ZeroMemory(wszBuffer, 2 * sizeof(WCHAR));
         bool usePreview = GetEnvironmentVariable(usePreviewVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
         //
@@ -250,7 +245,7 @@ namespace ProfilerProxy
 #endif
 
         WCHAR wszProfilerPath[MAX_PATH];
-        ZeroMemory(wszProfilerPath, MAX_PATH);
+        ZeroMemory(wszProfilerPath, MAX_PATH * sizeof(WCHAR));
         if (!GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH))
         {
             eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to resolve environment variable: %s"), programFilesVar);

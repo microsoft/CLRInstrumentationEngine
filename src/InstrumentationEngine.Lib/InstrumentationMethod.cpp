@@ -91,11 +91,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     ZeroMemory(wszModuleFullPath, MAX_PATH * sizeof(WCHAR));
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
 
-#ifndef PLATFORM_UNIX
-    if (FAILED(StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH)))
-#else
-    if (FAILED(PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule)))
-#endif
+    hr = StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
+    if (FAILED(hr))
     {
         CLogging::LogError(
             _T("CInstrumentationMethod::Initialize - failed to append method dll to method configuration folder, PID: %u, hr: %x, target: '%s' + '%s'"),

@@ -59,13 +59,13 @@ public:
         return strnlen(szString, MAX_STRING_LEN);
     }
 
-#ifndef PLATFORM_UNIX
     // Modifies pwszPath by appending pwszMore.
     // Checks cBounds before appending to prevent buffer overflows.
     //
     // This function wraps PathAppend since supporting Win7 means PathCchAppend is not available.
     static HRESULT SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds)
     {
+#ifndef PLATFORM_UNIX
         // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
         // +1 for additional directory separator character, +1 for null terminator.
         if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) + 2 > cBounds)
@@ -73,13 +73,14 @@ public:
             return E_BOUNDS;
         }
 
-        // This winapi call is not supported by the PAL.
         if (!PathAppend(pwszPath, pwszMore))
         {
             return E_FAIL;
         }
 
         return S_OK;
-    }
+#else
+        return PathCchAppend(pwszPath, MAX_PATH, pwszMore);
 #endif
+    }
 };
