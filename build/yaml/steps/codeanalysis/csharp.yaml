@@ -11,5 +11,10 @@ steps:
     rulesetName: Custom
     msBuildArchitecture: x64
     customRuleset: DevDivRoslynRequired.ruleset
-    msBuildCommandline: dotnet build $(Build.SourcesDirectory)\InstrumentationEngine.sln --configuration $(Configuration)
+    msBuildCommandline: >-
+      dotnet
+      build
+      $(Build.SourcesDirectory)\InstrumentationEngine.sln
+      --configuration $(Configuration)
+      -bl:"$(Build.ArtifactStagingDirectory)\logs\CodeAnalysis_Windows_AnyCPU_$(Configuration).binlog"
     suppressionFileForCompilerWarnings: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\csharpsuppressions.txt

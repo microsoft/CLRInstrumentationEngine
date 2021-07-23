@@ -12,6 +12,11 @@ steps:
   parameters:
     Solution: src/InstrumentationEngine.Packages.sln
 
+- powershell: |
+    $logPlatform = ${env:PLATFORM}.Replace(' ', '')
+    Write-Host "##vso[task.setvariable variable=LogPlatform]$logPlatform"
+  displayName: Set Platform for Log File
+
 # msbuild InstrumentationEngine.Packages.sln
 - task: MSBuild@1
   displayName: 'Build solution InstrumentationEngine.Packages.sln $(Platform)'
@@ -20,4 +25,4 @@ steps:
     msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)
-    msbuildArguments: /p:InputBinCfgRoot="${{ parameters.WindowsBinRoot }}"
+    msbuildArguments: '/p:InputBinCfgRoot="${{ parameters.WindowsBinRoot }}" /bl:"$(Build.ArtifactStagingDirectory)\logs\Package_Windows_$(LogPlatform)_$(Configuration).binlog"'

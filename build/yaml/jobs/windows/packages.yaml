@@ -49,6 +49,11 @@ jobs:
       parameters:
         SignType: ${{ parameters.SignType }}
 
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
+      ArtifactName: 'logs'
+
   - task: CopyFiles@2
     displayName: 'Copy Packages'
     inputs:
