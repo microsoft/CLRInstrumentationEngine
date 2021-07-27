@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.42
++ BugFixes:
+  + Fix Linux build
+
 ## 1.0.41
 + Updates:
   + Remove PathCch functions in order to support Win7
