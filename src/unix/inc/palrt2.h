@@ -646,7 +646,7 @@ extern "C" LPWSTR PAL_PathFindFileNameW(LPCWSTR pPath);
 extern "C" HRESULT PathCchAppend(
     _Inout_  WCHAR*  wszPath,
     _In_     size_t cchPath,
-    _In_opt_ WCHAR* wszMore
+    _In_opt_ const WCHAR* wszMore
 );
 extern "C"  HRESULT PathCchRemoveFileSpec(
     _Inout_ WCHAR*  wszPath,

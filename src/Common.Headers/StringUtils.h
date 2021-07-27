@@ -80,8 +80,7 @@ public:
 
         return S_OK;
 #else
-        LPWSTR pwszMore2 = const_cast<LPWSTR>(pwszMore);
-        return PathCchAppend(pwszPath, MAX_PATH, pwszMore2);
+        return PathCchAppend(pwszPath, MAX_PATH, pwszMore);
 #endif
     }
 };
