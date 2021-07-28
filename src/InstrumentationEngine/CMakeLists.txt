@@ -63,9 +63,9 @@ add_lib(${PROJECT_NAME}
     )
 
 # Force every object to be included even if it's unused.
-SET (ATL -Wl,--whole-archive atl -Wl,--no-whole-archive)
-SET (CORECLRPAL -Wl,--whole-archive coreclrpal -Wl,--no-whole-archive)
-SET (LINUXPAL -Wl,--whole-archive linux_pal -Wl,--no-whole-archive)
+SET (ATL atl)
+SET (CORECLRPAL coreclrpal)
+SET (LINUXPAL linux_pal)
 #SET (LINUXPALRT -Wl,--whole-archive palrt -Wl,--no-whole-archive)
 
 
@@ -76,7 +76,7 @@ if(CLR_CMAKE_PLATFORM_ALPINE_LINUX)
 else()
     # NOTE: Explicitly link to the .so version of libdl.so to make sure we don't somehow accidentally
     # start statically linking to these, as these are LGPL components.
-    target_link_libraries(${PROJECT_NAME} :libdl.so)
+    target_link_libraries(${PROJECT_NAME} dl)
 endif()
 
 target_link_libraries(${PROJECT_NAME}
@@ -91,8 +91,9 @@ target_link_libraries(${PROJECT_NAME}
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
     corguids
-    :libuuid.so
-    :libunwind-x86_64.so
+    iconv
+    "-framework CoreFoundation"
+    "-framework Security"
     )
 
 #ensure that the linux pal gets built before this

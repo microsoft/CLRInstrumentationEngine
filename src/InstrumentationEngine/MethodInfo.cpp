@@ -209,7 +209,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
     }*/
 
     //Build fullName
-    tstringstream nameBuilder;
+    tstring nameBuilder;
     if (m_pDeclaringType)
     {
         CComBSTR declaringTypeName;
@@ -217,13 +217,14 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
             declaringTypeName != nullptr &&
             declaringTypeName.Length() > 0)
         {
-            nameBuilder << (LPWSTR)declaringTypeName << _T(".");
+            nameBuilder += (LPWSTR)declaringTypeName;
+            nameBuilder += _T(".");
         }
     }
 
-    nameBuilder << (LPWSTR)m_bstrMethodName;
+    nameBuilder += (LPWSTR)m_bstrMethodName;
 
-    m_bstrMethodFullName = nameBuilder.str().c_str();
+    m_bstrMethodFullName = nameBuilder.c_str();
     return S_OK;
 }
 
@@ -1128,26 +1129,26 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeName(_In_ mdToken
 
     if (!m_genericParameters.empty())
     {
-        tstringstream nameBuilder;
+        tstring nameBuilder;
 
-        nameBuilder << (LPWSTR)m_bstrMethodName << _T("<");
+        nameBuilder += (LPWSTR)m_bstrMethodName;
+        nameBuilder += _T("<");
 
         for (ULONG i = 0; i < m_genericParameters.size(); i++)
         {
             WCHAR szIndex[11] = { 0 }; // ULONG probably can contain 4,294,967,295 so make space for 10 digits + \0.
             _ultow_s(i, szIndex, 11, 10);
-            nameBuilder << _T("!!") << szIndex;
+            nameBuilder += _T("!!");
+            nameBuilder += szIndex;
 
             if (i < m_genericParameters.size() - 1)
             {
-                nameBuilder << _T(",");
+                nameBuilder += _T(",");
             }
         }
-        nameBuilder << _T(">");
+        nameBuilder += _T(">");
 
-        tstring value = nameBuilder.str();
-
-        m_bstrMethodName = value.c_str();
+        m_bstrMethodName = nameBuilder.c_str();
     }
 
     return S_OK;

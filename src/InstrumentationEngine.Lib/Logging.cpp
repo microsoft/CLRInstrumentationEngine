@@ -196,7 +196,7 @@ CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int inde
         m_indent += _T("    ");
     }
     m_childrenIndent = m_indent + _T("    ");
-    m_result << m_indent << _T("<") << m_tag << _T(">") << _T("\r\n");
+//    m_result << m_indent << _T("<") << m_tag << _T(">") << _T("\r\n");
 }
 
 CLogging::XmlDumpHelper::~XmlDumpHelper()
@@ -206,7 +206,7 @@ CLogging::XmlDumpHelper::~XmlDumpHelper()
         return;
     }
 
-    m_result << m_indent << _T("</") << m_tag << _T(">") << _T("\r\n") << std::flush;
+//    m_result << m_indent << _T("</") << m_tag << _T(">") << _T("\r\n") << std::flush;
 
     CLogging::LogDumpMessage(m_result.str().c_str());
 }
@@ -217,7 +217,7 @@ void CLogging::XmlDumpHelper::WriteStringNode(const WCHAR* name, const WCHAR* va
     {
         return;
     }
-    m_result << m_childrenIndent << _T("<") << name << _T(">") << value << _T("</") << name << _T(">") << _T("\r\n");
+//    m_result << m_childrenIndent << _T("<") << name << _T(">") << value << _T("</") << name << _T(">") << _T("\r\n");
 }
 
 void CLogging::XmlDumpHelper::WriteUlongNode(const WCHAR* name, const ULONG32 value)
@@ -231,7 +231,7 @@ void CLogging::XmlDumpHelper::WriteUlongNode(const WCHAR* name, const ULONG32 va
         << internal // fill between the prefix and the number
         << setfill(_T('0')); // fill with 0s
 
-    m_result << m_childrenIndent << _T('<') << name << _T('>') << hex << setw(10) << value << _T("</") << name << _T('>') << _T("\r\n");
+//    m_result << m_childrenIndent << _T('<') << name << _T('>') << hex << setw(10) << value << _T("</") << name << _T('>') << _T("\r\n");
 }
 
 // Implemenation of Assert functions found in Macros.h

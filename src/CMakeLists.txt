@@ -149,6 +149,7 @@ macro (build_init build_language build_type)
     add_compile_options(-Wno-new-returns-null)
     add_compile_options(-Wno-deprecated-declarations)
     add_compile_options(-Wno-delete-incomplete)
+    add_compile_options(-Wno-pragma-pack)
 
     # Turn all enabled warnings into errors
     add_compile_options(-Werror)
@@ -224,7 +225,7 @@ endfunction()
 # Set the project name
 project(ClrInstrumentationEngine)
 
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+if(1)
     set(CLR_CMAKE_PLATFORM_UNIX 1)
 
     # Detect Linux ID
@@ -258,8 +259,7 @@ endif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-    message(FATAL_ERROR "Darwin build not supported.")
-    return()
+    set(PLAT_DLL_EXT "dylib")
 elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
     set(PLAT_DLL_EXT "so")
 else()
@@ -269,14 +269,11 @@ endif()
 
 # Add the PAL imported targets, redefining the necessary symbols on Linux
 # See Concord:/src/vsdbg/libvsbaseservices/PALRedefines.md for more info on this
-if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+if (1)
     if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL armv7l)
         find_program(OBJCOPY ${TOOLCHAIN}-objcopy)
     else()
         find_program(OBJCOPY objcopy)
-    endif()
-    if(OBJCOPY STREQUAL "OBJCOPY-NOTFOUND")
-        message(FATAL_ERROR "objcopy not found")
     endif()
 
     set(UNIX_EXPORTS_FILE ${REPOSITORY_ROOT}/src/unix/scripts/unixexports.src)
@@ -330,11 +327,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
 
         add_dependencies(${target_name} ${target_name}_redefines)
     endfunction()
-else()
-    message(FATAL_ERROR "Linux is only supported platform.")
 endif()
-add_library_pal(coreclrpal true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcoreclrpal.a)
-add_library_pal(palrt true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libpalrt.a)
+add_library_pal(coreclrpal false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcoreclrpal.a)
+add_library_pal(palrt false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libpalrt.a)
 add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcorguids.a)
 
 add_subdirectory(unix/src)
@@ -343,4 +338,3 @@ add_subdirectory(Common.Lib)
 add_subdirectory(InstrumentationEngine.Api)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine)
-
