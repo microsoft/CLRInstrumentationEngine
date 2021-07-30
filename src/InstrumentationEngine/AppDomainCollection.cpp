@@ -105,7 +105,7 @@ HRESULT MicrosoftInstrumentationEngine::CAppDomainCollection::GetAppDomainIDs(_I
     IfNullRetPointer(pcActual);
     IfNullRetPointer(pAppDomainIDs);
 
-    memset(pAppDomainIDs, cAppDomains, 0);
+    memset(pAppDomainIDs, 0, cAppDomains);
 
     *pcActual = 0;
 

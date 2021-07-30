@@ -337,7 +337,7 @@ set_clang_path_and_version()
                 print_install_instructions
                 exit 1
             fi
-            ClangVersion=$(clang --version | head -n 1 | grep -o -E "[[:digit:]].[[:digit:]].[[:digit:]]" | uniq)
+            ClangVersion=$(clang --version | head -n 1 | grep -o -E "[[:digit:]]+.[[:digit:]].[[:digit:]]" | uniq | head -n1)
         fi
 
         local ClangVersionArray=(${ClangVersion//./ })

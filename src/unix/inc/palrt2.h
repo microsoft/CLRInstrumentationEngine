@@ -44,6 +44,8 @@ inline void * _recalloc(void *memblock, size_t num, size_t size)
 #define ULLONG_MAX    0xffffffffffffffffu       /* maximum unsigned long long int value */
 EXTERN_C PALAPI errno_t _ultow_s( unsigned long inValue, WCHAR* outBuffer, size_t inDestBufferSize, int inRadix );
 
+/* these are builtins
+
 inline LONG _InterlockedIncrement(LONG volatile * _Addend)
 {
     return InterlockedIncrement(_Addend);
@@ -68,6 +70,7 @@ inline LONG _InterlockedExchange(LONG volatile * Target, LONG Value)
 {
     return InterlockedExchange(Target, Value);
 }
+*/
 
 // --- guid ---
 __inline int InlineIsEqualGUID(REFGUID rguid1, REFGUID rguid2)
