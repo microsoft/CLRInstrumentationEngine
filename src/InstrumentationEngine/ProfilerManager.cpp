@@ -50,7 +50,7 @@ CProfilerManager::CProfilerManager() :
     GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
     if (wcscmp(wszEnvVar, _T("1")) == 0)
     {
-        tstringstream mboxStream;
+        std::wstringstream mboxStream;
         DWORD pid = GetCurrentProcessId();
         mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
         MessageBoxW(NULL, mboxStream.str().c_str(), L"", MB_OK);

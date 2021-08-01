@@ -12,6 +12,29 @@ CSingleton<CLoggerService> CLogging::s_loggerService;
 atomic_size_t CLogging::s_initCount(0);
 atomic<LoggingFlags> CLogging::s_cachedFlags(LoggingFlags_None);
 
+namespace {
+    tstring FormatHex(ULONG32 value)
+    {
+        constexpr size_t width = 10;
+
+        tstring result(width, _T('0'));
+        result[1] = _T('x');
+
+        size_t pos = width - 1;
+        while (value != 0) {
+            const auto nibble = value & 0xf;
+            if (nibble < 0xa)
+                result[pos] = _T('0') + nibble;
+            else
+                result[pos] = _T('a') + nibble - 0xa;
+            --pos;
+            value >>= 4;
+        }
+
+        return result;
+    }
+}
+
 // static
 bool CLogging::AllowLogEntry(_In_ LoggingFlags flags)
 {
@@ -196,7 +219,7 @@ CLogging::XmlDumpHelper::XmlDumpHelper(const WCHAR* tag, const unsigned int inde
         m_indent += _T("    ");
     }
     m_childrenIndent = m_indent + _T("    ");
-    m_result << m_indent << _T("<") << m_tag << _T(">") << _T("\r\n");
+    m_result += m_indent + _T("<") + m_tag + _T(">") + _T("\r\n");
 }
 
 CLogging::XmlDumpHelper::~XmlDumpHelper()
@@ -206,9 +229,9 @@ CLogging::XmlDumpHelper::~XmlDumpHelper()
         return;
     }
 
-    m_result << m_indent << _T("</") << m_tag << _T(">") << _T("\r\n") << std::flush;
+    m_result += m_indent + _T("</") + m_tag + _T(">") + _T("\r\n");
 
-    CLogging::LogDumpMessage(_T("%s"), m_result.str().c_str());
+    CLogging::LogDumpMessage(_T("%s"), m_result.c_str());
 }
 
 void CLogging::XmlDumpHelper::WriteStringNode(const WCHAR* name, const WCHAR* value)
@@ -217,7 +240,7 @@ void CLogging::XmlDumpHelper::WriteStringNode(const WCHAR* name, const WCHAR* va
     {
         return;
     }
-    m_result << m_childrenIndent << _T("<") << name << _T(">") << value << _T("</") << name << _T(">") << _T("\r\n");
+    m_result += m_childrenIndent + _T("<") + name + _T(">") + value + _T("</") + name + _T(">") + _T("\r\n");
 }
 
 void CLogging::XmlDumpHelper::WriteUlongNode(const WCHAR* name, const ULONG32 value)
@@ -227,11 +250,7 @@ void CLogging::XmlDumpHelper::WriteUlongNode(const WCHAR* name, const ULONG32 va
         return;
     }
 
-    m_result << showbase // show the 0x prefix
-        << internal // fill between the prefix and the number
-        << setfill(_T('0')); // fill with 0s
-
-    m_result << m_childrenIndent << _T('<') << name << _T('>') << hex << setw(10) << value << _T("</") << name << _T('>') << _T("\r\n");
+    m_result += m_childrenIndent + _T('<') + name + _T('>') + FormatHex(value) + _T("</") + name + _T('>') + _T("\r\n");
 }
 
 // Implemenation of Assert functions found in Macros.h
