@@ -8,10 +8,12 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.43
-+ BugFixes:
-  + Fix XmlReader.Create to read from stream instead of filepath string
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
++ BugFixes:
+  + Fix XmlReader.Create to read from stream instead of filepath string
++ Updates:
+  + Use net50 platform for restoring native dependencies on Unix
 
 ## 1.0.42
 + BugFixes:
