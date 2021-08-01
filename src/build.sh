@@ -13,7 +13,7 @@ print_install_instructions()
         echo "  Follow the instructions here: https://docs.microsoft.com/dotnet/core/linux-prerequisites?tabs=netcore2x"
         echo ""
         echo "  # Install required packages"
-        echo "  sudo apt-get install cmake clang-4.0 libunwind8 libunwind8-dev uuid-dev"
+        echo "  sudo apt-get install cmake clang-4.0"
         echo ""
     elif [ "$OSName" == "Darwin" ]; then
         echo ""

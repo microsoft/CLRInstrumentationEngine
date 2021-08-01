@@ -59,8 +59,6 @@ target_link_libraries(
     Common.Lib
     palrt
     corguids
-    :libuuid.so
-    :libunwind-x86_64.so
     stdc++fs
     gtest_main
 )

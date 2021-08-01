@@ -91,8 +91,6 @@ target_link_libraries(${PROJECT_NAME}
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
     corguids
-    :libuuid.so
-    :libunwind-x86_64.so
     )
 
 #ensure that the linux pal gets built before this

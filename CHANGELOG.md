@@ -12,6 +12,7 @@ Please format the changes as follows:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
 + BugFixes:
   + Fix XmlReader.Create to read from stream instead of filepath string
+  + Remove references to libunwind8 and libuuid; they're not used anymore
 + Updates:
   + Use net50 platform for restoring native dependencies on Unix
 

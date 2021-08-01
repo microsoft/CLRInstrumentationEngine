@@ -37,8 +37,6 @@ RUN apt-get update \
         clang-3.9 \
         cmake \
         git \
-        libunwind8-dev \
         libxml2-dev \
         make \
-        uuid-dev \
         jq
