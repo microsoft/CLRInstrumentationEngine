@@ -10,6 +10,7 @@ Please format the changes as follows:
 ## 1.0.43
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
+  + Allow building on OSX. Note this is only experimental and not officially supported yet.
 + BugFixes:
   + Fix XmlReader.Create to read from stream instead of filepath string
   + Remove references to libunwind8 and libuuid; they're not used anymore

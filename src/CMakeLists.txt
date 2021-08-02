@@ -274,8 +274,8 @@ endif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-    message(FATAL_ERROR "Darwin build not supported.")
-    return()
+    set(PLAT_DLL_EXT "dylib")
+    set(CLR_CMAKE_PLATFORM_UNIX 1)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
     set(PLAT_DLL_EXT "so")
 else()
@@ -322,33 +322,39 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
     )
 
     add_custom_target(pal_redefines DEPENDS ${REDEFINES_FILE})
+elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    message(NOTICE "Building for Darwin is currently experimental.")
 
-    function(add_library_pal target_name do_redefinition lib_location)
-        get_filename_component(lib_file_name ${lib_location} NAME)
-        set(redefine_lib_location ${CMAKE_CURRENT_BINARY_DIR}/${lib_file_name})
-
-        if(${do_redefinition})
-            # Copy the PAL lib from it's original location and do the redefine
-            add_custom_command(
-                OUTPUT ${redefine_lib_location}
-                COMMAND ${OBJCOPY} --redefine-syms ${REDEFINES_FILE} ${lib_location} ${redefine_lib_location}
-                DEPENDS pal_redefines ${lib_location} ${REDEFINES_FILE}
-                COMMENT "Redefining exported PAL symbols in ${lib_location}"
-            )
-        else()
-            configure_file(${lib_location} ${redefine_lib_location} COPYONLY)
-        endif(${do_redefinition})
-
-        add_custom_target(${target_name}_redefines DEPENDS ${redefine_lib_location})
-
-        add_library(${target_name} STATIC IMPORTED)
-        set_property(TARGET ${target_name} PROPERTY IMPORTED_LOCATION ${redefine_lib_location})
-
-        add_dependencies(${target_name} ${target_name}_redefines)
-    endfunction()
+    # Dummy noop target to prevent warnings.
+    add_custom_target(pal_redefines_header)
 else()
-    message(FATAL_ERROR "Linux is only supported platform.")
+    message(FATAL_ERROR "CMake build not supported for system '${CMAKE_SYSTEM_NAME}'")
 endif()
+
+function(add_library_pal target_name do_redefinition lib_location)
+    get_filename_component(lib_file_name ${lib_location} NAME)
+    set(redefine_lib_location ${CMAKE_CURRENT_BINARY_DIR}/${lib_file_name})
+
+    if((CMAKE_SYSTEM_NAME STREQUAL Linux) AND ${do_redefinition})
+        # Copy the PAL lib from it's original location and do the redefine
+        add_custom_command(
+            OUTPUT ${redefine_lib_location}
+            COMMAND ${OBJCOPY} --redefine-syms ${REDEFINES_FILE} ${lib_location} ${redefine_lib_location}
+            DEPENDS pal_redefines ${lib_location} ${REDEFINES_FILE}
+            COMMENT "Redefining exported PAL symbols in ${lib_location}"
+        )
+    else()
+        configure_file(${lib_location} ${redefine_lib_location} COPYONLY)
+    endif()
+
+    add_custom_target(${target_name}_redefines DEPENDS ${redefine_lib_location})
+
+    add_library(${target_name} STATIC IMPORTED)
+    set_property(TARGET ${target_name} PROPERTY IMPORTED_LOCATION ${redefine_lib_location})
+
+    add_dependencies(${target_name} ${target_name}_redefines)
+endfunction()
+
 add_library_pal(coreclrpal true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcoreclrpal.a)
 add_library_pal(palrt true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libpalrt.a)
 add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcorguids.a)
@@ -363,4 +369,3 @@ add_subdirectory(InstrumentationEngine)
 enable_testing()
 add_subdirectory(Tests/CommonLibTests)
 add_subdirectory(Tests/InstrumentationEngineLibTests)
-
