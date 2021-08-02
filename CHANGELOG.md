@@ -14,6 +14,7 @@ Please format the changes as follows:
   + Fix XmlReader.Create to read from stream instead of filepath string
   + Remove references to libunwind8 and libuuid; they're not used anymore
   + Fixes for compatibility with recent clang versions
+  + Fix bad memset argument order in AppDomainCollection::GetAppDomainIDs
 + Updates:
   + Use net50 platform for restoring native dependencies on Unix
 
