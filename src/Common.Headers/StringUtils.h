@@ -65,8 +65,10 @@ public:
     // This function wraps PathAppend since supporting Win7 means PathCchAppend is not available.
     static HRESULT SafePathAppend(_Inout_updates_z_(cBounds) LPWSTR pwszPath, _In_ LPCWSTR pwszMore, _In_ size_t cBounds)
     {
+#ifndef PLATFORM_UNIX
         // If PathAppend fails, the destination buffer will be cleared. Check bounds before appending.
-        if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) >= cBounds)
+        // +1 for additional directory separator character, +1 for null terminator.
+        if (StringUtils::WStringLen(pwszPath) + StringUtils::WStringLen(pwszMore) + 2 > cBounds)
         {
             return E_BOUNDS;
         }
@@ -77,5 +79,8 @@ public:
         }
 
         return S_OK;
+#else
+        return PathCchAppend(pwszPath, MAX_PATH, pwszMore);
+#endif
     }
 };

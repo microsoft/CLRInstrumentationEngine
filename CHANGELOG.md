@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.42
++ BugFixes:
+  + Fix Linux build
 
 ## 1.0.41
 + Updates:
