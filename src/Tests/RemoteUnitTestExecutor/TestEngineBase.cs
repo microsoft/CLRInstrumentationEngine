@@ -20,7 +20,7 @@ namespace RemoteUnitTestExecutor
         {
             if (true == string.IsNullOrWhiteSpace(testName))
             {
-                throw new ArgumentNullException("testName");
+                throw new ArgumentNullException(nameof(testName));
             }
 
             string testOutputFileName = "testOutput_" + Guid.NewGuid() + ".xml";

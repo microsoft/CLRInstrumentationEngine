@@ -5,8 +5,10 @@ namespace RemoteUnitTestExecutor
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
@@ -20,7 +22,7 @@ namespace RemoteUnitTestExecutor
             InvokedMethods = new List<MethodInvocationInfo>();
         }
 
-        public IList<MethodInvocationInfo> InvokedMethods { get; set; }
+        public IList<MethodInvocationInfo> InvokedMethods { get; }
 
         public bool Succeeded { get; set; }
 
@@ -36,16 +38,28 @@ namespace RemoteUnitTestExecutor
             }
         }
 
+        /// CA2300 is set to Info level, which will not cause a build break. However, RoslynAnalyzer and PostAnalysis
+        /// pipeline tasks will fail on any level reported above None. Recommendation is to disable CA2300 and enable
+        /// CA2301 and CA2302 as mitigations. However, these are part of the SDL ruleset and we should not modify its
+        /// behavior. Thus, mitigate CA2301 and CA2302 and then suppress CA2300.
+        [SuppressMessage("Security", "CA2300", Justification = "Mitigated with fixes for CA2301 and CA2302")]
         public static ITestResult CreateFromFile(string testOutputFileName)
         {
             using (FileStream deserializationStream = File.OpenRead(testOutputFileName))
             {
-                return (ITestResult) new BinaryFormatter().Deserialize(deserializationStream);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Binder = new TestResultSerializationBinder();
+                return (ITestResult)formatter.Deserialize(deserializationStream);
             }
         }
 
         public void AddProfilerTraces(IEnumerable<string> tracesIterator)
         {
+            if (null == tracesIterator)
+            {
+                throw new ArgumentNullException(nameof(tracesIterator));
+            }
+
             foreach (var trace in tracesIterator)
             {
                 this.ProfilerTraces.Add(trace);
@@ -69,6 +83,28 @@ namespace RemoteUnitTestExecutor
                 }
 
                 return string.Empty;
+            }
+        }
+
+        private class TestResultSerializationBinder : SerializationBinder
+        {
+            private static IEnumerable<string> s_supportedTypes = new List<string>()
+            {
+                typeof(List<MethodInvocationInfo>).FullName,
+                typeof(List<string>).FullName,
+                typeof(MethodInvocationInfo).FullName,
+                typeof(TestResult).FullName
+            };
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                if (s_supportedTypes.Contains(typeName, StringComparer.Ordinal))
+                {
+                    // Tells serializer to use type from deserialized data.
+                    return null;
+                }
+
+                throw new NotSupportedException("Attempted to deserialize unexpected type: " + typeName);
             }
         }
     }
