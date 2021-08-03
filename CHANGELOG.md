@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.43
+
 ## 1.0.42
 + BugFixes:
   + Fix Linux build
