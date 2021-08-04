@@ -114,7 +114,6 @@
     <ClInclude Include="SharedArray.h" />
     <ClInclude Include="SignatureValidator.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
@@ -138,7 +137,6 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">

@@ -47,7 +47,7 @@ using namespace ATL;
 #include <sal.h>
 
 #ifndef PLATFORM_UNIX
-#include <PathCch.h>
+#include <Shlwapi.h>
 #endif
 
 #ifdef PLATFORM_UNIX

@@ -8,6 +8,7 @@
 #ifndef PLATFORM_UNIX
 #include "SignatureValidator.h"
 #endif
+#include "../Common.Headers/StringUtils.h"
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
@@ -80,10 +81,24 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return E_INVALIDARG;
     }
 
+    if ((m_bstrModuleFolder.Length() >= MAX_PATH))
+    {
+        CLogging::LogError(_T("CInstrumentationMethod::Initialize - module folder path is too long, PID: %u"), GetCurrentProcessId());
+        return E_BOUNDS;
+    }
+
     WCHAR wszModuleFullPath[MAX_PATH];
-    memset(wszModuleFullPath, 0, MAX_PATH);
+    ZeroMemory(wszModuleFullPath, MAX_PATH * sizeof(WCHAR));
     wcscpy_s(wszModuleFullPath, MAX_PATH, m_bstrModuleFolder);
-    PathCchAppend(wszModuleFullPath, MAX_PATH, m_bstrModule);
+
+    hr = StringUtils::SafePathAppend(wszModuleFullPath, m_bstrModule, MAX_PATH);
+    if (FAILED(hr))
+    {
+        CLogging::LogError(
+            _T("CInstrumentationMethod::Initialize - failed to append method dll to method configuration folder, PID: %u, hr: %x, target: '%s' + '%s'"),
+            GetCurrentProcessId(), hr, m_bstrModuleFolder.m_str, m_bstrModule.m_str);
+        return hr;
+    }
 
     m_hmod = ::LoadLibrary(wszModuleFullPath);
 

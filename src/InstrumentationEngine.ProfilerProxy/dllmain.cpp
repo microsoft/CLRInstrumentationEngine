@@ -5,8 +5,9 @@
 
 #include "stdafx.h"
 #include "InstrumentationEngineVersion.h"
-#include "PathCch.h"
+#include <Shlwapi.h>
 #include "../InstrumentationEngine.ProfilerProxy.Lib/EventLogger.h"
+#include "../Common.Headers/StringUtils.h"
 
 typedef BOOL(WINAPI* LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
@@ -108,12 +109,14 @@ namespace ProfilerProxy
         HRESULT hr = S_OK;
 
         *pHasProfiler = FALSE;
+        DWORD dError = 0;
 
         WCHAR wszEngineFullPath[MAX_PATH];
-        IfFailRetErrno_Proxy(wcscpy_s(wszEngineFullPath, MAX_PATH, wszProfilerPath));
+        ZeroMemory(wszEngineFullPath, MAX_PATH * sizeof(WCHAR));
+        wcscpy_s(wszEngineFullPath, wszProfilerPath);
 
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, wszVersionFolder));
-        IfFailRet_Proxy(PathCchAppend(wszEngineFullPath, MAX_PATH, profilerRelativeFileName));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, wszVersionFolder, MAX_PATH));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszEngineFullPath, profilerRelativeFileName, MAX_PATH));
 
         DWORD dwAttrib = GetFileAttributes(wszEngineFullPath);
         *pHasProfiler = dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -134,10 +137,10 @@ namespace ProfilerProxy
         //
 
         WCHAR wszBuffer[2];
-        ZeroMemory(wszBuffer, 2);
+        ZeroMemory(wszBuffer, 2 * sizeof(WCHAR));
         bool useDebug = GetEnvironmentVariable(useDebugVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
-        ZeroMemory(wszBuffer, 2);
+        ZeroMemory(wszBuffer, 2 * sizeof(WCHAR));
         bool usePreview = GetEnvironmentVariable(usePreviewVar, wszBuffer, 2) > 0 && wcscmp(wszBuffer, _T("1")) == 0;
 
         //
@@ -223,6 +226,7 @@ namespace ProfilerProxy
     static HRESULT LoadProfiler(_In_ CEventLogger& eventLogger)
     {
         HRESULT hr = S_OK;
+        DWORD dError = 0;
 
         //
         // Determine "Program Files" folder
@@ -241,7 +245,7 @@ namespace ProfilerProxy
 #endif
 
         WCHAR wszProfilerPath[MAX_PATH];
-        ZeroMemory(wszProfilerPath, MAX_PATH);
+        ZeroMemory(wszProfilerPath, MAX_PATH * sizeof(WCHAR));
         if (!GetEnvironmentVariable(programFilesVar, wszProfilerPath, MAX_PATH))
         {
             eventLogger.LogError(_T("dllmain::LoadProfiler - Unable to resolve environment variable: %s"), programFilesVar);
@@ -252,7 +256,7 @@ namespace ProfilerProxy
         // Set CIE folder
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, instrumentationEngineFolder));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, instrumentationEngineFolder, MAX_PATH));
 
         //
         // Determine Version folder
@@ -280,13 +284,13 @@ namespace ProfilerProxy
             IfFailRet_Proxy(GetLatestVersionFolder(eventLogger, wszProfilerPath, versionFolder));
         }
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, versionFolder.c_str()));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, versionFolder.c_str(), MAX_PATH));
 
         //
         // Determine and Load Profiler
         //
 
-        IfFailRet_Proxy(PathCchAppend(wszProfilerPath, MAX_PATH, profilerRelativeFileName));
+        IfFailRet_Proxy(StringUtils::SafePathAppend(wszProfilerPath, profilerRelativeFileName, MAX_PATH));
 
         eventLogger.LogMessage(_T("dllmain::LoadProfiler - Loading profiler from path: '%s'"), wszProfilerPath);
 

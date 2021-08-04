@@ -7,7 +7,7 @@ script_dir=`dirname $0`
 print_install_instructions()
 {
     if [ "$OSName" == "Linux" ]; then
-        echo ""case
+        echo ""
         echo "To prepare a machine for building ClrInstrumentationEngine. Install the following:"
         echo "  # Install dotnet"
         echo "  Follow the instructions here: https://docs.microsoft.com/dotnet/core/linux-prerequisites?tabs=netcore2x"

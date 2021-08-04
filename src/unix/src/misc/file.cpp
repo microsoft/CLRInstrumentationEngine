@@ -71,9 +71,9 @@ extern "C" LPWSTR PAL_PathFindFileNameW(LPCWSTR pPath)
 }
 
 extern "C" HRESULT PathCchAppend(
-    _Inout_  WCHAR*  wszPath,
+    _Inout_updates_(cchPath) PWSTR wszPath,
     _In_     size_t cchPath,
-    _In_opt_ WCHAR* wszMore
+    _In_opt_ PCWSTR wszMore
 )
 {
     HRESULT hr = S_OK;

@@ -21,7 +21,7 @@
 #include "RawProfilerHookSettingsReader.h"
 #include "../Common.Lib/PathUtils.h"
 #endif
-#include "StringUtils.h"
+#include "../Common.Headers/StringUtils.h"
 #include "../Common.Lib/systemstring.h"
 #include <algorithm>
 
