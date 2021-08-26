@@ -13,22 +13,22 @@ namespace MicrosoftInstrumentationEngine
 
     private:
         static constexpr const WCHAR* s_wszConfigurationFilePattern = _T("*.config");
-#if defined(_WIN64) || defined(PLATFORM_UNIX)
+#ifdef PLATFORM_UNIX
+#ifdef X86
+        static constexpr const char* s_szConfigurationPathEnvironmentVariablePrefix = "MicrosoftInstrumentationEngine_ConfigPath32_";
+#else
+        static constexpr const char* s_szConfigurationPathEnvironmentVariablePrefix = "MicrosoftInstrumentationEngine_ConfigPath64_";
+#endif
+        static constexpr const char s_cEnvironmentVariableNameValueSeparator = '=';
+        static constexpr const char s_cEnvironmentVariablePathDelimiter = ':';
+#else  // PLATFORM_UNIX
+#if defined(_WIN64)
         static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPath64_");
 #else
         static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPath32_");
 #endif
         static constexpr const WCHAR* s_wszEnvironmentVariableNameValueSeparator = _T("=");
         static constexpr const WCHAR* s_wszEnvironmentVariablePathDelimiter = _T(";");
-
-#ifdef PLATFORM_UNIX
-#ifdef X86
-        static constexpr const WCHAR* s_wszProductionBreakpointsConfigName = _T("ProductionBreakpoints_x86.config");
-        static constexpr const WCHAR* s_wszProfilerPathVariableName = _T("CORECLR_PROFILER_PATH_32");
-#else
-        static constexpr const WCHAR* s_wszProductionBreakpointsConfigName = _T("ProductionBreakpoints_x64.config");
-        static constexpr const WCHAR* s_wszProfilerPathVariableName = _T("CORECLR_PROFILER_PATH_64");
-#endif
 #endif
 
     public:
