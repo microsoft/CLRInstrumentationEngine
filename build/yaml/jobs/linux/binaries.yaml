@@ -23,7 +23,7 @@ jobs:
       - docker
       - sh
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-latest
 
   workspace:
     clean: outputs
