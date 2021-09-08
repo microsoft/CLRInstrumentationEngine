@@ -42,7 +42,7 @@ namespace InstrEngineTests
                 output: "RuntimeExceptionCallbacks.xml",
                 isRejit: false);
 
-            ProfilerHelpers.DiffResultToBaseline(output: "RuntimeExceptionCallbacks.xml", baseline: "RuntimeExceptionCallbacks.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "RuntimeExceptionCallbacks.xml", baseline: "RuntimeExceptionCallbacks.xml");
         }
     }
 }

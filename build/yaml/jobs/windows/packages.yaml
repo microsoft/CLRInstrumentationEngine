@@ -17,7 +17,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
   pool:
     ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-      name: VSEngSS-MicroBuild2019
+      name: VSEngSS-MicroBuild2019-1ES
       demands:
       - msbuild
       - vstest
