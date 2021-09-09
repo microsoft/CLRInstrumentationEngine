@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.43
++ BugFixes:
+  + Fix XmlReader.Create to read from stream instead of filepath string
 
 ## 1.0.42
 + BugFixes:
