@@ -109,7 +109,8 @@ namespace Microsoft.InstrumentationEngine
                     readerSettings.ValidationType = ValidationType.Schema;
 
                     // Read configuration source file
-                    using (XmlReader reader = XmlReader.Create(sourceInfo.ConfigSourceFilePath, readerSettings))
+                    using (var stream = new StreamReader(sourceInfo.ConfigSourceFilePath))
+                    using (XmlReader reader = XmlReader.Create(stream, readerSettings))
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(InstrumentationConfigurationSources));
                         try
