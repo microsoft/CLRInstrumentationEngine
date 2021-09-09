@@ -68,7 +68,7 @@ namespace InstrEngineTests
         {
             // Usually we use the same file name for test script, baseline and test result
             ProfilerHelpers.LaunchAppUnderProfiler(parameters, testApp, fileName, fileName, false, args, timeoutMs);
-            ProfilerHelpers.DiffResultToBaseline(fileName, fileName, regexCompare);
+            ProfilerHelpers.DiffResultToBaseline(parameters.TestContext, fileName, fileName, regexCompare);
         }
 
         public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
@@ -258,7 +258,7 @@ namespace InstrEngineTests
             return docs.ToArray();
         }
 
-        public static void DiffResultToBaseline(string output, string baseline, bool regexCompare = false)
+        public static void DiffResultToBaseline(TestContext testContext, string output, string baseline, bool regexCompare = false)
         {
             string outputPath = Path.Combine(PathUtils.GetTestResultsPath(), output);
             string baselinePath = Path.Combine(PathUtils.GetBaselinesPath(), baseline);
@@ -339,6 +339,7 @@ namespace InstrEngineTests
             }
             catch (AssertFailedException)
             {
+                testContext.AddResultFile(outputPath);
                 Console.WriteLine($"Baseline FilePath: {baselinePath}");
                 Console.WriteLine();
                 Console.WriteLine($"Output FilePath: {outputPath}");

@@ -45,7 +45,7 @@ namespace InstrEngineTests
                 testScript: "RoundTrip_IfTest.xml",
                 output: "Rejit_RoundTrip_IfTest.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_RoundTrip_IfTest.xml", baseline: "RoundTrip_IfTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_RoundTrip_IfTest.xml", baseline: "RoundTrip_IfTest.xml");
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace InstrEngineTests
                 testScript: "RoundTrip_SwitchTest.xml",
                 output: "Rejit_RoundTrip_SwitchTest.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_RoundTrip_SwitchTest.xml", baseline: "RoundTrip_SwitchTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_RoundTrip_SwitchTest.xml", baseline: "RoundTrip_SwitchTest.xml");
         }
 
         [TestMethod]
@@ -71,7 +71,7 @@ namespace InstrEngineTests
                 testScript: "RoundTrip_ForTest.xml",
                 output: "Rejit_RoundTrip_ForTest.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_RoundTrip_ForTest.xml", baseline: "RoundTrip_ForTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_RoundTrip_ForTest.xml", baseline: "RoundTrip_ForTest.xml");
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ namespace InstrEngineTests
                 testScript: "AddNop_SwitchTest2.xml",
                 output: "Rejit_AddNop_SwitchTest2.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_AddNop_SwitchTest2.xml", baseline: "AddNop_SwitchTest2.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_AddNop_SwitchTest2.xml", baseline: "AddNop_SwitchTest2.xml");
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace InstrEngineTests
                 testScript: "ExceptionFinallyTest.xml",
                 output: "Rejit_ExceptionFinallyTest.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_ExceptionFinallyTest.xml", baseline: "ExceptionFinallyTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_ExceptionFinallyTest.xml", baseline: "ExceptionFinallyTest.xml");
         }
 
         [TestMethod]
@@ -110,7 +110,7 @@ namespace InstrEngineTests
                 testScript: "ExceptionMultiTryCatchTest.xml",
                 output: "Rejit_ExceptionMultiTryCatchTest.xml");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_ExceptionMultiTryCatchTest.xml", baseline: "ExceptionMultiTryCatchTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_ExceptionMultiTryCatchTest.xml", baseline: "ExceptionMultiTryCatchTest.xml");
         }
 
         [TestMethod]
@@ -124,7 +124,7 @@ namespace InstrEngineTests
                 output: "Rejit_Instru_RemoveAllTest.xml",
                 args: "Instru_CreateErrorTest");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_Instru_RemoveAllTest.xml", baseline: "Instru_RemoveAllTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_Instru_RemoveAllTest.xml", baseline: "Instru_RemoveAllTest.xml");
         }
 
         [TestMethod]
@@ -138,7 +138,7 @@ namespace InstrEngineTests
                 output: "Rejit_Instru_ReplaceTest.xml",
                 args: "Instru_ReplaceTest");
 
-            ProfilerHelpers.DiffResultToBaseline(output: "Rejit_Instru_ReplaceTest.xml", baseline: "Instru_ReplaceTest.xml");
+            ProfilerHelpers.DiffResultToBaseline(Context, output: "Rejit_Instru_ReplaceTest.xml", baseline: "Instru_ReplaceTest.xml");
         }
     }
 }
