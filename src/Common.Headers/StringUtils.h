@@ -73,7 +73,10 @@ public:
             return E_BOUNDS;
         }
 
+#pragma warning( push )
+#pragma warning( disable: 25025 ) // Call to dangerous string function 'PathAppendW'; intentional to support pre-Win8
         if (!PathAppend(pwszPath, pwszMore))
+#pragma warning ( pop )
         {
             return E_FAIL;
         }
