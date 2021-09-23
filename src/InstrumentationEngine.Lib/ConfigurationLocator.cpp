@@ -3,7 +3,11 @@
 
 #include "stdafx.h"
 #include "ConfigurationLocator.h"
-#ifndef PLATFORM_UNIX
+#ifdef PLATFORM_UNIX
+#include <unistd.h>
+#include <stdlib.h>
+#include "../Common.Lib/systemstring.h"
+#else
 #include "../Common.Lib/PathUtils.h"
 #include "../Common.Lib/ModuleUtils.h"
 #include "../Common.Headers/SafeFindFileHandle.h"
@@ -68,22 +72,34 @@ namespace MicrosoftInstrumentationEngine
             }
         }
 #else
-        WCHAR wszProfilerPath[MAX_PATH];
-        if (!GetEnvironmentVariable(s_wszProfilerPathVariableName, wszProfilerPath, MAX_PATH))
-        {
-            return E_UNEXPECTED;
+        const auto prefix_len = strlen(s_szConfigurationPathEnvironmentVariablePrefix);
+        for (auto it = environ; *it != nullptr; ++it) {
+            const char* var = *it;
+
+            if (strncmp(var, s_szConfigurationPathEnvironmentVariablePrefix, prefix_len) != 0)
+                continue;
+
+            const char* value = strchr(var, s_cEnvironmentVariableNameValueSeparator);
+            if (value == nullptr)
+                continue;
+            ++value;
+
+            stringstream value_stream{value};
+
+            for (string part; getline(value_stream, part, s_cEnvironmentVariablePathDelimiter);) {
+                // Note only path canonicalization is performed. On Windows environment
+                // variable expansion is also done; it would be highly unusual on Unix.
+
+                std::unique_ptr<char, decltype(std::free)*> path{realpath(part.c_str(), nullptr), std::free};
+
+                if (!path)
+                    continue;
+
+                tstring wpath;
+                IfFailRet(SystemString::Convert(path.get(), wpath));
+                IfFailRet(AddSource(sources, wpath.c_str()));
+            }
         }
-
-        WCHAR* pFileName = PathFindFileName(wszProfilerPath);
-        if (pFileName == wszProfilerPath)
-        {
-            return E_UNEXPECTED;
-        }
-        *pFileName = _T('\0');
-
-        StringCchCatW(wszProfilerPath, MAX_PATH, s_wszProductionBreakpointsConfigName);
-
-        IfFailRet(AddSource(sources, wszProfilerPath));
 #endif
 
         return S_OK;

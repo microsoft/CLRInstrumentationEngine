@@ -19,6 +19,7 @@ build_init(CPP InstrumentationEngine.LibTests)
 set(src_files
     ./pch.cpp
     ./ConfigurationLoaderTests.cpp
+    ./ConfigurationLocatorTests.cpp
     ../../InstrumentationEngine.Api/InstrumentationEngine_i.cpp
 )
 
