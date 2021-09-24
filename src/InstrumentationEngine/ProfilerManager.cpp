@@ -50,7 +50,7 @@ CProfilerManager::CProfilerManager() :
     GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
     if (wcscmp(wszEnvVar, _T("1")) == 0)
     {
-        tstringstream mboxStream;
+        std::wstringstream mboxStream;
         DWORD pid = GetCurrentProcessId();
         mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
         MessageBoxW(NULL, mboxStream.str().c_str(), L"", MB_OK);
@@ -2627,14 +2627,14 @@ HRESULT CProfilerManager::ExceptionSearchCatcherFound(
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerEnter(
-    _In_ UINT_PTR __unused
+    _In_ UINT_PTR unused
     )
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, __unused));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, unused));
 
     PROF_CALLBACK_END
 
@@ -2642,14 +2642,14 @@ HRESULT CProfilerManager::ExceptionOSHandlerEnter(
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerLeave(
-    _In_ UINT_PTR __unused
+    _In_ UINT_PTR unused
     )
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, __unused));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, unused));
 
     PROF_CALLBACK_END
 

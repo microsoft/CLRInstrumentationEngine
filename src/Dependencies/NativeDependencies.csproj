@@ -19,11 +19,11 @@
   <!-- This must be a relative or absolute path, not computed, so that dotnet restore on Linux finds this correctly. -->
   <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-  <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-  </PropertyGroup>
   <Choose>
     <When Condition="!$([MSBuild]::IsOsPlatform('Windows'))">
+      <PropertyGroup>
+        <TargetFramework>net50</TargetFramework>
+      </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.VisualStudio.Debugger.CoreCLRPAL" Version="$(CoreClrPalVersion)">
           <ExcludeAssets>All</ExcludeAssets>
@@ -31,6 +31,9 @@
       </ItemGroup>
     </When>
     <Otherwise>
+      <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+      </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(ApplicationInsightsAgentInterceptVersion)">
           <ExcludeAssets>All</ExcludeAssets>

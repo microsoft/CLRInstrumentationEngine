@@ -13,7 +13,7 @@ print_install_instructions()
         echo "  Follow the instructions here: https://docs.microsoft.com/dotnet/core/linux-prerequisites?tabs=netcore2x"
         echo ""
         echo "  # Install required packages"
-        echo "  sudo apt-get install cmake clang-4.0 libunwind8 libunwind8-dev uuid-dev"
+        echo "  sudo apt-get install cmake clang-4.0"
         echo ""
     elif [ "$OSName" == "Darwin" ]; then
         echo ""
@@ -125,7 +125,7 @@ get_cmake()
     hash cmake 2>/dev/null || {
          $cmakeLocation=download_cmake
          echo cmakeLocation
-         return; 
+         return;
     }
 
     # get the current version of cmake, and see if it is high enough
@@ -183,11 +183,9 @@ locate_build_tools()
 
     if [[ $__BuildOS == "Linux" ]]; then
         linux_id_file="/etc/os-release"
-    else
-        echo "Build only supports Linux."
     fi
 
-    if [[ -e $linux_id_file ]]; then
+    if [[ -e "$linux_id_file" ]]; then
         source $linux_id_file
         cmake_extra_defines="$cmake_extra_defines -DCLR_CMAKE_LINUX_ID=$ID"
     fi
@@ -220,7 +218,8 @@ invoke_build()
       "-DGOOGLE_TEST_URL=$__GoogleTestUrl" \
       "-DGOOGLE_TEST_TAG=$__GoogleTestTag" \
       $cmake_extra_defines \
-      "$EnlistmentRoot/src"
+      -S "$EnlistmentRoot/src" \
+      -B "$__IntermediatesDir"
 
     # Check that the makefiles were created.
     if [ ! -f "$__IntermediatesDir/Makefile" ]; then
@@ -381,7 +380,7 @@ set_clang_path_and_version()
                 print_install_instructions
                 exit 1
             fi
-            ClangVersion=$(clang --version | head -n 1 | grep -o -E "[[:digit:]].[[:digit:]].[[:digit:]]" | uniq)
+            ClangVersion=$(clang --version | head -n 1 | grep -o -E "[[:digit:]]+.[[:digit:]].[[:digit:]]" | uniq | head -n1)
         fi
 
         local ClangVersionArray=(${ClangVersion//./ })
@@ -580,7 +579,7 @@ write_commit_file
 
 #copy binaries to output
 
-find $__IntermediatesDir -name "*.so" -exec cp {} $__ClrInstrumentationEngineDir ";"
+find $__IntermediatesDir \( -name "*.so" -o -name "*.dylib" \) -exec cp {} $__ClrInstrumentationEngineDir ";"
 
 # Build complete
 

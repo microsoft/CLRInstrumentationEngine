@@ -62,21 +62,28 @@ add_lib(${PROJECT_NAME}
     ${src_files}
     )
 
-# Force every object to be included even if it's unused.
-SET (ATL -Wl,--whole-archive atl -Wl,--no-whole-archive)
-SET (CORECLRPAL -Wl,--whole-archive coreclrpal -Wl,--no-whole-archive)
-SET (LINUXPAL -Wl,--whole-archive linux_pal -Wl,--no-whole-archive)
-#SET (LINUXPALRT -Wl,--whole-archive palrt -Wl,--no-whole-archive)
+if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # Force every object to be included even if it's unused.
+    SET (ATL -Wl,--whole-archive atl -Wl,--no-whole-archive)
+    SET (CORECLRPAL -Wl,--whole-archive coreclrpal -Wl,--no-whole-archive)
+    SET (LINUXPAL -Wl,--whole-archive linux_pal -Wl,--no-whole-archive)
+else()
+    SET (ATL atl)
+    SET (CORECLRPAL coreclrpal)
+    SET (LINUXPAL linux_pal)
+endif(CMAKE_SYSTEM_NAME STREQUAL Linux)
 
 
 # For some reason linking against musl-libc we need libintl and on glibc we need libdl.
 # They have nothing to do with one another, each is just a quirk of the environment.
 if(CLR_CMAKE_PLATFORM_ALPINE_LINUX)
     target_link_libraries(${PROJECT_NAME} :libintl.so)
-else()
+elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # NOTE: Explicitly link to the .so version of libdl.so to make sure we don't somehow accidentally
     # start statically linking to these, as these are LGPL components.
     target_link_libraries(${PROJECT_NAME} :libdl.so)
+else()
+    target_link_libraries(${PROJECT_NAME} dl)
 endif()
 
 target_link_libraries(${PROJECT_NAME}
@@ -91,9 +98,15 @@ target_link_libraries(${PROJECT_NAME}
     InstrumentationEngine.Api
     InstrumentationEngine.Lib
     corguids
-    :libuuid.so
-    :libunwind-x86_64.so
     )
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    target_link_libraries(${PROJECT_NAME}
+        iconv
+        "-framework CoreFoundation"
+        "-framework Security"
+    )
+endif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 
 #ensure that the linux pal gets built before this
 add_dependencies(${PROJECT_NAME} atl)

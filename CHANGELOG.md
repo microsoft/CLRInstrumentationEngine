@@ -8,10 +8,16 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.43
-+ BugFixes:
-  + Fix XmlReader.Create to read from stream instead of filepath string
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
+  + Allow building on OSX. Note this is only experimental and not officially supported yet.
++ BugFixes:
+  + Fix XmlReader.Create to read from stream instead of filepath string
+  + Remove references to libunwind8 and libuuid; they're not used anymore
+  + Fixes for compatibility with recent clang versions
+  + Fix bad memset argument order in AppDomainCollection::GetAppDomainIDs
++ Updates:
+  + Use net50 platform for restoring native dependencies on Unix
 
 ## 1.0.42
 + BugFixes:

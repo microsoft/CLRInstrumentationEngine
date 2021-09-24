@@ -206,7 +206,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
     }*/
 
     //Build fullName
-    tstringstream nameBuilder;
+    tstring name;
     if (m_pDeclaringType)
     {
         CComBSTR declaringTypeName;
@@ -214,13 +214,14 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeFullName()
             declaringTypeName != nullptr &&
             declaringTypeName.Length() > 0)
         {
-            nameBuilder << (LPWSTR)declaringTypeName << _T(".");
+            name += (LPWSTR)declaringTypeName;
+            name += _T(".");
         }
     }
 
-    nameBuilder << (LPWSTR)m_bstrMethodName;
+    name += (LPWSTR)m_bstrMethodName;
 
-    m_bstrMethodFullName = nameBuilder.str().c_str();
+    m_bstrMethodFullName = name.c_str();
     return S_OK;
 }
 
@@ -1124,9 +1125,10 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeName(_In_ mdToken
 
     if (!m_genericParameters.empty())
     {
-        tstringstream nameBuilder;
+        tstring name;
 
-        nameBuilder << (LPWSTR)m_bstrMethodName << _T("<");
+        name += (LPWSTR)m_bstrMethodName;
+        name += _T("<");
 
         ULONG cparams = static_cast<ULONG>(m_genericParameters.size());
         IfFalseRet(cparams == m_genericParameters.size(), E_BOUNDS);
@@ -1134,18 +1136,17 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeName(_In_ mdToken
         {
             WCHAR szIndex[11] = { 0 }; // ULONG probably can contain 4,294,967,295 so make space for 10 digits + \0.
             _ultow_s(i, szIndex, 11, 10);
-            nameBuilder << _T("!!") << szIndex;
+            name += _T("!!");
+            name += szIndex;
 
             if (i < cparams - 1)
             {
-                nameBuilder << _T(",");
+                name += _T(",");
             }
         }
-        nameBuilder << _T(">");
+        name += _T(">");
 
-        tstring value = nameBuilder.str();
-
-        m_bstrMethodName = value.c_str();
+        m_bstrMethodName = name.c_str();
     }
 
     return S_OK;

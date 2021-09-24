@@ -41,7 +41,7 @@ namespace MicrosoftInstrumentationEngine
             tstring m_tag;
             tstring m_indent;
             tstring m_childrenIndent;
-            tstringstream m_result;
+            tstring m_result;
         public:
             XmlDumpHelper(const WCHAR* tag, const unsigned int indent);
             ~XmlDumpHelper();

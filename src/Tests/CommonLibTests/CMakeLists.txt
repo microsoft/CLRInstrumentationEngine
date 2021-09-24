@@ -34,5 +34,11 @@ target_link_libraries(
     gtest_main
 )
 
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    target_link_libraries(${PROJECT_NAME}
+        iconv
+    )
+endif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
