@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "../Common.Lib/systemstring.h"
+
+extern char **environ;
+
 #else
 #include "../Common.Lib/PathUtils.h"
 #include "../Common.Lib/ModuleUtils.h"
