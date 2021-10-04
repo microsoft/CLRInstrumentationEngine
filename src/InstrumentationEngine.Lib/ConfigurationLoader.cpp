@@ -121,7 +121,6 @@ HRESULT CConfigurationLoaderHelper::ProcessInstrumentationMethodNode(_In_ BSTR b
 
             if (pChildValue != nullptr)
             {
-                CComVariant varNodeValue;
                 pChildValue->GetStringValue(description);
             }
         }
