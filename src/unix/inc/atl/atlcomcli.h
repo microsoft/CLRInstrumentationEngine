@@ -1468,1497 +1468,1498 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComVariant
-
-
-#define ATL_VARIANT_TRUE VARIANT_BOOL( -1 )
-#define ATL_VARIANT_FALSE VARIANT_BOOL( 0 )
-
-template< typename T > 
-class CVarTypeInfo
-{
-//	static const VARTYPE VT;  // VARTYPE corresponding to type T
-//	static T VARIANT::* const pmField;  // Pointer-to-member of corresponding field in VARIANT struct
-};
-
-template<>
-class CVarTypeInfo< char >
-{
-public:
-    static const VARTYPE VT = VT_I1;
-    static char VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) char VARIANT::* const CVarTypeInfo< char >::pmField = &VARIANT::cVal;
-
-template<>
-class CVarTypeInfo< unsigned char >
-{
-public:
-    static const VARTYPE VT = VT_UI1;
-    static unsigned char VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) unsigned char VARIANT::* const CVarTypeInfo< unsigned char >::pmField = &VARIANT::bVal;
-
-template<>
-class CVarTypeInfo< char* >
-{
-public:
-    static const VARTYPE VT = VT_I1|VT_BYREF;
-    static char* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) char* VARIANT::* const CVarTypeInfo< char* >::pmField = &VARIANT::pcVal;
-
-template<>
-class CVarTypeInfo< unsigned char* >
-{
-public:
-    static const VARTYPE VT = VT_UI1|VT_BYREF;
-    static unsigned char* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) unsigned char* VARIANT::* const CVarTypeInfo< unsigned char* >::pmField = &VARIANT::pbVal;
-
-template<>
-class CVarTypeInfo< short >
-{
-public:
-    static const VARTYPE VT = VT_I2;
-    static short VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) short VARIANT::* const CVarTypeInfo< short >::pmField = &VARIANT::iVal;
-
-template<>
-class CVarTypeInfo< short* >
-{
-public:
-    static const VARTYPE VT = VT_I2|VT_BYREF;
-    static short* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) short* VARIANT::* const CVarTypeInfo< short* >::pmField = &VARIANT::piVal;
-
-template<>
-class CVarTypeInfo< unsigned short >
-{
-public:
-    static const VARTYPE VT = VT_UI2;
-    static unsigned short VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) unsigned short VARIANT::* const CVarTypeInfo< unsigned short >::pmField = &VARIANT::uiVal;
-
-#ifdef _NATIVE_WCHAR_T_DEFINED  // Only treat unsigned short* as VT_UI2|VT_BYREF if BSTR isn't the same as unsigned short*
-template<>
-class CVarTypeInfo< unsigned short* >
-{
-public:
-    static const VARTYPE VT = VT_UI2|VT_BYREF;
-    static unsigned short* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) unsigned short* VARIANT::* const CVarTypeInfo< unsigned short* >::pmField = &VARIANT::puiVal;
-#endif  // _NATIVE_WCHAR_T_DEFINED
-
-template<>
-class CVarTypeInfo< int >
-{
-public:
-    static const VARTYPE VT = VT_I4;
-    static int VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) int VARIANT::* const CVarTypeInfo< int >::pmField = &VARIANT::intVal;
-
-template<>
-class CVarTypeInfo< int* >
-{
-public:
-    static const VARTYPE VT = VT_I4|VT_BYREF;
-    static int* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) int* VARIANT::* const CVarTypeInfo< int* >::pmField = &VARIANT::pintVal;
-
-template<>
-class CVarTypeInfo< unsigned int >
-{
-public:
-    static const VARTYPE VT = VT_UI4;
-    static unsigned int VARIANT::* const pmField;
-};
-
-// TODO:
-// __declspec( selectany ) unsigned int VARIANT::* const CVarTypeInfo< unsigned int >::pmField = &VARIANT::uintVal;
-
-template<>
-class CVarTypeInfo< unsigned int* >
-{
-public:
-    static const VARTYPE VT = VT_UI4|VT_BYREF;
-    static unsigned int* VARIANT::* const pmField;
-};
-
-// TODO:
-// __declspec( selectany ) unsigned int* VARIANT::* const CVarTypeInfo< unsigned int* >::pmField = &VARIANT::puintVal;
-
-template<>
-class CVarTypeInfo< long >
-{
-public:
-    static const VARTYPE VT = VT_I4;
-    static long VARIANT::* const pmField;
-};
-
-// TODO:
-//__declspec( selectany ) long VARIANT::* const CVarTypeInfo< long >::pmField = &VARIANT::lVal;
-
-template<>
-class CVarTypeInfo< long* >
-{
-public:
-    static const VARTYPE VT = VT_I4|VT_BYREF;
-    static long* VARIANT::* const pmField;
-};
-
-// TODO:
-//__declspec( selectany ) long* VARIANT::* const CVarTypeInfo< long* >::pmField = &VARIANT::plVal;
-
-template<>
-class CVarTypeInfo< unsigned long >
-{
-public:
-    static const VARTYPE VT = VT_UI4;
-    static unsigned long VARIANT::* const pmField;
-};
-
-// TODO:
-//__declspec( selectany ) unsigned long VARIANT::* const CVarTypeInfo< unsigned long >::pmField = &VARIANT::ulVal;
-
-template<>
-class CVarTypeInfo< unsigned long* >
-{
-public:
-    static const VARTYPE VT = VT_UI4|VT_BYREF;
-    static unsigned long* VARIANT::* const pmField;
-};
-
-// TODO:
-// __declspec( selectany ) unsigned long* VARIANT::* const CVarTypeInfo< unsigned long* >::pmField = &VARIANT::pulVal;
-
-/*
-template<>
-class CVarTypeInfo< __int64 >
-{
-public:
-    static const VARTYPE VT = VT_I8;
-    static __int64 VARIANT::* const pmField;
-};
-
-__declspec( selectany ) __int64 VARIANT::* const CVarTypeInfo< __int64 >::pmField = &VARIANT::llVal;
-
-template<>
-class CVarTypeInfo< __int64* >
-{
-public:
-    static const VARTYPE VT = VT_I8|VT_BYREF;
-    static __int64* VARIANT::* const pmField;
-};
-
-__declspec( selectany ) __int64* VARIANT::* const CVarTypeInfo< __int64* >::pmField = &VARIANT::pllVal;
-
-template<>
-class CVarTypeInfo< unsigned __int64 >
-{
-public:
-    static const VARTYPE VT = VT_UI8;
-    static unsigned __int64 VARIANT::* const pmField;
-};
-
-__declspec( selectany ) unsigned __int64 VARIANT::* const CVarTypeInfo< unsigned __int64 >::pmField = &VARIANT::ullVal;
-
-template<>
-class CVarTypeInfo< unsigned __int64* >
-{
-public:
-    static const VARTYPE VT = VT_UI8|VT_BYREF;
-    static unsigned __int64* VARIANT::* const pmField;
-};
-
-__declspec( selectany ) unsigned __int64* VARIANT::* const CVarTypeInfo< unsigned __int64* >::pmField = &VARIANT::pullVal;
-
-*/
-template<>
-class CVarTypeInfo< float >
-{
-public:
-    static const VARTYPE VT = VT_R4;
-    static float VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) float VARIANT::* const CVarTypeInfo< float >::pmField = &VARIANT::fltVal;
-
-template<>
-class CVarTypeInfo< float* >
-{
-public:
-    static const VARTYPE VT = VT_R4|VT_BYREF;
-    static float* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) float* VARIANT::* const CVarTypeInfo< float* >::pmField = &VARIANT::pfltVal;
-
-template<>
-class CVarTypeInfo< double >
-{
-public:
-    static const VARTYPE VT = VT_R8;
-    static double VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) double VARIANT::* const CVarTypeInfo< double >::pmField = &VARIANT::dblVal;
-
-template<>
-class CVarTypeInfo< double* >
-{
-public:
-    static const VARTYPE VT = VT_R8|VT_BYREF;
-    static double* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) double* VARIANT::* const CVarTypeInfo< double* >::pmField = &VARIANT::pdblVal;
-
-template<>
-
-class CVarTypeInfo< VARIANT* >
-{
-public:
-    static const VARTYPE VT = VT_VARIANT|VT_BYREF;
-};
-
-template<>
-class CVarTypeInfo< BSTR >
-{
-public:
-    static const VARTYPE VT = VT_BSTR;
-    static BSTR VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) BSTR VARIANT::* const CVarTypeInfo< BSTR >::pmField = &VARIANT::bstrVal;
-
-template<>
-class CVarTypeInfo< BSTR* >
-{
-public:
-    static const VARTYPE VT = VT_BSTR|VT_BYREF;
-    static BSTR* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) BSTR* VARIANT::* const CVarTypeInfo< BSTR* >::pmField = &VARIANT::pbstrVal;
-
-template<>
-class CVarTypeInfo< IUnknown* >
-{
-public:
-    static const VARTYPE VT = VT_UNKNOWN;
-    static IUnknown* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) IUnknown* VARIANT::* const CVarTypeInfo< IUnknown* >::pmField = &VARIANT::punkVal;
-
-template<>
-class CVarTypeInfo< IUnknown** >
-{
-public:
-    static const VARTYPE VT = VT_UNKNOWN|VT_BYREF;
-    static IUnknown** VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) IUnknown** VARIANT::* const CVarTypeInfo< IUnknown** >::pmField = &VARIANT::ppunkVal;
-
-template<>
-class CVarTypeInfo< IDispatch* >
-{
-public:
-    static const VARTYPE VT = VT_DISPATCH;
-    static IDispatch* VARIANT::* const pmField;
-};
-
-// TODO:
-//__declspec( selectany ) IDispatch* VARIANT::* const CVarTypeInfo< IDispatch* >::pmField = &VARIANT::pdispVal;
-
-template<>
-class CVarTypeInfo< IDispatch** >
-{
-public:
-    static const VARTYPE VT = VT_DISPATCH|VT_BYREF;
-    static IDispatch** VARIANT::* const pmField;
-};
-
-// TODO:
-//__declspec( selectany ) IDispatch** VARIANT::* const CVarTypeInfo< IDispatch** >::pmField = &VARIANT::ppdispVal;
-
-template<>
-class CVarTypeInfo< CY >
-{
-public:
-    static const VARTYPE VT = VT_CY;
-    static CY VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) CY VARIANT::* const CVarTypeInfo< CY >::pmField = &VARIANT::cyVal;
-
-template<>
-class CVarTypeInfo< CY* >
-{
-public:
-    static const VARTYPE VT = VT_CY|VT_BYREF;
-    static CY* VARIANT::* const pmField;
-};
-
-// __declspec( selectany ) CY* VARIANT::* const CVarTypeInfo< CY* >::pmField = &VARIANT::pcyVal;
-
-#ifdef _ATL_NO_VARIANT_THROW
-#define ATLVARIANT_THROW()		throw()
-#else
-#define ATLVARIANT_THROW()
-#endif
-
-class CComVariant : 
-    public tagVARIANT
-{
-// Constructors
-public:
-
-    CComVariant() throw()
-    {
-        // Make sure that variant data are initialized to 0
-        memset(this, 0, sizeof(tagVARIANT));
-        ::VariantInit(this);
-    }
-    ~CComVariant() throw()
-    {
-        HRESULT hr = Clear();
-        ATLASSERT(SUCCEEDED(hr));
-        (hr);
-    }
-    CComVariant(_In_ const VARIANT& varSrc) ATLVARIANT_THROW()
-    {
-        V_VT(this) = VT_EMPTY;
-        InternalCopy(&varSrc);
-    }
-    CComVariant(_In_ const CComVariant& varSrc) ATLVARIANT_THROW()
-    {
-        V_VT(this) = VT_EMPTY;
-        InternalCopy(&varSrc);
-    }
-    CComVariant(_In_z_ LPCOLESTR lpszSrc) ATLVARIANT_THROW()
-    {
-        V_VT(this) = VT_EMPTY;
-        *this = lpszSrc;
-    }
-    CComVariant(_In_z_ LPCSTR lpszSrc) ATLVARIANT_THROW()
-    {
-        V_VT(this) = VT_EMPTY;
-        *this = lpszSrc;
-    }
-    CComVariant(_In_ bool bSrc) throw()
-    {
-        V_VT(this) = VT_BOOL;
-        V_BOOL(this) = bSrc ? ATL_VARIANT_TRUE : ATL_VARIANT_FALSE;
-    }
-
-    CComVariant(_In_ int nSrc, _In_ VARTYPE vtSrc = VT_I4) ATLVARIANT_THROW()
-    {
-        ATLASSERT(vtSrc == VT_I4 || vtSrc == VT_INT);
-        if (vtSrc == VT_I4 || vtSrc == VT_INT)
-        {
-            V_VT(this) = vtSrc;
-            V_INT(this) = nSrc;
-        }
-        else
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-    }
-
-    CComVariant(_In_ BYTE nSrc) throw()
-    {
-        V_VT(this) = VT_UI1;
-        V_UI1(this) = nSrc;
-    }
-    CComVariant(_In_ short nSrc) throw()
-    {
-        V_VT(this) = VT_I2;
-        V_I2(this) = nSrc;
-    }
-    CComVariant(_In_ long nSrc, _In_ VARTYPE vtSrc = VT_I4) ATLVARIANT_THROW()
-    {
-        ATLASSERT(vtSrc == VT_I4 || vtSrc == VT_ERROR);
-        if (vtSrc == VT_I4 || vtSrc == VT_ERROR)
-        {
-            V_VT(this) = vtSrc;
-            V_I4(this) = nSrc;
-        }
-        else
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-    }
-
-    CComVariant(_In_ float fltSrc) throw()
-    {
-        V_VT(this) = VT_R4;
-        V_R4(this) = fltSrc;
-    }
-    CComVariant(_In_ double dblSrc, _In_ VARTYPE vtSrc = VT_R8) ATLVARIANT_THROW()
-    {
-        ATLASSERT(vtSrc == VT_R8 || vtSrc == VT_DATE);
-        if (vtSrc == VT_R8 || vtSrc == VT_DATE)
-        {
-            V_VT(this) = vtSrc;
-            V_R8(this) = dblSrc;
-        }
-        else
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-    }
-
-    CComVariant(_In_ LONGLONG nSrc) throw()
-    {
-        V_VT(this) = VT_I8;
-        V_I4(this) = nSrc;
-    }
-    CComVariant(_In_ ULONGLONG nSrc) throw()
-    {
-        V_VT(this) = VT_UI8;
-        V_UI8(this) = nSrc;
-    }
-    CComVariant(_In_ CY cySrc) throw()
-    {
-        V_VT(this) = VT_CY;
-        CY_HI(V_CY(this)) = CY_HI(cySrc);
-        CY_LO(V_CY(this)) = CY_LO(cySrc);
-    }
-    CComVariant(_In_opt_ IDispatch* pSrc) throw()
-    {
-        V_VT(this) = VT_DISPATCH;
-        V_DISPATCH(this) = pSrc;
-        // Need to AddRef as VariantClear will Release
-        if (V_DISPATCH(this) != NULL)
-            V_DISPATCH(this)->AddRef();
-    }
-    CComVariant(_In_opt_ IUnknown* pSrc) throw()
-    {
-        V_VT(this) = VT_UNKNOWN;
-        V_UNKNOWN(this) = pSrc;
-        // Need to AddRef as VariantClear will Release
-        if (V_UNKNOWN(this) != NULL)
-            V_UNKNOWN(this)->AddRef();
-    }
-    CComVariant(_In_ char cSrc) throw()
-    {
-        V_VT(this) = VT_I1;
-        V_I1(this) = cSrc;
-    }
-    CComVariant(_In_ unsigned short nSrc) throw()
-    {
-        V_VT(this) = VT_UI2;
-        V_UI2(this) = nSrc;
-    }
-    /*
-    CComVariant(_In_ unsigned long nSrc) throw()
-    {
-        V_VT(this) = VT_UI4;
-        ulVal = nSrc;
-    }
-    */
-    CComVariant(_In_ unsigned int nSrc, _In_ VARTYPE vtSrc = VT_UI4) ATLVARIANT_THROW()
-    {
-        ATLASSERT(vtSrc == VT_UI4 || vtSrc == VT_UINT);
-        if (vtSrc == VT_UI4 || vtSrc == VT_UINT)
-        {
-            V_VT(this) = vtSrc;
-            V_UINT(this) = nSrc;
-        }
-        else
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-    }
-    CComVariant(_In_ const CComBSTR& bstrSrc) ATLVARIANT_THROW()
-    {
-        V_VT(this) = VT_EMPTY;
-        *this = bstrSrc;
-    }
-    CComVariant(_In_ const SAFEARRAY *pSrc) ATLVARIANT_THROW()
-    {
-        ATLASSERT(pSrc != NULL);
-        if (pSrc == NULL)
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-        else
-        {
-            LPSAFEARRAY pCopy;
-            HRESULT hRes = ::SafeArrayCopy((LPSAFEARRAY)pSrc, &pCopy);
-            if (SUCCEEDED(hRes))
-            {
-                hRes = ::ATL::AtlSafeArrayGetActualVartype((LPSAFEARRAY)pSrc, &V_VT(this));
-                if (SUCCEEDED(hRes))
-                {
-                    V_VT(this) |= VT_ARRAY;
-                    V_ARRAY(this) = pCopy;
-                }
-                else
-                {
-                    V_VT(this) = VT_ERROR;
-                    V_ERROR(this) = hRes;
-                }
-            }
-            else
-            {
-                V_VT(this) = VT_ERROR;
-                V_ERROR(this) = hRes;
-            }
-
-#ifndef _ATL_NO_VARIANT_THROW
-            if (FAILED(hRes))
-            {
-                if(hRes == E_OUTOFMEMORY)
-                {
-                    AtlThrow(E_OUTOFMEMORY);
-                }
-                else
-                {
-                    ATLENSURE_THROW(FALSE, hRes);
-                }
-            }
-#endif
-        }
-    }
-// Assignment Operators
-public:
-    CComVariant& operator=(_In_ const CComVariant& varSrc) ATLVARIANT_THROW()
-    {
-        if(this!=&varSrc)
-        {
-            InternalCopy(&varSrc);
-        }
-        return *this;
-    }
-
-    CComVariant& operator=(_In_ const VARIANT& varSrc) ATLVARIANT_THROW()
-    {
-        if(static_cast<VARIANT *>(this)!=&varSrc)
-        {
-            InternalCopy(&varSrc);
-        }
-        return *this;
-    }
-
-    CComVariant& operator=(_In_ const CComBSTR& bstrSrc) ATLVARIANT_THROW()
-    {
-        ClearThrow();
-
-        V_VT(this) = VT_BSTR;
-        V_BSTR(this) = bstrSrc.Copy();
-
-        if (V_BSTR(this) == NULL && bstrSrc.m_str != NULL)
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_OUTOFMEMORY;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_OUTOFMEMORY);
-#endif
-        }
+//
+// The PAL does not implement CComVariant, so do not allow the type to be referenced on non-windows platforms.
+//
+// #define ATL_VARIANT_TRUE VARIANT_BOOL( -1 )
+// #define ATL_VARIANT_FALSE VARIANT_BOOL( 0 )
+
+// template< typename T > 
+// class CVarTypeInfo
+// {
+// //	static const VARTYPE VT;  // VARTYPE corresponding to type T
+// //	static T VARIANT::* const pmField;  // Pointer-to-member of corresponding field in VARIANT struct
+// };
+
+// template<>
+// class CVarTypeInfo< char >
+// {
+// public:
+//     static const VARTYPE VT = VT_I1;
+//     static char VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) char VARIANT::* const CVarTypeInfo< char >::pmField = &VARIANT::cVal;
+
+// template<>
+// class CVarTypeInfo< unsigned char >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI1;
+//     static unsigned char VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) unsigned char VARIANT::* const CVarTypeInfo< unsigned char >::pmField = &VARIANT::bVal;
+
+// template<>
+// class CVarTypeInfo< char* >
+// {
+// public:
+//     static const VARTYPE VT = VT_I1|VT_BYREF;
+//     static char* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) char* VARIANT::* const CVarTypeInfo< char* >::pmField = &VARIANT::pcVal;
+
+// template<>
+// class CVarTypeInfo< unsigned char* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI1|VT_BYREF;
+//     static unsigned char* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) unsigned char* VARIANT::* const CVarTypeInfo< unsigned char* >::pmField = &VARIANT::pbVal;
+
+// template<>
+// class CVarTypeInfo< short >
+// {
+// public:
+//     static const VARTYPE VT = VT_I2;
+//     static short VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) short VARIANT::* const CVarTypeInfo< short >::pmField = &VARIANT::iVal;
+
+// template<>
+// class CVarTypeInfo< short* >
+// {
+// public:
+//     static const VARTYPE VT = VT_I2|VT_BYREF;
+//     static short* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) short* VARIANT::* const CVarTypeInfo< short* >::pmField = &VARIANT::piVal;
+
+// template<>
+// class CVarTypeInfo< unsigned short >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI2;
+//     static unsigned short VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) unsigned short VARIANT::* const CVarTypeInfo< unsigned short >::pmField = &VARIANT::uiVal;
+
+// #ifdef _NATIVE_WCHAR_T_DEFINED  // Only treat unsigned short* as VT_UI2|VT_BYREF if BSTR isn't the same as unsigned short*
+// template<>
+// class CVarTypeInfo< unsigned short* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI2|VT_BYREF;
+//     static unsigned short* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) unsigned short* VARIANT::* const CVarTypeInfo< unsigned short* >::pmField = &VARIANT::puiVal;
+// #endif  // _NATIVE_WCHAR_T_DEFINED
+
+// template<>
+// class CVarTypeInfo< int >
+// {
+// public:
+//     static const VARTYPE VT = VT_I4;
+//     static int VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) int VARIANT::* const CVarTypeInfo< int >::pmField = &VARIANT::intVal;
+
+// template<>
+// class CVarTypeInfo< int* >
+// {
+// public:
+//     static const VARTYPE VT = VT_I4|VT_BYREF;
+//     static int* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) int* VARIANT::* const CVarTypeInfo< int* >::pmField = &VARIANT::pintVal;
+
+// template<>
+// class CVarTypeInfo< unsigned int >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI4;
+//     static unsigned int VARIANT::* const pmField;
+// };
+
+// // TODO:
+// // __declspec( selectany ) unsigned int VARIANT::* const CVarTypeInfo< unsigned int >::pmField = &VARIANT::uintVal;
+
+// template<>
+// class CVarTypeInfo< unsigned int* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI4|VT_BYREF;
+//     static unsigned int* VARIANT::* const pmField;
+// };
+
+// // TODO:
+// // __declspec( selectany ) unsigned int* VARIANT::* const CVarTypeInfo< unsigned int* >::pmField = &VARIANT::puintVal;
+
+// template<>
+// class CVarTypeInfo< long >
+// {
+// public:
+//     static const VARTYPE VT = VT_I4;
+//     static long VARIANT::* const pmField;
+// };
+
+// // TODO:
+// //__declspec( selectany ) long VARIANT::* const CVarTypeInfo< long >::pmField = &VARIANT::lVal;
+
+// template<>
+// class CVarTypeInfo< long* >
+// {
+// public:
+//     static const VARTYPE VT = VT_I4|VT_BYREF;
+//     static long* VARIANT::* const pmField;
+// };
+
+// // TODO:
+// //__declspec( selectany ) long* VARIANT::* const CVarTypeInfo< long* >::pmField = &VARIANT::plVal;
+
+// template<>
+// class CVarTypeInfo< unsigned long >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI4;
+//     static unsigned long VARIANT::* const pmField;
+// };
+
+// // TODO:
+// //__declspec( selectany ) unsigned long VARIANT::* const CVarTypeInfo< unsigned long >::pmField = &VARIANT::ulVal;
+
+// template<>
+// class CVarTypeInfo< unsigned long* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI4|VT_BYREF;
+//     static unsigned long* VARIANT::* const pmField;
+// };
+
+// // TODO:
+// // __declspec( selectany ) unsigned long* VARIANT::* const CVarTypeInfo< unsigned long* >::pmField = &VARIANT::pulVal;
+
+// /*
+// template<>
+// class CVarTypeInfo< __int64 >
+// {
+// public:
+//     static const VARTYPE VT = VT_I8;
+//     static __int64 VARIANT::* const pmField;
+// };
+
+// __declspec( selectany ) __int64 VARIANT::* const CVarTypeInfo< __int64 >::pmField = &VARIANT::llVal;
+
+// template<>
+// class CVarTypeInfo< __int64* >
+// {
+// public:
+//     static const VARTYPE VT = VT_I8|VT_BYREF;
+//     static __int64* VARIANT::* const pmField;
+// };
+
+// __declspec( selectany ) __int64* VARIANT::* const CVarTypeInfo< __int64* >::pmField = &VARIANT::pllVal;
+
+// template<>
+// class CVarTypeInfo< unsigned __int64 >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI8;
+//     static unsigned __int64 VARIANT::* const pmField;
+// };
+
+// __declspec( selectany ) unsigned __int64 VARIANT::* const CVarTypeInfo< unsigned __int64 >::pmField = &VARIANT::ullVal;
+
+// template<>
+// class CVarTypeInfo< unsigned __int64* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UI8|VT_BYREF;
+//     static unsigned __int64* VARIANT::* const pmField;
+// };
+
+// __declspec( selectany ) unsigned __int64* VARIANT::* const CVarTypeInfo< unsigned __int64* >::pmField = &VARIANT::pullVal;
+
+// */
+// template<>
+// class CVarTypeInfo< float >
+// {
+// public:
+//     static const VARTYPE VT = VT_R4;
+//     static float VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) float VARIANT::* const CVarTypeInfo< float >::pmField = &VARIANT::fltVal;
+
+// template<>
+// class CVarTypeInfo< float* >
+// {
+// public:
+//     static const VARTYPE VT = VT_R4|VT_BYREF;
+//     static float* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) float* VARIANT::* const CVarTypeInfo< float* >::pmField = &VARIANT::pfltVal;
+
+// template<>
+// class CVarTypeInfo< double >
+// {
+// public:
+//     static const VARTYPE VT = VT_R8;
+//     static double VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) double VARIANT::* const CVarTypeInfo< double >::pmField = &VARIANT::dblVal;
+
+// template<>
+// class CVarTypeInfo< double* >
+// {
+// public:
+//     static const VARTYPE VT = VT_R8|VT_BYREF;
+//     static double* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) double* VARIANT::* const CVarTypeInfo< double* >::pmField = &VARIANT::pdblVal;
+
+// template<>
+
+// class CVarTypeInfo< VARIANT* >
+// {
+// public:
+//     static const VARTYPE VT = VT_VARIANT|VT_BYREF;
+// };
+
+// template<>
+// class CVarTypeInfo< BSTR >
+// {
+// public:
+//     static const VARTYPE VT = VT_BSTR;
+//     static BSTR VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) BSTR VARIANT::* const CVarTypeInfo< BSTR >::pmField = &VARIANT::bstrVal;
+
+// template<>
+// class CVarTypeInfo< BSTR* >
+// {
+// public:
+//     static const VARTYPE VT = VT_BSTR|VT_BYREF;
+//     static BSTR* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) BSTR* VARIANT::* const CVarTypeInfo< BSTR* >::pmField = &VARIANT::pbstrVal;
+
+// template<>
+// class CVarTypeInfo< IUnknown* >
+// {
+// public:
+//     static const VARTYPE VT = VT_UNKNOWN;
+//     static IUnknown* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) IUnknown* VARIANT::* const CVarTypeInfo< IUnknown* >::pmField = &VARIANT::punkVal;
+
+// template<>
+// class CVarTypeInfo< IUnknown** >
+// {
+// public:
+//     static const VARTYPE VT = VT_UNKNOWN|VT_BYREF;
+//     static IUnknown** VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) IUnknown** VARIANT::* const CVarTypeInfo< IUnknown** >::pmField = &VARIANT::ppunkVal;
+
+// template<>
+// class CVarTypeInfo< IDispatch* >
+// {
+// public:
+//     static const VARTYPE VT = VT_DISPATCH;
+//     static IDispatch* VARIANT::* const pmField;
+// };
+
+// // TODO:
+// //__declspec( selectany ) IDispatch* VARIANT::* const CVarTypeInfo< IDispatch* >::pmField = &VARIANT::pdispVal;
+
+// template<>
+// class CVarTypeInfo< IDispatch** >
+// {
+// public:
+//     static const VARTYPE VT = VT_DISPATCH|VT_BYREF;
+//     static IDispatch** VARIANT::* const pmField;
+// };
+
+// // TODO:
+// //__declspec( selectany ) IDispatch** VARIANT::* const CVarTypeInfo< IDispatch** >::pmField = &VARIANT::ppdispVal;
+
+// template<>
+// class CVarTypeInfo< CY >
+// {
+// public:
+//     static const VARTYPE VT = VT_CY;
+//     static CY VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) CY VARIANT::* const CVarTypeInfo< CY >::pmField = &VARIANT::cyVal;
+
+// template<>
+// class CVarTypeInfo< CY* >
+// {
+// public:
+//     static const VARTYPE VT = VT_CY|VT_BYREF;
+//     static CY* VARIANT::* const pmField;
+// };
+
+// // __declspec( selectany ) CY* VARIANT::* const CVarTypeInfo< CY* >::pmField = &VARIANT::pcyVal;
+
+// #ifdef _ATL_NO_VARIANT_THROW
+// #define ATLVARIANT_THROW()		throw()
+// #else
+// #define ATLVARIANT_THROW()
+// #endif
+
+// class CComVariant : 
+//     public tagVARIANT
+// {
+// // Constructors
+// public:
+
+//     CComVariant() throw()
+//     {
+//         // Make sure that variant data are initialized to 0
+//         memset(this, 0, sizeof(tagVARIANT));
+//         ::VariantInit(this);
+//     }
+//     ~CComVariant() throw()
+//     {
+//         HRESULT hr = Clear();
+//         ATLASSERT(SUCCEEDED(hr));
+//         (hr);
+//     }
+//     CComVariant(_In_ const VARIANT& varSrc) ATLVARIANT_THROW()
+//     {
+//         V_VT(this) = VT_EMPTY;
+//         InternalCopy(&varSrc);
+//     }
+//     CComVariant(_In_ const CComVariant& varSrc) ATLVARIANT_THROW()
+//     {
+//         V_VT(this) = VT_EMPTY;
+//         InternalCopy(&varSrc);
+//     }
+//     CComVariant(_In_z_ LPCOLESTR lpszSrc) ATLVARIANT_THROW()
+//     {
+//         V_VT(this) = VT_EMPTY;
+//         *this = lpszSrc;
+//     }
+//     CComVariant(_In_z_ LPCSTR lpszSrc) ATLVARIANT_THROW()
+//     {
+//         V_VT(this) = VT_EMPTY;
+//         *this = lpszSrc;
+//     }
+//     CComVariant(_In_ bool bSrc) throw()
+//     {
+//         V_VT(this) = VT_BOOL;
+//         V_BOOL(this) = bSrc ? ATL_VARIANT_TRUE : ATL_VARIANT_FALSE;
+//     }
+
+//     CComVariant(_In_ int nSrc, _In_ VARTYPE vtSrc = VT_I4) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(vtSrc == VT_I4 || vtSrc == VT_INT);
+//         if (vtSrc == VT_I4 || vtSrc == VT_INT)
+//         {
+//             V_VT(this) = vtSrc;
+//             V_INT(this) = nSrc;
+//         }
+//         else
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//     }
+
+//     CComVariant(_In_ BYTE nSrc) throw()
+//     {
+//         V_VT(this) = VT_UI1;
+//         V_UI1(this) = nSrc;
+//     }
+//     CComVariant(_In_ short nSrc) throw()
+//     {
+//         V_VT(this) = VT_I2;
+//         V_I2(this) = nSrc;
+//     }
+//     CComVariant(_In_ long nSrc, _In_ VARTYPE vtSrc = VT_I4) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(vtSrc == VT_I4 || vtSrc == VT_ERROR);
+//         if (vtSrc == VT_I4 || vtSrc == VT_ERROR)
+//         {
+//             V_VT(this) = vtSrc;
+//             V_I4(this) = nSrc;
+//         }
+//         else
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//     }
+
+//     CComVariant(_In_ float fltSrc) throw()
+//     {
+//         V_VT(this) = VT_R4;
+//         V_R4(this) = fltSrc;
+//     }
+//     CComVariant(_In_ double dblSrc, _In_ VARTYPE vtSrc = VT_R8) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(vtSrc == VT_R8 || vtSrc == VT_DATE);
+//         if (vtSrc == VT_R8 || vtSrc == VT_DATE)
+//         {
+//             V_VT(this) = vtSrc;
+//             V_R8(this) = dblSrc;
+//         }
+//         else
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//     }
+
+//     CComVariant(_In_ LONGLONG nSrc) throw()
+//     {
+//         V_VT(this) = VT_I8;
+//         V_I4(this) = nSrc;
+//     }
+//     CComVariant(_In_ ULONGLONG nSrc) throw()
+//     {
+//         V_VT(this) = VT_UI8;
+//         V_UI8(this) = nSrc;
+//     }
+//     CComVariant(_In_ CY cySrc) throw()
+//     {
+//         V_VT(this) = VT_CY;
+//         CY_HI(V_CY(this)) = CY_HI(cySrc);
+//         CY_LO(V_CY(this)) = CY_LO(cySrc);
+//     }
+//     CComVariant(_In_opt_ IDispatch* pSrc) throw()
+//     {
+//         V_VT(this) = VT_DISPATCH;
+//         V_DISPATCH(this) = pSrc;
+//         // Need to AddRef as VariantClear will Release
+//         if (V_DISPATCH(this) != NULL)
+//             V_DISPATCH(this)->AddRef();
+//     }
+//     CComVariant(_In_opt_ IUnknown* pSrc) throw()
+//     {
+//         V_VT(this) = VT_UNKNOWN;
+//         V_UNKNOWN(this) = pSrc;
+//         // Need to AddRef as VariantClear will Release
+//         if (V_UNKNOWN(this) != NULL)
+//             V_UNKNOWN(this)->AddRef();
+//     }
+//     CComVariant(_In_ char cSrc) throw()
+//     {
+//         V_VT(this) = VT_I1;
+//         V_I1(this) = cSrc;
+//     }
+//     CComVariant(_In_ unsigned short nSrc) throw()
+//     {
+//         V_VT(this) = VT_UI2;
+//         V_UI2(this) = nSrc;
+//     }
+//     /*
+//     CComVariant(_In_ unsigned long nSrc) throw()
+//     {
+//         V_VT(this) = VT_UI4;
+//         ulVal = nSrc;
+//     }
+//     */
+//     CComVariant(_In_ unsigned int nSrc, _In_ VARTYPE vtSrc = VT_UI4) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(vtSrc == VT_UI4 || vtSrc == VT_UINT);
+//         if (vtSrc == VT_UI4 || vtSrc == VT_UINT)
+//         {
+//             V_VT(this) = vtSrc;
+//             V_UINT(this) = nSrc;
+//         }
+//         else
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//     }
+//     CComVariant(_In_ const CComBSTR& bstrSrc) ATLVARIANT_THROW()
+//     {
+//         V_VT(this) = VT_EMPTY;
+//         *this = bstrSrc;
+//     }
+//     CComVariant(_In_ const SAFEARRAY *pSrc) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(pSrc != NULL);
+//         if (pSrc == NULL)
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//         else
+//         {
+//             LPSAFEARRAY pCopy;
+//             HRESULT hRes = ::SafeArrayCopy((LPSAFEARRAY)pSrc, &pCopy);
+//             if (SUCCEEDED(hRes))
+//             {
+//                 hRes = ::ATL::AtlSafeArrayGetActualVartype((LPSAFEARRAY)pSrc, &V_VT(this));
+//                 if (SUCCEEDED(hRes))
+//                 {
+//                     V_VT(this) |= VT_ARRAY;
+//                     V_ARRAY(this) = pCopy;
+//                 }
+//                 else
+//                 {
+//                     V_VT(this) = VT_ERROR;
+//                     V_ERROR(this) = hRes;
+//                 }
+//             }
+//             else
+//             {
+//                 V_VT(this) = VT_ERROR;
+//                 V_ERROR(this) = hRes;
+//             }
+
+// #ifndef _ATL_NO_VARIANT_THROW
+//             if (FAILED(hRes))
+//             {
+//                 if(hRes == E_OUTOFMEMORY)
+//                 {
+//                     AtlThrow(E_OUTOFMEMORY);
+//                 }
+//                 else
+//                 {
+//                     ATLENSURE_THROW(FALSE, hRes);
+//                 }
+//             }
+// #endif
+//         }
+//     }
+// // Assignment Operators
+// public:
+//     CComVariant& operator=(_In_ const CComVariant& varSrc) ATLVARIANT_THROW()
+//     {
+//         if(this!=&varSrc)
+//         {
+//             InternalCopy(&varSrc);
+//         }
+//         return *this;
+//     }
+
+//     CComVariant& operator=(_In_ const VARIANT& varSrc) ATLVARIANT_THROW()
+//     {
+//         if(static_cast<VARIANT *>(this)!=&varSrc)
+//         {
+//             InternalCopy(&varSrc);
+//         }
+//         return *this;
+//     }
+
+//     CComVariant& operator=(_In_ const CComBSTR& bstrSrc) ATLVARIANT_THROW()
+//     {
+//         ClearThrow();
+
+//         V_VT(this) = VT_BSTR;
+//         V_BSTR(this) = bstrSrc.Copy();
+
+//         if (V_BSTR(this) == NULL && bstrSrc.m_str != NULL)
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_OUTOFMEMORY;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_OUTOFMEMORY);
+// #endif
+//         }
         
-        return *this;
-    }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_z_ LPCOLESTR lpszSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_BSTR || V_BSTR(this) != lpszSrc)
-        {
-            ClearThrow();
+//     CComVariant& operator=(_In_z_ LPCOLESTR lpszSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_BSTR || V_BSTR(this) != lpszSrc)
+//         {
+//             ClearThrow();
 
-            V_VT(this) = VT_BSTR;
-            V_BSTR(this) = ::SysAllocString(lpszSrc);
+//             V_VT(this) = VT_BSTR;
+//             V_BSTR(this) = ::SysAllocString(lpszSrc);
 
-            if (V_BSTR(this) == NULL && lpszSrc != NULL)
-            {
-                V_VT(this) = VT_ERROR;
-                V_ERROR(this) = E_OUTOFMEMORY;
-#ifndef _ATL_NO_VARIANT_THROW
-                AtlThrow(E_OUTOFMEMORY);
-#endif
-            }
-        }
-        return *this;
-    }
+//             if (V_BSTR(this) == NULL && lpszSrc != NULL)
+//             {
+//                 V_VT(this) = VT_ERROR;
+//                 V_ERROR(this) = E_OUTOFMEMORY;
+// #ifndef _ATL_NO_VARIANT_THROW
+//                 AtlThrow(E_OUTOFMEMORY);
+// #endif
+//             }
+//         }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_z_ LPCSTR lpszSrc) ATLVARIANT_THROW()
-    {
-        USES_CONVERSION_EX;
-        ClearThrow();
+//     CComVariant& operator=(_In_z_ LPCSTR lpszSrc) ATLVARIANT_THROW()
+//     {
+//         USES_CONVERSION_EX;
+//         ClearThrow();
 
-        V_VT(this) = VT_BSTR;
-        V_BSTR(this) = ::SysAllocString(A2COLE_EX(lpszSrc, _ATL_SAFE_ALLOCA_DEF_THRESHOLD));
+//         V_VT(this) = VT_BSTR;
+//         V_BSTR(this) = ::SysAllocString(A2COLE_EX(lpszSrc, _ATL_SAFE_ALLOCA_DEF_THRESHOLD));
 
-        if (V_BSTR(this) == NULL && lpszSrc != NULL)
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_OUTOFMEMORY;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_OUTOFMEMORY);
-#endif
-        }
-        return *this;
-    }
+//         if (V_BSTR(this) == NULL && lpszSrc != NULL)
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_OUTOFMEMORY;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_OUTOFMEMORY);
+// #endif
+//         }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ bool bSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_BOOL)
-        {
-            ClearThrow();
-            V_VT(this) = VT_BOOL;
-        }
-        V_BOOL(this) = bSrc ? ATL_VARIANT_TRUE : ATL_VARIANT_FALSE;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ bool bSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_BOOL)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_BOOL;
+//         }
+//         V_BOOL(this) = bSrc ? ATL_VARIANT_TRUE : ATL_VARIANT_FALSE;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ int nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_I4)
-        {
-            ClearThrow();
-            V_VT(this) = VT_I4;
-        }
-        V_INT(this) = nSrc;
+//     CComVariant& operator=(_In_ int nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_I4)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I4;
+//         }
+//         V_INT(this) = nSrc;
 
-        return *this;
-    }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ BYTE nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UI1)
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI1;
-        }
-        V_UI1(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ BYTE nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UI1)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI1;
+//         }
+//         V_UI1(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ short nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_I2)
-        {
-            ClearThrow();
-            V_VT(this) = VT_I2;
-        }
-        V_I2(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ short nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_I2)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I2;
+//         }
+//         V_I2(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ long nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_I4)
-        {
-            ClearThrow();
-            V_VT(this) = VT_I4;
-        }
-        V_I4(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ long nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_I4)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I4;
+//         }
+//         V_I4(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ float fltSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_R4)
-        {
-            ClearThrow();
-            V_VT(this) = VT_R4;
-        }
-        V_R4(this) = fltSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ float fltSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_R4)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_R4;
+//         }
+//         V_R4(this) = fltSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ double dblSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_R8)
-        {
-            ClearThrow();
-            V_VT(this) = VT_R8;
-        }
-        V_R8(this) = dblSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ double dblSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_R8)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_R8;
+//         }
+//         V_R8(this) = dblSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ CY cySrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_CY)
-        {
-            ClearThrow();
-            V_VT(this) = VT_CY;
-        }
-        CY_HI(V_CY(this)) = CY_HI(cySrc);
-        CY_LO(V_CY(this)) = CY_LO(cySrc);
-        return *this;
-    }
+//     CComVariant& operator=(_In_ CY cySrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_CY)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_CY;
+//         }
+//         CY_HI(V_CY(this)) = CY_HI(cySrc);
+//         CY_LO(V_CY(this)) = CY_LO(cySrc);
+//         return *this;
+//     }
 
-    CComVariant& operator=(_Inout_opt_ IDispatch* pSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_DISPATCH || pSrc != V_DISPATCH(this))
-        {
-            ClearThrow();
+//     CComVariant& operator=(_Inout_opt_ IDispatch* pSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_DISPATCH || pSrc != V_DISPATCH(this))
+//         {
+//             ClearThrow();
             
-            V_VT(this) = VT_DISPATCH;
-            V_DISPATCH(this) = pSrc;
-            // Need to AddRef as VariantClear will Release
-            if (V_DISPATCH(this) != NULL)
-                V_DISPATCH(this)->AddRef();
-        }
-        return *this;
-    }
+//             V_VT(this) = VT_DISPATCH;
+//             V_DISPATCH(this) = pSrc;
+//             // Need to AddRef as VariantClear will Release
+//             if (V_DISPATCH(this) != NULL)
+//                 V_DISPATCH(this)->AddRef();
+//         }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_Inout_opt_ IUnknown* pSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UNKNOWN || pSrc != V_UNKNOWN(this))
-        {
-            ClearThrow();
+//     CComVariant& operator=(_Inout_opt_ IUnknown* pSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UNKNOWN || pSrc != V_UNKNOWN(this))
+//         {
+//             ClearThrow();
             
-            V_VT(this) = VT_UNKNOWN;
-            V_UNKNOWN(this) = pSrc;
+//             V_VT(this) = VT_UNKNOWN;
+//             V_UNKNOWN(this) = pSrc;
 
-            // Need to AddRef as VariantClear will Release
-            if (V_UNKNOWN(this) != NULL)
-                V_UNKNOWN(this)->AddRef();
-        }
-        return *this;
-    }
+//             // Need to AddRef as VariantClear will Release
+//             if (V_UNKNOWN(this) != NULL)
+//                 V_UNKNOWN(this)->AddRef();
+//         }
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ char cSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_I1)
-        {
-            ClearThrow();
-            V_VT(this) = VT_I1;
-        }
-        V_I1(this) = cSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ char cSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_I1)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I1;
+//         }
+//         V_I1(this) = cSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ unsigned short nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UI2)
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI2;
-        }
-        V_UI2(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ unsigned short nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UI2)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI2;
+//         }
+//         V_UI2(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ unsigned long nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UI4)
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI4;
-        }
-        V_UI4(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ unsigned long nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UI4)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI4;
+//         }
+//         V_UI4(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ unsigned int nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UI4)
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI4;
-        }
-        V_UINT(this) = nSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ unsigned int nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UI4)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI4;
+//         }
+//         V_UINT(this) = nSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ BYTE* pbSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_UI1|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI1|VT_BYREF;
-        }
-        V_UI1REF(this) = pbSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ BYTE* pbSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_UI1|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI1|VT_BYREF;
+//         }
+//         V_UI1REF(this) = pbSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ short* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_I2|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_I2|VT_BYREF;
-        }
-        V_I2REF(this) = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ short* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_I2|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I2|VT_BYREF;
+//         }
+//         V_I2REF(this) = pnSrc;
+//         return *this;
+//     }
 
-#ifdef _NATIVE_WCHAR_T_DEFINED
-    CComVariant& operator=(_In_ USHORT* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_UI2|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI2|VT_BYREF;
-        }
-        V_UI2REF(this) = pnSrc;
-        return *this;
-    }
-#endif
+// #ifdef _NATIVE_WCHAR_T_DEFINED
+//     CComVariant& operator=(_In_ USHORT* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_UI2|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI2|VT_BYREF;
+//         }
+//         V_UI2REF(this) = pnSrc;
+//         return *this;
+//     }
+// #endif
 
-    CComVariant& operator=(_In_ int* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_I4|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_I4|VT_BYREF;
-        }
-        V_INTREF(this) = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ int* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_I4|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I4|VT_BYREF;
+//         }
+//         V_INTREF(this) = pnSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ UINT* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_UI4|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI4|VT_BYREF;
-        }
-        V_UINTREF(this) = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ UINT* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_UI4|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI4|VT_BYREF;
+//         }
+//         V_UINTREF(this) = pnSrc;
+//         return *this;
+//     }
 
-    // TODO:
-    /*
-    CComVariant& operator=(_In_ long* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_I4|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_I4|VT_BYREF;
-        }
-        plVal = pnSrc;
-        return *this;
-    }
+//     // TODO:
+//     /*
+//     CComVariant& operator=(_In_ long* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_I4|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I4|VT_BYREF;
+//         }
+//         plVal = pnSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ ULONG* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_UI4|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI4|VT_BYREF;
-        }
-        pulVal = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ ULONG* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_UI4|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI4|VT_BYREF;
+//         }
+//         pulVal = pnSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ LONGLONG nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_I8)
-        {
-            ClearThrow();
-            V_VT(this) = VT_I8;
-        }
-        llVal = nSrc;
+//     CComVariant& operator=(_In_ LONGLONG nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_I8)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I8;
+//         }
+//         llVal = nSrc;
 
-        return *this;
-    }
-    */
+//         return *this;
+//     }
+//     */
 
-    CComVariant& operator=(_In_ LONGLONG* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_I8|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_I8|VT_BYREF;
-        }
-        V_I8REF(this) = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ LONGLONG* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_I8|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_I8|VT_BYREF;
+//         }
+//         V_I8REF(this) = pnSrc;
+//         return *this;
+//     }
 
-    // TODO:
-    /*
-    CComVariant& operator=(_In_ ULONGLONG nSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != VT_UI8)
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI8;
-        }
-        ullVal = nSrc;
+//     // TODO:
+//     /*
+//     CComVariant& operator=(_In_ ULONGLONG nSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != VT_UI8)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI8;
+//         }
+//         ullVal = nSrc;
 
-        return *this;
-    }
-    */
+//         return *this;
+//     }
+//     */
 
-    CComVariant& operator=(_In_ ULONGLONG* pnSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_UI8|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_UI8|VT_BYREF;
-        }
-        V_UI8REF(this) = pnSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ ULONGLONG* pnSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_UI8|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_UI8|VT_BYREF;
+//         }
+//         V_UI8REF(this) = pnSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ float* pfSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_R4|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_R4|VT_BYREF;
-        }
-        V_R4REF(this) = pfSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ float* pfSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_R4|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_R4|VT_BYREF;
+//         }
+//         V_R4REF(this) = pfSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ double* pfSrc) ATLVARIANT_THROW()
-    {
-        if (V_VT(this) != (VT_R8|VT_BYREF))
-        {
-            ClearThrow();
-            V_VT(this) = VT_R8|VT_BYREF;
-        }
-        V_R8REF(this) = pfSrc;
-        return *this;
-    }
+//     CComVariant& operator=(_In_ double* pfSrc) ATLVARIANT_THROW()
+//     {
+//         if (V_VT(this) != (VT_R8|VT_BYREF))
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_R8|VT_BYREF;
+//         }
+//         V_R8REF(this) = pfSrc;
+//         return *this;
+//     }
 
-    CComVariant& operator=(_In_ const SAFEARRAY *pSrc) ATLVARIANT_THROW()
-    {
-        ATLASSERT(pSrc != NULL);	
+//     CComVariant& operator=(_In_ const SAFEARRAY *pSrc) ATLVARIANT_THROW()
+//     {
+//         ATLASSERT(pSrc != NULL);	
         
-        if (pSrc == NULL)
-        {
-            ClearThrow();
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = E_INVALIDARG;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(E_INVALIDARG);
-#endif
-        }
-        else if ((V_VT(this) & VT_ARRAY) == 0 || pSrc != V_ARRAY(this))
-        {
-            ClearThrow();
-            LPSAFEARRAY pCopy;
-            HRESULT hr = ::SafeArrayCopy((LPSAFEARRAY)pSrc, &pCopy);
-            if (SUCCEEDED(hr))
-            {
-                ::ATL::AtlSafeArrayGetActualVartype((LPSAFEARRAY)pSrc, &V_VT(this));
-                V_VT(this) |= VT_ARRAY;
-                V_ARRAY(this) = pCopy;
-            }
-            else
-            {
-                V_VT(this) = VT_ERROR;
-                V_ERROR(this) = hr;
-#ifndef _ATL_NO_VARIANT_THROW
-                if(hr == E_OUTOFMEMORY)
-                {
-                    AtlThrow(E_OUTOFMEMORY);
-                }
-                else
-                {
-                    ATLENSURE_THROW(FALSE, hr);
-                }
-#endif
-            }
-        }
+//         if (pSrc == NULL)
+//         {
+//             ClearThrow();
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = E_INVALIDARG;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(E_INVALIDARG);
+// #endif
+//         }
+//         else if ((V_VT(this) & VT_ARRAY) == 0 || pSrc != V_ARRAY(this))
+//         {
+//             ClearThrow();
+//             LPSAFEARRAY pCopy;
+//             HRESULT hr = ::SafeArrayCopy((LPSAFEARRAY)pSrc, &pCopy);
+//             if (SUCCEEDED(hr))
+//             {
+//                 ::ATL::AtlSafeArrayGetActualVartype((LPSAFEARRAY)pSrc, &V_VT(this));
+//                 V_VT(this) |= VT_ARRAY;
+//                 V_ARRAY(this) = pCopy;
+//             }
+//             else
+//             {
+//                 V_VT(this) = VT_ERROR;
+//                 V_ERROR(this) = hr;
+// #ifndef _ATL_NO_VARIANT_THROW
+//                 if(hr == E_OUTOFMEMORY)
+//                 {
+//                     AtlThrow(E_OUTOFMEMORY);
+//                 }
+//                 else
+//                 {
+//                     ATLENSURE_THROW(FALSE, hr);
+//                 }
+// #endif
+//             }
+//         }
         
-        return *this;
-    }
+//         return *this;
+//     }
 
-// Comparison Operators
-public:
-    bool operator==(_In_ const VARIANT& varSrc) const throw()
-    {
-        // For backwards compatibility
-        if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
-        {
-            return true;
-        }
-        // Variants not equal if types don't match
-        if (V_VT(this) != V_VT(&varSrc))
-        {
-            return false;
-        }
-        return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0) == static_cast<HRESULT>(VARCMP_EQ);
-    }
+// // Comparison Operators
+// public:
+//     bool operator==(_In_ const VARIANT& varSrc) const throw()
+//     {
+//         // For backwards compatibility
+//         if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
+//         {
+//             return true;
+//         }
+//         // Variants not equal if types don't match
+//         if (V_VT(this) != V_VT(&varSrc))
+//         {
+//             return false;
+//         }
+//         return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0) == static_cast<HRESULT>(VARCMP_EQ);
+//     }
 
-    bool operator!=(_In_ const VARIANT& varSrc) const throw()
-    {
-        return !operator==(varSrc);
-    }
+//     bool operator!=(_In_ const VARIANT& varSrc) const throw()
+//     {
+//         return !operator==(varSrc);
+//     }
 
-    bool operator<(_In_ const VARIANT& varSrc) const throw()
-    {
-        if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
-            return false;
-        return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0)== static_cast<HRESULT>(VARCMP_LT);
-    }
+//     bool operator<(_In_ const VARIANT& varSrc) const throw()
+//     {
+//         if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
+//             return false;
+//         return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0)== static_cast<HRESULT>(VARCMP_LT);
+//     }
 
-    bool operator>(_In_ const VARIANT& varSrc) const throw()
-    {
-        if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
-            return false;
-        return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0)== static_cast<HRESULT>(VARCMP_GT);
-    }
+//     bool operator>(_In_ const VARIANT& varSrc) const throw()
+//     {
+//         if (V_VT(this) == VT_NULL && V_VT(&varSrc) == VT_NULL)
+//             return false;
+//         return VarCmp((VARIANT*)this, (VARIANT*)&varSrc, LOCALE_USER_DEFAULT, 0)== static_cast<HRESULT>(VARCMP_GT);
+//     }
 
-private:
-    inline HRESULT VarCmp(
-        _In_ LPVARIANT pvarLeft, 
-        _In_ LPVARIANT pvarRight, 
-        _In_ LCID lcid, 
-        _In_ ULONG dwFlags) const throw();
+// private:
+//     inline HRESULT VarCmp(
+//         _In_ LPVARIANT pvarLeft, 
+//         _In_ LPVARIANT pvarRight, 
+//         _In_ LCID lcid, 
+//         _In_ ULONG dwFlags) const throw();
 
-// Operations
-public:
-    HRESULT Clear()
-    { 
-        return ::VariantClear(this); 
-    }	
-    HRESULT Copy(_In_ const VARIANT* pSrc)
-    { 
-        return ::VariantCopy(this, const_cast<VARIANT*>(pSrc)); 
-    }
+// // Operations
+// public:
+//     HRESULT Clear()
+//     { 
+//         return ::VariantClear(this); 
+//     }	
+//     HRESULT Copy(_In_ const VARIANT* pSrc)
+//     { 
+//         return ::VariantCopy(this, const_cast<VARIANT*>(pSrc)); 
+//     }
     
-    // copy VARIANT to BSTR
-    HRESULT CopyTo(_Outptr_result_z_ BSTR *pstrDest) const
-    {
-        ATLASSERT(pstrDest != NULL && V_VT(this) == VT_BSTR);
-        HRESULT hRes = E_POINTER;
-        if (pstrDest != NULL && V_VT(this) == VT_BSTR)
-        {
-            *pstrDest = ::SysAllocStringByteLen((char*)V_BSTR(this), ::SysStringByteLen(V_BSTR(this)));
-            if (*pstrDest == NULL)
-                hRes = E_OUTOFMEMORY;
-            else
-                hRes = S_OK;
-        }
-        else if (V_VT(this) != VT_BSTR)
-            hRes = DISP_E_TYPEMISMATCH;
+//     // copy VARIANT to BSTR
+//     HRESULT CopyTo(_Outptr_result_z_ BSTR *pstrDest) const
+//     {
+//         ATLASSERT(pstrDest != NULL && V_VT(this) == VT_BSTR);
+//         HRESULT hRes = E_POINTER;
+//         if (pstrDest != NULL && V_VT(this) == VT_BSTR)
+//         {
+//             *pstrDest = ::SysAllocStringByteLen((char*)V_BSTR(this), ::SysStringByteLen(V_BSTR(this)));
+//             if (*pstrDest == NULL)
+//                 hRes = E_OUTOFMEMORY;
+//             else
+//                 hRes = S_OK;
+//         }
+//         else if (V_VT(this) != VT_BSTR)
+//             hRes = DISP_E_TYPEMISMATCH;
                 
-        return hRes;
-    }
+//         return hRes;
+//     }
     
-    HRESULT Attach(_In_ VARIANT* pSrc)
-    {
-        if(pSrc == NULL)
-            return E_INVALIDARG;			
+//     HRESULT Attach(_In_ VARIANT* pSrc)
+//     {
+//         if(pSrc == NULL)
+//             return E_INVALIDARG;			
         
-        HRESULT hr = S_OK;
-        if (this != pSrc)
-        {
-            // Clear out the variant
-            hr = Clear();
-            if (SUCCEEDED(hr))
-            {
-                // Copy the contents and give control to CComVariant
-                Checked::memcpy_s(this, sizeof(CComVariant), pSrc, sizeof(VARIANT));
-                V_VT(pSrc) = VT_EMPTY;
-                hr = S_OK;
-            }
-        }
-        return hr;
-    }
+//         HRESULT hr = S_OK;
+//         if (this != pSrc)
+//         {
+//             // Clear out the variant
+//             hr = Clear();
+//             if (SUCCEEDED(hr))
+//             {
+//                 // Copy the contents and give control to CComVariant
+//                 Checked::memcpy_s(this, sizeof(CComVariant), pSrc, sizeof(VARIANT));
+//                 V_VT(pSrc) = VT_EMPTY;
+//                 hr = S_OK;
+//             }
+//         }
+//         return hr;
+//     }
 
-    HRESULT Detach(_Inout_ VARIANT* pDest)
-    {
-        ATLASSERT(pDest != NULL);
-        if(pDest == NULL)
-            return E_POINTER;
+//     HRESULT Detach(_Inout_ VARIANT* pDest)
+//     {
+//         ATLASSERT(pDest != NULL);
+//         if(pDest == NULL)
+//             return E_POINTER;
             
-        // Clear out the variant
-        HRESULT hr = ::VariantClear(pDest);
-        if (SUCCEEDED(hr))
-        {
-            // Copy the contents and remove control from CComVariant
-            Checked::memcpy_s(pDest, sizeof(VARIANT), this, sizeof(VARIANT));
-            V_VT(this) = VT_EMPTY;
-            hr = S_OK;
-        }
-        return hr;
-    }
+//         // Clear out the variant
+//         HRESULT hr = ::VariantClear(pDest);
+//         if (SUCCEEDED(hr))
+//         {
+//             // Copy the contents and remove control from CComVariant
+//             Checked::memcpy_s(pDest, sizeof(VARIANT), this, sizeof(VARIANT));
+//             V_VT(this) = VT_EMPTY;
+//             hr = S_OK;
+//         }
+//         return hr;
+//     }
 
-    HRESULT ChangeType(_In_ VARTYPE vtNew, _In_opt_ const VARIANT* pSrc = NULL)
-    {
-        VARIANT* pVar = const_cast<VARIANT*>(pSrc);
-        // Convert in place if pSrc is NULL
-        if (pVar == NULL)
-            pVar = this;
-        // Do nothing if doing in place convert and vts not different
-        return ::VariantChangeType(this, pVar, 0, vtNew);
-    }
+//     HRESULT ChangeType(_In_ VARTYPE vtNew, _In_opt_ const VARIANT* pSrc = NULL)
+//     {
+//         VARIANT* pVar = const_cast<VARIANT*>(pSrc);
+//         // Convert in place if pSrc is NULL
+//         if (pVar == NULL)
+//             pVar = this;
+//         // Do nothing if doing in place convert and vts not different
+//         return ::VariantChangeType(this, pVar, 0, vtNew);
+//     }
 
-    /*
-     * TODO:
-    template< typename T >
-    void SetByRef(_In_ T* pT) ATLVARIANT_THROW()
-    {
-        ClearThrow();
-        V_VT(this) = CVarTypeInfo< T* >::VT;
-        byref = pT;
-    }
-    */
+//     /*
+//      * TODO:
+//     template< typename T >
+//     void SetByRef(_In_ T* pT) ATLVARIANT_THROW()
+//     {
+//         ClearThrow();
+//         V_VT(this) = CVarTypeInfo< T* >::VT;
+//         byref = pT;
+//     }
+//     */
 
-#ifdef _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
-    _Check_return_ HRESULT WriteToStream(_Inout_ IStream* pStream);
-    _Check_return_ HRESULT WriteToStream(
-        _Inout_ IStream* pStream, 
-        _In_ VARTYPE vtWrite)
-    {
-        if (vtWrite != VT_EMPTY && vtWrite != V_VT(this))
-        {
-            CComVariant varConv;
-            HRESULT hr = varConv.ChangeType(vtWrite, this);
-            if (FAILED(hr))
-            {
-                return hr;
-            }
-            return varConv.WriteToStream(pStream);
-        }
-        return WriteToStream(pStream);
-    }
+// #ifdef _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
+//     _Check_return_ HRESULT WriteToStream(_Inout_ IStream* pStream);
+//     _Check_return_ HRESULT WriteToStream(
+//         _Inout_ IStream* pStream, 
+//         _In_ VARTYPE vtWrite)
+//     {
+//         if (vtWrite != VT_EMPTY && vtWrite != V_VT(this))
+//         {
+//             CComVariant varConv;
+//             HRESULT hr = varConv.ChangeType(vtWrite, this);
+//             if (FAILED(hr))
+//             {
+//                 return hr;
+//             }
+//             return varConv.WriteToStream(pStream);
+//         }
+//         return WriteToStream(pStream);
+//     }
 
-    // Return the size in bytes of the current contents
-    ULONG GetSize() const;
-    HRESULT GetSizeMax(_Out_ ULARGE_INTEGER* pcbSize) const;
-#endif // _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
+//     // Return the size in bytes of the current contents
+//     ULONG GetSize() const;
+//     HRESULT GetSizeMax(_Out_ ULARGE_INTEGER* pcbSize) const;
+// #endif // _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
 
-// Implementation
-private:
-    void ClearThrow() ATLVARIANT_THROW()
-    {
-        HRESULT hr = Clear();
-        ATLASSERT(SUCCEEDED(hr));
-        (hr);
-#ifndef _ATL_NO_VARIANT_THROW
-        if (FAILED(hr))
-        {
-            AtlThrow(hr);
-        }
-#endif
-    }
+// // Implementation
+// private:
+//     void ClearThrow() ATLVARIANT_THROW()
+//     {
+//         HRESULT hr = Clear();
+//         ATLASSERT(SUCCEEDED(hr));
+//         (hr);
+// #ifndef _ATL_NO_VARIANT_THROW
+//         if (FAILED(hr))
+//         {
+//             AtlThrow(hr);
+//         }
+// #endif
+//     }
     
-public:
-    _Check_return_ HRESULT InternalClear() ATLVARIANT_THROW()
-    {
-        HRESULT hr = Clear();		
-        ATLASSERT(SUCCEEDED(hr));
-        if (FAILED(hr))
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = hr;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(hr);
-#endif
-        }
-        return hr;
-    }
+// public:
+//     _Check_return_ HRESULT InternalClear() ATLVARIANT_THROW()
+//     {
+//         HRESULT hr = Clear();		
+//         ATLASSERT(SUCCEEDED(hr));
+//         if (FAILED(hr))
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = hr;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(hr);
+// #endif
+//         }
+//         return hr;
+//     }
 
-    void InternalCopy(_In_ const VARIANT* pSrc) ATLVARIANT_THROW()
-    {
-        HRESULT hr = Copy(pSrc);
-        if (FAILED(hr))
-        {
-            V_VT(this) = VT_ERROR;
-            V_ERROR(this) = hr;
-#ifndef _ATL_NO_VARIANT_THROW
-            AtlThrow(hr);
-#endif
-        }
-    }
-};
+//     void InternalCopy(_In_ const VARIANT* pSrc) ATLVARIANT_THROW()
+//     {
+//         HRESULT hr = Copy(pSrc);
+//         if (FAILED(hr))
+//         {
+//             V_VT(this) = VT_ERROR;
+//             V_ERROR(this) = hr;
+// #ifndef _ATL_NO_VARIANT_THROW
+//             AtlThrow(hr);
+// #endif
+//         }
+//     }
+// };
 
-#ifdef _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
+// #ifdef _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
 
-#ifndef PLATFORM_UNIX
-#pragma warning(push)
-#pragma warning(disable: 4702)
-#endif
-_Check_return_ inline HRESULT CComVariant::WriteToStream(_Inout_ IStream* pStream)
-{
-    if(pStream == NULL)
-        return E_INVALIDARG;
+// #ifndef PLATFORM_UNIX
+// #pragma warning(push)
+// #pragma warning(disable: 4702)
+// #endif
+// _Check_return_ inline HRESULT CComVariant::WriteToStream(_Inout_ IStream* pStream)
+// {
+//     if(pStream == NULL)
+//         return E_INVALIDARG;
         
-    HRESULT hr = pStream->Write(&V_VT(this), sizeof(VARTYPE), NULL);
-    if (FAILED(hr))
-        return hr;
+//     HRESULT hr = pStream->Write(&V_VT(this), sizeof(VARTYPE), NULL);
+//     if (FAILED(hr))
+//         return hr;
 
-    int cbWrite = 0;
-    switch (V_VT(this))
-    {
-    case VT_UNKNOWN:
-    case VT_DISPATCH:
-        {
-            CComPtr<IPersistStream> spStream;
-            if (V_UNKNOWN(this) != NULL)
-            {
-                hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStream), (void**)&spStream);
-                if (FAILED(hr))
-                {
-                    hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStreamInit), (void**)&spStream);
-                    if (FAILED(hr))
-                    {
-                        spStream.Detach();
-                        return hr;
-                    }
-                }
-            }
-            if (spStream != NULL)
-                return OleSaveToStream(spStream, pStream);
-            return WriteClassStm(pStream, CLSID_NULL);
-        }
-    case VT_UI1:
-    case VT_I1:
-        cbWrite = sizeof(BYTE);
-        break;
-    case VT_I2:
-    case VT_UI2:
-    case VT_BOOL:
-        cbWrite = sizeof(short);
-        break;
-    case VT_I4:
-    case VT_UI4:
-    case VT_R4:
-    case VT_INT:
-    case VT_UINT:
-    case VT_ERROR:
-        cbWrite = sizeof(long);
-        break;
-    case VT_I8:
-    case VT_UI8:
-        cbWrite = sizeof(LONGLONG);
-        break;
-    case VT_R8:
-    case VT_CY:
-    case VT_DATE:
-        cbWrite = sizeof(double);
-        break;
-    default:
-        break;
-    }
-    if (cbWrite != 0)
-        return pStream->Write((void*) &V_UI1(this), cbWrite, NULL);
+//     int cbWrite = 0;
+//     switch (V_VT(this))
+//     {
+//     case VT_UNKNOWN:
+//     case VT_DISPATCH:
+//         {
+//             CComPtr<IPersistStream> spStream;
+//             if (V_UNKNOWN(this) != NULL)
+//             {
+//                 hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStream), (void**)&spStream);
+//                 if (FAILED(hr))
+//                 {
+//                     hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStreamInit), (void**)&spStream);
+//                     if (FAILED(hr))
+//                     {
+//                         spStream.Detach();
+//                         return hr;
+//                     }
+//                 }
+//             }
+//             if (spStream != NULL)
+//                 return OleSaveToStream(spStream, pStream);
+//             return WriteClassStm(pStream, CLSID_NULL);
+//         }
+//     case VT_UI1:
+//     case VT_I1:
+//         cbWrite = sizeof(BYTE);
+//         break;
+//     case VT_I2:
+//     case VT_UI2:
+//     case VT_BOOL:
+//         cbWrite = sizeof(short);
+//         break;
+//     case VT_I4:
+//     case VT_UI4:
+//     case VT_R4:
+//     case VT_INT:
+//     case VT_UINT:
+//     case VT_ERROR:
+//         cbWrite = sizeof(long);
+//         break;
+//     case VT_I8:
+//     case VT_UI8:
+//         cbWrite = sizeof(LONGLONG);
+//         break;
+//     case VT_R8:
+//     case VT_CY:
+//     case VT_DATE:
+//         cbWrite = sizeof(double);
+//         break;
+//     default:
+//         break;
+//     }
+//     if (cbWrite != 0)
+//         return pStream->Write((void*) &V_UI1(this), cbWrite, NULL);
 
-    CComBSTR bstrWrite;
-    CComVariant varBSTR;
-    if (V_VT(this) != VT_BSTR)
-    {
-        hr = VariantChangeType(&varBSTR, this, VARIANT_NOVALUEPROP, VT_BSTR);
-        if (FAILED(hr))
-            return hr;
-        bstrWrite.Attach(V_BSTR(&varBSTR));
-    }
-    else
-        bstrWrite.Attach(V_BSTR(this));
+//     CComBSTR bstrWrite;
+//     CComVariant varBSTR;
+//     if (V_VT(this) != VT_BSTR)
+//     {
+//         hr = VariantChangeType(&varBSTR, this, VARIANT_NOVALUEPROP, VT_BSTR);
+//         if (FAILED(hr))
+//             return hr;
+//         bstrWrite.Attach(V_BSTR(&varBSTR));
+//     }
+//     else
+//         bstrWrite.Attach(V_BSTR(this));
 
-    hr = bstrWrite.WriteToStream(pStream);
-    bstrWrite.Detach();
-    return hr;
-}
-#ifndef PLATFORM_UNIX
-#pragma warning(pop)	// C4702
-#endif
+//     hr = bstrWrite.WriteToStream(pStream);
+//     bstrWrite.Detach();
+//     return hr;
+// }
+// #ifndef PLATFORM_UNIX
+// #pragma warning(pop)	// C4702
+// #endif
 
 
-inline HRESULT CComVariant::GetSizeMax(_Out_ ULARGE_INTEGER* pcbSize) const
-{
-    ATLASSERT(pcbSize != NULL);
-    if (pcbSize == NULL)
-    {
-        return E_INVALIDARG;
-    }
+// inline HRESULT CComVariant::GetSizeMax(_Out_ ULARGE_INTEGER* pcbSize) const
+// {
+//     ATLASSERT(pcbSize != NULL);
+//     if (pcbSize == NULL)
+//     {
+//         return E_INVALIDARG;
+//     }
     
-    HRESULT hr = S_OK;
-    ULARGE_INTEGER nSize;
-    nSize.QuadPart = sizeof(VARTYPE);	
+//     HRESULT hr = S_OK;
+//     ULARGE_INTEGER nSize;
+//     nSize.QuadPart = sizeof(VARTYPE);	
     
-    switch (V_VT(this))
-    {
-    case VT_UNKNOWN:
-    case VT_DISPATCH:
-        {	
-            nSize.LowPart += sizeof(CLSID);
+//     switch (V_VT(this))
+//     {
+//     case VT_UNKNOWN:
+//     case VT_DISPATCH:
+//         {	
+//             nSize.LowPart += sizeof(CLSID);
             
-            if (V_UNKNOWN(this) != NULL)
-            {
-                CComPtr<IPersistStream> spStream;
+//             if (V_UNKNOWN(this) != NULL)
+//             {
+//                 CComPtr<IPersistStream> spStream;
                 
-                hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStream), (void**)&spStream);
-                if (FAILED(hr))
-                {
-                    hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStreamInit), (void**)&spStream);
-                    if (FAILED(hr))
-                    {
-                        break;
-                    }
-                }
+//                 hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStream), (void**)&spStream);
+//                 if (FAILED(hr))
+//                 {
+//                     hr = V_UNKNOWN(this)->QueryInterface(__uuidof(IPersistStreamInit), (void**)&spStream);
+//                     if (FAILED(hr))
+//                     {
+//                         break;
+//                     }
+//                 }
                 
-                ULARGE_INTEGER nPersistSize;
-                nPersistSize.QuadPart = 0;
+//                 ULARGE_INTEGER nPersistSize;
+//                 nPersistSize.QuadPart = 0;
                 
-                ATLASSERT(spStream != NULL);
-                hr = spStream->GetSizeMax(&nPersistSize);				
-                if (SUCCEEDED(hr))
-                {
-                    hr = AtlAdd(&nSize.QuadPart, nSize.QuadPart, nPersistSize.QuadPart);
-                }				
-            }			
-        }
-        break;
-    case VT_UI1:
-    case VT_I1:
-        nSize.LowPart += sizeof(BYTE);
-        break;
-    case VT_I2:
-    case VT_UI2:
-    case VT_BOOL:
-        nSize.LowPart += sizeof(short);
-        break;
-    case VT_I4:
-    case VT_UI4:
-    case VT_R4:
-    case VT_INT:
-    case VT_UINT:
-    case VT_ERROR:
-        nSize.LowPart += sizeof(long);
-        break;
-    case VT_I8:
-    case VT_UI8:
-        nSize.LowPart += sizeof(LONGLONG);
-        break;
-    case VT_R8:
-    case VT_CY:
-    case VT_DATE:
-        nSize.LowPart += sizeof(double);
-        break;
-    default:
-        {
-            VARTYPE vtTmp = V_VT(this);
-            BSTR bstr = NULL;
-            CComVariant varBSTR;
-            if (vtTmp != VT_BSTR)
-            {
-                hr = VariantChangeType(&varBSTR, const_cast<VARIANT*>((const VARIANT*)this), VARIANT_NOVALUEPROP, VT_BSTR);
-                if (SUCCEEDED(hr))
-                {
-                    bstr = V_BSTR(&varBSTR);
-                    vtTmp = VT_BSTR;
-                }
-            } 
-            else
-            {
-                bstr = V_BSTR(this);
-            }
+//                 ATLASSERT(spStream != NULL);
+//                 hr = spStream->GetSizeMax(&nPersistSize);				
+//                 if (SUCCEEDED(hr))
+//                 {
+//                     hr = AtlAdd(&nSize.QuadPart, nSize.QuadPart, nPersistSize.QuadPart);
+//                 }				
+//             }			
+//         }
+//         break;
+//     case VT_UI1:
+//     case VT_I1:
+//         nSize.LowPart += sizeof(BYTE);
+//         break;
+//     case VT_I2:
+//     case VT_UI2:
+//     case VT_BOOL:
+//         nSize.LowPart += sizeof(short);
+//         break;
+//     case VT_I4:
+//     case VT_UI4:
+//     case VT_R4:
+//     case VT_INT:
+//     case VT_UINT:
+//     case VT_ERROR:
+//         nSize.LowPart += sizeof(long);
+//         break;
+//     case VT_I8:
+//     case VT_UI8:
+//         nSize.LowPart += sizeof(LONGLONG);
+//         break;
+//     case VT_R8:
+//     case VT_CY:
+//     case VT_DATE:
+//         nSize.LowPart += sizeof(double);
+//         break;
+//     default:
+//         {
+//             VARTYPE vtTmp = V_VT(this);
+//             BSTR bstr = NULL;
+//             CComVariant varBSTR;
+//             if (vtTmp != VT_BSTR)
+//             {
+//                 hr = VariantChangeType(&varBSTR, const_cast<VARIANT*>((const VARIANT*)this), VARIANT_NOVALUEPROP, VT_BSTR);
+//                 if (SUCCEEDED(hr))
+//                 {
+//                     bstr = V_BSTR(&varBSTR);
+//                     vtTmp = VT_BSTR;
+//                 }
+//             } 
+//             else
+//             {
+//                 bstr = V_BSTR(this);
+//             }
 
-            if (vtTmp == VT_BSTR)
-            {
-                // Add the size of the length + string (in bytes) + NULL terminator.				
-                nSize.QuadPart += CComBSTR::GetStreamSize(bstr);
-            }
-        }		
-    }
+//             if (vtTmp == VT_BSTR)
+//             {
+//                 // Add the size of the length + string (in bytes) + NULL terminator.				
+//                 nSize.QuadPart += CComBSTR::GetStreamSize(bstr);
+//             }
+//         }		
+//     }
     
-    if (SUCCEEDED(hr))
-    {
-        pcbSize->QuadPart = nSize.QuadPart;
-    }
+//     if (SUCCEEDED(hr))
+//     {
+//         pcbSize->QuadPart = nSize.QuadPart;
+//     }
     
-    return hr;
-}
+//     return hr;
+// }
 
-inline ATL_DEPRECATED("GetSize has been replaced by GetSizeMax")
-ULONG CComVariant::GetSize() const
-{
-    ULARGE_INTEGER nSize;
-    HRESULT hr = GetSizeMax(&nSize);
+// inline ATL_DEPRECATED("GetSize has been replaced by GetSizeMax")
+// ULONG CComVariant::GetSize() const
+// {
+//     ULARGE_INTEGER nSize;
+//     HRESULT hr = GetSizeMax(&nSize);
     
-    if (SUCCEEDED(hr) && nSize.QuadPart <= ULONG_MAX)
-    {
-        return nSize.LowPart;	
-    }
+//     if (SUCCEEDED(hr) && nSize.QuadPart <= ULONG_MAX)
+//     {
+//         return nSize.LowPart;	
+//     }
     
-    return sizeof(VARTYPE);
-}
+//     return sizeof(VARTYPE);
+// }
 
-#endif // _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
+// #endif // _ATL_USE_WINAPI_FAMILY_DESKTOP_APP
 
-/*
-    Workaround for VarCmp function which does not compare VT_I1, VT_UI2, VT_UI4, VT_UI8 values
-*/
-inline HRESULT CComVariant::VarCmp(
-    _In_ LPVARIANT pvarLeft, 
-    _In_ LPVARIANT pvarRight, 
-    _In_ LCID lcid, 
-    _In_ ULONG dwFlags) const throw()
-{			
-    switch(V_VT(this)) 
-    {
-        case VT_I1:
-            if (V_I1(pvarLeft) == V_I1(pvarRight))
-            {
-                return VARCMP_EQ;
-            }
-            return V_I1(pvarLeft) > V_I1(pvarRight) ? VARCMP_GT : VARCMP_LT;			
-        case VT_UI2:
-            if (V_UI2(pvarLeft) == V_UI2(pvarRight))
-            {
-                return VARCMP_EQ;
-            }
-            return V_UI2(pvarLeft) > V_UI2(pvarRight) ? VARCMP_GT : VARCMP_LT;
+// /*
+//     Workaround for VarCmp function which does not compare VT_I1, VT_UI2, VT_UI4, VT_UI8 values
+// */
+// inline HRESULT CComVariant::VarCmp(
+//     _In_ LPVARIANT pvarLeft, 
+//     _In_ LPVARIANT pvarRight, 
+//     _In_ LCID lcid, 
+//     _In_ ULONG dwFlags) const throw()
+// {			
+//     switch(V_VT(this)) 
+//     {
+//         case VT_I1:
+//             if (V_I1(pvarLeft) == V_I1(pvarRight))
+//             {
+//                 return VARCMP_EQ;
+//             }
+//             return V_I1(pvarLeft) > V_I1(pvarRight) ? VARCMP_GT : VARCMP_LT;			
+//         case VT_UI2:
+//             if (V_UI2(pvarLeft) == V_UI2(pvarRight))
+//             {
+//                 return VARCMP_EQ;
+//             }
+//             return V_UI2(pvarLeft) > V_UI2(pvarRight) ? VARCMP_GT : VARCMP_LT;
 
-        case VT_UI4:
-            if (V_UINT(pvarLeft) == V_UINT(pvarRight)) 
-            {
-                return VARCMP_EQ;
-            }
-            return V_UINT(pvarLeft) > V_UINT(pvarRight) ? VARCMP_GT : VARCMP_LT;				
+//         case VT_UI4:
+//             if (V_UINT(pvarLeft) == V_UINT(pvarRight)) 
+//             {
+//                 return VARCMP_EQ;
+//             }
+//             return V_UINT(pvarLeft) > V_UINT(pvarRight) ? VARCMP_GT : VARCMP_LT;				
 
-        case VT_UI8:
-            if (V_UI8(pvarLeft) == V_UI8(pvarRight))
-            {
-                return VARCMP_EQ;
-            }
-            return V_UI8(pvarLeft) > V_UI8(pvarRight) ? VARCMP_GT : VARCMP_LT;
+//         case VT_UI8:
+//             if (V_UI8(pvarLeft) == V_UI8(pvarRight))
+//             {
+//                 return VARCMP_EQ;
+//             }
+//             return V_UI8(pvarLeft) > V_UI8(pvarRight) ? VARCMP_GT : VARCMP_LT;
 
-        default:
-            return ::VarCmp(pvarLeft, pvarRight, lcid, dwFlags);
-    }
-}
+//         default:
+//             return ::VarCmp(pvarLeft, pvarRight, lcid, dwFlags);
+//     }
+// }
 
 class CComMultiThreadModelNoCS
 {
