@@ -238,6 +238,7 @@ public:
 	}
 };
 
+// The PAL does not implement CComVariant, so do not allow the type to be referenced on non-windows platforms.
 // template<>
 // class CElementTraits< CComVariant > :
 // 	public CElementTraitsBase< CComVariant >

@@ -1468,8 +1468,9 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComVariant
-
-
+//
+// The PAL does not implement CComVariant, so do not allow the type to be referenced on non-windows platforms.
+//
 // #define ATL_VARIANT_TRUE VARIANT_BOOL( -1 )
 // #define ATL_VARIANT_FALSE VARIANT_BOOL( 0 )
 
