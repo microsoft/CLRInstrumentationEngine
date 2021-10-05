@@ -238,42 +238,43 @@ public:
 	}
 };
 
-template<>
-class CElementTraits< CComVariant > :
-	public CElementTraitsBase< CComVariant >
-{
-public:
-	typedef const VARIANT& INARGTYPE;
+// The PAL does not implement CComVariant, so do not allow the type to be referenced on non-windows platforms.
+// template<>
+// class CElementTraits< CComVariant > :
+// 	public CElementTraitsBase< CComVariant >
+// {
+// public:
+// 	typedef const VARIANT& INARGTYPE;
 
-//	static ULONG Hash( INARGTYPE t );  // variant hashing is problematic
+// //	static ULONG Hash( INARGTYPE t );  // variant hashing is problematic
 
-	static bool CompareElements(
-		_In_ INARGTYPE element1,
-		_In_ INARGTYPE element2)
-	{
-		return VarCmp(const_cast<VARIANT*>(&element1), const_cast<VARIANT*>(&element2), LOCALE_USER_DEFAULT, 0)==static_cast<HRESULT>(VARCMP_EQ);
-	}
+// 	static bool CompareElements(
+// 		_In_ INARGTYPE element1,
+// 		_In_ INARGTYPE element2)
+// 	{
+// 		return VarCmp(const_cast<VARIANT*>(&element1), const_cast<VARIANT*>(&element2), LOCALE_USER_DEFAULT, 0)==static_cast<HRESULT>(VARCMP_EQ);
+// 	}
 
-	static int CompareElementsOrdered(
-		_In_ INARGTYPE element1,
-		_In_ INARGTYPE element2)
-	{
-		HRESULT hr = VarCmp(const_cast<VARIANT*>(&element1), const_cast<VARIANT*>(&element2), LOCALE_USER_DEFAULT, 0);
-		if( hr == static_cast<HRESULT>(VARCMP_LT) )
-		{
-			return( -1 );
-		}
-		else if( hr == static_cast<HRESULT>(VARCMP_GT) )
-		{
-			return( 1 );
-		}
-		else
-		{
-			ATLASSERT( hr == static_cast<HRESULT>(VARCMP_EQ) || hr == static_cast<HRESULT>(VARCMP_NULL) );
-			return( 0 );
-		}
-	}
-};
+// 	static int CompareElementsOrdered(
+// 		_In_ INARGTYPE element1,
+// 		_In_ INARGTYPE element2)
+// 	{
+// 		HRESULT hr = VarCmp(const_cast<VARIANT*>(&element1), const_cast<VARIANT*>(&element2), LOCALE_USER_DEFAULT, 0);
+// 		if( hr == static_cast<HRESULT>(VARCMP_LT) )
+// 		{
+// 			return( -1 );
+// 		}
+// 		else if( hr == static_cast<HRESULT>(VARCMP_GT) )
+// 		{
+// 			return( 1 );
+// 		}
+// 		else
+// 		{
+// 			ATLASSERT( hr == static_cast<HRESULT>(VARCMP_EQ) || hr == static_cast<HRESULT>(VARCMP_NULL) );
+// 			return( 0 );
+// 		}
+// 	}
+// };
 
 template<>
 class CElementTraits< CComBSTR > :
