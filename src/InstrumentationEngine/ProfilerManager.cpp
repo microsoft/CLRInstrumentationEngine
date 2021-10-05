@@ -121,7 +121,6 @@ HRESULT CProfilerManager::FinalConstruct()
 
 void CProfilerManager::FinalRelease()
 {
-
 }
 
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
@@ -440,8 +439,6 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CProfilerManager::InstrumentationMethodThreadProc"));
-
 #ifndef PLATFORM_UNIX
     hr = CoInitialize(NULL);
     if (FAILED(hr))
@@ -467,8 +464,6 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
     CoUninitialize();
 #endif
 
-    CLogging::LogMessage(_T("End CProfilerManager::InstrumentationMethodThreadProc"));
-
     return 0;
 }
 
@@ -478,8 +473,6 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     )
 {
     HRESULT hr = S_OK;
-
-    CLogging::LogMessage(_T("Starting CConfigurationLocator::ParseAttachConfigurationThreadProc"));
 
 #ifndef PLATFORM_UNIX
     hr = CoInitialize(NULL);
@@ -616,8 +609,6 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 #ifndef PLATFORM_UNIX
     CoUninitialize();
 #endif
-
-    CLogging::LogMessage(_T("End CConfigurationLocator::ParseAttachConfigurationThreadProc"));
 
     return 0;
 }
@@ -1874,69 +1865,69 @@ HRESULT CProfilerManager::JITCompilationStarted(
 
     PROF_CALLBACK_BEGIN
 
-        if (m_attachedClrVersion != ClrVersion_2)
+    if (m_attachedClrVersion != ClrVersion_2)
+    {
+        CComPtr<CMethodInfo> pInformationalMethodInfo;
+
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
+
+        // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
+        // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
+        // copies. This ensures only a single instrumentation pass happens for each method info instance.
+        //
+        // NOTE: this critical section is used in this callback and in JITInline
+        // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
+        CCriticalSectionHolder holder(&m_csForJIT);
+
+        CComPtr<CMethodInfo> pMethodInfo;
+        hr = CreateMethodInfo(functionId, &pMethodInfo);
+        ClearILTransformationStatus(functionId);
+
+        // Class to call cleanup on the method info in the destructor.
+        CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
+
+        if (SUCCEEDED(hr))
         {
-            CComPtr<CMethodInfo> pInformationalMethodInfo;
+            CComPtr<IModuleInfo> pModuleInfo;
+            IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-            IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
+            BOOL isDynamic = false;
+            IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
 
-            // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
-            // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
-            // copies. This ensures only a single instrumentation pass happens for each method info instance.
-            //
-            // NOTE: this critical section is used in this callback and in JITInline
-            // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
-            CCriticalSectionHolder holder(&m_csForJIT);
-
-            CComPtr<CMethodInfo> pMethodInfo;
-            hr = CreateMethodInfo(functionId, &pMethodInfo);
-            ClearILTransformationStatus(functionId);
-
-            // Class to call cleanup on the method info in the destructor.
-            CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
-
-            if (SUCCEEDED(hr))
+            // We cannot instrument modules that have no image base
+            if (!isDynamic)
             {
-                CComPtr<IModuleInfo> pModuleInfo;
-                IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+                // Query if the instrumentation methods want to instrument and then have them actually instrument.
+                vector<CComPtr<IInstrumentationMethod>> toInstrument;
+                IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
 
-                BOOL isDynamic = false;
-                IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
+                // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+                // method body
+                IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
 
-                // We cannot instrument modules that have no image base
-                if (!isDynamic)
+                // Instrumentation methods to most of their instrumentation during InstrumentMethod
+                IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+
+                // Send the event to the raw callbacks to give them a chance to instrument.
+                IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+
+                // If the method was instrumetned
+                if (pMethodInfo->IsInstrumented())
                 {
-                    // Query if the instrumentation methods want to instrument and then have them actually instrument.
-                    vector<CComPtr<IInstrumentationMethod>> toInstrument;
-                    IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
+                    // Give the final instrumentation to the clr.
+                    IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
 
-                    // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-                    // method body
-                    IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
-
-                    // Instrumentation methods to most of their instrumentation during InstrumentMethod
-                    IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
-
-                    // Send the event to the raw callbacks to give them a chance to instrument.
-                    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-
-                    // If the method was instrumetned
-                    if (pMethodInfo->IsInstrumented())
-                    {
-                        // Give the final instrumentation to the clr.
-                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
-
-                        // Don't fail out with this call. It is too late to undo anything with a failure.
-                        CallOnInstrumentationComplete(pMethodInfo, false);
-                    }
+                    // Don't fail out with this call. It is too late to undo anything with a failure.
+                    CallOnInstrumentationComplete(pMethodInfo, false);
                 }
             }
         }
-        else
-        {
-            // Send the event to the raw callbacks to give them a chance to instrument.
-            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-        }
+    }
+    else
+    {
+        // Send the event to the raw callbacks to give them a chance to instrument.
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+    }
 
     PROF_CALLBACK_END
 
@@ -2071,7 +2062,6 @@ HRESULT CProfilerManager::JITInlining(
             // method inlined into itself. Don't enable inlineSiteMethodInfoCleanup or this will be a double delete
             pInlineSiteMethodInfo = pInlineeMethodInfo;
         }
-
 
         mdToken inlineSiteToken;
         IfFailRet(pInlineSiteMethodInfo->GetMethodToken(&inlineSiteToken));
@@ -3448,7 +3438,6 @@ HRESULT CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out
     CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(m_pAppDomainCollection->GetAppDomainById(appDomainID, &pAppDomainInfo));
 
-
     CComPtr<CAssemblyInfo> pAssemblyInfo;
     pAssemblyInfo.Attach(new CAssemblyInfo(this));
     if (pAssemblyInfo == nullptr)
@@ -3537,7 +3526,6 @@ HRESULT CProfilerManager::ConstructModuleInfo(
         IfFailRet(ConstructAppDomainInfo(appdomainId, &pAppDomainInfo));
     }
 
-
     CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
     if (FAILED(hr))
@@ -3570,7 +3558,6 @@ HRESULT CProfilerManager::ConstructModuleInfo(
 HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3627,8 +3614,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
 
     *ppMethodInfo = pMethodInfo.Detach();
 
-    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfo"));
-
     return S_OK;
 }
 
@@ -3637,7 +3622,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
 HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateNewMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3662,8 +3646,6 @@ HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ 
     IfFailRet(pMethodInfo->Initialize(false, false));
 
     *ppMethodInfo = pMethodInfo.Detach();
-
-    CLogging::LogMessage(_T("End CProfilerManager::CreateNewMethodInfo"));
 
     return S_OK;
 }
@@ -3691,7 +3673,6 @@ HRESULT CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
 HRESULT CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::GetMethodInfoById"));
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
 
@@ -3707,7 +3688,6 @@ HRESULT CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CM
         return E_FAIL;
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::GetMethodInfoById"));
     return S_OK;
 }
 
@@ -3719,7 +3699,6 @@ HRESULT CProfilerManager::CreateMethodInfoForRejit(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfoForRejit"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3736,8 +3715,6 @@ HRESULT CProfilerManager::CreateMethodInfoForRejit(
     IfFailRet(pModuleInfo->SetRejitMethodInfo(methodToken, pMethodInfo));
 
     *ppMethodInfo = pMethodInfo.Detach();
-
-    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfoForRejit"));
 
     return S_OK;
 }
@@ -3896,7 +3873,6 @@ HRESULT CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUn
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Start CProfilerManager::GetInstrumentationMethod"));
     IfNullRetPointer(ppUnknown);
     *ppUnknown = nullptr;
 
@@ -3913,12 +3889,9 @@ HRESULT CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUn
             IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
 
             IfFailRet(pRawInstrumentationMethod->QueryInterface(__uuidof(IUnknown), reinterpret_cast<LPVOID*>(ppUnknown)));
-            CLogging::LogMessage(_T("End CProfilerManager::GetInstrumentationMethod"));
             return S_OK;
         }
     }
-
-    CLogging::LogMessage(_T("End CProfilerManager::GetInstrumentationMethod"));
 
     return E_NOINTERFACE;
 }
@@ -3931,7 +3904,6 @@ HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallShouldInstrumentOnInstrumentationMethods"));
 
     vector<CComPtr<IInstrumentationMethod>> instrumentMethodVector;
     IfFailRet(CopyInstrumentationMethods(instrumentMethodVector));
@@ -3951,15 +3923,12 @@ HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
         }
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallShouldInstrumentOnInstrumentationMethods"));
-
     return S_OK;
 }
 
 HRESULT CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallOnInstrumentationComplete"));
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -3976,7 +3945,6 @@ HRESULT CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMetho
         }
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallOnInstrumentationComplete"));
     return hr;
 }
 
@@ -4014,7 +3982,6 @@ HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
 
     vector<CComPtr<IInstrumentationMethod>> methods;
     IfFailRet(CopyInstrumentationMethods(methods));
@@ -4037,7 +4004,6 @@ HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
 
     *pbShouldInline = bShouldAllowInline;
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
     return hr;
 }
 
