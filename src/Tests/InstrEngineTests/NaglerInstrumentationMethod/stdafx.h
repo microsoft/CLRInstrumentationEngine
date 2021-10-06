@@ -26,7 +26,7 @@
 
 #include "InstrumentationEngine.h"
 
-#include <msxml6.h>
+//#include <msxml6.h>
 
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
@@ -50,5 +50,6 @@ using namespace ATL;
 #include "../../../src/Common.Lib/Macros.h"
 #include "../../../src/Common.Lib/refcount.h"
 #include "../../../src/Common.Lib/ImplQueryInterface.h"
+#include "../../../src/Common.Lib/XmlDocWrapper.h"
 
 using namespace CommonLib;

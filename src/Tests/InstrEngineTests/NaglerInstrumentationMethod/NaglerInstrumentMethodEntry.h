@@ -133,8 +133,8 @@ struct CInjectAssembly
 class CInstrumentMethodEntry
 {
 private:
-    CComBSTR m_bstrModuleName;
-    CComBSTR m_bstrMethodName;
+    tstring m_bstrModuleName;
+    tstring m_bstrMethodName;
     BOOL m_bIsRejit;
     BOOL m_isReplacement;
     BOOL m_bMakeSingleRetFirst;
@@ -146,7 +146,7 @@ private:
     vector<CLocalType> m_locals;
     shared_ptr<CInstrumentMethodPointTo> m_pointTo;
 public:
-    CInstrumentMethodEntry(BSTR bstrModuleName, BSTR bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast, BOOL addExceptionHandler)
+    CInstrumentMethodEntry(tstring bstrModuleName, tstring bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast, BOOL addExceptionHandler)
         : m_pointTo(nullptr),
         m_bstrModuleName(bstrModuleName),
         m_bstrMethodName(bstrMethodName),
@@ -158,24 +158,19 @@ public:
     {
     }
 
-    HRESULT GetModuleName(BSTR* pbstrModuleName)
+    const tstring& GetModuleName()
     {
-        HRESULT hr;
-        IfFailRet(m_bstrModuleName.CopyTo(pbstrModuleName));
-        return S_OK;
+        return m_bstrModuleName;
     }
 
-    HRESULT GetMethodName(BSTR* pbstrMethodName)
+    const tstring& GetMethodName()
     {
-        HRESULT hr;
-        IfFailRet(m_bstrMethodName.CopyTo(pbstrMethodName));
-        return S_OK;
+        return m_bstrMethodName;
     }
 
-    HRESULT GetIsRejit(BOOL* pbValue)
+    BOOL GetIsRejit()
     {
-        *pbValue = m_bIsRejit;
-        return S_OK;
+        return m_bIsRejit;
     }
 
     HRESULT AddLocals(const vector<CLocalType>& locals)

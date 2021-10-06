@@ -56,7 +56,11 @@ param
     [Switch] $CreateSemaphore,
 
     [Parameter()]
-    [Switch] $TranslateHostPathsToTarget
+    [Switch] $TranslateHostPathsToTarget,
+
+    # Use Windows Subsystem for Linux instead of Docker Desktop. WSL must have docker installed.
+    [Parameter()]
+    [Switch] $Wsl
 )
 
 $ErrorActionPreference = "Stop"
@@ -65,13 +69,15 @@ $BaseImage = "";
 
 if ($BuildDockerImage) {
 
-    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage"
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage -Wsl:`$$Wsl"
     $BaseImage = Invoke-Expression $Command
     if (-not $?) {
         write-error "Error creating docker image"
         exit 1
     }
 }
+
+Write-Host "here"
 
 if ([string]::IsNullOrEmpty($BaseImage))
 {
@@ -90,10 +96,12 @@ if ([string]::IsNullOrEmpty($BaseImage))
     }
 }
 
+Write-Host "here"
+
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
 
 $pathInfo = resolve-path $EnlistmentRoot
-if ($TranslateHostPathsToTarget)
+if ($Wsl -or $TranslateHostPathsToTarget)
 {
     # This ToLowerInvariant is a workaround to a problem Wiktor has where Docker gets confused
     # about drive letter 'd' and drive letter 'D'. If the mount step in 'docker run' fails for
@@ -101,7 +109,15 @@ if ($TranslateHostPathsToTarget)
     # out a permanent fix.
     $driveLetter = $pathInfo.Drive.ToString().ToLowerInvariant()
     $relativePath = $pathInfo.Path.Substring(3).Replace('\', '/')
-    $EnlistmentMountPath = "//$driveLetter/$relativePath"
+    $EnlistmentMountPath = "$driveLetter/$relativePath"
+    if ($Wsl)
+    {
+        $EnlistmentMountPath ="/mnt/$EnlistmentMountPath"
+    }
+    else
+    {
+        $EnlistmentMountPath ="//$EnlistmentMountPath"
+    }
 }
 else
 {
@@ -109,15 +125,24 @@ else
 }
 
 Write-Host "Executing inside container using docker image '$BaseImage'"
+$command = ""
 if ($Interactive)
 {
-    docker run --rm -ti --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host -w "/root/ClrInstrumentationEngine" $BaseImage bash 
+    $command ="docker run --rm -ti --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host -w '/root/ClrInstrumentationEngine' $BaseImage bash"
 }
 elseif (-not $CreateSemaphore)
 {
-    docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /root/ClrInstrumentationEngine/src/build.sh $Type clean
+    $command = "docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /root/ClrInstrumentationEngine/src/build.sh $Type clean"
 }
 else
 {
-    docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /bin/bash -c "/root/ClrInstrumentationEngine/src/build.sh $Type clean && touch /root/ClrInstrumentationEngine/build.sem"
+    $command = "docker run --rm --name $containerName -v ${EnlistmentMountPath}:/root/ClrInstrumentationEngine --net=host $BaseImage /bin/bash -c `"/root/ClrInstrumentationEngine/src/build.sh $Type clean && touch /root/ClrInstrumentationEngine/build.sem`""
 }
+
+if ($Wsl)
+{
+    $command = $command.Replace("`"", "\`"")
+    $command = "wsl bash -c `"sudo $command`""
+}
+Write-Host $command
+Invoke-Expression $command

@@ -29,7 +29,11 @@ param
 
     # Indicates that the image should be rebuilt.
     [Parameter()]
-    [Switch] $Rebuild
+    [Switch] $Rebuild,
+
+    #Indicates that WSL should be used instead of docker desktop. 
+    [Parameter()]
+    [Switch] $Wsl
 )
 
 $linux = ''
@@ -44,12 +48,20 @@ if ($CLib -eq 'musl') {
 
 $imageName = "clrielocal:$CLib"
 # Check to see if the image already esists.
-$exists = docker images $imageName --format 'yes'
+$existenceCheck = "docker images $imageName --format 'yes'"
+if ($Wsl)
+{
+    $existenceCheck = "wsl bash -c `"sudo $existenceCheck`""
+}
+Write-Host $existenceCheck
+$exists = Invoke-Expression $existenceCheck
 
 if (-not $?) {
     Write-Error "Could not execute docker command".
     exit 1
 }
+
+Write-Host $exists
 
 if ($exists -eq "yes") {
     Write-Host "Image '$imageName' already exists."
@@ -72,9 +84,25 @@ if (-not (Test-Path "$dockerContext" -PathType Container)) {
     exit 1
 }
 
-$Expression = "Get-Content '$dockerDir\DockerFile' | docker build -t '$imageName' -f - '$dockerContext'"
-Write-Host $Expression
-Invoke-Expression $Expression | Write-Host
+if ($Wsl)
+{
+    $pathInfo = resolve-path $dockerDir
+    $drive = $pathInfo.Drive.ToString().ToLowerInvariant()
+    $dockerDir = $pathInfo.Path.Substring(3).Replace('\','/') 
+    $dockerDir = "/mnt/$drive/$dockerDir"
+    $pathInfo = resolve-path $dockerContext
+    $drive = $pathInfo.Drive.ToString().ToLowerInvariant()
+    $dockerContext = $pathInfo.Path.Substring(3).Replace('\','/') 
+    $dockerContext = "/mnt/$drive/$dockerContext"
+    Invoke-Expression "wsl bash -c `"cat $dockerDir/DockerFile | sudo docker build -t '$imageName' -f - '$dockerContext'`"" | Write-Host
+}
+else
+{
+    $Expression = "Get-Content '$dockerDir\DockerFile' | docker build -t '$imageName' -f - '$dockerContext'"
+    Write-Host $Expression
+    Invoke-Expression $Expression | Write-Host
+}
+
 if (-not $?) {
     Write-Error "Error building image '$imageName'"
     exit 1

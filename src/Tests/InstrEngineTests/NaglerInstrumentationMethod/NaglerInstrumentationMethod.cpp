@@ -14,6 +14,15 @@ const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScrip
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
 
+void AssertLogFailure(_In_ const WCHAR* wszError, ...)
+{
+    // Since this is a test libary, we will print to standard error and fail
+    va_list argptr;
+    va_start(argptr, wszError);
+    vfwprintf(stderr, wszError, argptr);
+    throw "Assert failed";
+}
+
 ILOpcodeInfo ilOpcodeInfo[] =
 {
 #define OPDEF(ord, code, name,  opcodeLen, operandLen, type, alt, flags, pop, push) \
@@ -120,75 +129,71 @@ HRESULT CInstrumentationMethod::LoadTestScript()
         return E_FAIL;
     }
     m_strBinaryDir = testOutputPath;
-    CComPtr<IXMLDOMDocument3> pDocument;
-    IfFailRet(CoCreateInstance(CLSID_FreeThreadedDOMDocument60, NULL, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument3, (void**)&pDocument));
+    CComPtr<CXmlDocWrapper> pDocument;
+    pDocument.Attach(new CXmlDocWrapper());
 
-    VARIANT_BOOL vbResult = VARIANT_TRUE;
-    hr = pDocument->load(CComVariant(testScript), &vbResult);
-    if (FAILED(hr) || vbResult != VARIANT_TRUE)
+    hr = pDocument->LoadFile(testScript);
+    if (hr != S_OK)
     {
         ATLASSERT(!L"Failed to load test configuration");
         return -1;
     }
 
-    CComPtr<IXMLDOMElement> pDocumentNode;
-    IfFailRet(pDocument->get_documentElement(&pDocumentNode));
+    CComPtr<CXmlNode> pDocumentNode;
+    IfFailRet(pDocument->GetRootNode(&pDocumentNode));
 
-    CComBSTR bstrDocumentNodeName;
-    IfFailRet(pDocumentNode->get_nodeName(&bstrDocumentNodeName));
+    tstring strDocumentNodeName;
+    IfFailRet(pDocumentNode->GetName(strDocumentNodeName));
 
-    if (wcscmp(bstrDocumentNodeName, L"InstrumentationTestScript") != 0)
+    if (wcscmp(strDocumentNodeName.c_str(), L"InstrumentationTestScript") != 0)
     {
         return -1;
     }
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pDocumentNode->get_childNodes(&pChildNodes));
 
-    long cChildren = 0;
-    pChildNodes->get_length(&cChildren);
+    CComPtr<CXmlNode> pChildNode;
+    IfFailRet(pDocumentNode->GetChildNode(&pChildNode));
 
-    for (long i = 0; i < cChildren; i++)
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pCurrChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pCurrChildNode));
+        tstring strCurrNodeName;
+        IfFailRet(pChildNode->GetName(strCurrNodeName));
 
-        CComBSTR bstrCurrNodeName;
-        IfFailRet(pCurrChildNode->get_nodeName(&bstrCurrNodeName));
-
-        if (wcscmp(bstrCurrNodeName, L"InstrumentMethod") == 0)
+        if (wcscmp(strCurrNodeName.c_str(), L"InstrumentMethod") == 0)
         {
-            IfFailRet(ProcessInstrumentMethodNode(pCurrChildNode));
+            IfFailRet(ProcessInstrumentMethodNode(pChildNode));
         }
-        else if (wcscmp(bstrCurrNodeName, L"ExceptionTracking") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"ExceptionTracking") == 0)
         {
             m_bExceptionTrackingEnabled = true;
         }
-        else if (wcscmp(bstrCurrNodeName, L"InjectAssembly") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"InjectAssembly") == 0)
         {
             shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
-            ProcessInjectAssembly(pCurrChildNode, spNewInjectAssembly);
+            ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
             m_spInjectAssembly = spNewInjectAssembly;
         }
-        else if (wcscmp(bstrCurrNodeName, L"MethodLogging") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"MethodLogging") == 0)
         {
             m_bTestInstrumentationMethodLogging = true;
         }
-        else if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+            // do nothing
         }
         else
         {
             ATLASSERT(!L"Invalid configuration. Element should be InstrumentationMethod");
             return -1;
         }
+
+        pChildNode = pChildNode->Next();
     }
 
     return 0;
 }
 
-HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
+HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
 {
     HRESULT hr = S_OK;
 
@@ -202,14 +207,8 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
 
     bool rejitAllInstruMethods = (wcscmp(isRejitEnvValue, L"True") == 0);
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pNode->get_childNodes(&pChildNodes));
-
-    long cChildren = 0;
-    pChildNodes->get_length(&cChildren);
-
-    CComBSTR bstrModuleName;
-    CComBSTR bstrMethodName;
+    tstring moduleName;
+    tstring methodName;
     BOOL bIsRejit = rejitAllInstruMethods;
     vector<shared_ptr<CInstrumentInstruction>> instructions;
     vector<CLocalType> locals;
@@ -220,71 +219,61 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
     BOOL isAddExceptionHandler = FALSE;
     shared_ptr<CInstrumentMethodPointTo> spPointTo(nullptr);
 
-    for (long i = 0; i < cChildren; i++)
+    CComPtr<CXmlNode> pChildNode;
+    IfFailRet(pNode->GetChildNode(&pChildNode));
+
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pChildNode));
+        tstring strCurrNodeName;
+        IfFailRet(pChildNode->GetName(strCurrNodeName));
 
-        CComBSTR bstrCurrNodeName;
-        IfFailRet(pChildNode->get_nodeName(&bstrCurrNodeName));
-
-        if (wcscmp(bstrCurrNodeName, L"ModuleName") == 0)
+        if (wcscmp(strCurrNodeName.c_str(), L"ModuleName") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            bstrModuleName = varNodeValue.bstrVal;
+            IfFailRet(pChildValue->GetStringValue(moduleName));
         }
-        else if (wcscmp(bstrCurrNodeName, L"MethodName") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"MethodName") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
-
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            bstrMethodName = varNodeValue.bstrVal;
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
+            IfFailRet(pChildValue->GetStringValue(methodName));
         }
-        else if (wcscmp(bstrCurrNodeName, L"Instructions") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"Instructions") == 0)
         {
-            CComPtr<IXMLDOMNode> pAttrValue;
-            CComPtr<IXMLDOMNamedNodeMap> attributes;
-            pChildNode->get_attributes(&attributes);
-            CComPtr<IXMLDOMNode> pBaseLine;
-            attributes->getNamedItem(L"Baseline", &pBaseLine);
-
-            isReplacement = pBaseLine != nullptr;
+            tstring baselineAttr;
+            pChildNode->GetAttribute(L"Baseline", baselineAttr);
+            isReplacement = !baselineAttr.empty();
 
             ProcessInstructionNodes(pChildNode, instructions, isReplacement != 0);
         }
-        else if (wcscmp(bstrCurrNodeName, L"IsRejit") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"IsRejit") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
-
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            bIsRejit = (wcscmp(varNodeValue.bstrVal, L"True") == 0);
+            CComPtr<CXmlNode> pChildValue;
+            tstring nodeValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
+            IfFailRet(pChildValue->GetStringValue(nodeValue));
+            bIsRejit = (wcscmp(nodeValue.c_str(), L"True") == 0);
         }
-        else if (wcscmp(bstrCurrNodeName, L"AddExceptionHandler") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"AddExceptionHandler") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            isAddExceptionHandler = (wcscmp(varNodeValue.bstrVal, L"True") == 0);
+            tstring nodeValue;
+            IfFailRet(pChildValue->GetStringValue(nodeValue));
+            isAddExceptionHandler = (wcscmp(nodeValue.c_str(), L"True") == 0);
         }
-        else if (wcscmp(bstrCurrNodeName, L"CorIlMap") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"CorIlMap") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
+            tstring varNodeValue;
+            IfFailRet(pChildValue->GetStringValue(varNodeValue));
 
-            wstringstream corIlMapString(varNodeValue.bstrVal);
+            wstringstream corIlMapString(varNodeValue);
             DWORD oldOffset = 0;
             DWORD newOffset = 0;
 
@@ -297,17 +286,17 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
                 corIlMap.push_back(map);
             }
         }
-        else if (wcscmp(bstrCurrNodeName, L"Locals") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"Locals") == 0)
         {
             ProcessLocals(pChildNode, locals);
         }
-        else if (wcscmp(bstrCurrNodeName, L"PointTo") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"PointTo") == 0)
         {
             std::shared_ptr<CInstrumentMethodPointTo> spPointer(new CInstrumentMethodPointTo());
             spPointTo = spPointer;
             ProcessPointTo(pChildNode, *spPointTo);
         }
-        else if (wcscmp(bstrCurrNodeName, L"MakeSingleRet") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"MakeSingleRet") == 0)
         {
             // Allow the single return instrumentation to execute
             // both before and after the instruction instrumentation.
@@ -320,19 +309,21 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
                 isSingleRetLast = true;
             }
         }
-        else if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+            // do nothing. Get next node.
         }
         else
         {
             ATLASSERT(!L"Invalid configuration. Unknown Element");
             return E_FAIL;
         }
+
+        pChildNode = pChildNode->Next();
     }
 
-    if ((bstrModuleName.Length() == 0) ||
-        (bstrMethodName.Length() == 0))
+    if ((moduleName.empty()) ||
+        (methodName.empty()))
     {
         ATLASSERT(!L"Invalid configuration. Missing child element");
         return E_FAIL;
@@ -346,7 +337,7 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
         isSingleRetLast = true;
     }
 
-    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(bstrModuleName, bstrMethodName, bIsRejit, isSingleRetFirst, isSingleRetLast, isAddExceptionHandler);
+    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(moduleName.c_str(), methodName.c_str(), bIsRejit, isSingleRetFirst, isSingleRetLast, isAddExceptionHandler);
     if (spPointTo != nullptr)
     {
         pMethod->SetPointTo(spPointTo);
@@ -362,180 +353,146 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(IXMLDOMNode* pNode)
     return S_OK;
 }
 
-HRESULT CInstrumentationMethod::ProcessPointTo(IXMLDOMNode* pNode, CInstrumentMethodPointTo& pointTo)
+HRESULT CInstrumentationMethod::ProcessPointTo(CXmlNode* pNode, CInstrumentMethodPointTo& pointTo)
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pNode->get_childNodes(&pChildNodes));
-    long count = 0;
-    IfFailRet(pChildNodes->get_length(&count));
+    CComPtr<CXmlNode> pChildNode;
+    IfFailRet(pNode->GetChildNode(&pChildNode));
 
-    for (long i = 0; i < count; i++)
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pChildNode));
-
         //<AssemblyName>InjectToMscorlibTest_Release</AssemblyName>
         //<TypeName>InstruOperationsTests.Program</TypeName>
         //<MethodName>MethodToCallInstead</MethodName>
-        CComBSTR nodeName;
-        IfFailRet(pChildNode->get_nodeName(&nodeName));
-        if (wcscmp(nodeName, L"#comment") == 0)
+        tstring nodeName;
+        IfFailRet(pChildNode->GetName(nodeName));
+        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+            // do nothing, get next node.
         }
-        else if (wcscmp(nodeName, L"AssemblyName") == 0)
+        else if (wcscmp(nodeName.c_str(), L"AssemblyName") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            CComBSTR bstrVal = varNodeValue.bstrVal;
-            pointTo.m_assemblyName = bstrVal;
+            tstring varNodeValue;
+            IfFailRet(pChildValue->GetStringValue(pointTo.m_assemblyName));
         }
-        else if (wcscmp(nodeName, L"TypeName") == 0)
+        else if (wcscmp(nodeName.c_str(), L"TypeName") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            CComBSTR bstrVal = varNodeValue.bstrVal;
-            pointTo.m_typeName = bstrVal;
+            tstring varNodeValue;
+            IfFailRet(pChildValue->GetStringValue(pointTo.m_typeName));
         }
-        else if (wcscmp(nodeName, L"MethodName") == 0)
+        else if (wcscmp(nodeName.c_str(), L"MethodName") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            CComBSTR bstrVal = varNodeValue.bstrVal;
-            pointTo.m_methodName = bstrVal;
+            tstring varNodeValue;
+            IfFailRet(pChildValue->GetStringValue(pointTo.m_methodName));
         }
 
+        pChildNode = pChildNode->Next();
     }
     return hr;
 }
 
-HRESULT CInstrumentationMethod::ProcessInjectAssembly(IXMLDOMNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly)
+HRESULT CInstrumentationMethod::ProcessInjectAssembly(CXmlNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly)
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pNode->get_childNodes(&pChildNodes));
-    long count = 0;
-    IfFailRet(pChildNodes->get_length(&count));
+    CComPtr<CXmlNode> pChildNode;
+    IfFailRet(pNode->GetChildNode(&pChildNode));
 
-    for (long i = 0; i < count; i++)
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pChildNode));
-
         //<Source>C:\tfs\pioneer2\VSClient1\src\edev\diagnostics\intellitrace\InstrumentationEngine\Tests\InstrEngineTests\Binary\InjectToMscorlibTest_Debug.exe</Source>
         //<Target>mscorlib</Target>
-        CComBSTR nodeName;
-        IfFailRet(pChildNode->get_nodeName(&nodeName));
-        if (wcscmp(nodeName, L"#comment") == 0)
+        tstring nodeName;
+        IfFailRet(pChildNode->GetName(nodeName));
+        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+            // do nothing. Get next node.
         }
-        else if (wcscmp(nodeName, L"Target") == 0)
+        else if (wcscmp(nodeName.c_str(), L"Target") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            CComBSTR bstrVal = varNodeValue.bstrVal;
-            injectAssembly->m_targetAssemblyName = bstrVal;
+            IfFailRet(pChildValue->GetStringValue(injectAssembly->m_targetAssemblyName));
         }
-        else if (wcscmp(nodeName, L"Source") == 0)
+        else if (wcscmp(nodeName.c_str(), L"Source") == 0)
         {
-            CComPtr<IXMLDOMNode> pChildValue;
-            pChildNode->get_firstChild(&pChildValue);
+            CComPtr<CXmlNode> pChildValue;
+            IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
-            CComVariant varNodeValue;
-            pChildValue->get_nodeValue(&varNodeValue);
-            CComBSTR bstrVal = varNodeValue.bstrVal;
-            injectAssembly->m_sourceAssemblyName = bstrVal;
+            tstring varNodeValue;
+            IfFailRet(pChildValue->GetStringValue(injectAssembly->m_sourceAssemblyName));
         }
+
+        pChildNode = pChildNode->Next();
     }
     return hr;
 }
 
-HRESULT CInstrumentationMethod::ProcessLocals(IXMLDOMNode* pNode, vector<CLocalType>& locals)
+HRESULT CInstrumentationMethod::ProcessLocals(CXmlNode* pNode, vector<CLocalType>& locals)
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pNode->get_childNodes(&pChildNodes));
-    long count = 0;
-    IfFailRet(pChildNodes->get_length(&count));
+    CComPtr<CXmlNode> pChildNode;;
+    IfFailRet(pNode->GetChildNode(&pChildNode));
 
-    for (long i = 0; i < count; i++)
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pChildNode));
-
-        CComBSTR nodeName;
-        IfFailRet(pChildNode->get_nodeName(&nodeName));
-        if (wcscmp(nodeName, L"#comment") == 0)
+        tstring nodeName;
+        IfFailRet(pChildNode->GetName(nodeName));
+        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+           // do nothing.
+        }
+        else
+        {
+            if (wcscmp(nodeName.c_str(), L"Local") != 0)
+            {
+                ATLASSERT(!L"Invalid element");
+                return E_UNEXPECTED;
+            }
+
+            tstring typeName;
+            IfFailRet(pChildNode->GetAttribute(L"Type", typeName));
+
+            locals.push_back(CLocalType(typeName));
         }
 
-        if (wcscmp(nodeName, L"Local") != 0)
-        {
-            ATLASSERT(!L"Invalid element");
-            return E_UNEXPECTED;
-        }
-
-        CComPtr<IXMLDOMNamedNodeMap> attributes;
-        IfFailRet(pChildNode->get_attributes(&attributes));
-        CComPtr<IXMLDOMNode> pTypeName;
-        IfFailRet(attributes->getNamedItem(L"Type", &pTypeName));
-
-        CComVariant varTypeName;
-        pTypeName->get_nodeValue(&varTypeName);
-        CComBSTR bstrTypeName = varTypeName.bstrVal;
-
-        locals.push_back(CLocalType((LPWSTR)bstrTypeName));
+        pChildNode = pChildNode->Next();
     }
     return hr;
 }
 
-HRESULT CInstrumentationMethod::ProcessInstructionNodes(IXMLDOMNode* pNode, vector<shared_ptr<CInstrumentInstruction>>& instructions, bool isBaseline)
+HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<shared_ptr<CInstrumentInstruction>>& instructions, bool isBaseline)
 {
     HRESULT hr = S_OK;
 
-    CComPtr<IXMLDOMNodeList> pChildNodes;
-    IfFailRet(pNode->get_childNodes(&pChildNodes));
+    CComPtr<CXmlNode> pChildNode;
+    IfFailRet(pNode->GetChildNode(&pChildNode));
 
-    long cChildren = 0;
-    pChildNodes->get_length(&cChildren);
-
-    for (long i = 0; i < cChildren; i++)
+    while (pChildNode != nullptr)
     {
-        CComPtr<IXMLDOMNode> pChildNode;
-        IfFailRet(pChildNodes->get_item(i, &pChildNode));
+        tstring currNodeName;
+        IfFailRet(pChildNode->GetName(currNodeName));
 
-        CComBSTR bstrCurrNodeName;
-        IfFailRet(pChildNode->get_nodeName(&bstrCurrNodeName));
-
-        if (wcscmp(bstrCurrNodeName, L"#comment") == 0)
+        if (wcscmp(currNodeName.c_str(), L"#comment") == 0)
         {
-            continue;
+            // do nothing
         }
-        else if (wcscmp(bstrCurrNodeName, L"Instruction") == 0)
+        else if (wcscmp(currNodeName.c_str(), L"Instruction") == 0)
         {
-            CComPtr<IXMLDOMNodeList> pInstructionChildNodes;
-            IfFailRet(pChildNode->get_childNodes(&pInstructionChildNodes));
-
-            long cInstructionChildren = 0;
-            pInstructionChildNodes->get_length(&cInstructionChildren);
+            CComPtr<CXmlNode> pInstructionChildNode;
+            IfFailRet(pChildNode->GetChildNode(&pInstructionChildNode));
 
             bool bOpcodeSet = false;
             bool bOffsetSet = false;
@@ -547,52 +504,44 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(IXMLDOMNode* pNode, vect
 
             // NOTE: only support integer operands for the time being.
             INT64 operand = 0;
-            for (long j = 0; j < cInstructionChildren; j++)
+            while (pInstructionChildNode != nullptr)
             {
-                CComPtr<IXMLDOMNode> pInstructionChildNode;
-                IfFailRet(pInstructionChildNodes->get_item(j, &pInstructionChildNode));
+                tstring currInstructionNodeName;
+                IfFailRet(pInstructionChildNode->GetName(currInstructionNodeName));
 
-                CComBSTR bstrCurrInstructionNodeName;
-                IfFailRet(pInstructionChildNode->get_nodeName(&bstrCurrInstructionNodeName));
-
-                if (wcscmp(bstrCurrInstructionNodeName, L"Opcode") == 0)
+                if (wcscmp(currInstructionNodeName.c_str(), L"Opcode") == 0)
                 {
-                    CComPtr<IXMLDOMNode> pChildValue;
-                    pInstructionChildNode->get_firstChild(&pChildValue);
+                    CComPtr<CXmlNode> pChildValue;
+                    IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
 
-                    CComVariant varNodeValue;
-                    pChildValue->get_nodeValue(&varNodeValue);
-                    CComBSTR bstrOpcode = varNodeValue.bstrVal;
+                    tstring strOpcode;
+                    IfFailRet(pChildValue->GetStringValue(strOpcode));
 
-                    IfFailRet(ConvertOpcode(bstrOpcode, &opcode, &opcodeInfo));
+                    IfFailRet(ConvertOpcode(strOpcode.c_str(), &opcode, &opcodeInfo));
                     bOpcodeSet = true;
                 }
-                else if (wcscmp(bstrCurrInstructionNodeName, L"Offset") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), L"Offset") == 0)
                 {
-                    CComPtr<IXMLDOMNode> pChildValue;
-                    pInstructionChildNode->get_firstChild(&pChildValue);
+                    CComPtr<CXmlNode> pChildValue;
+                    IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
 
-                    CComVariant varNodeValue;
-                    pChildValue->get_nodeValue(&varNodeValue);
-                    CComBSTR bstrOffset = varNodeValue.bstrVal;
-
-                    dwOffset = _wtoi(bstrOffset);
+                    tstring strOffset;
+                    IfFailRet(pChildValue->GetStringValue(strOffset));
+                    dwOffset = _wtoi(strOffset.c_str());
                     bOffsetSet = true;
                 }
-                else if (wcscmp(bstrCurrInstructionNodeName, L"Operand") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), L"Operand") == 0)
                 {
                     if (opcodeInfo.m_operandLength == 0)
                     {
                         ATLASSERT(!L"Invalid configuration. Opcode should not have an operand");
                     }
-                    CComPtr<IXMLDOMNode> pChildValue;
-                    pInstructionChildNode->get_firstChild(&pChildValue);
+                    CComPtr<CXmlNode> pChildValue;
+                    IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
 
-                    CComVariant varNodeValue;
-                    pChildValue->get_nodeValue(&varNodeValue);
-                    CComBSTR bstrOperand = varNodeValue.bstrVal;
-
-                    operand = _wtoi64(bstrOperand);
+                    tstring strOperand;
+                    IfFailRet(pChildValue->GetStringValue(strOperand));
+                    operand = _wtoi64(strOperand.c_str());
 
                     // For now, only support integer operands
                     ATLASSERT(opcodeInfo.m_type == ILOperandType_None ||
@@ -605,52 +554,52 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(IXMLDOMNode* pNode, vect
 
 
                 }
-                else if (wcscmp(bstrCurrInstructionNodeName, L"InstrumentationType") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), L"InstrumentationType") == 0)
                 {
-                    CComPtr<IXMLDOMNode> pChildValue;
-                    pInstructionChildNode->get_firstChild(&pChildValue);
+                    CComPtr<CXmlNode> pChildValue;
+                    IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
 
-                    CComVariant varNodeValue;
-                    pChildValue->get_nodeValue(&varNodeValue);
-                    CComBSTR bstrInstrType = varNodeValue.bstrVal;
+                    tstring strInstrType;
+                    IfFailRet(pChildValue->GetStringValue(strInstrType));
 
-                    if (wcscmp(bstrInstrType, L"InsertBefore") == 0)
+                    if (wcscmp(strInstrType.c_str(), L"InsertBefore") == 0)
                     {
                         instrType = InsertBefore;
                     }
-                    else if (wcscmp(bstrInstrType, L"InsertAfter") == 0)
+                    else if (wcscmp(strInstrType.c_str(), L"InsertAfter") == 0)
                     {
                         instrType = InsertAfter;
                     }
-                    else if (wcscmp(bstrInstrType, L"Replace") == 0)
+                    else if (wcscmp(strInstrType.c_str(), L"Replace") == 0)
                     {
                         instrType = Replace;
                     }
-                    else if (wcscmp(bstrInstrType, L"Remove") == 0)
+                    else if (wcscmp(strInstrType.c_str(), L"Remove") == 0)
                     {
                         instrType = Remove;
                     }
-                    else if (wcscmp(bstrInstrType, L"RemoveAll") == 0)
+                    else if (wcscmp(strInstrType.c_str(), L"RemoveAll") == 0)
                     {
                         instrType = RemoveAll;
                     }
                 }
-                else if (wcscmp(bstrCurrInstructionNodeName, L"RepeatCount") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), L"RepeatCount") == 0)
                 {
-                    CComPtr<IXMLDOMNode> pChildValue;
-                    pInstructionChildNode->get_firstChild(&pChildValue);
+                    CComPtr<CXmlNode> pChildValue;
+                    IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
 
-                    CComVariant varNodeValue;
-                    pChildValue->get_nodeValue(&varNodeValue);
-                    CComBSTR bstrRepeatCount = varNodeValue.bstrVal;
+                    tstring strRepeatCount;
+                    IfFailRet(pChildValue->GetStringValue(strRepeatCount));
 
-                    dwRepeatCount = _wtoi(bstrRepeatCount);
+                    dwRepeatCount = _wtoi(strRepeatCount.c_str());
                 }
                 else
                 {
                     ATLASSERT(!L"Invalid configuration. Unknown Element");
                     return E_FAIL;
                 }
+
+                pInstructionChildNode = pInstructionChildNode->Next();
             }
 
             if ( (!isBaseline) && (instrType != Remove) && (instrType != RemoveAll) && (!bOpcodeSet || !bOffsetSet))
@@ -673,11 +622,13 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(IXMLDOMNode* pNode, vect
             ATLASSERT(!L"Invalid configuration. Unknown Element");
             return E_FAIL;
         }
+
+        pChildNode = pChildNode->Next();
     }
     return S_OK;
 }
 
-HRESULT CInstrumentationMethod::ConvertOpcode(BSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo)
+HRESULT CInstrumentationMethod::ConvertOpcode(LPCWSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo)
 {
     // Horribly slow solution to mapping opcode name to opcode.
     // This should be okay though since the tests should only have a few instructions
@@ -753,20 +704,17 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
     // get the moduleId and method token for instrument method entry
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
-        CComBSTR bstrInstruModuleName;
-        IfFailRet(pInstrumentMethodEntry->GetModuleName(&bstrInstruModuleName));
+        const tstring& instrModuleName = pInstrumentMethodEntry->GetModuleName();
 
-        if (wcscmp(bstrModuleName, bstrInstruModuleName) == 0)
+        if (wcscmp(bstrModuleName, instrModuleName.c_str()) == 0)
         {
             // search for method name inside all the types of the matching module
-            CComBSTR bstrMethodName;
-            IfFailRet(pInstrumentMethodEntry->GetMethodName(&bstrMethodName));
+            const tstring& methodName = pInstrumentMethodEntry->GetMethodName();
 
             CComPtr<IMetaDataImport2> pMetadataImport;
             IfFailRet(pModuleInfo->GetMetaDataImport((IUnknown**)&pMetadataImport));
 
-            BOOL bIsRejit = FALSE;
-            IfFailRet(pInstrumentMethodEntry->GetIsRejit(&bIsRejit));
+            BOOL bIsRejit = pInstrumentMethodEntry->GetIsRejit();
 
             // Only request ReJIT if the method will modify code on ReJIT. On .NET Core, the runtime will
             // only callback into the profiler for the ReJIT of the method if ReJIT is requested whereas the
@@ -781,7 +729,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
                     MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
                     mdToken methodDefs[16];
                     ULONG cMethod = 0;
-                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, bstrMethodName, methodDefs, _countof(methodDefs), &cMethod);
+                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, _countof(methodDefs), &cMethod);
 
                     if (cMethod > 0)
                     {
@@ -834,24 +782,21 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
 
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
-        CComBSTR bstrEntryModuleName;
-        pInstrumentMethodEntry->GetModuleName(&bstrEntryModuleName);
+        const tstring& enteryModuleName = pInstrumentMethodEntry->GetModuleName();
 
-        if (wcscmp(bstrEntryModuleName, bstrModule) == 0)
+        if (wcscmp(enteryModuleName.c_str(), bstrModule) == 0)
         {
             // TODO: Eventually, this will need to use the full name and not the partial name
             CComBSTR bstrMethodName;
             pMethodInfo->GetName(&bstrMethodName);
 
-            CComBSTR bstrEntryMethodName;
-            pInstrumentMethodEntry->GetMethodName(&bstrEntryMethodName);
+            const tstring& entryMethodName= pInstrumentMethodEntry->GetMethodName();
 
-            if (wcscmp(bstrEntryMethodName, bstrMethodName) == 0)
+            if (wcscmp(entryMethodName.c_str(), bstrMethodName) == 0)
             {
                 m_methodInfoToEntryMap[pMethodInfo] = pInstrumentMethodEntry;
 
-                BOOL bRequireRejit = FALSE;
-                pInstrumentMethodEntry->GetIsRejit(&bRequireRejit);
+                BOOL bRequireRejit = pInstrumentMethodEntry->GetIsRejit();
 
                 *pbInstrument = (bRequireRejit == isRejit);
                 return S_OK;
@@ -874,8 +819,7 @@ HRESULT CInstrumentationMethod::BeforeInstrumentMethod(_In_ IMethodInfo* pMethod
         return E_FAIL;
     }
 
-    BOOL bRequireRejit = FALSE;
-    IfFailRet(pMethodEntry->GetIsRejit(&bRequireRejit));
+    BOOL bRequireRejit = pMethodEntry->GetIsRejit();
     if (bRequireRejit != isRejit)
     {
         return E_FAIL;
@@ -921,8 +865,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         return E_FAIL;
     }
 
-    BOOL bRequireRejit = FALSE;
-    IfFailRet(pMethodEntry->GetIsRejit(&bRequireRejit));
+    BOOL bRequireRejit = pMethodEntry->GetIsRejit();
     if (bRequireRejit != isRejit)
     {
         return E_FAIL;

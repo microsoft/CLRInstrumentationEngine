@@ -51,7 +51,7 @@ namespace InstrEngineTests
 
         #endregion
 
-        public const int TestAppTimeoutMs = 10000;
+        public const int TestAppTimeoutMs = Int32.MaxValue; // 10000;
 
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
@@ -186,16 +186,18 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
             string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+
 #if NETCOREAPP
             string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
             string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
             if (string.IsNullOrEmpty(hostPath))
             {
-                Environment.SpecialFolder programFilesFolder = is32bitTest ?
-                    Environment.SpecialFolder.ProgramFilesX86 :
-                    Environment.SpecialFolder.ProgramFiles;
+                
+                string programFilesFolder = is32bitTest ?
+                    Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%") :
+                    Environment.ExpandEnvironmentVariables("%ProgramW6432%");
 
-                hostPath = Path.Combine(Environment.GetFolderPath(programFilesFolder), "dotnet", "dotnet.exe");
+                hostPath = Path.Combine(programFilesFolder, "dotnet", "dotnet.exe");
             }
             Assert.IsTrue(File.Exists(hostPath), "dotnet.exe path '{0}' does not exist.", hostPath);
 
