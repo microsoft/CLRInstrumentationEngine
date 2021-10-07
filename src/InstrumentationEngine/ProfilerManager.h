@@ -179,7 +179,7 @@ namespace MicrosoftInstrumentationEngine
 
         // This is the client that asked to receive the raw ICorProfiler event
         // model rather than using the simplified instrumentation method model.
-        // 
+        //
         // We use a raw pointer here to address perf issues around locks & critical sections
         // that cause thread context switching. This implementation uses InterlockedExchange functions
         // to read/write the pointer and will produce an expected memory leak since there are no
@@ -349,11 +349,9 @@ namespace MicrosoftInstrumentationEngine
             // Send event to instrumentation methods
             for (CComPtr<TInterfaceType> pInstrumentationMethod : callbackVector)
             {
-                CLogging::LogMessage(_T("Sending event to Instrumentation Method"));
-
                 hr = (pInstrumentationMethod->*method)(parameters...);
 
-                CLogging::LogMessage(_T("Finished Sending event to Instrumentation Method. hr=%04x"), hr);
+                CLogging::LogMessage(_T("Finished sending event to Instrumentation Method. hr=%04x"), hr);
             }
 
             return hr;
@@ -394,8 +392,6 @@ namespace MicrosoftInstrumentationEngine
 
             if (pCallback != nullptr)
             {
-                CLogging::LogMessage(_T("Sending event to raw ICorProfilerCallback"));
-
                 hr = (pCallback->*method)(parameters...);
 
                 CLogging::LogMessage(_T("Finished Sending event to raw ICorProfilerCallback. hr=%04x"), hr);
@@ -1052,10 +1048,8 @@ public:
     CSEHTranslatorHolder translatorHolder; \
     try \
     { \
-    CLogging::LogMessage(_T("Starting ProfilerCallback ") __FUNCTIONW__);
 
 #define PROF_CALLBACK_END \
-    CLogging::LogMessage(_T("Ending ProfilerCallback") __FUNCTIONW__); \
     translatorHolder.RestoreSEHTranslator(); \
     } \
     catch (CSehException sehException) \
@@ -1073,11 +1067,8 @@ public:
 #define PROF_CALLBACK_BEGIN \
     try \
     { \
-    CLogging::LogMessage(_T("Starting ProfilerCallback ") WCHAR_SPEC, __FUNCTION__);
-
 
 #define PROF_CALLBACK_END \
-    CLogging::LogMessage(_T("Ending ProfilerCallback ") WCHAR_SPEC, __FUNCTION__); \
     } \
     catch (...) \
     { \

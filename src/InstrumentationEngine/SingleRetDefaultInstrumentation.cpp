@@ -31,8 +31,6 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::ApplyS
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CSingleRetDefaultInstrumentation::ApplySingleRetDefaultInstrumentation"));
-
     CComPtr<IMethodInfo> pMethodInfo;
     IfFailRet(m_pInstructionGraph->GetMethodInfo(&pMethodInfo));
 
@@ -113,7 +111,6 @@ HRESULT MicrosoftInstrumentationEngine::CSingleRetDefaultInstrumentation::ApplyS
     }
 
     m_pJumpTarget = pBranchTarget;
-    CLogging::LogMessage(_T("End CSingleRetDefaultInstrumentation::ApplySingleRetDefaultInstrumentation"));
 
     return hr;
 }

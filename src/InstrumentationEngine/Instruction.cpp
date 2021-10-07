@@ -1195,7 +1195,6 @@ IInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarge
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::SetBranchTarget(_In_ DWORD index, _In_ IInstruction* pTarget)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CSwitchInstruction::SetBranchTarget"));
 
     CComPtr<CInstruction> oldTarget = m_branchTargets[index];
     CComPtr<CInstruction> pNewTarget;
