@@ -351,7 +351,7 @@ namespace MicrosoftInstrumentationEngine
             {
                 hr = (pInstrumentationMethod->*method)(parameters...);
 
-                CLogging::LogMessage(_T("Finished Sending event to Instrumentation Method. hr=%04x"), hr);
+                CLogging::LogMessage(_T("Finished sending event to Instrumentation Method. hr=%04x"), hr);
             }
 
             return hr;

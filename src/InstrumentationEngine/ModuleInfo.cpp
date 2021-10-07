@@ -907,8 +907,6 @@ HRESULT MicrosoftInstrumentationEngine::CModuleInfo::GetMethodInfoByToken(_In_ m
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
 
-    CLogging::LogMessage(_T("CProfilerManager::GetMethodInfoByToken - creating new method info"));
-
     CComPtr<CMethodInfo> pMethodInfo;
     pMethodInfo.Attach(new CMethodInfo(m_pProfilerManager, 0, methodToken, 0, this, nullptr));
 

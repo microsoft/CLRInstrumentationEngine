@@ -3604,8 +3604,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
         );
     }
 
-
-    CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - creating new method info"));
     pMethodInfo.Attach(new CMethodInfo(this, functionId, functionToken, classId, pModuleInfo, NULL));
 
     IfFailRet(pMethodInfo->Initialize(true, false));
