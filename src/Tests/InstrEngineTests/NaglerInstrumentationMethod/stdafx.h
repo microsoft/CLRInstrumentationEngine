@@ -26,8 +26,6 @@
 
 #include "InstrumentationEngine.h"
 
-//#include <msxml6.h>
-
 #ifndef IfFailRet
 #define IfFailRet(EXPR) \
 do { if (FAILED(hr = (EXPR))) { ATLASSERT(!L"IfFailRet(" L#EXPR L") failed"); return hr; } } while (false)
