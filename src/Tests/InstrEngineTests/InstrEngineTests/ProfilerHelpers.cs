@@ -51,7 +51,7 @@ namespace InstrEngineTests
 
         #endregion
 
-        public const int TestAppTimeoutMs = Int32.MaxValue; // 10000;
+        public const int TestAppTimeoutMs = 10000;
 
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
