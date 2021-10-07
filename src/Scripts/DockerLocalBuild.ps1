@@ -77,7 +77,6 @@ if ($BuildDockerImage) {
     }
 }
 
-Write-Host "here"
 
 if ([string]::IsNullOrEmpty($BaseImage))
 {
@@ -95,8 +94,6 @@ if ([string]::IsNullOrEmpty($BaseImage))
         exit 1
     }
 }
-
-Write-Host "here"
 
 $containerName = "clrinstrumentationengine-build-$(New-Guid)"
 
