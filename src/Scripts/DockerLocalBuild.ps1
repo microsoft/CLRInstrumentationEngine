@@ -60,7 +60,12 @@ param
 
     # Use Windows Subsystem for Linux instead of Docker Desktop. WSL must have docker installed.
     [Parameter()]
-    [Switch] $Wsl
+    [Switch] $Wsl,
+
+    # The name of the distribution of wsl to use. Ignored if $Wsl is false
+    [Parameter()]
+    [String] $WslDistro
+
 )
 
 $ErrorActionPreference = "Stop"
@@ -69,7 +74,7 @@ $BaseImage = "";
 
 if ($BuildDockerImage) {
 
-    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage -Wsl:`$$Wsl"
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage -Wsl:`$$Wsl -WslDistro:`$$WslDistro"
     $BaseImage = Invoke-Expression $Command
     if (-not $?) {
         write-error "Error creating docker image"
@@ -138,8 +143,14 @@ else
 
 if ($Wsl)
 {
+    $wslCommand = "wsl"
+    if ($WslDistro)
+    {
+        $wslCommand = "$wslCommand -d $WslDistro"
+    }
+
     $command = $command.Replace("`"", "\`"")
-    $command = "wsl bash -c `"sudo $command`""
+    $command = "$wslCommand bash -c `"sudo $command`""
 }
 Write-Host $command
 Invoke-Expression $command

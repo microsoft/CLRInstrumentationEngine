@@ -33,7 +33,11 @@ param
 
     #Indicates that WSL should be used instead of docker desktop. 
     [Parameter()]
-    [Switch] $Wsl
+    [Switch] $Wsl,
+
+    # The name of the distribution of wsl to use. Ignored if $Wsl is false
+    [Parameter()]
+    [String] $WslDistro
 )
 
 $linux = ''
@@ -46,12 +50,27 @@ if ($CLib -eq 'musl') {
     exit 1
 }
 
-$imageName = "clrielocal:$CLib"
-# Check to see if the image already esists.
-$existenceCheck = "docker images $imageName --format 'yes'"
+$WslCommand = ""
+
 if ($Wsl)
 {
-    $existenceCheck = "wsl bash -c `"sudo $existenceCheck`""
+    $WslCommand = "wsl"
+    if ($WslDistro)
+    {
+        $WslCommand = "$wslCommand -d $WslDistro"
+    }
+}
+elseif ($IsMac -or $IsLinux)
+{
+    $sudo = "sudo"
+}
+
+$imageName = "clrielocal:$CLib"
+# Check to see if the image already esists.
+$existenceCheck = "$sudo docker images $imageName --format 'yes'"
+if ($Wsl)
+{
+    $existenceCheck = "$wslCommand bash -c `"sudo $existenceCheck`""
 }
 Write-Host $existenceCheck
 $exists = Invoke-Expression $existenceCheck
@@ -71,10 +90,11 @@ if ($exists -eq "yes") {
     }
 }
 
-$dockerDir = "$EnlistmentRoot\src\unix\docker\dockerfiles\build\$linux"
-$dockerContext = "$EnlistmentRoot\src\unix\docker\context"
+$dockerDir = Join-Path -Path "$EnlistmentRoot" -Child "src\unix\docker\dockerfiles\build\$linux"
+$dockerContext = Join-Path -Path "$EnlistmentRoot" -Child "src\unix\docker\context"
+$dockerFile = Join-Path -Path "$dockerDir" -Child "DockerFile"
 
-if (-not (Test-Path "$dockerDir\DockerFile" -PathType Leaf)) {
+if (-not (Test-Path "$dockerFile" -PathType Leaf)) {
     Write-Error "Could not find path to required DockerFile in '$dockerDir"
     exit 1
 }
@@ -94,11 +114,11 @@ if ($Wsl)
     $drive = $pathInfo.Drive.ToString().ToLowerInvariant()
     $dockerContext = $pathInfo.Path.Substring(3).Replace('\','/') 
     $dockerContext = "/mnt/$drive/$dockerContext"
-    Invoke-Expression "wsl bash -c `"cat $dockerDir/DockerFile | sudo docker build -t '$imageName' -f - '$dockerContext'`"" | Write-Host
+    Invoke-Expression "$wslCommand bash -c `"cat $dockerDir/DockerFile | sudo docker build -t '$imageName' -f - '$dockerContext'`"" | Write-Host
 }
 else
 {
-    $Expression = "Get-Content '$dockerDir\DockerFile' | docker build -t '$imageName' -f - '$dockerContext'"
+    $Expression = "Get-Content '$dockerFile' | $sudo docker build -t '$imageName' -f - '$dockerContext'"
     Write-Host $Expression
     Invoke-Expression $Expression | Write-Host
 }
