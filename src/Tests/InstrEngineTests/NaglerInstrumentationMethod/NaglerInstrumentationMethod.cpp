@@ -628,7 +628,7 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
     return S_OK;
 }
 
-HRESULT CInstrumentationMethod::ConvertOpcode(LPCWSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo)
+HRESULT CInstrumentationMethod::ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo)
 {
     // Horribly slow solution to mapping opcode name to opcode.
     // This should be okay though since the tests should only have a few instructions
@@ -636,7 +636,7 @@ HRESULT CInstrumentationMethod::ConvertOpcode(LPCWSTR bstrOpcode, ILOrdinalOpcod
     const DWORD cOpcodes = 0x0124;
     for (DWORD i = 0; i < 0x0124; i++)
     {
-        if (wcscmp(ilOpcodeInfo[i].m_name, bstrOpcode) == 0)
+        if (wcscmp(ilOpcodeInfo[i].m_name, zwOpcode) == 0)
         {
             *pOpcode = (ILOrdinalOpcode)i;
             *pOpcodeInfo = ilOpcodeInfo[i];

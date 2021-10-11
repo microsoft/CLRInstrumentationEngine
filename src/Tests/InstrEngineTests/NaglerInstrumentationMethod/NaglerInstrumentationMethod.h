@@ -176,7 +176,7 @@ private:
     HRESULT InstrumentLocals(IMethodInfo* pMethodInfo, shared_ptr<CInstrumentMethodEntry> pMethodEntry);
     HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType &localType, IType** pType);
 
-    HRESULT ConvertOpcode(LPCWSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
+    HRESULT ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
 

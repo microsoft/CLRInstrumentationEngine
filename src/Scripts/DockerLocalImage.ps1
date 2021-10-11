@@ -40,6 +40,19 @@ param
     [String] $WslDistro
 )
 
+
+function ConvertTo-DockerPath
+{
+    param(
+        [ValidateScript({ Test-Path $_ })]
+        [string]$PathToConvert
+    )
+
+    $pathInfo = Resolve-Path $PathToConvert
+    $drive = $pathinfo.Drive.Name.ToLowerInvariant()
+    Write-Output "/mnt/$drive/$($pathInfo.Path.Substring(3).Replace('\','/'))"  
+}
+
 $linux = ''
 if ($CLib -eq 'musl') {
     $linux = 'alpine'
@@ -55,7 +68,7 @@ $WslCommand = ""
 if ($Wsl)
 {
     $WslCommand = "wsl"
-    if ($WslDistro)
+    if (-not [string]::IsNullOrEmpty($WslDistro))
     {
         $WslCommand = "$wslCommand -d $WslDistro"
     }
@@ -106,14 +119,8 @@ if (-not (Test-Path "$dockerContext" -PathType Container)) {
 
 if ($Wsl)
 {
-    $pathInfo = resolve-path $dockerDir
-    $drive = $pathInfo.Drive.ToString().ToLowerInvariant()
-    $dockerDir = $pathInfo.Path.Substring(3).Replace('\','/') 
-    $dockerDir = "/mnt/$drive/$dockerDir"
-    $pathInfo = resolve-path $dockerContext
-    $drive = $pathInfo.Drive.ToString().ToLowerInvariant()
-    $dockerContext = $pathInfo.Path.Substring(3).Replace('\','/') 
-    $dockerContext = "/mnt/$drive/$dockerContext"
+    $dockerDir = ConvertTo-DockerPath $dockerDir
+    $dockerContext = ConvertTo-DockerPath $dockerContext
     Invoke-Expression "$wslCommand bash -c `"cat $dockerDir/DockerFile | sudo docker build -t '$imageName' -f - '$dockerContext'`"" | Write-Host
 }
 else

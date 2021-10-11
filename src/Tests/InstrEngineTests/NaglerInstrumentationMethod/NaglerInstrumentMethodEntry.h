@@ -133,8 +133,8 @@ struct CInjectAssembly
 class CInstrumentMethodEntry
 {
 private:
-    tstring m_bstrModuleName;
-    tstring m_bstrMethodName;
+    tstring m_strModuleName;
+    tstring m_strMethodName;
     BOOL m_bIsRejit;
     BOOL m_isReplacement;
     BOOL m_bMakeSingleRetFirst;
@@ -146,10 +146,10 @@ private:
     vector<CLocalType> m_locals;
     shared_ptr<CInstrumentMethodPointTo> m_pointTo;
 public:
-    CInstrumentMethodEntry(tstring bstrModuleName, tstring bstrMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast, BOOL addExceptionHandler)
+    CInstrumentMethodEntry(tstring& strModuleName, tstring& strMethodName, BOOL isRejit, BOOL makeSingleRetFirst, BOOL makeSingleRetLast, BOOL addExceptionHandler)
         : m_pointTo(nullptr),
-        m_bstrModuleName(bstrModuleName),
-        m_bstrMethodName(bstrMethodName),
+        m_strModuleName(strModuleName),
+        m_strMethodName(strMethodName),
         m_bIsRejit(isRejit),
         m_isReplacement(FALSE),
         m_bMakeSingleRetFirst(makeSingleRetFirst),
@@ -160,12 +160,12 @@ public:
 
     const tstring& GetModuleName()
     {
-        return m_bstrModuleName;
+        return m_strModuleName;
     }
 
     const tstring& GetMethodName()
     {
-        return m_bstrMethodName;
+        return m_strMethodName;
     }
 
     BOOL GetIsRejit()
