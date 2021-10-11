@@ -32,6 +32,7 @@ private:
     std::wstring m_strBinaryDir;
 
     CComPtr<IProfilerManager> m_pProfilerManager;
+    CComPtr<IProfilerStringManager> m_pStringManager;
 
     // CModuleRefCount
 public:

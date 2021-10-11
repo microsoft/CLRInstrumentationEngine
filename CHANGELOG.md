@@ -11,6 +11,8 @@ Please format the changes as follows:
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
   + Allow building on OSX. Note this is only experimental and not officially supported yet.
+  + Add API for safe string cleanup on non-Windows platforms.
+  + Increment API level
 + BugFixes:
   + Fix XmlReader.Create to read from stream instead of filepath string
   + Remove references to libunwind8 and libuuid; they're not used anymore
@@ -18,6 +20,7 @@ Please format the changes as follows:
   + Fix bad memset argument order in AppDomainCollection::GetAppDomainIDs
 + Updates:
   + Use net50 platform for restoring native dependencies on Unix
+  + Nagler instrumentation tests no longer depend exclusively on msxml for configuration reading.
 
 ## 1.0.42
 + BugFixes:
