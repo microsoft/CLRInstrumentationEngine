@@ -9,23 +9,16 @@ MicrosoftInstrumentationEngine::CCorProfilerFunctionInfoWrapper::CCorProfilerFun
     _In_ CMethodInfo* pMethodInfo
     ) : m_pProfilerManager(pProfilerManager), m_pMethodInfo(pMethodInfo)
 {
-
 }
-
 
 HRESULT MicrosoftInstrumentationEngine::CCorProfilerFunctionInfoWrapper::SetCodegenFlags(
     _In_ DWORD flags)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CCorProfilerFunctionInfoWrapper::SetCodegenFlags"));
-
     DWORD originalFlags = 0;
 
     IfFailRet(m_pMethodInfo->GetRejitCodeGenFlags(&originalFlags));
-
     IfFailRet(m_pMethodInfo->SetRejitCodeGenFlags(originalFlags | flags));
-
-    CLogging::LogMessage(_T("End CCorProfilerFunctionInfoWrapper::SetCodegenFlags"));
 
     return S_OK;
 }
@@ -35,11 +28,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerFunctionInfoWrapper::SetILFu
     _In_reads_(cbNewILMethodHeader) LPCBYTE pbNewILMethodHeader)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CCorProfilerFunctionInfoWrapper::SetILFunctionBody"));
 
     IfFailRet(m_pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbNewILMethodHeader));
-
-    CLogging::LogMessage(_T("End CCorProfilerFunctionInfoWrapper::SetILFunctionBody"));
 
     return S_OK;
 }
@@ -50,11 +40,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerFunctionInfoWrapper::SetILIn
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CCorProfilerFunctionInfoWrapper::SetILFunctionBody"));
-
     IfFailRet(m_pMethodInfo->MergeILInstrumentedCodeMap(cILMapEntries, rgILMapEntries));
-
-    CLogging::LogMessage(_T("End CCorProfilerFunctionInfoWrapper::SetILFunctionBody"));
 
     return S_OK;
 }
