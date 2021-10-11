@@ -1091,6 +1091,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     DWORD maxStackDepth = 0;
     DWORD stackDepth = 0;
 
+    unordered_map<DWORD, DWORD> offsetToStackDepthMap;
+
     // Heuristic to calculate maxstack. This may guess sligthly high as control flow
     // is not taken into account. It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
@@ -1099,6 +1101,17 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     while (pInstr != NULL)
     {
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();
+
+        if (!offsetToStackDepthMap.empty())
+        {
+            DWORD dwOffset = 0;
+            IfFailRet(pInstr->GetOffset(&dwOffset));
+            auto it = offsetToStackDepthMap.find(dwOffset);
+            if (it != offsetToStackDepthMap.end() && it->second > stackDepth)
+            {
+                stackDepth = it->second;
+            }
+        }
 
         int stackImpact = 0;
         IfFailRet(pInstr->GetStackImpact(m_pMethodInfo, stackDepth, &stackImpact));
@@ -1113,6 +1126,27 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
         if (isFirstInstructionInCatch)
         {
             stackDepth = 1;
+        }
+
+        if (pInstr->GetIsBranchInternal())
+        {
+            CBranchInstruction* pBranch = static_cast<CBranchInstruction*>(pInstr);
+
+            DWORD dwTargetOffset = 0;
+            pBranch->GetTargetOffset(&dwTargetOffset);
+
+            auto it = offsetToStackDepthMap.find(dwTargetOffset);
+            if (it != offsetToStackDepthMap.end())
+            {
+                if (stackDepth > it->second)
+                {
+                    it->second = stackDepth;
+                }
+            }
+            else
+            {
+                offsetToStackDepthMap.insert(make_pair(dwTargetOffset, stackDepth));
+            }
         }
 
         if (stackDepth > maxStackDepth)
