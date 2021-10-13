@@ -22,7 +22,7 @@
     <CodeRVA>0x00002140</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x12 0x19 </LocalSignature>
-    <MaxStack>0xffffffff</MaxStack>
+    <MaxStack>0x00000004</MaxStack>
     <Instructions>
         <![CDATA[
 IL_0000 ldstr 0x70000001
