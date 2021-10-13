@@ -99,6 +99,10 @@
       <Link>Baselines\AddOperandTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Baselines\Empty_CalculateMaxStackSizeTest.xml">
+      <Link>Baselines\Empty_CalculateMaxStackSizeTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Baselines\ExceptionFatClauseTest.xml">
       <Link>Baselines\ExceptionFatClauseTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -324,6 +328,10 @@
     <Content Include="..\TestScripts\AddNop_WhileTest_Debug.xml">
       <Link>TestScripts\AddNop_WhileTest_Debug.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\Empty_CalculateMaxStackSizeTest.xml">
+        <Link>TestScripts\Empty_CalculateMaxStackSizeTest.xml</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\ExceptionFatClauseTest.xml">
       <Link>TestScripts\ExceptionFatClauseTest.xml</Link>
