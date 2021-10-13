@@ -21,6 +21,8 @@ namespace MaxStackSizeExample
                 Args = new List<string>()
             });
 
+            MethodWithExceptionFilter();
+
             return 0;
         }
 
@@ -41,6 +43,24 @@ namespace MaxStackSizeExample
             };
 
             return validationRequest;
+        }
+
+        public static void MethodWithExceptionFilter()
+        {
+            try
+            {
+                try
+                {
+                    throw new Exception("ab");
+                }
+                catch (Exception e) when (e.Message.Contains("a") && e.Message.Contains("b") && e.Message.Contains("c") && Other(1, 2, 3, 4))
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            catch
+            {
+            }
         }
 
         public class ValidationRequestDto
@@ -79,6 +99,11 @@ namespace MaxStackSizeExample
             public string Executable { get; set; }
 
             public string Arguments { get; set; }
+        }
+
+        public static bool Other(int a, int b, int c, int d)
+        {
+            return a == b && c == d;
         }
     }
 }

@@ -2,8 +2,8 @@
 <InstrumentedMethod>
     <Name>GetHdiPolicyValidationRequest</Name>
     <FullName>MaxStackSizeExample.Program.GetHdiPolicyValidationRequest</FullName>
-    <ClassID Volatile="True">0x7ffe8730b9d8</ClassID>
-    <FunctionID Volatile="True">0x7ffe8730b9b0</FunctionID>
+    <ClassID Volatile="True">0x7ffe8c12ba08</ClassID>
+    <FunctionID Volatile="True">0x7ffe8c12b9b0</FunctionID>
     <MethodToken>0x06000002</MethodToken>
     <GenericParameterCount>0x00000000</GenericParameterCount>
     <IsStatic>1</IsStatic>
@@ -19,38 +19,38 @@
     <RetTypeToken>0x02000003</RetTypeToken>
     <CorSignature>0x00 0x01 0x12 0x0c 0x12 0x10 </CorSignature>
     <CorMethodAttr>0x00000096</CorMethodAttr>
-    <CodeRVA>0x00002098</CodeRVA>
+    <CodeRVA>0x000020a0</CodeRVA>
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x01 0x12 0x0c </LocalSignature>
     <MaxStack>0x00000009</MaxStack>
     <Instructions>
         <![CDATA[
-IL_0000 newobj 0x0600000c
+IL_0000 newobj 0x0600000e
 IL_0005 dup
 IL_0006 ldarg.0
-IL_0007 callvirt 0x0600000f
+IL_0007 callvirt 0x06000011
 IL_000c dup
 IL_000d brtrue IL_001e
 IL_0012 pop
 IL_0013 ldsfld 0x0a000005
 IL_0018 newobj 0x0a000007
 IL_001d throw
-IL_001e callvirt 0x06000009
+IL_001e callvirt 0x0600000b
 IL_0023 dup
-IL_0024 newobj 0x06000018
+IL_0024 newobj 0x0600001a
 IL_0029 dup
-IL_002a newobj 0x06000021
+IL_002a newobj 0x06000023
 IL_002f dup
 IL_0030 newobj 0x0a000006
 IL_0035 dup
 IL_0036 ldarg.0
-IL_0037 callvirt 0x0600000d
-IL_003c callvirt 0x06000019
+IL_0037 callvirt 0x0600000f
+IL_003c callvirt 0x0600001b
 IL_0041 callvirt 0x0a000008
-IL_0046 callvirt 0x0600001c
+IL_0046 callvirt 0x0600001e
 IL_004b dup
 IL_004c ldarg.0
-IL_004d callvirt 0x06000011
+IL_004d callvirt 0x06000013
 IL_0052 callvirt 0x0a000009
 IL_0057 ldsfld 0x0a000005
 IL_005c callvirt 0x0a00000a
@@ -58,15 +58,15 @@ IL_0061 brtrue IL_0070
 IL_0066 ldsfld 0x0a000005
 IL_006b br IL_0075
 IL_0070 ldsfld 0x0a000005
-IL_0075 callvirt 0x0600001e
+IL_0075 callvirt 0x06000020
 IL_007a dup
 IL_007b ldsfld 0x0a000005
 IL_0080 ldarg.0
-IL_0081 callvirt 0x06000013
+IL_0081 callvirt 0x06000015
 IL_0086 call 0x0a00000b
-IL_008b callvirt 0x06000020
-IL_0090 callvirt 0x06000017
-IL_0095 callvirt 0x0600000b
+IL_008b callvirt 0x06000022
+IL_0090 callvirt 0x06000019
+IL_0095 callvirt 0x0600000d
 IL_009a stloc.0
 IL_009b ldloc.0
 IL_009c ret

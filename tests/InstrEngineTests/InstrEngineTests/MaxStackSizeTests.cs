@@ -40,5 +40,15 @@ namespace InstrEngineTests
                 "MaxStackSizeExample_Release_x64",
                 "Empty_CalculateMaxStackSizeTest.xml");
         }
+
+        [TestMethod]
+        [Timeout(TestConstants.TestTimeout)]
+        public void TestMaxStackSize_WhenMethodWithExceptionFilter()
+        {
+            ProfilerHelpers.LaunchAppAndCompareResult(
+                TestParameters.FromContext(Context),
+                "MaxStackSizeExample_Release_x64",
+                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+        }
     }
 }
