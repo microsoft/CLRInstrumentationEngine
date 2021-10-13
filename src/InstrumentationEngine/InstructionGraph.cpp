@@ -1138,6 +1138,11 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
         if (isFirstInstructionInCatchOrFilter)
         {
             stackDepth = 1;
+
+            if (maxStackDepth < 1)
+            {
+                maxStackDepth = 1;
+            }
         }
 
         int stackImpact = 0;
