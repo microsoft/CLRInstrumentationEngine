@@ -2,6 +2,6 @@
 <InstrumentationTestScript>
   <InstrumentMethod>
     <ModuleName>MaxStackSizeExample_Release_x64.exe</ModuleName>
-    <MethodName>GetHdiPolicyValidationRequest</MethodName>
+    <MethodName>GetRequest</MethodName>
   </InstrumentMethod>
 </InstrumentationTestScript>

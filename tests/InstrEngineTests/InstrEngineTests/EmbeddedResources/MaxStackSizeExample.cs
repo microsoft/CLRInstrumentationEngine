@@ -10,13 +10,13 @@ namespace MaxStackSizeExample
     {
         static int Main(string[] args)
         {
-            GetHdiPolicyValidationRequest(new HdiJobMetadata()
+            GetRequest(new Job()
             {
-                ExperimentId = String.Empty,
+                Id = String.Empty,
                 File = String.Empty,
-                ModuleInfo = new ModuleInfoDto
+                Info = new Info
                 {
-                    ModuleId = String.Empty
+                    Id = String.Empty
                 },
                 Args = new List<string>()
             });
@@ -26,23 +26,23 @@ namespace MaxStackSizeExample
             return 0;
         }
 
-        public static ValidationRequestDto GetHdiPolicyValidationRequest(HdiJobMetadata job)
+        public static Request GetRequest(Job job)
         {
-            ValidationRequestDto validationRequest = new ValidationRequestDto()
+            Request request = new Request()
             {
-                ExperimentName = job.ExperimentId ?? throw new ArgumentNullException(String.Empty),
-                ExecutionContext = new ExecutionContextDto()
+                Name = job.Id ?? throw new ArgumentNullException(String.Empty),
+                Context = new ContextDto()
                 {
-                    ModuleInfo = new ModuleInfoDto
+                    Info = new Info
                     {
-                        SnapshotIds = new List<string>() { job.ModuleInfo.ModuleId },
+                        SnapshotIds = new List<string>() { job.Info.Id },
                         Executable = job.File.ToLower().EndsWith(String.Empty) ? String.Empty : String.Empty,
                         Arguments = string.Join(string.Empty, job.Args)
                     }
                 },
             };
 
-            return validationRequest;
+            return request;
         }
 
         public static void MethodWithExceptionFilter()
@@ -63,36 +63,36 @@ namespace MaxStackSizeExample
             }
         }
 
-        public class ValidationRequestDto
+        public class Request
         {
             public string RunId { get; set; }
 
             public string ParentRunId { get; set; }
 
-            public string ExperimentName { get; set; }
+            public string Name { get; set; }
 
-            public ExecutionContextDto ExecutionContext { get; set; }
+            public ContextDto Context { get; set; }
         }
 
-        public class HdiJobMetadata
+        public class Job
         {
-            public ModuleInfoDto ModuleInfo { get; set; }
+            public Info Info { get; set; }
 
-            public string ExperimentId { get; set; }
+            public string Id { get; set; }
 
             public string File { get; set; }
 
             public List<string> Args { get; set; }
         }
 
-        public class ExecutionContextDto
+        public class ContextDto
         {
-            public ModuleInfoDto ModuleInfo { get; set; }
+            public Info Info { get; set; }
         }
 
-        public class ModuleInfoDto
+        public class Info
         {
-            public string ModuleId { get; set; }
+            public string Id { get; set; }
 
             public List<string> SnapshotIds { get; set; }
 

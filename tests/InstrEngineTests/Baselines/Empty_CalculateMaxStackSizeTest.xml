@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <InstrumentedMethod>
-    <Name>GetHdiPolicyValidationRequest</Name>
-    <FullName>MaxStackSizeExample.Program.GetHdiPolicyValidationRequest</FullName>
+    <Name>GetRequest</Name>
+    <FullName>MaxStackSizeExample.Program.GetRequest</FullName>
     <ClassID Volatile="True">0x7ffe8c12ba08</ClassID>
     <FunctionID Volatile="True">0x7ffe8c12b9b0</FunctionID>
     <MethodToken>0x06000002</MethodToken>

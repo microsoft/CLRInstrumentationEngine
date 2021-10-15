@@ -1109,7 +1109,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
         }
     };
 
-    // Heuristic to calculate maxstack. This may guess sligthly high.
+    // Heuristic to calculate maxstack. This may guess slightly high.
     // It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
     // The actual maximum may be slightly smaller.
