@@ -337,7 +337,7 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
         isSingleRetLast = true;
     }
 
-    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(moduleName.c_str(), methodName.c_str(), bIsRejit, isSingleRetFirst, isSingleRetLast, isAddExceptionHandler);
+    shared_ptr<CInstrumentMethodEntry> pMethod = make_shared<CInstrumentMethodEntry>(moduleName, methodName, bIsRejit, isSingleRetFirst, isSingleRetLast, isAddExceptionHandler);
     if (spPointTo != nullptr)
     {
         pMethod->SetPointTo(spPointTo);
