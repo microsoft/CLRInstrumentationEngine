@@ -136,7 +136,7 @@ namespace MicrosoftInstrumentationEngine
         virtual HRESULT __stdcall ExpandBranches() override;
 
     private:
-        HRESULT IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch);
+        HRESULT IsFirstInstructionInCatchOrFilter(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch);
         void MarkInstructionsStale() { m_bAreInstructionsStale = true; }
     };
 }

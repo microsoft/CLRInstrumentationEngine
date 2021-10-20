@@ -53,7 +53,8 @@ namespace InstrEngineTests
             "RuntimeExceptionCallbacks",
             "HttpMethodTests",
             "DynamicCodeTests",
-            "MultiReturnTests"
+            "MultiReturnTests",
+            "MaxStackSizeExample"
         };
 
         private const string DynamicCodeAssemblyName = "DynamicCodeAssembly";
