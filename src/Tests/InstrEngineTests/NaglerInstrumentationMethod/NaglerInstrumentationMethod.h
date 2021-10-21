@@ -167,16 +167,16 @@ public:
 
 private:
     HRESULT LoadTestScript();
-    HRESULT ProcessInstrumentMethodNode(IXMLDOMNode* pNode);
-    HRESULT ProcessInstructionNodes(IXMLDOMNode* pNode, vector<shared_ptr<CInstrumentInstruction>>& instructions, bool isBaseline);
-    HRESULT ProcessLocals(IXMLDOMNode* pNode, vector<CLocalType>& locals);
-    HRESULT ProcessPointTo(IXMLDOMNode* pNode, CInstrumentMethodPointTo& pointTo);
-    HRESULT ProcessInjectAssembly(IXMLDOMNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly);
+    HRESULT ProcessInstrumentMethodNode(CXmlNode* pNode);
+    HRESULT ProcessInstructionNodes(CXmlNode* pNode, vector<shared_ptr<CInstrumentInstruction>>& instructions, bool isBaseline);
+    HRESULT ProcessLocals(CXmlNode* pNode, vector<CLocalType>& locals);
+    HRESULT ProcessPointTo(CXmlNode* pNode, CInstrumentMethodPointTo& pointTo);
+    HRESULT ProcessInjectAssembly(CXmlNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly);
 
     HRESULT InstrumentLocals(IMethodInfo* pMethodInfo, shared_ptr<CInstrumentMethodEntry> pMethodEntry);
     HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType &localType, IType** pType);
 
-    HRESULT ConvertOpcode(BSTR bstrOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
+    HRESULT ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
 

@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.28727.205
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrEngineTests", "InstrEngineTests", "{B4ADF020-7ACF-4A2B-B3FE-731006C1F30F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrEngineTests", "tests\InstrEngineTests\InstrEngineTests\InstrEngineTests.csproj", "{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrEngineTests", "src\Tests\InstrEngineTests\InstrEngineTests\InstrEngineTests.csproj", "{DFC9E517-AF1A-4087-BB27-AD1A09602F4F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaglerInstrumentationMethod", "tests\InstrEngineTests\NaglerInstrumentationMethod\NaglerInstrumentationMethod.vcxproj", "{939151FA-8324-4197-B5B4-EAE927BD2AEE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaglerInstrumentationMethod", "src\Tests\InstrEngineTests\NaglerInstrumentationMethod\NaglerInstrumentationMethod.vcxproj", "{939151FA-8324-4197-B5B4-EAE927BD2AEE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{659CA07D-C239-48EF-B5F1-E8C7D96916CB} = {659CA07D-C239-48EF-B5F1-E8C7D96916CB}
 	EndProjectSection
@@ -67,7 +67,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.Profi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstrumentationEngine.Attach", "src\InstrumentationEngine.Attach\InstrumentationEngine.Attach.csproj", "{8F446E35-5683-4ABF-8F42-1C8EB5797A5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAppRunner", "tests\InstrEngineTests\TestAppRunner\TestAppRunner.csproj", "{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAppRunner", "src\Tests\InstrEngineTests\TestAppRunner\TestAppRunner.csproj", "{9DFAD1B4-8F6D-483D-8932-00D2D8B87708}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common.Headers", "src\Common.Headers\Common.Headers.vcxitems", "{0D4A6CAA-80D9-4E41-859F-C14205FD45C4}"
 EndProject

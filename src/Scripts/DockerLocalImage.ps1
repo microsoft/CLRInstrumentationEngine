@@ -29,8 +29,30 @@ param
 
     # Indicates that the image should be rebuilt.
     [Parameter()]
-    [Switch] $Rebuild
+    [Switch] $Rebuild,
+
+    #Indicates that WSL should be used instead of docker desktop. 
+    [Parameter()]
+    [Switch] $Wsl,
+
+    # The name of the distribution of wsl to use. Ignored if $Wsl is false. The
+    # distro must have docker and the docker daemon (dockerd) installed and running.
+    [Parameter()]
+    [String] $WslDistro
 )
+
+
+function ConvertTo-DockerPath
+{
+    param(
+        [ValidateScript({ Test-Path $_ })]
+        [string]$PathToConvert
+    )
+
+    $pathInfo = Resolve-Path $PathToConvert
+    $drive = $pathinfo.Drive.Name.ToLowerInvariant()
+    Write-Output "/mnt/$drive/$($pathInfo.Path.Substring(3).Replace('\','/'))"  
+}
 
 $linux = ''
 if ($CLib -eq 'musl') {
@@ -42,14 +64,37 @@ if ($CLib -eq 'musl') {
     exit 1
 }
 
+$WslCommand = ""
+
+if ($Wsl)
+{
+    $WslCommand = "wsl"
+    if (-not [string]::IsNullOrEmpty($WslDistro))
+    {
+        $WslCommand = "$wslCommand -d $WslDistro"
+    }
+}
+elseif ($IsMac -or $IsLinux)
+{
+    $sudo = "sudo"
+}
+
 $imageName = "clrielocal:$CLib"
 # Check to see if the image already esists.
-$exists = docker images $imageName --format 'yes'
+$existenceCheck = "$sudo docker images $imageName --format 'yes'"
+if ($Wsl)
+{
+    $existenceCheck = "$wslCommand bash -c `"sudo $existenceCheck`""
+}
+Write-Host $existenceCheck
+$exists = Invoke-Expression $existenceCheck
 
 if (-not $?) {
     Write-Error "Could not execute docker command".
     exit 1
 }
+
+Write-Host $exists
 
 if ($exists -eq "yes") {
     Write-Host "Image '$imageName' already exists."
@@ -59,10 +104,11 @@ if ($exists -eq "yes") {
     }
 }
 
-$dockerDir = "$EnlistmentRoot\src\unix\docker\dockerfiles\build\$linux"
-$dockerContext = "$EnlistmentRoot\src\unix\docker\context"
+$dockerDir = Join-Path -Path "$EnlistmentRoot" -Child "src\unix\docker\dockerfiles\build\$linux"
+$dockerContext = Join-Path -Path "$EnlistmentRoot" -Child "src\unix\docker\context"
+$dockerFile = Join-Path -Path "$dockerDir" -Child "DockerFile"
 
-if (-not (Test-Path "$dockerDir\DockerFile" -PathType Leaf)) {
+if (-not (Test-Path "$dockerFile" -PathType Leaf)) {
     Write-Error "Could not find path to required DockerFile in '$dockerDir"
     exit 1
 }
@@ -72,9 +118,19 @@ if (-not (Test-Path "$dockerContext" -PathType Container)) {
     exit 1
 }
 
-$Expression = "Get-Content '$dockerDir\DockerFile' | docker build -t '$imageName' -f - '$dockerContext'"
-Write-Host $Expression
-Invoke-Expression $Expression | Write-Host
+if ($Wsl)
+{
+    $dockerDir = ConvertTo-DockerPath $dockerDir
+    $dockerContext = ConvertTo-DockerPath $dockerContext
+    Invoke-Expression "$wslCommand bash -c `"cat $dockerDir/DockerFile | sudo docker build -t '$imageName' -f - '$dockerContext'`"" | Write-Host
+}
+else
+{
+    $Expression = "Get-Content '$dockerFile' | $sudo docker build -t '$imageName' -f - '$dockerContext'"
+    Write-Host $Expression
+    Invoke-Expression $Expression | Write-Host
+}
+
 if (-not $?) {
     Write-Error "Error building image '$imageName'"
     exit 1

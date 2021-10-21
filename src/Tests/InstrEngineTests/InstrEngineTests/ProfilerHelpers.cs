@@ -186,16 +186,18 @@ namespace InstrEngineTests
             psi.EnvironmentVariables.Add(IsRejitEnvName, isRejit ? "True" : "False");
 
             string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
+
 #if NETCOREAPP
             string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
             string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
             if (string.IsNullOrEmpty(hostPath))
             {
-                Environment.SpecialFolder programFilesFolder = is32bitTest ?
-                    Environment.SpecialFolder.ProgramFilesX86 :
-                    Environment.SpecialFolder.ProgramFiles;
+                
+                string programFilesFolder = is32bitTest ?
+                    Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%") :
+                    Environment.ExpandEnvironmentVariables("%ProgramW6432%");
 
-                hostPath = Path.Combine(Environment.GetFolderPath(programFilesFolder), "dotnet", "dotnet.exe");
+                hostPath = Path.Combine(programFilesFolder, "dotnet", "dotnet.exe");
             }
             Assert.IsTrue(File.Exists(hostPath), "dotnet.exe path '{0}' does not exist.", hostPath);
 
