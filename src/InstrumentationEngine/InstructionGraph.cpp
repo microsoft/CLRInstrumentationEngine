@@ -1091,28 +1091,89 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     DWORD maxStackDepth = 0;
     DWORD stackDepth = 0;
 
-    // Heuristic to calculate maxstack. This may guess sligthly high as control flow
-    // is not taken into account. It makes a linear pass over the instructions looking at
+    unordered_map<DWORD, DWORD> offsetToStackDepthMap;
+
+    auto insertOrUpdateStackDepthMap = [](unordered_map<DWORD, DWORD>& stackDepthMap, DWORD offset, DWORD stackDepth)
+    {
+        auto it = stackDepthMap.find(offset);
+        if (it != stackDepthMap.end())
+        {
+            if (stackDepth > it->second)
+            {
+                it->second = stackDepth;
+            }
+        }
+        else
+        {
+            stackDepthMap.insert(make_pair(offset, stackDepth));
+        }
+    };
+
+    // Heuristic to calculate maxstack. This may guess slightly high.
+    // It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
     // The actual maximum may be slightly smaller.
+    // Map is used to remember maximal stack depths for target instructions.
     CInstruction* pInstr = m_pFirstInstruction.p;
     while (pInstr != NULL)
     {
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();
+
+        if (!offsetToStackDepthMap.empty())
+        {
+            DWORD dwOffset = 0;
+            IfFailRet(pInstr->GetOffset(&dwOffset));
+            auto it = offsetToStackDepthMap.find(dwOffset);
+            if (it != offsetToStackDepthMap.end() && it->second > stackDepth)
+            {
+                stackDepth = it->second;
+            }
+        }
+
+        // If this instruction is the first instruction in a catch block or exception filter block,
+        // the stack will be emptied first, and the exception object will be pushed
+        // on the stack by the runtime
+        bool isFirstInstructionInCatchOrFilter = false;
+        IfFailRet(IsFirstInstructionInCatchOrFilter(pInstr, &isFirstInstructionInCatchOrFilter));
+        if (isFirstInstructionInCatchOrFilter)
+        {
+            stackDepth = 1;
+
+            if (maxStackDepth < 1)
+            {
+                maxStackDepth = 1;
+            }
+        }
 
         int stackImpact = 0;
         IfFailRet(pInstr->GetStackImpact(m_pMethodInfo, stackDepth, &stackImpact));
 
         stackDepth += stackImpact;
 
-        // If this instruction is the first instruction in a catch block,
-        // the stack will be emptied first, and the exception object will be pushed
-        // on the stack by the runtime
-        bool isFirstInstructionInCatch = false;
-        IfFailRet(IsFirstInstructionInCatch(pInstr, &isFirstInstructionInCatch));
-        if (isFirstInstructionInCatch)
+        if (pInstr->GetIsBranchInternal())
         {
-            stackDepth = 1;
+            CBranchInstruction* pBranch = static_cast<CBranchInstruction*>(pInstr);
+
+            DWORD dwTargetOffset = 0;
+            IfFailRet(pBranch->GetTargetOffset(&dwTargetOffset));
+
+            insertOrUpdateStackDepthMap(offsetToStackDepthMap, dwTargetOffset, stackDepth);
+        }
+
+        if (pInstr->GetIsSwitchInternal())
+        {
+            CSwitchInstruction* pSwitch = static_cast<CSwitchInstruction*>(pInstr);
+
+            DWORD branchCount = 0;
+            IfFailRet(pSwitch->GetBranchCount(&branchCount));
+
+            for (ULONG i = 0; i < branchCount; i++)
+            {
+                ULONG dwTargetOffset = 0;
+                IfFailRet(pSwitch->GetBranchOffset(i, &dwTargetOffset));
+
+                insertOrUpdateStackDepthMap(offsetToStackDepthMap, dwTargetOffset, stackDepth);
+            }
         }
 
         if (stackDepth > maxStackDepth)
@@ -1128,11 +1189,11 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInCatchOrFilter(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatchOrFilter)
 {
     HRESULT hr = S_OK;
-    IfNullRetPointer(pIsFirstInstructionInCatch);
-    *pIsFirstInstructionInCatch = false;
+    IfNullRetPointer(pIsFirstInstructionInCatchOrFilter);
+    *pIsFirstInstructionInCatchOrFilter = false;
 
     CComPtr<IExceptionSection> pExceptionSection;
     IfFailRet(m_pMethodInfo->GetExceptionSection(&pExceptionSection));
@@ -1149,14 +1210,26 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInC
         DWORD exceptionFlags;
         IfFailRet(pExceptionClause->GetFlags(&exceptionFlags));
 
-        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_NONE)
+        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_NONE || exceptionFlags == COR_ILEXCEPTION_CLAUSE_FILTER)
         {
             CComPtr<IInstruction> pCurrHandlerInstr;
             IfFailRet(pExceptionClause->GetHandlerFirstInstruction(&pCurrHandlerInstr));
 
             if (pCurrHandlerInstr.IsEqualObject(pInstr))
             {
-                *pIsFirstInstructionInCatch = true;
+                *pIsFirstInstructionInCatchOrFilter = true;
+                break;
+            }
+        }
+
+        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_FILTER)
+        {
+            CComPtr<IInstruction> pCurrFilterInstr;
+            IfFailRet(pExceptionClause->GetFilterFirstInstruction(&pCurrFilterInstr));
+
+            if (pCurrFilterInstr.IsEqualObject(pInstr))
+            {
+                *pIsFirstInstructionInCatchOrFilter = true;
                 break;
             }
         }
