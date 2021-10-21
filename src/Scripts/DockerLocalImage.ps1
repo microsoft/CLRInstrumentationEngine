@@ -35,7 +35,8 @@ param
     [Parameter()]
     [Switch] $Wsl,
 
-    # The name of the distribution of wsl to use. Ignored if $Wsl is false
+    # The name of the distribution of wsl to use. Ignored if $Wsl is false. The
+    # distro must have docker and the docker daemon (dockerd) installed and running.
     [Parameter()]
     [String] $WslDistro
 )
