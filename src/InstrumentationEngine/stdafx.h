@@ -76,6 +76,7 @@ using namespace ATL;
 
 #include "InstrumentationEngine.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
+#include "../InstrumentationEngine.Lib/InstrumentationEngineFeatures.h"
 #include "resource.h"
 
 

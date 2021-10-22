@@ -29,7 +29,7 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerFunctionInfoWrapper::SetILFu
 {
     HRESULT hr = S_OK;
 
-    IfFailRet(m_pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbNewILMethodHeader));
+    IfFailRet(m_pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbNewILMethodHeader, FALSE));
 
     return S_OK;
 }
