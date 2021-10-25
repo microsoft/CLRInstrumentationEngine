@@ -528,7 +528,7 @@ namespace MicrosoftInstrumentationEngine
     public:
         STDMETHOD(FreeString)(_In_opt_ BSTR bstr)
         {
-            return ClrieFreeString(bstr);
+            return InstrumentationEngineFreeString(bstr);
         }
 
         // ICorProfilerCallback methods
