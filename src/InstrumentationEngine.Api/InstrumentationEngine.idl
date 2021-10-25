@@ -185,7 +185,7 @@ library MicrosoftInstrumentationEngine
     interface IProfilerStringManager : IUnknown
     {
         // Frees the string that was allocated by one of the Clr Instrumentation Engine functions.
-        // This is a shortcut to the exported function ClrieFreeString.
+        // This is a shortcut to the exported function InstrumentationEngineFreeString.
         HRESULT FreeString([in, optional] BSTR bstr);
     };
 
@@ -436,7 +436,7 @@ library MicrosoftInstrumentationEngine
         HRESULT GetOriginalOffset([out] DWORD* pdwOffset);
 
         // Gets the name of the opcode as a newly allocated string.
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetOpCodeName([out] BSTR* pbstrName);
 
         HRESULT GetOpCode([out] enum ILOrdinalOpcode* pOpCode);
@@ -819,11 +819,11 @@ library MicrosoftInstrumentationEngine
         HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
 
         // Gets the simple name of the method as a newly allocated string.
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out]BSTR* pbstrName);
 
         // Gets the fully qualified name of the method (if available).
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetFullName([out] BSTR* pbstrFullName);
 
         // Obtain the graph of instructions.  Manipulating this graph will result in changes to the code
@@ -901,12 +901,12 @@ library MicrosoftInstrumentationEngine
     interface IModuleInfo : IUnknown
     {
         // Gets the module name of the method as a newly allocated string
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetModuleName([out] BSTR* pbstrModuleName);
 
         // Gets the path from where the module was loaded as a newly
         // allocated string.
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetFullPath([out] BSTR* pbstrFullPath);
 
         // Get info about the assembly that contains this module
@@ -1057,7 +1057,7 @@ library MicrosoftInstrumentationEngine
         HRESULT GetID([out] AssemblyID* pAssemblyId);
 
         // Gets the name of the assembly as a newly allocated string
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out] BSTR* pbstrName);
 
         HRESULT GetMetaDataToken([out] DWORD* pdwToken);
@@ -1105,7 +1105,7 @@ library MicrosoftInstrumentationEngine
         HRESULT GetIsDefaultDomain([out] BOOL* pbValue);
 
         // Gets the name of the app domain as a newly allocated string
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out] BSTR* pbstrName);
 
         HRESULT GetAssemblies([out] IEnumAssemblyInfo** ppAssemblyInfos);
@@ -1369,7 +1369,7 @@ library MicrosoftInstrumentationEngine
         HRESULT IsClass([out]BOOL* pIsClass);
 
         // Gets the name of the type as a newly allocated string
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out]BSTR* pbstrName);
 
         //GetBaseType();
@@ -1593,13 +1593,13 @@ library MicrosoftInstrumentationEngine
     interface IInstrumentationMethodSetting : IUnknown
     {
         // Gets the name of the instrumentation method setting as a newly allocated string.
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName(
             [out] BSTR* pbstrName
             );
 
         // Gets the value of the instrumentation method setting as a newly allocated string.
-        // For safe cleanup, use IProfilerStringManager::FreeString or ClrieFreeString
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetValue(
             [out] BSTR* pbstrValue
             );

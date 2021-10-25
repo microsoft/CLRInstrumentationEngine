@@ -158,7 +158,7 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
     return S_OK;
 }
 
-STDAPI DLLEXPORT(ClrieFreeString, 4)(_In_opt_ BSTR bstr)
+STDAPI DLLEXPORT(InstrumentationEngineFreeString, 4)(_In_opt_ BSTR bstr)
 {
     if (bstr == nullptr)
     {

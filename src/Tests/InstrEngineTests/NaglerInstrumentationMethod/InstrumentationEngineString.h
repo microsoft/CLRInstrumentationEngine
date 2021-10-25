@@ -3,18 +3,18 @@
 #include "stdafx.h"
 #include "../Common.Headers/tstring.h"
 
-class CClrieString
+class CInstrumentationEngineString
 {
 private:
     CComPtr<IProfilerStringManager> m_pStringManager;
 
 public:
     BSTR m_bstr;
-    CClrieString(IProfilerStringManager* pStringManager) : m_bstr(nullptr), m_pStringManager(pStringManager) {}
+    CInstrumentationEngineString(IProfilerStringManager* pStringManager) : m_bstr(nullptr), m_pStringManager(pStringManager) {}
 
     // non-copyable,moveable
-    CClrieString(CClrieString& other) = delete;
-    CClrieString(CClrieString&& other) noexcept
+    CInstrumentationEngineString(CInstrumentationEngineString& other) = delete;
+    CInstrumentationEngineString(CInstrumentationEngineString&& other) noexcept
     {
         m_bstr = other.m_bstr;
         m_pStringManager = other.m_pStringManager;
@@ -23,9 +23,9 @@ public:
         other.m_pStringManager = nullptr;
     }
 
-    CClrieString& operator=(CClrieString& other) = delete;
+    CInstrumentationEngineString& operator=(CInstrumentationEngineString& other) = delete;
 
-    CClrieString& operator=(CClrieString&& other) noexcept
+    CInstrumentationEngineString& operator=(CInstrumentationEngineString&& other) noexcept
     {
         if (this != &other)
         {
@@ -44,7 +44,7 @@ public:
         return m_bstr;
     }
 
-    ~CClrieString()
+    ~CInstrumentationEngineString()
     {
         if (m_pStringManager != nullptr)
         {

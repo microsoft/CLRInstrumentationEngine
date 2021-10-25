@@ -8,7 +8,7 @@
 #include <sstream>
 #pragma warning(pop)
 #include "Util.h"
-#include "ClrieString.h"
+#include "InstrumentationEngineString.h"
 
 const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
 const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScript";
@@ -17,7 +17,7 @@ const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
 
 
 // Convenience macro for defining strings.
-#define CClrieStr(_V) CClrieString _V(m_pStringManager)
+#define CInstrStr(_V) CInstrumentationEngineString _V(m_pStringManager)
 
 void AssertLogFailure(_In_ const WCHAR* wszError, ...)
 {
@@ -679,7 +679,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
 {
     HRESULT hr = S_OK;
 
-    CClrieStr(clrieStrModuleName);
+    CInstrStr(clrieStrModuleName);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
     if ((m_spInjectAssembly != nullptr) && (wcscmp(clrieStrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
@@ -782,7 +782,7 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
     CComPtr<IModuleInfo> pModuleInfo;
     pMethodInfo->GetModuleInfo(&pModuleInfo);
 
-    CClrieStr(clrieStrModule);
+    CInstrStr(clrieStrModule);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModule.m_bstr));
 
     tstring moduleName = clrieStrModule;
@@ -794,7 +794,7 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
         if (wcscmp(enteryModuleName.c_str(), clrieStrModule) == 0)
         {
             // TODO: Eventually, this will need to use the full name and not the partial name
-            CClrieStr(clrieStrMethodName);
+            CInstrStr(clrieStrMethodName);
             pMethodInfo->GetName(&clrieStrMethodName.m_bstr);
 
             const tstring& entryMethodName= pInstrumentMethodEntry->GetMethodName();
@@ -1412,7 +1412,7 @@ HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
     _In_ UINT_PTR   objectId
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1440,7 +1440,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchCatcherFound(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1459,7 +1459,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1487,7 +1487,7 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1585,13 +1585,13 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CComPtr<IMethodInfo> pMethodInfo;
     IfFailRet(pAppDomainCollection->GetMethodInfoById(funcId, &pMethodInfo));
 
-    CClrieStr(clrieStrMethodName);
+    CInstrStr(clrieStrMethodName);
     IfFailRet(pMethodInfo->GetName(&clrieStrMethodName.m_bstr));
 
     CComPtr<IModuleInfo> pModuleInfo;
     IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-    CClrieStr(clrieStrModuleName);
+    CInstrStr(clrieStrModuleName);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1620,7 +1620,7 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CComPtr<IMethodInfo> pMethodInfo2;
     IfFailRet(pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo2));
 
-    CClrieStr(clrieStrMethodName2);
+    CInstrStr(clrieStrMethodName2);
     IfFailRet(pMethodInfo2->GetName(&clrieStrMethodName2.m_bstr));
 
     if (tstring(clrieStrMethodName) != tstring(clrieStrMethodName2))
@@ -1639,7 +1639,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
@@ -1667,7 +1667,7 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CClrieStr(clrieStrFullName);
+    CInstrStr(clrieStrFullName);
     pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
