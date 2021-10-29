@@ -381,6 +381,28 @@ public:
     }
 
     virtual ~CCoRawProfilerHook() {};
+
+private:
+    HRESULT CreateNewMethod(mdTypeDef typeDef, LPWSTR methodName, ULONG rva, mdMethodDef* newMethod);
+    HRESULT CreateNewStaticMethod(mdTypeDef definingType, mdTypeDef parameterType, LPWSTR name, mdMethodDef* newMethod);
+    HRESULT EmitCallTargetMethodBody(mdMethodDef methodToken, mdMethodDef targetMethod);
+    HRESULT EmitCallTargetMethodBody(mdMethodDef methodToken, LPWSTR targetMethod);
+
+    ATL::CComPtr<ICorProfilerInfo5> m_pRealProfilerInfo;
+    ATL::CComPtr<IMetaDataImport2> m_metadataImport;
+    ATL::CComPtr<IMetaDataAssemblyImport> m_assemblyImport;
+    ATL::CComPtr<IMetaDataAssemblyEmit> m_assemblyEmit;
+    ATL::CComPtr<IMetaDataEmit2> m_emit;
+
+    //Refers to TestRawProfilerMethodCreateBase
+    mdTypeDef m_testType = 0;
+
+    //RawProfilerHook.Tests_<platform>.dll
+    ModuleID m_testModule = 0;
+
+    mdTypeDef m_createdTestType = 0;
+    mdMethodDef m_createdTestMethod = 0;
+    bool m_firstJit = true;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_CoRawProfilerHook, CCoRawProfilerHook);

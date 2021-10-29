@@ -107,7 +107,6 @@ namespace MicrosoftInstrumentationEngine
         // - The user allocates the buffer, skipping GetILFunctionBodyAllocator (in newer runtimes, RVA's do not have any specific memory location requirements)
         // - Raw profiler hook calls SetILFunctionBody right after DefineMethod
         LPCBYTE m_userDefinedBuffer;
-        DWORD m_userBufferSize;
 
         // Set to true if any client has instrumented the method.
         bool m_bIsInstrumented;
@@ -176,9 +175,7 @@ namespace MicrosoftInstrumentationEngine
         // status of this method to true.
         HRESULT SetFinalRenderedFunctionBody(
             _In_reads_bytes_(cbMethodSize) LPCBYTE pMethodHeader,
-            _In_ ULONG cbMethodSize,
-            _In_ BOOL userBuffer
-            );
+            _In_ ULONG cbMethodSize);
 
          bool IsInstrumented() const
          {

@@ -96,7 +96,8 @@ namespace RawProfilerHook.Tests
                 { "COR_PROFILER", InstrumentationEngineProfilerId },
                 { RawProfilerHookEnvVar, RawProfilerHookComponentId },
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors" },
-                { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
+                { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath },
+                { "MicrosoftInstrumentationEngine_UserBuffer", "1" }
 #if ALLOWNOTSIGNED
                 , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true"}
 #endif

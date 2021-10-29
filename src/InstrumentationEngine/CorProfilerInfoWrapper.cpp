@@ -442,15 +442,14 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
     CComPtr<CAppDomainCollection> pAppDomainCollection;
     IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
 
+    bool userBufferEnabled = InstrumentationEngineFeatures::UserBufferEnabled();
+
     CComPtr<CModuleInfo> pModuleInfo;
-    if (SUCCEEDED(pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
+    if (SUCCEEDED(hr = pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
     {
         CComPtr<CMethodInfo> pMethodInfo;
         hr = pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo);
 
-        bool userBufferEnabled = InstrumentationEngineFeatures::UserBufferEnabled();
-        BYTE* pBuffer = nullptr;
-        ULONG cbBuffer = 0;
         if (SUCCEEDED(hr))
         {
             if (!userBufferEnabled)
@@ -460,6 +459,8 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
                     CLogging::LogError(_T("Incorrect buffer passed to SetFunctionBodyMalloc"));
                     return E_FAIL;
                 }
+                BYTE* pBuffer;
+                ULONG cbBuffer = 0;
                 IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
 
                 if (pbNewILMethodHeader != pBuffer)
@@ -471,37 +472,43 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
                 // NOTE: Relying on the size of the buffer that was handed out by the IMethodMalloc.
                 // this relies on the serialization of jit events by the profiler manager.
                 // Calculating the actual method size would require a fourth parse of header.
-                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbBuffer, FALSE));
+                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbBuffer));
             }
             else
             {
-                BOOL userBufferMode = FALSE;
-                if (m_pMethodMalloc == nullptr)
+                ULONG methodSize = 0;
+                if (m_pMethodMalloc != nullptr)
                 {
-                    userBufferMode = TRUE;
-                }
-                else
-                {
+                    BYTE* pBuffer = nullptr;
+                    ULONG cbBuffer = 0;
                     IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
-                    userBufferMode = pbNewILMethodHeader != pBuffer ? TRUE : FALSE;
+                    if (pbNewILMethodHeader == pBuffer)
+                    {
+                        methodSize = cbBuffer;
+                    }
                 }
 
-                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbBuffer, userBufferMode));
+                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, methodSize));
             }
         }
-        else if (userBufferEnabled)
-        {
-            // if we fail to find the method info, assume this is a new method, so not available to other profilers
-            m_pRealCorProfilerInfo->SetILFunctionBody(moduleId, methodToken, pbNewILMethodHeader);
+    }
 
-            //Method was possibly allocated using GetILFunctionBodyAllocator
-            if (m_pMethodMalloc != nullptr)
+    if (FAILED(hr) && userBufferEnabled)
+    {
+        // It's possible for a raw profiler to define a new method during ModuleLoad (e.g. CodeCoverage) or JitCompilationStarted
+        // (e.g. DataDog) in which case we will not be able to find it.
+        IfFailRet(m_pRealCorProfilerInfo->SetILFunctionBody(moduleId, methodToken, pbNewILMethodHeader));
+
+        //Method was possibly allocated using GetILFunctionBodyAllocator. If it was we have to make sure
+        //the buffer is not destroyed since it will be used by the runtime.
+        if (m_pMethodMalloc != nullptr)
+        {
+            BYTE* pBuffer;
+            ULONG cbBuffer = 0;
+            IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
+            if (pbNewILMethodHeader == pBuffer)
             {
-                IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
-                if (pbNewILMethodHeader == pBuffer)
-                {
-                    m_pMethodMalloc->DetachCurrentBuffer();
-                }
+                m_pMethodMalloc->DetachCurrentBuffer();
             }
         }
     }

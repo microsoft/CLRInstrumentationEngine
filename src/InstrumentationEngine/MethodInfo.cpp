@@ -44,8 +44,7 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_bIsCreateBaselineEnabled(true),
     m_bIsHeaderInitialized(false),
     m_bIsRejit(false),
-    m_userDefinedBuffer(nullptr),
-    m_userBufferSize(0)
+    m_userDefinedBuffer(nullptr)
 {
     DEFINE_REFCOUNT_NAME(CMethodInfo);
 
@@ -1204,8 +1203,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetIntermediateRenderedFunc
 // Called by the profiler info wrapper when a raw callback sets a function's il
 HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBody(
     _In_reads_bytes_(cbMethodSize) LPCBYTE pMethodHeader,
-    _In_ ULONG cbMethodSize,
-    _In_ BOOL userAddress
+    _In_ ULONG cbMethodSize
     )
 {
     HRESULT hr = S_OK;
@@ -1214,7 +1212,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
 
     m_bIsInstrumented = true;
 
-    if (!userAddress)
+    if (cbMethodSize > 0)
     {
         if (!m_pFinalRenderedMethod.empty())
         {
@@ -1230,7 +1228,6 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
     {
         m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
         m_userDefinedBuffer = pMethodHeader;
-        m_userBufferSize = cbMethodSize;
     }
 
     return hr;
@@ -1263,7 +1260,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
 
         LPCBYTE pFunction = nullptr;
 
-        if (m_userDefinedBuffer == nullptr)
+        if (cbMethodBody > 0)
         {
             CComPtr<IMethodMalloc> pMalloc;
             IfFailRet(pCorProfilerInfo->GetILFunctionBodyAllocator(moduleId, &pMalloc));
@@ -1274,7 +1271,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         }
         else
         {
-            //No copy operation is needed.
+            //No copy operation is needed. User allocated buffer is being used.
             pFunction = pMethodBody;
         }
 
@@ -1824,7 +1821,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetFinalInstrumentation(_Ou
         }
         else
         {
-            *pcbMethodBody = m_userBufferSize;
+            *pcbMethodBody = 0;
             *ppMethodBody = m_userDefinedBuffer;
         }
     }
@@ -1936,11 +1933,22 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     {
         pMethodBody = (LPCBYTE) pMethodHeader + sizeof (IMAGE_COR_ILMETHOD_TINY);
         codeSize = ((COR_ILMETHOD_TINY*)pMethodHeader)->GetCodeSize();
+
+        //If a custom buffer was used by the raw profiler, we will not have the size of the
+        //final instrumentation memory. Attempt to compute it.
+        if (cbMethodSize == 0)
+        {
+            cbMethodSize = codeSize + sizeof(IMAGE_COR_ILMETHOD_TINY);
+        }
     }
     else
     {
         pMethodBody = (LPCBYTE)pMethodHeader + sizeof(IMAGE_COR_ILMETHOD_FAT);
         codeSize = ((COR_ILMETHOD_FAT*)pMethodHeader)->GetCodeSize();
+        if (cbMethodSize == 0)
+        {
+            cbMethodSize = codeSize + sizeof(COR_ILMETHOD_FAT);
+        }
     }
 
     LPCBYTE pMethodEnd = pMethodBody + codeSize;
