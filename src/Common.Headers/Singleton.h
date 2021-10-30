@@ -9,7 +9,8 @@
 #include <memory>
 #pragma warning(pop)
 
-#include "CriticalSectionHolder.h"
+#include <thread>
+#include <mutex>
 
 namespace CommonLib
 {
@@ -18,7 +19,7 @@ namespace CommonLib
     {
     private:
         std::atomic_bool m_isCreated;
-        CCriticalSection m_cs;
+        std::mutex m_mutex;
         std::unique_ptr<T> m_pValue;
 
     public:
@@ -26,7 +27,7 @@ namespace CommonLib
         {
             if (!m_isCreated.load(std::memory_order::memory_order_acquire))
             {
-                CCriticalSectionHolder holder(&m_cs);
+                std::lock_guard<std::mutex> holder(m_mutex);
                 if (!m_isCreated.load(std::memory_order::memory_order_relaxed))
                 {
                     m_pValue = std::make_unique<T>();

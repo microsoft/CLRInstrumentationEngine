@@ -3,6 +3,11 @@
 #include "stdafx.h"
 #include "../Common.Headers/tstring.h"
 
+
+/// <summary>
+/// A class that demonstrates how to free an instrumentation engine string using
+/// the IProfilerStringManager
+/// </summary>
 class CInstrumentationEngineString
 {
 private:
