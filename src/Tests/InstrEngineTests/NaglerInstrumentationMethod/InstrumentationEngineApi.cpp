@@ -19,11 +19,11 @@ class ApiFunctions
 public:
     using TFreeString = HRESULT(STDMETHODCALLTYPE*)(BSTR bstr);
     TFreeString _InstrumentationEngineFreeString = nullptr;
-    HRESULT Initialize(LPCWSTR szModuleName);
+    HRESULT Initialize();
 };
 
 static ApiFunctions g_apiFunctions;
-static CInitOnce g_initializer([] { return g_apiFunctions.Initialize(InstrumentationEngineModule); });
+static CInitOnce g_initializer([] { return g_apiFunctions.Initialize(); });
 
 
 HRESULT InstrumentationEngineApi::FreeString(BSTR bstr)
@@ -33,10 +33,10 @@ HRESULT InstrumentationEngineApi::FreeString(BSTR bstr)
     return g_apiFunctions._InstrumentationEngineFreeString(bstr);
 }
 
-HRESULT ApiFunctions::Initialize(LPCWSTR szModuleName)
+HRESULT ApiFunctions::Initialize()
 {
     // Todo: this will have to be done differently for non Windows platforms.
-    HMODULE mod = GetModuleHandle(szModuleName);
+    HMODULE mod = GetModuleHandle(InstrumentationEngineModule);
     if (mod == nullptr)
     {
         return E_NOTIMPL;
