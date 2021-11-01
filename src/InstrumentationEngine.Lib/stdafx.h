@@ -24,6 +24,9 @@
 #include <errorrep.h>       // for pfn_REPORTFAULT
 #include <eh.h>
 
+#include <thread>  // thread and mutex must be included before
+#include <mutex>   // sal.h because sal redefines the meaning of __valid
+                   // which is used in chrono on Linux systems.
 
 #include <sal.h>
 
