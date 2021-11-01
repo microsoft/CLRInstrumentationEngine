@@ -8,6 +8,8 @@
 
 #pragma once
 
+
+
 #ifdef PLATFORM_UNIX
 #include "unix.h"
 #include <ole.h>
@@ -23,10 +25,6 @@
 #include "string.h"
 #include <errorrep.h>       // for pfn_REPORTFAULT
 #include <eh.h>
-
-#include <thread>  // thread and mutex must be included before
-#include <mutex>   // sal.h because sal redefines the meaning of __valid
-                   // which is used in chrono on Linux systems.
 
 #include <sal.h>
 
@@ -75,6 +73,18 @@ using namespace ATL;
 #include <vector>
 #include <memory>
 #include <unordered_map>
+
+#ifdef PLATFORM_UNIX
+#define __valid_backup __valid // sal.h redefines __valid, which is used by thread/chrono
+#undef __valid
+#endif
+
+#include <thread>  
+#include <mutex>   
+
+#ifdef PLATFORM_UNIX
+#define __valid __valid_backup
+#endif
 
 #ifdef PLATFORM_UNIX
 // pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
