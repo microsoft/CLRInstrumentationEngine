@@ -13,6 +13,7 @@ Please format the changes as follows:
   + Allow building on OSX. Note this is only experimental and not officially supported yet.
   + Add API for safe string cleanup on non-Windows platforms.
   + Increment API level
+  + Add support for Raw Profilers that use SetILFunctionBody with buffers not owned by ClrInstrumentationEngine.
 + BugFixes:
   + Fix XmlReader.Create to read from stream instead of filepath string
   + Remove references to libunwind8 and libuuid; they're not used anymore

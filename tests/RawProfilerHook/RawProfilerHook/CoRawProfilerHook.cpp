@@ -74,8 +74,17 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::ModuleLoadFinished(
 
     WCHAR modName[MAX_PATH];
     HRESULT hr = S_OK;
+
+    const WCHAR* testModuleName = L"RawProfilerHook.Tests_x"
+#if defined(_X86_)
+        L"86"
+#else
+        L"64"
+#endif
+        ".dll";
+
     IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, MAX_PATH, nullptr, modName, nullptr));
-    if (std::experimental::filesystem::path(modName).filename() != L"RawProfilerHook.Tests_x64.dll")
+    if (std::experimental::filesystem::path(modName).filename() != testModuleName)
     {
         return S_OK;
     }
