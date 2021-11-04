@@ -80,5 +80,7 @@ using namespace ATL;
 
 
 
+STDAPI InstrumentationEngineFreeString(_In_opt_ BSTR bstr);
+
 using namespace std;
 using namespace CommonLib;

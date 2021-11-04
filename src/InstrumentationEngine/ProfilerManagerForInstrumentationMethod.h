@@ -37,6 +37,7 @@ namespace MicrosoftInstrumentationEngine
                 static_cast<IProfilerManager4*>(this),
                 static_cast<IProfilerManager5*>(this),
                 static_cast<IProfilerManagerLogging*>(this),
+                static_cast<IProfilerStringManager*>(this),
                 riid,
                 ppvObject
             );
@@ -91,6 +92,10 @@ namespace MicrosoftInstrumentationEngine
         // IProfilerManager5 Methods
     public:
         STDMETHOD(IsInstrumentationMethodRegistered)(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered) override;
+
+        // IProfilerStringManager Methods
+    public:
+        STDMETHOD(FreeString)(_In_opt_ BSTR bstr) override;
 
         // IProfilerManagerLogging Methods
     public:

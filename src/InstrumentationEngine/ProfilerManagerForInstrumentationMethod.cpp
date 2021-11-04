@@ -173,6 +173,11 @@ HRESULT CProfilerManagerForInstrumentationMethod::IsInstrumentationMethodRegiste
     return m_pProfilerManager->IsInstrumentationMethodRegistered(clsid, pfRegistered);
 }
 
+HRESULT CProfilerManagerForInstrumentationMethod::FreeString(_In_opt_ BSTR bstr)
+{
+    return m_pProfilerManager->FreeString(bstr);
+}
+
 // IProfilerManagerLogging Methods
 HRESULT CProfilerManagerForInstrumentationMethod::LogMessage(_In_ const WCHAR* wszMessage)
 {

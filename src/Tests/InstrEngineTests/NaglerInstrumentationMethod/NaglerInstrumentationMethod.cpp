@@ -8,11 +8,17 @@
 #include <sstream>
 #pragma warning(pop)
 #include "Util.h"
+#include "InstrumentationEngineString.h"
+#include "InstrStr.h"
 
 const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
 const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScript";
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
+
+
+// Convenience macro for defining strings.
+#define InstrStr(_V) CInstrumentationEngineString _V(m_pStringManager)
 
 void AssertLogFailure(_In_ const WCHAR* wszError, ...)
 {
@@ -49,7 +55,9 @@ struct ComInitializer
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {
+    HRESULT hr;
     m_pProfilerManager = pProfilerManager;
+    IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
 
     CHandle hConfigThread;
     hConfigThread.Attach(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
@@ -672,10 +680,10 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
 {
     HRESULT hr = S_OK;
 
-    CComBSTR bstrModuleName;
-    IfFailRet(pModuleInfo->GetModuleName(&bstrModuleName));
+    InstrStr(clrieStrModuleName);
+    IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
-    if ((m_spInjectAssembly != nullptr) && (wcscmp(bstrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
+    if ((m_spInjectAssembly != nullptr) && (wcscmp(clrieStrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
     {
         CComPtr<IMetaDataDispenserEx> pDisp;
         ComInitializer coInit(COINIT_MULTITHREADED);
@@ -706,7 +714,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
     {
         const tstring& instrModuleName = pInstrumentMethodEntry->GetModuleName();
 
-        if (wcscmp(bstrModuleName, instrModuleName.c_str()) == 0)
+        if (wcscmp(clrieStrModuleName, instrModuleName.c_str()) == 0)
         {
             // search for method name inside all the types of the matching module
             const tstring& methodName = pInstrumentMethodEntry->GetMethodName();
@@ -771,28 +779,28 @@ HRESULT CInstrumentationMethod::OnShutdown()
 HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
 {
     *pbInstrument = FALSE;
-
+    HRESULT hr;
     CComPtr<IModuleInfo> pModuleInfo;
     pMethodInfo->GetModuleInfo(&pModuleInfo);
 
-    CComBSTR bstrModule;
-    pModuleInfo->GetModuleName(&bstrModule);
+    InstrStr(clrieStrModule);
+    IfFailRet(pModuleInfo->GetModuleName(&clrieStrModule.m_bstr));
 
-    wstring moduleName = bstrModule;
+    tstring moduleName = clrieStrModule;
 
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
         const tstring& enteryModuleName = pInstrumentMethodEntry->GetModuleName();
 
-        if (wcscmp(enteryModuleName.c_str(), bstrModule) == 0)
+        if (wcscmp(enteryModuleName.c_str(), clrieStrModule) == 0)
         {
             // TODO: Eventually, this will need to use the full name and not the partial name
-            CComBSTR bstrMethodName;
-            pMethodInfo->GetName(&bstrMethodName);
+            InstrStr(clrieStrMethodName);
+            pMethodInfo->GetName(&clrieStrMethodName.m_bstr);
 
             const tstring& entryMethodName= pInstrumentMethodEntry->GetMethodName();
 
-            if (wcscmp(entryMethodName.c_str(), bstrMethodName) == 0)
+            if (wcscmp(entryMethodName.c_str(), clrieStrMethodName) == 0)
             {
                 m_methodInfoToEntryMap[pMethodInfo] = pInstrumentMethodEntry;
 
@@ -1405,14 +1413,14 @@ HRESULT CInstrumentationMethod::ExceptionCatcherEnter(
     _In_ UINT_PTR   objectId
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    InstrStr(clrieStrFullName);
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionCatcherEnter>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionCatcherEnter>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1433,14 +1441,14 @@ HRESULT CInstrumentationMethod::ExceptionSearchCatcherFound(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    InstrStr(clrieStrFullName);
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionSearchCatcherFound>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionSearchCatcherFound>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1452,14 +1460,14 @@ HRESULT CInstrumentationMethod::ExceptionSearchFilterEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    InstrStr(clrieStrFullName);
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionSearchFilterEnter>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionSearchFilterEnter>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1480,14 +1488,14 @@ HRESULT CInstrumentationMethod::ExceptionSearchFunctionEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    InstrStr(clrieStrFullName);
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionSearchFunctionEnter>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionSearchFunctionEnter>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1578,14 +1586,14 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CComPtr<IMethodInfo> pMethodInfo;
     IfFailRet(pAppDomainCollection->GetMethodInfoById(funcId, &pMethodInfo));
 
-    CComBSTR bstrMethodName;
-    IfFailRet(pMethodInfo->GetName(&bstrMethodName));
+    CInstrStr clrieStrMethodName;
+    IfFailRet(pMethodInfo->GetName(&clrieStrMethodName.m_bstr));
 
     CComPtr<IModuleInfo> pModuleInfo;
     IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-    CComBSTR bstrModuleName;
-    IfFailRet(pModuleInfo->GetModuleName(&bstrModuleName));
+    CInstrStr clrieStrModuleName;
+    IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
@@ -1593,14 +1601,14 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     tstring strMessage;
     // Add [TestIgnore] for the TestAppRunner. This module is used for bootstrapping
     // .NET Core test assemblies and is not intended to be used in test baselines.
-    if (wcscmp(bstrModuleName, _T("TestAppRunner.dll")) == 0)
+    if (wcscmp(clrieStrModuleName, _T("TestAppRunner.dll")) == 0)
     {
         strMessage.append(_T("[TestIgnore]"));
     }
     strMessage.append(_T("        <MethodName>"));
-    strMessage.append(bstrModuleName);
+    strMessage.append(clrieStrModuleName);
     strMessage.append(_T("!"));
-    strMessage.append(bstrMethodName);
+    strMessage.append(clrieStrMethodName);
     strMessage.append(_T("</MethodName>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1613,10 +1621,10 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CComPtr<IMethodInfo> pMethodInfo2;
     IfFailRet(pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo2));
 
-    CComBSTR bstrMethodName2;
-    IfFailRet(pMethodInfo2->GetName(&bstrMethodName2));
+    CInstrStr clrieStrMethodName2;
+    IfFailRet(pMethodInfo2->GetName(&clrieStrMethodName2.m_bstr));
 
-    if (bstrMethodName != bstrMethodName2)
+    if (tstring(clrieStrMethodName) != tstring(clrieStrMethodName2))
     {
         spLogger->LogDumpMessage(_T("pModuleInfo->GetMethodInfoByToken did not return same method as pAppDomainCollection->GetMethodInfoById"));
         return S_OK;
@@ -1632,14 +1640,14 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFinallyEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    CInstrStr clrieStrFullName;
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionSearchFunctionEnter>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionSearchFunctionEnter>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
@@ -1660,14 +1668,14 @@ HRESULT CInstrumentationMethod::ExceptionUnwindFunctionEnter(
     _In_ IMethodInfo* pMethodInfo
     )
 {
-    CComBSTR bstrFullName;
-    pMethodInfo->GetFullName(&bstrFullName);
+    CInstrStr clrieStrFullName;
+    pMethodInfo->GetFullName(&clrieStrFullName.m_bstr);
 
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage(_T("    <ExceptionUnwindFunctionEnter>"));
-    strMessage.append(bstrFullName);
+    strMessage.append(clrieStrFullName);
     strMessage.append(_T("</ExceptionUnwindFunctionEnter>"));
 
     spLogger->LogDumpMessage(strMessage.c_str());
