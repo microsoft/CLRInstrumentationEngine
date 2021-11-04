@@ -47,5 +47,7 @@ HRESULT ApiFunctions::Initialize()
     {
         return E_NOTIMPL;
     }
+
+    return S_OK;
 }
 
