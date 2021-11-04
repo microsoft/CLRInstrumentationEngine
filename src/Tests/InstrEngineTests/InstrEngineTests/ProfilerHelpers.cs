@@ -219,10 +219,12 @@ namespace InstrEngineTests
             // test processes are short. They should not run for more than a few seconds.
             testProcess.WaitForExit(timeoutMs);
 
+            bool testTimeout = false;
             try
             {
                 // try to end the process in case it is running too long.
                 testProcess.Kill();
+                testTimeout = true;
             }
             catch
             {
@@ -234,8 +236,8 @@ namespace InstrEngineTests
             {
                 Console.WriteLine($"stderr: {stderr}");
             }
-
-            Assert.AreEqual(0, testProcess.ExitCode, "Test application failed");
+            Assert.IsFalse(testTimeout, "Test process timed out during execution.");
+            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}");
         }
 
         public static string[] SplitXmlDocuments(string content)
