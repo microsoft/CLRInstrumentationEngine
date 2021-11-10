@@ -574,7 +574,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeInstructionsAndEx
     // because during the diagnostic dumping logic, the graph will be from the rendered function
     // body and not directly from the method info.
     m_pExceptionSection.Attach(new CExceptionSection(this));
-    IfFailRet(m_pExceptionSection->Initialize(pMethodHeader, cbMethodSize, m_pInstructionGraph));
+    IfFailRet(m_pExceptionSection->Initialize(pMethodHeader, m_pInstructionGraph));
 
     // Convert branches to the larger form, this also calculates the current offsets for instructions
     // NOTE: this must be done after the exception sections are initialized as they depend on the original
@@ -1924,7 +1924,6 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pbMethodBody));
 
     IMAGE_COR_ILMETHOD* pMethodHeader = (IMAGE_COR_ILMETHOD*)(pbMethodBody);
-    ULONG cbMethodSize = cbMethodBody;
 
     LPCBYTE pMethodBody;
     ULONG codeSize = 0;
@@ -1934,21 +1933,11 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
         pMethodBody = (LPCBYTE) pMethodHeader + sizeof (IMAGE_COR_ILMETHOD_TINY);
         codeSize = ((COR_ILMETHOD_TINY*)pMethodHeader)->GetCodeSize();
 
-        //If a custom buffer was used by the raw profiler, we will not have the size of the
-        //final instrumentation memory. Attempt to compute it.
-        if (cbMethodSize == 0)
-        {
-            cbMethodSize = codeSize + sizeof(IMAGE_COR_ILMETHOD_TINY);
-        }
     }
     else
     {
         pMethodBody = (LPCBYTE)pMethodHeader + sizeof(IMAGE_COR_ILMETHOD_FAT);
         codeSize = ((COR_ILMETHOD_FAT*)pMethodHeader)->GetCodeSize();
-        if (cbMethodSize == 0)
-        {
-            cbMethodSize = codeSize + sizeof(COR_ILMETHOD_FAT);
-        }
     }
 
     LPCBYTE pMethodEnd = pMethodBody + codeSize;
@@ -1965,7 +1954,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     // body and not directly from the method info.
     CComPtr<CExceptionSection> pExceptionSection;
     pExceptionSection.Attach(new CExceptionSection(this));
-    IfFailRet(pExceptionSection->Initialize(pMethodHeader, cbMethodSize, pInstructionGraph));
+    IfFailRet(pExceptionSection->Initialize(pMethodHeader, pInstructionGraph));
 
     *ppInstructionGraph = pInstructionGraph.Detach();
     *ppExceptionSection = pExceptionSection.Detach();
