@@ -11,7 +11,6 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::Initialize(
 {
     ::SetEnvironmentVariable(L"CCoRawProfilerHook::Initialize", L"S_OK");
 
-    ATL::CComPtr<ICorProfilerInfo5> m_pRealProfilerInfo;
     pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo5), (LPVOID*)&m_pRealProfilerInfo);
     m_pRealProfilerInfo->SetEventMask2(0, COR_PRF_HIGH_ADD_ASSEMBLY_REFERENCES);
 
@@ -72,6 +71,52 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::ModuleLoadStarted(
 HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::ModuleLoadFinished(
     /* [in] */ ModuleID moduleId,
     /* [in] */ HRESULT hrStatus){
+
+    WCHAR modName[MAX_PATH];
+    HRESULT hr = S_OK;
+
+    const WCHAR* testModuleName = L"RawProfilerHook.Tests_x"
+#if defined(_X86_)
+        L"86"
+#else
+        L"64"
+#endif
+        ".dll";
+
+    IfFailRet(m_pRealProfilerInfo->GetModuleInfo(moduleId, nullptr, MAX_PATH, nullptr, modName, nullptr));
+    if (std::experimental::filesystem::path(modName).filename() != testModuleName)
+    {
+        return S_OK;
+    }
+
+    m_testModule = moduleId;
+
+    IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead, IID_IMetaDataImport, (IUnknown **)&m_metadataImport));
+    IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead | ofWrite, IID_IMetaDataEmit2, (IUnknown **)&m_emit));
+    IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead, IID_IMetaDataAssemblyImport, (IUnknown**)&m_assemblyImport));
+    IfFailRet(m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead | ofWrite, IID_IMetaDataAssemblyEmit, (IUnknown**)&m_assemblyEmit));
+
+    IfFailRet(m_metadataImport->FindTypeDefByName(L"RawProfilerHook.Tests.TestRawProfilerMethodCreateBase", mdTokenNil, &m_testType));
+
+    //In order to create a new method on an existing type we must get a valid RVA of the method.
+
+    const COR_SIGNATURE voidSig[] = { IMAGE_CEE_CS_CALLCONV_HASTHIS, 0, ELEMENT_TYPE_VOID };
+    ULONG rva = 0;
+    mdMethodDef methodModuleLoadToken = 0;
+    IfFailRet(m_metadataImport->FindMethod(m_testType, L"MethodModuleLoad", voidSig, sizeof(voidSig), &methodModuleLoadToken));
+    IfFailRet(m_metadataImport->GetMethodProps(methodModuleLoadToken, nullptr, nullptr, 0, nullptr, nullptr, nullptr, nullptr, &rva, nullptr));
+
+    mdMethodDef intermediateModuleMethod = 0;
+    IfFailRet(CreateNewMethod(m_testType, L"ModDefineModCreateBody", rva, &intermediateModuleMethod));
+
+    mdMethodDef newToken = 0;
+    //We emit the method body during jit
+    IfFailRet(CreateNewMethod(m_testType, L"ModDefineJitCreateBody", rva, &newToken));
+
+    //These setup the calls from MethodModuleLoad->ModDefineModCreateBody->DestinationMethod
+    IfFailRet(EmitCallTargetMethodBody(methodModuleLoadToken, intermediateModuleMethod));
+    IfFailRet(EmitCallTargetMethodBody(intermediateModuleMethod, L"DestinationMethod"));
+
     return S_OK;
 }
 
@@ -122,6 +167,54 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::FunctionUnloadStarted(
 HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::JITCompilationStarted(
     /* [in] */ FunctionID functionId,
     /* [in] */ BOOL fIsSafeToBlock){
+
+    ModuleID moduleId;
+    mdMethodDef methodToken;
+    HRESULT hr = S_OK;
+    IfFailRet(m_pRealProfilerInfo->GetFunctionInfo(functionId, nullptr, &moduleId, &methodToken));
+
+    if (moduleId == m_testModule)
+    {
+        if (m_firstJit)
+        {
+            //In order to emit a method during JitCompilationStarted, you have to emit a brand new type
+
+            //TODO This only works for desktop
+            const BYTE publicKeyToken[] = { 0xB7, 0x7A, 0x5C, 0x56, 0x19, 0x34, 0xE0, 0x89 };
+            ASSEMBLYMETADATA asmMeta = { 0 };
+            ZeroMemory(&asmMeta, sizeof(asmMeta));
+            asmMeta.usMajorVersion = 4;
+            mdAssemblyRef mscorlibRef = 0;
+            IfFailRet(m_assemblyEmit->DefineAssemblyRef(publicKeyToken, sizeof(publicKeyToken), L"mscorlib", &asmMeta, nullptr, 0, 0, &mscorlibRef));
+
+            mdTypeRef objectRef = 0;
+            IfFailRet(m_emit->DefineTypeRefByName(mscorlibRef, L"System.Object", &objectRef));
+
+            IfFailRet(m_emit->DefineTypeDef(L"CustomTestType", tdClass, objectRef, nullptr, &m_createdTestType));
+
+            IfFailRet(CreateNewStaticMethod(m_createdTestMethod, m_testType, L"JitDefinedJitBody", &m_createdTestMethod));
+            IfFailRet(EmitCallTargetMethodBody(m_createdTestMethod, L"DestinationMethod"));
+            m_firstJit = false;
+        }
+
+        const ULONG methodNameSize = 256;
+        WCHAR methodName[methodNameSize];
+        IfFailRet(m_metadataImport->GetMethodProps(methodToken, nullptr, methodName, methodNameSize, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr));
+
+        if (std::wstring(L"MethodJitCompilationStarted") == methodName)
+        {
+            IfFailRet(EmitCallTargetMethodBody(methodToken, m_createdTestMethod));
+        }
+        if (std::wstring(L"MethodModuleLoadThenJit") == methodName)
+        {
+            IfFailRet(EmitCallTargetMethodBody(methodToken, L"ModDefineJitCreateBody"));
+        }
+        else if (std::wstring(L"ModDefineJitCreateBody") == methodName)
+        {
+            IfFailRet(EmitCallTargetMethodBody(methodToken, L"DestinationMethod"));
+        }
+    }
+
     return S_OK;
 }
 
@@ -484,5 +577,86 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::GetAssemblyReferences(
 
 HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::ModuleInMemorySymbolsUpdated(
     _In_ ModuleID moduleId) {
+    return S_OK;
+}
+
+HRESULT CCoRawProfilerHook::CreateNewMethod(mdTypeDef typeDef, LPWSTR methodName, ULONG rva, mdMethodDef* newMethod)
+{
+    HRESULT hr = S_OK;
+    const COR_SIGNATURE voidSig[] = { IMAGE_CEE_CS_CALLCONV_HASTHIS, 0, ELEMENT_TYPE_VOID };
+
+    IfFailRet(m_emit->DefineMethod(typeDef, methodName, mdPublic | mdHideBySig, voidSig, sizeof(voidSig), rva, miIL | miManaged, newMethod));
+
+    return S_OK;
+}
+
+HRESULT CCoRawProfilerHook::CreateNewStaticMethod(mdTypeDef definingType, mdTypeDef parameterType, LPWSTR name, mdMethodDef* newMethod)
+{
+    HRESULT hr = S_OK;
+
+    //The signature is public static void <MethodName>(<ParameterType> p1);
+    COR_SIGNATURE sig[] = { IMAGE_CEE_CS_CALLCONV_DEFAULT, 1, ELEMENT_TYPE_VOID, ELEMENT_TYPE_CLASS, 0x0, 0x0, 0x0, 0x0};
+    ULONG tokenSize = CorSigCompressToken(parameterType, &sig[4]);
+    if (tokenSize < 1)
+    {
+        return E_FAIL;
+    }
+    IfFailRet(m_emit->DefineMethod(definingType, name, mdStatic | mdPublic | mdHideBySig, sig, sizeof(sig) - 4 + tokenSize, 0, miIL | miManaged, newMethod));
+
+    return S_OK;
+}
+
+HRESULT CCoRawProfilerHook::EmitCallTargetMethodBody(mdMethodDef methodToken, LPWSTR targetMethod)
+{
+    HRESULT hr = S_OK;
+    const COR_SIGNATURE voidSig[] = { IMAGE_CEE_CS_CALLCONV_HASTHIS, 0, ELEMENT_TYPE_VOID };
+
+    mdMethodDef targetMethodToken;
+    IfFailRet(m_metadataImport->FindMethod(m_testType, targetMethod, voidSig, sizeof(voidSig), &targetMethodToken));
+
+    return EmitCallTargetMethodBody(methodToken, targetMethodToken);
+}
+
+
+HRESULT CCoRawProfilerHook::EmitCallTargetMethodBody(mdMethodDef methodToken, mdMethodDef targetMethod)
+{
+    HRESULT hr = S_OK;
+
+    //These instructions are:
+    // nop
+    // ldarg.0
+    // call <token>
+    // nop
+    // ret
+
+    //This effectively allows us to chain from one method to another.
+    //Note this works for both static methods that take 1 parameter or instance methods that take 0 parameters.
+
+    BYTE instructions[] = { 0x0, 0x2, 0x28, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2a };
+    DWORD methodSize = sizeof(instructions);
+
+    ATL::CComPtr<IMethodMalloc> alloc;
+    IfFailRet(m_pRealProfilerInfo->GetILFunctionBodyAllocator(m_testModule, &alloc));
+    PVOID methodBody = alloc->Alloc(methodSize + sizeof(COR_ILMETHOD_FAT));
+    if (methodBody == nullptr)
+    {
+        return E_OUTOFMEMORY;
+    }
+
+    COR_ILMETHOD_FAT* methodPtr = reinterpret_cast<COR_ILMETHOD_FAT*>(methodBody);
+    methodPtr->Size = sizeof(IMAGE_COR_ILMETHOD_FAT) / sizeof(DWORD);
+    methodPtr->SetCodeSize(methodSize);
+    methodPtr->SetFlags(CorILMethod_FatFormat);
+    methodPtr->SetMaxStack(8);
+    methodPtr->SetLocalVarSigTok(0);
+
+    DWORD instructionIndex = sizeof(COR_ILMETHOD_FAT);
+
+    //We substitute the token value for the target we want to call.
+    *reinterpret_cast<DWORD*>(&instructions[3]) = targetMethod;
+
+    memcpy(methodPtr->GetCode(), instructions, sizeof(instructions));
+    IfFailRet(m_pRealProfilerInfo->SetILFunctionBody(m_testModule, methodToken, (LPCBYTE)methodBody));
+
     return S_OK;
 }

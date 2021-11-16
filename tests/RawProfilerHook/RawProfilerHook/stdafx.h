@@ -22,6 +22,11 @@
 
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
 
+#ifndef IfFailRet
+#define IfFailRet(EXPR) \
+do { if (FAILED(hr = (EXPR))) { ATLASSERT(!L"IfFailRet(" L#EXPR L") failed"); return hr; } } while (false)
+#endif
+
 #include <atlbase.h>
 #include <atlcom.h>
 #include <atlctl.h>
@@ -29,3 +34,8 @@
 #include <atlcoll.h>
 #include <atlsync.h>
 
+#include <string>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
+#include <corhlpr.h>

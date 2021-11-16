@@ -19,7 +19,6 @@ MicrosoftInstrumentationEngine::CExceptionSection::~CExceptionSection()
 
 HRESULT MicrosoftInstrumentationEngine::CExceptionSection::Initialize(
     _In_ const IMAGE_COR_ILMETHOD* pMethodHeader,
-    _In_ ULONG cbMethodSize,
     _In_ CInstructionGraph* pInstructionGraph
     )
 {

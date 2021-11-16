@@ -15,6 +15,7 @@
     <AssemblyName>Intercept.Latest.Tests_x64</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
+    <Platforms>x64;x86</Platforms>
     <RootNamespace>Intercept.Latest.Tests</RootNamespace>
     <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>

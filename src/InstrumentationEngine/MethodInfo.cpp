@@ -43,7 +43,8 @@ MicrosoftInstrumentationEngine::CMethodInfo::CMethodInfo(
     m_bGenericParametersInitialized(false),
     m_bIsCreateBaselineEnabled(true),
     m_bIsHeaderInitialized(false),
-    m_bIsRejit(false)
+    m_bIsRejit(false),
+    m_userDefinedBuffer(nullptr)
 {
     DEFINE_REFCOUNT_NAME(CMethodInfo);
 
@@ -573,7 +574,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::InitializeInstructionsAndEx
     // because during the diagnostic dumping logic, the graph will be from the rendered function
     // body and not directly from the method info.
     m_pExceptionSection.Attach(new CExceptionSection(this));
-    IfFailRet(m_pExceptionSection->Initialize(pMethodHeader, cbMethodSize, m_pInstructionGraph));
+    IfFailRet(m_pExceptionSection->Initialize(pMethodHeader, m_pInstructionGraph));
 
     // Convert branches to the larger form, this also calculates the current offsets for instructions
     // NOTE: this must be done after the exception sections are initialized as they depend on the original
@@ -1211,15 +1212,23 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::SetFinalRenderedFunctionBod
 
     m_bIsInstrumented = true;
 
-    if (m_pFinalRenderedMethod.empty())
+    if (cbMethodSize > 0)
     {
-        CLogging::LogError(_T("CMethodInfo::SetFinalRenderedFunctionBody - final method body should only be called once."));
-        return E_FAIL;
-    }
+        if (!m_pFinalRenderedMethod.empty())
+        {
+            CLogging::LogError(_T("CMethodInfo::SetFinalRenderedFunctionBody - final method body should only be called once."));
+            return E_FAIL;
+        }
 
-    m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
-    m_pFinalRenderedMethod.reserve(cbMethodSize);
-    m_pFinalRenderedMethod.insert(m_pFinalRenderedMethod.begin(), pMethodHeader, pMethodHeader + cbMethodSize);
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
+        m_pFinalRenderedMethod.reserve(cbMethodSize);
+        m_pFinalRenderedMethod.insert(m_pFinalRenderedMethod.begin(), pMethodHeader, pMethodHeader + cbMethodSize);
+    }
+    else
+    {
+        m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
+        m_userDefinedBuffer = pMethodHeader;
+    }
 
     return hr;
 }
@@ -1244,19 +1253,31 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         ModuleID moduleId;
         IfFailRet(m_pModuleInfo->GetModuleID(&moduleId));
 
-        CComPtr<IMethodMalloc> pMalloc;
-        IfFailRet(pCorProfilerInfo->GetILFunctionBodyAllocator(moduleId, &pMalloc));
 
         DWORD cbMethodBody = 0;
-        BYTE* pMethodBody = nullptr;
+        LPCBYTE pMethodBody = nullptr;
         IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pMethodBody));
 
-        PVOID pFunction = pMalloc->Alloc(cbMethodBody);
-        IfFailRetErrno(memcpy_s(pFunction, cbMethodBody, pMethodBody, cbMethodBody));
+        LPCBYTE pFunction = nullptr;
+
+        if (cbMethodBody > 0)
+        {
+            CComPtr<IMethodMalloc> pMalloc;
+            IfFailRet(pCorProfilerInfo->GetILFunctionBodyAllocator(moduleId, &pMalloc));
+
+            PVOID memory = pMalloc->Alloc(cbMethodBody);
+            IfFailRetErrno(memcpy_s(memory, cbMethodBody, pMethodBody, cbMethodBody));
+            pFunction = (LPCBYTE)memory;
+        }
+        else
+        {
+            //No copy operation is needed. User allocated buffer is being used.
+            pFunction = pMethodBody;
+        }
 
         LogMethodInfo();
 
-        IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, (LPCBYTE)pFunction));
+        IfFailRet(pCorProfilerInfo->SetILFunctionBody(moduleId, m_tkFunction, pFunction));
 
         m_pModuleInfo->SetMethodIsTransformed(m_tkFunction, true);
 
@@ -1279,7 +1300,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::ApplyFinalInstrumentation()
         LogMethodInfo();
 
         DWORD cbMethodBody = 0;
-        BYTE* pMethodBody = nullptr;
+        LPCBYTE pMethodBody = nullptr;
         IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pMethodBody));
 
         IfFailRet(m_pFunctionControl->SetILFunctionBody(cbMethodBody, pMethodBody));
@@ -1783,7 +1804,7 @@ tstring MicrosoftInstrumentationEngine::CMethodInfo::GetCorElementTypeString(_In
 // NOTE: a seperate buffer is needed because the clr requires a callee destroyed buffer in the rejit cases, and
 // some hosts, including MMA, will try to consume the buffer after the set to calculate the cor il map.
 // using the same buffer on set would invalidate the pointer that such hosts already obtained.
-HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetFinalInstrumentation(_Out_ DWORD* pcbMethodBody, _Out_ BYTE** ppMethodBody)
+HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetFinalInstrumentation(_Out_ DWORD* pcbMethodBody, _Out_ LPCBYTE* ppMethodBody)
 {
     HRESULT hr = S_OK;
     IfNullRet(pcbMethodBody);
@@ -1791,10 +1812,18 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetFinalInstrumentation(_Ou
 
     if (m_pFinalRenderedMethod.empty())
     {
-        // raw profiler did not instrument the method. Use the intermediate rendered method
-        // from the instrumentation methods.
-        *pcbMethodBody = static_cast<DWORD>(m_pIntermediateRenderedMethod.size());
-        *ppMethodBody = m_pIntermediateRenderedMethod.data();
+        if (m_userDefinedBuffer == nullptr)
+        {
+            // raw profiler did not instrument the method. Use the intermediate rendered method
+            // from the instrumentation methods.
+            *pcbMethodBody = static_cast<DWORD>(m_pIntermediateRenderedMethod.size());
+            *ppMethodBody = m_pIntermediateRenderedMethod.data();
+        }
+        else
+        {
+            *pcbMethodBody = 0;
+            *ppMethodBody = m_userDefinedBuffer;
+        }
     }
     else
     {
@@ -1891,11 +1920,10 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     HRESULT hr = S_OK;
 
     DWORD cbMethodBody = 0;
-    BYTE* pbMethodBody = nullptr;
+    LPCBYTE pbMethodBody = nullptr;
     IfFailRet(GetFinalInstrumentation(&cbMethodBody, &pbMethodBody));
 
     IMAGE_COR_ILMETHOD* pMethodHeader = (IMAGE_COR_ILMETHOD*)(pbMethodBody);
-    ULONG cbMethodSize = cbMethodBody;
 
     LPCBYTE pMethodBody;
     ULONG codeSize = 0;
@@ -1904,6 +1932,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     {
         pMethodBody = (LPCBYTE) pMethodHeader + sizeof (IMAGE_COR_ILMETHOD_TINY);
         codeSize = ((COR_ILMETHOD_TINY*)pMethodHeader)->GetCodeSize();
+
     }
     else
     {
@@ -1925,7 +1954,7 @@ HRESULT MicrosoftInstrumentationEngine::CMethodInfo::GetInstrumentationResults(
     // body and not directly from the method info.
     CComPtr<CExceptionSection> pExceptionSection;
     pExceptionSection.Attach(new CExceptionSection(this));
-    IfFailRet(pExceptionSection->Initialize(pMethodHeader, cbMethodSize, pInstructionGraph));
+    IfFailRet(pExceptionSection->Initialize(pMethodHeader, pInstructionGraph));
 
     *ppInstructionGraph = pInstructionGraph.Detach();
     *ppExceptionSection = pExceptionSection.Detach();

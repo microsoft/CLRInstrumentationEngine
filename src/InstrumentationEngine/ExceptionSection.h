@@ -48,7 +48,6 @@ namespace MicrosoftInstrumentationEngine
         // body and not directly from the method info.
         HRESULT Initialize(
             _In_ const IMAGE_COR_ILMETHOD* pMethodHeader,
-            _In_ ULONG cbMethodSize,
             _In_ CInstructionGraph* pInstructionGraph
             );
 
