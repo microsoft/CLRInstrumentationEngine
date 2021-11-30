@@ -1,4 +1,4 @@
-# CLRIE Profiler Design Doc
+# CLRIE Profiler Proxy Design Doc
 
 1. [Overview](#overview)
 2. [Goals](#goals)
