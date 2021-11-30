@@ -45,6 +45,23 @@ MicrosoftInstrumentationEngine_DisableCodeSignatureValidation|1|Disables signatu
 MicrosoftInstrumentationEngine_IsPreinstalled|1|The preinstalled site extension for CLRIE sets this to help users know that the applicationHost.xdt file for the preinstalled extension was applied. The Application Insights private site extension won't set this.
 MicrosoftInstrumentationEngine_LatestPath|D:\Program Files (x86)\SiteExtensions\InstrumentationEngine\\[LATEST VERSION]|This environment variable is available in Azure App Service v91+ and allows private site extensions to reference the path to the latest preinstalled InstrumentationEngine.
 
+## Profiler Proxy Variables
+
+These environment variables are used to configure the [profiler proxy](./profilerproxy.md) which is available in the MSI/MSM installers.
+
+For reference, InstrumentationEngine versions are expected to be in one of the below formats.
+
+|| Release | Debug |
+|-|-|-|
+|**Public Release**|1.0.0|1.0.0_debug|
+|**Preview**|1.0.0-build1|1.0.0-build1_debug|
+
+| Variable | Value | Description |
+|-|-|-|
+InstrumentationEngineProxy_UseDebug|1|Toggles the proxy to **only** consider versions with `_debug` suffix. 
+InstrumentationEngineProxy_UsePreview|1|Toggles the proxy to also consider versions with `-build###` suffix.
+InstrumentationEngineProxy_UseSpecificVersion|1.0.0-build1234|Forces the proxy to only use the specific folder version.
+
 ## Raw Profiler Hook
 
 The RawProfilerHook allows one additional profiler that has not yet on-boarded to the ClrInstrumentationEngine to work with the Instrumentation Methods.
