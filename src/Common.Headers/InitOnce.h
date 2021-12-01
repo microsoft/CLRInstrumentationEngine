@@ -11,7 +11,8 @@
 #include <atlsync.h>
 #pragma warning(pop)
 
-#include "CriticalSectionHolder.h"
+#include <thread>
+#include <mutex>
 
 namespace CommonLib
 {
@@ -19,7 +20,7 @@ namespace CommonLib
     {
     private:
         std::atomic_bool m_isCreated;
-        CCriticalSection m_cs;
+        std::mutex m_mutex;
         std::function<HRESULT()> m_func;
         HRESULT m_result;
 
@@ -31,7 +32,7 @@ namespace CommonLib
         {
             if (!m_isCreated.load(std::memory_order_acquire))
             {
-                CCriticalSectionHolder holder(&m_cs);
+                std::lock_guard<std::mutex> lock(m_mutex);
                 if (!m_isCreated.load(std::memory_order_relaxed))
                 {
                     m_result = m_func();
@@ -50,7 +51,7 @@ namespace CommonLib
         {
             if (m_isCreated.load(std::memory_order_acquire))
             {
-                CCriticalSectionHolder holder(&m_cs);
+                std::lock_guard<std::mutex> lock(m_mutex);
                 if (m_isCreated.load(std::memory_order_relaxed))
                 {
                     m_result = S_OK;

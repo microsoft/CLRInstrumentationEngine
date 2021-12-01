@@ -29,6 +29,7 @@ namespace MicrosoftInstrumentationEngine
         public IProfilerManager3,
         public IProfilerManager4,
         public IProfilerManager5,
+        public IProfilerStringManager,
         public IProfilerManagerLogging
     {
 
@@ -245,6 +246,7 @@ namespace MicrosoftInstrumentationEngine
             COM_INTERFACE_ENTRY(IProfilerManager3)
             COM_INTERFACE_ENTRY(IProfilerManager4)
             COM_INTERFACE_ENTRY(IProfilerManager5)
+            COM_INTERFACE_ENTRY(IProfilerStringManager)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -521,6 +523,13 @@ namespace MicrosoftInstrumentationEngine
 
         // Allows instrumentation methods and hosts to modify the current logging flags
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags);
+
+    // IProfilerStringManager Methods
+    public:
+        STDMETHOD(FreeString)(_In_opt_ BSTR bstr)
+        {
+            return InstrumentationEngineFreeString(bstr);
+        }
 
         // ICorProfilerCallback methods
     public:

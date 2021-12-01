@@ -1,4 +1,4 @@
-# CLRIE Profiler Design Doc
+# CLRIE Profiler Proxy Design Doc
 
 1. [Overview](#overview)
 2. [Goals](#goals)
@@ -6,7 +6,7 @@
 4. [Background](#background)
 5. [Architecture and Design](#design)
 
-## <a name="overview>Overview</a>
+## <a name="overview">Overview</a>
 The CLR Instrumentation Engine (CLRIE) MSI/MSM installs the dlls into a versioned folder under Program Files. Since COR_PROFILER environment
 variables require the dll’s full path, the version must be known up front. Conflicts can occur when different products deploy different
 versions of the CLRIE.

@@ -76,9 +76,12 @@ using namespace ATL;
 
 #include "InstrumentationEngine.h"
 #include "../InstrumentationEngine.Lib/Logging.h"
+#include "../InstrumentationEngine.Lib/InstrumentationEngineFeatures.h"
 #include "resource.h"
 
 
+
+STDAPI InstrumentationEngineFreeString(_In_opt_ BSTR bstr);
 
 using namespace std;
 using namespace CommonLib;

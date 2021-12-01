@@ -51,7 +51,7 @@ namespace InstrEngineTests
 
         #endregion
 
-        public const int TestAppTimeoutMs = 10000;
+        public const int TestAppTimeoutMs = 25000;
 
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
@@ -217,7 +217,7 @@ namespace InstrEngineTests
             System.Diagnostics.Process testProcess = System.Diagnostics.Process.Start(psi);
 
             // test processes are short. They should not run for more than a few seconds.
-            testProcess.WaitForExit(timeoutMs);
+            bool testCompleted = testProcess.WaitForExit(timeoutMs);
 
             try
             {
@@ -234,8 +234,8 @@ namespace InstrEngineTests
             {
                 Console.WriteLine($"stderr: {stderr}");
             }
-
-            Assert.AreEqual(0, testProcess.ExitCode, "Test application failed");
+            Assert.IsTrue(testCompleted, "Test process timed out during execution.");
+            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}");
         }
 
         public static string[] SplitXmlDocuments(string content)

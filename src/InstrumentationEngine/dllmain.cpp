@@ -157,3 +157,14 @@ STDAPI DLLEXPORT(GetInstrumentationEngineLogger, 4)(_Outptr_ IProfilerManagerLog
     *ppLogging = pLogging.Detach();
     return S_OK;
 }
+
+STDAPI DLLEXPORT(InstrumentationEngineFreeString, 4)(_In_opt_ BSTR bstr)
+{
+    if (bstr == nullptr)
+    {
+        return S_FALSE;
+    }
+
+    SysFreeString(bstr);
+    return S_OK;
+}

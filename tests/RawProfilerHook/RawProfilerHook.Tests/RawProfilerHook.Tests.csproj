@@ -8,13 +8,12 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup Condition="'$(Platform)' == 'x86'">
     <DefineConstants>$(DefineConstants);X86</DefineConstants>
-    <AssemblyName>RawProfilerHook.Tests_x86</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
-    <AssemblyName>FunctionalTests_x64</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
+    <Platforms>x64;x86</Platforms>
     <RootNamespace>RawProfilerHook.Tests</RootNamespace>
     <AssemblyName>RawProfilerHook.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
