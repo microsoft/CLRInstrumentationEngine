@@ -42,20 +42,26 @@ jobs:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
       displayName: Set Platform for Any CPU
 
-  - template: ../../steps/windows/nugetrestore.yaml
+  - template: ../../steps/windows/enginerestore.yaml
     parameters:
-      Solution: InstrumentationEngine.sln
+      BinLogCategory: CodeAnalysis
 
   - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml
+
+  - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+      parameters:
+        PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
+        ArtifactName: 'logs'
 
   - ${{ if eq(parameters.PublishReport, true) }}:
     - template: ../../steps/codeanalysis/publishreports.yaml
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
 
-    - template: ../../steps/codeanalysis/filebugs.yaml
-      parameters:
-        BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
-        Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
+      Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
   - template: ../../steps/microbuild/cleanup.yaml

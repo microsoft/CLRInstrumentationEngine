@@ -1,0 +1,38 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Restore InstrumentationEngine.sln NuGet Packages
+
+# 'nuget restore' vs 'dotnet restore' and restoring separate solution
+# - The InstrumentationEngine.sln file now contains .NET 6 projects
+#   that build in the 'Any CPU' platform. These projects are not
+#   buildable by MSBuild in the Azure DevOps pipelines because they
+#   are using a non-preview version of Visual Studio and MSBuild.
+# - There are several managed projects in the 'x64' and 'x86' platforms
+#   of the sln file, which still require NuGet package restoration. However,
+#   'nuget restore' cannot be used on the sln because of the .NET 6 projects.
+#
+# Solution: Use 'dotnet restore' for restoring NuGet packages in the 'Any CPU'
+#   platform. For the managed projects in 'x64' and 'x86' platforms, add them
+#   to a new solution without the .NET 6 projects and use 'nuget restore' to
+#   restore the packages for those projects.
+#
+# Long term, the managed projects in the 'x64' and 'x86' platforms should be
+# moved to the 'Any CPU' platform, which will allow usage of 'dotnet restore'
+# for all platforms. 
+
+parameters:
+  BinLogCategory: ''
+
+steps:
+# nuget restore InstrumentationEngine.sln
+- template: dotnetrestore.yaml
+  parameters:
+    Solution: InstrumentationEngine.sln
+    Condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+    BinLogCategory: ${{ parameters.BinLogCategory }}
+
+- template: nugetrestore.yaml
+  parameters:
+    Solution: NativeNugetRestore.sln
+    Condition: and(succeeded(), ne(variables['Platform'], 'Any CPU'))

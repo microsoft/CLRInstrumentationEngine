@@ -8,6 +8,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#pragma warning(disable:6387) // disable parameter should not be null check. We explicitly test for that error in this file.
 namespace InstrumentationEngineLibTests
 {
     TEST_CLASS(InstrumentationMethodTests)
@@ -16,14 +17,14 @@ namespace InstrumentationEngineLibTests
 
         TEST_METHOD(InitializeWithAllNullsReturnsInvalidArg)
         {
-            MicrosoftInstrumentationEngine::CInstrumentationMethod method(nullptr, nullptr, nullptr, nullptr, GUID(), 0);
-            Assert::AreEqual(E_INVALIDARG, method.Initialize(nullptr, false));
+            MicrosoftInstrumentationEngine::CInstrumentationMethod method(nullptr, nullptr, nullptr, nullptr, GUID(), 0); // lgtm[cpp/callwithnullsal]
+            Assert::AreEqual(E_INVALIDARG, method.Initialize(nullptr, false)); // lgtm[cpp/callwithnullsal]
         }
 
         TEST_METHOD(InitializeWithBadPathReturnsNotFound)
         {
             MicrosoftInstrumentationEngine::CInstrumentationMethod method(L"c:\\temp", L"instrumentation method", L"test method description", L"instrumentationMethod.dll", GUID(), 0);
-            Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND), method.Initialize(nullptr, false));
+            Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND), method.Initialize(nullptr, false)); // lgtm[cpp/callwithnullsal]
         }
 
         TEST_METHOD(InitializeWithNotSignedDllAndValidationOnReturnsFail)
@@ -38,7 +39,7 @@ namespace InstrumentationEngineLibTests
 
 
             MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentation method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
-            Assert::AreEqual(E_FAIL, method.Initialize(nullptr, true));
+            Assert::AreEqual(E_FAIL, method.Initialize(nullptr, true)); // lgtm[cpp/callwithnullsal]
         }
 
         TEST_METHOD(InitializeWithNotSignedDllAndValidationOffReturnsFail)
@@ -53,7 +54,7 @@ namespace InstrumentationEngineLibTests
 
 
             MicrosoftInstrumentationEngine::CInstrumentationMethod method(BSTR(modulePath.c_str()), L"instrumentation method", L"test method description", BSTR(fileName.c_str()), GUID(), 0);
-            Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND), method.Initialize(nullptr, false));
+            Assert::AreEqual(HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND), method.Initialize(nullptr, false)); // lgtm[cpp/callwithnullsal]
         }
 
     };

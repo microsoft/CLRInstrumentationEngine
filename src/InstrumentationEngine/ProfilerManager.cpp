@@ -22,7 +22,7 @@
 #include "../Common.Lib/PathUtils.h"
 #endif
 #include "../Common.Headers/StringUtils.h"
-#include "Encoding.h"
+#include "../Common.Lib/systemstring.h"
 #include <algorithm>
 
 using namespace ATL;
@@ -50,7 +50,7 @@ CProfilerManager::CProfilerManager() :
     GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
     if (wcscmp(wszEnvVar, _T("1")) == 0)
     {
-        tstringstream mboxStream;
+        std::wstringstream mboxStream;
         DWORD pid = GetCurrentProcessId();
         mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
         MessageBoxW(NULL, mboxStream.str().c_str(), L"", MB_OK);
@@ -121,7 +121,6 @@ HRESULT CProfilerManager::FinalConstruct()
 
 void CProfilerManager::FinalRelease()
 {
-
 }
 
 HRESULT CProfilerManager::SetupProfilingEnvironment(_In_reads_(numConfigPaths) BSTR rgConfigPaths[], _In_ UINT numConfigPaths)
@@ -440,8 +439,6 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CProfilerManager::InstrumentationMethodThreadProc"));
-
 #ifndef PLATFORM_UNIX
     hr = CoInitialize(NULL);
     if (FAILED(hr))
@@ -458,7 +455,7 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
         return 1;
     }
 
-    for (UINT i = 0; i < pProfilerManager->m_configSources.size(); i++)
+    for (size_t i = 0; i < pProfilerManager->m_configSources.size(); i++)
     {
         IfFailRet(pProfilerManager->LoadInstrumentationMethods(pProfilerManager->m_configSources[i]));
     }
@@ -466,8 +463,6 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
 #ifndef PLATFORM_UNIX
     CoUninitialize();
 #endif
-
-    CLogging::LogMessage(_T("End CProfilerManager::InstrumentationMethodThreadProc"));
 
     return 0;
 }
@@ -478,8 +473,6 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     )
 {
     HRESULT hr = S_OK;
-
-    CLogging::LogMessage(_T("Starting CConfigurationLocator::ParseAttachConfigurationThreadProc"));
 
 #ifndef PLATFORM_UNIX
     hr = CoInitialize(NULL);
@@ -507,10 +500,10 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     CComPtr<CXmlNode> pCurrChildNode;
     IfFailRet(pDocumentNode->GetChildNode(&pCurrChildNode));
 
-    CComBSTR bstrCurrChildNodeName;
-    IfFailRet(pDocumentNode->GetName(&bstrCurrChildNodeName));
+    tstring currChildNodeName;
+    IfFailRet(pDocumentNode->GetName(currChildNodeName));
 
-    if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngineConfiguration")) != 0)
+    if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationEngineConfiguration")) != 0)
     {
         CLogging::LogError(_T("CConfigurationLocator::ParseAttachConfigurationThreadProc - Invalid configuration. Root element should be InstrumentationEngineConfiguration"));
         return E_FAIL;
@@ -518,17 +511,17 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
     while (pCurrChildNode != nullptr)
     {
-        IfFailRet(pCurrChildNode->GetName(&bstrCurrChildNodeName));
-        if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationEngine")) == 0)
+        IfFailRet(pCurrChildNode->GetName(currChildNodeName));
+        if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationEngine")) == 0)
         {
             CComPtr<CXmlNode> pSettingsNode;
             IfFailRet(pCurrChildNode->GetChildNode(&pSettingsNode));
             if (pSettingsNode != nullptr)
             {
-                CComBSTR bstrSettingsNodeName;
-                IfFailRet(pSettingsNode->GetName(&bstrSettingsNodeName));
+                tstring settingsNodeName;
+                IfFailRet(pSettingsNode->GetName(settingsNodeName));
 
-                if (wcscmp(bstrSettingsNodeName, _T("Settings")) == 0)
+                if (wcscmp(settingsNodeName.c_str(), _T("Settings")) == 0)
                 {
                     unordered_map<tstring, tstring> settingsMap;
                     IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
@@ -553,24 +546,24 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                 }
             }
         }
-        else if (wcscmp(bstrCurrChildNodeName, _T("InstrumentationMethods")) == 0)
+        else if (wcscmp(currChildNodeName.c_str(), _T("InstrumentationMethods")) == 0)
         {
             CComPtr<CXmlNode> pInstrumentationMethodNode;
             IfFailRet(pCurrChildNode->GetChildNode(&pInstrumentationMethodNode));
 
             while (pInstrumentationMethodNode != nullptr)
             {
-                CComBSTR bstrInstrumentationMethodNodeName;
-                IfFailRet(pInstrumentationMethodNode->GetName(&bstrInstrumentationMethodNodeName));
+                tstring instrumentationMethodNodeName;
+                IfFailRet(pInstrumentationMethodNode->GetName(instrumentationMethodNodeName));
 
-                if (wcscmp(bstrInstrumentationMethodNodeName, _T("AddInstrumentationMethod")) == 0)
+                if (wcscmp(instrumentationMethodNodeName.c_str(), _T("AddInstrumentationMethod")) == 0)
                 {
-                    CComBSTR bstrConfigPath;
-                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), &bstrConfigPath));
-                    IfFalseRet(bstrConfigPath.Length() != 0, E_FAIL);
+                    tstring configPath;
+                    IfFailRet(pInstrumentationMethodNode->GetAttribute(_T("ConfigPath"), configPath));
+                    IfFalseRet(configPath.length() != 0, E_FAIL);
 
                     CComPtr<CConfigurationSource> pSource;
-                    pSource.Attach(new (nothrow) CConfigurationSource(bstrConfigPath));
+                    pSource.Attach(new (nothrow) CConfigurationSource(configPath.c_str()));
                     IfFalseRet(nullptr != pSource, E_OUTOFMEMORY);
 
                     CComPtr<CXmlNode> pInstrumentationMethodChildNode;
@@ -578,10 +571,10 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
 
                     while (pInstrumentationMethodChildNode != nullptr)
                     {
-                        CComBSTR bstrInstrumentationMethodChildNodeName;
-                        IfFailRet(pInstrumentationMethodChildNode->GetName(&bstrInstrumentationMethodChildNodeName));
+                        tstring instrumentationMethodChildNodeName;
+                        IfFailRet(pInstrumentationMethodChildNode->GetName(instrumentationMethodChildNodeName));
 
-                        if (wcscmp(bstrInstrumentationMethodChildNodeName, _T("Settings")) == 0)
+                        if (wcscmp(instrumentationMethodChildNodeName.c_str(), _T("Settings")) == 0)
                         {
                             unordered_map<tstring, tstring> settingsMap;
                             IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
@@ -617,8 +610,6 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     CoUninitialize();
 #endif
 
-    CLogging::LogMessage(_T("End CConfigurationLocator::ParseAttachConfigurationThreadProc"));
-
     return 0;
 }
 
@@ -632,22 +623,22 @@ HRESULT CProfilerManager::ParseSettingsConfigurationNode(
     IfFailRet(parentNode->GetChildNode(&pSettingNode));
     while (pSettingNode != nullptr)
     {
-        CComBSTR bstrSettingNodeName;
-        IfFailRet(pSettingNode->GetName(&bstrSettingNodeName));
+        tstring settingNodeName;
+        IfFailRet(pSettingNode->GetName(settingNodeName));
 
-        IfFalseRet(wcscmp(bstrSettingNodeName, _T("Setting")) == 0, E_FAIL);
+        IfFalseRet(wcscmp(settingNodeName.c_str(), _T("Setting")) == 0, E_FAIL);
 
-        CComBSTR bstrSettingName;
-        IfFailRet(pSettingNode->GetAttribute(_T("Name"), &bstrSettingName));
-        IfFalseRet(bstrSettingName.Length() != 0, E_FAIL);
+        tstring settingName;
+        IfFailRet(pSettingNode->GetAttribute(_T("Name"), settingName));
+        IfFalseRet(settingName.length() != 0, E_FAIL);
 
-        CComBSTR bstrSettingValue;
-        IfFailRet(pSettingNode->GetAttribute(_T("Value"), &bstrSettingValue));
-        IfFalseRet(bstrSettingValue.Length() != 0, E_FAIL);
+        tstring settingValue;
+        IfFailRet(pSettingNode->GetAttribute(_T("Value"), settingValue));
+        IfFalseRet(settingValue.length() != 0, E_FAIL);
 
-        if (settings.find(bstrSettingName.m_str) == settings.end())
+        if (settings.find(settingName) == settings.end())
         {
-            settings.insert(std::pair<tstring, tstring>(bstrSettingName.m_str, bstrSettingValue.m_str));
+            settings.insert(std::pair<tstring, tstring>(std::move(settingName), std::move(settingValue)));
         }
 
         CXmlNode* nextSetting = pSettingNode->Next();
@@ -721,8 +712,9 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
 }
 
 HRESULT CProfilerManager::RemoveInstrumentationMethod(
-    _In_ IInstrumentationMethod* pInstrumentationMethod)
+    _In_opt_ IInstrumentationMethod* pInstrumentationMethod)
 {
+    IfNullRet(pInstrumentationMethod);
     HRESULT hr = S_OK;
     {
         DWORD dwFlags = 0;
@@ -1873,69 +1865,69 @@ HRESULT CProfilerManager::JITCompilationStarted(
 
     PROF_CALLBACK_BEGIN
 
-        if (m_attachedClrVersion != ClrVersion_2)
+    if (m_attachedClrVersion != ClrVersion_2)
+    {
+        CComPtr<CMethodInfo> pInformationalMethodInfo;
+
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
+
+        // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
+        // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
+        // copies. This ensures only a single instrumentation pass happens for each method info instance.
+        //
+        // NOTE: this critical section is used in this callback and in JITInline
+        // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
+        CCriticalSectionHolder holder(&m_csForJIT);
+
+        CComPtr<CMethodInfo> pMethodInfo;
+        hr = CreateMethodInfo(functionId, &pMethodInfo);
+        ClearILTransformationStatus(functionId);
+
+        // Class to call cleanup on the method info in the destructor.
+        CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
+
+        if (SUCCEEDED(hr))
         {
-            CComPtr<CMethodInfo> pInformationalMethodInfo;
+            CComPtr<IModuleInfo> pModuleInfo;
+            IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-            IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
+            BOOL isDynamic = false;
+            IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
 
-            // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
-            // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
-            // copies. This ensures only a single instrumentation pass happens for each method info instance.
-            //
-            // NOTE: this critical section is used in this callback and in JITInline
-            // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
-            CCriticalSectionHolder holder(&m_csForJIT);
-
-            CComPtr<CMethodInfo> pMethodInfo;
-            hr = CreateMethodInfo(functionId, &pMethodInfo);
-            ClearILTransformationStatus(functionId);
-
-            // Class to call cleanup on the method info in the destructor.
-            CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
-
-            if (SUCCEEDED(hr))
+            // We cannot instrument modules that have no image base
+            if (!isDynamic)
             {
-                CComPtr<IModuleInfo> pModuleInfo;
-                IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+                // Query if the instrumentation methods want to instrument and then have them actually instrument.
+                vector<CComPtr<IInstrumentationMethod>> toInstrument;
+                IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
 
-                BOOL isDynamic = false;
-                IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
+                // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+                // method body
+                IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
 
-                // We cannot instrument modules that have no image base
-                if (!isDynamic)
+                // Instrumentation methods to most of their instrumentation during InstrumentMethod
+                IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+
+                // Send the event to the raw callbacks to give them a chance to instrument.
+                IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+
+                // If the method was instrumetned
+                if (pMethodInfo->IsInstrumented())
                 {
-                    // Query if the instrumentation methods want to instrument and then have them actually instrument.
-                    vector<CComPtr<IInstrumentationMethod>> toInstrument;
-                    IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
+                    // Give the final instrumentation to the clr.
+                    IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
 
-                    // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-                    // method body
-                    IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
-
-                    // Instrumentation methods to most of their instrumentation during InstrumentMethod
-                    IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
-
-                    // Send the event to the raw callbacks to give them a chance to instrument.
-                    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-
-                    // If the method was instrumetned
-                    if (pMethodInfo->IsInstrumented())
-                    {
-                        // Give the final instrumentation to the clr.
-                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
-
-                        // Don't fail out with this call. It is too late to undo anything with a failure.
-                        CallOnInstrumentationComplete(pMethodInfo, false);
-                    }
+                    // Don't fail out with this call. It is too late to undo anything with a failure.
+                    CallOnInstrumentationComplete(pMethodInfo, false);
                 }
             }
         }
-        else
-        {
-            // Send the event to the raw callbacks to give them a chance to instrument.
-            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-        }
+    }
+    else
+    {
+        // Send the event to the raw callbacks to give them a chance to instrument.
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+    }
 
     PROF_CALLBACK_END
 
@@ -2070,7 +2062,6 @@ HRESULT CProfilerManager::JITInlining(
             // method inlined into itself. Don't enable inlineSiteMethodInfoCleanup or this will be a double delete
             pInlineSiteMethodInfo = pInlineeMethodInfo;
         }
-
 
         mdToken inlineSiteToken;
         IfFailRet(pInlineSiteMethodInfo->GetMethodToken(&inlineSiteToken));
@@ -2626,14 +2617,14 @@ HRESULT CProfilerManager::ExceptionSearchCatcherFound(
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerEnter(
-    _In_ UINT_PTR __unused
+    _In_ UINT_PTR unused
     )
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, __unused));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, unused));
 
     PROF_CALLBACK_END
 
@@ -2641,14 +2632,14 @@ HRESULT CProfilerManager::ExceptionOSHandlerEnter(
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerLeave(
-    _In_ UINT_PTR __unused
+    _In_ UINT_PTR unused
     )
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, __unused));
+    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, unused));
 
     PROF_CALLBACK_END
 
@@ -3046,14 +3037,8 @@ HRESULT CProfilerManager::InitializeForAttach(
     pszConfigXml[bufferSize - 1] = 0;
 
     // The data is UTF8 encoded; convert it to UTF16
-    CAutoVectorPtr<WCHAR> pwszConfigXml;
-    IfFailRet(CEncoding::ConvertUtf8ToUtf16(
-        pszConfigXml.get(),
-        pwszConfigXml
-        ));
 
-    m_tstrConfigXml = pwszConfigXml.m_p;
-
+    IfFailRet(SystemString::Convert(pszConfigXml.get(), m_tstrConfigXml));
     IfFailRet(InvokeThreadRoutine(ParseAttachConfigurationThreadProc));
 
     // Mark that this is during the initialize call. This enables operations that can only be supported during initialize
@@ -3453,7 +3438,6 @@ HRESULT CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out
     CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(m_pAppDomainCollection->GetAppDomainById(appDomainID, &pAppDomainInfo));
 
-
     CComPtr<CAssemblyInfo> pAssemblyInfo;
     pAssemblyInfo.Attach(new CAssemblyInfo(this));
     if (pAssemblyInfo == nullptr)
@@ -3542,7 +3526,6 @@ HRESULT CProfilerManager::ConstructModuleInfo(
         IfFailRet(ConstructAppDomainInfo(appdomainId, &pAppDomainInfo));
     }
 
-
     CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
     if (FAILED(hr))
@@ -3575,7 +3558,6 @@ HRESULT CProfilerManager::ConstructModuleInfo(
 HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3589,7 +3571,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - no moduleinfo found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 
@@ -3612,7 +3594,7 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
         ModuleID existingModuleId;
         IfFailRet(pExistingModuleInfo->GetModuleID(&existingModuleId));
 
-        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%x, ModuleId:0x%x, FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%x"),
+        CLogging::LogError(_T("CProfilerManager::CreateMethodInfo - A methodinfo already existed for this function id/module. This means one must have leaked. FunctionId:0x%" PRIxPTR ", ModuleId:0x%" PRIxPTR ", FullName:%s, MethodTokenExistingMethodInfo:0x%x, MethodTokenNewMethodInfo:0x%x, ExistingModuleId:0x%" PRIxPTR),
             functionId,
             moduleId,
             bstrMethodFullName.m_str,
@@ -3622,8 +3604,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
         );
     }
 
-
-    CLogging::LogMessage(_T("CProfilerManager::CreateMethodInfo - creating new method info"));
     pMethodInfo.Attach(new CMethodInfo(this, functionId, functionToken, classId, pModuleInfo, NULL));
 
     IfFailRet(pMethodInfo->Initialize(true, false));
@@ -3631,8 +3611,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
     IfFailRet(pModuleInfo->AddMethodInfo(functionId, pMethodInfo));
 
     *ppMethodInfo = pMethodInfo.Detach();
-
-    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfo"));
 
     return S_OK;
 }
@@ -3642,7 +3620,6 @@ HRESULT CProfilerManager::CreateMethodInfo(_In_ FunctionID functionId, _Out_ CMe
 HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateNewMethodInfo"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3656,7 +3633,7 @@ HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ 
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo);
     if (FAILED(hr))
     {
-        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %x"), moduleId);
+        CLogging::LogMessage(_T("CProfilerManager::CreateNewMethodInfo - no method info found. Probably a dynamic module %08" PRIxPTR), moduleId);
         return E_FAIL;
     }
 
@@ -3667,8 +3644,6 @@ HRESULT CProfilerManager::CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ 
     IfFailRet(pMethodInfo->Initialize(false, false));
 
     *ppMethodInfo = pMethodInfo.Detach();
-
-    CLogging::LogMessage(_T("End CProfilerManager::CreateNewMethodInfo"));
 
     return S_OK;
 }
@@ -3696,7 +3671,6 @@ HRESULT CProfilerManager::RemoveMethodInfoFromMap(_In_ FunctionID functionId)
 HRESULT CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::GetMethodInfoById"));
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
 
@@ -3712,7 +3686,6 @@ HRESULT CProfilerManager::GetMethodInfoById(_In_ FunctionID functionId, _Out_ CM
         return E_FAIL;
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::GetMethodInfoById"));
     return S_OK;
 }
 
@@ -3724,7 +3697,6 @@ HRESULT CProfilerManager::CreateMethodInfoForRejit(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CProfilerManager::CreateMethodInfoForRejit"));
 
     IfNullRetPointer(ppMethodInfo);
     *ppMethodInfo = NULL;
@@ -3741,8 +3713,6 @@ HRESULT CProfilerManager::CreateMethodInfoForRejit(
     IfFailRet(pModuleInfo->SetRejitMethodInfo(methodToken, pMethodInfo));
 
     *ppMethodInfo = pMethodInfo.Detach();
-
-    CLogging::LogMessage(_T("End CProfilerManager::CreateMethodInfoForRejit"));
 
     return S_OK;
 }
@@ -3901,7 +3871,6 @@ HRESULT CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUn
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Start CProfilerManager::GetInstrumentationMethod"));
     IfNullRetPointer(ppUnknown);
     *ppUnknown = nullptr;
 
@@ -3918,12 +3887,9 @@ HRESULT CProfilerManager::GetInstrumentationMethod(_In_ REFGUID cslid, _Out_ IUn
             IfFailRet((*it).first->GetRawInstrumentationMethod(&pRawInstrumentationMethod));
 
             IfFailRet(pRawInstrumentationMethod->QueryInterface(__uuidof(IUnknown), reinterpret_cast<LPVOID*>(ppUnknown)));
-            CLogging::LogMessage(_T("End CProfilerManager::GetInstrumentationMethod"));
             return S_OK;
         }
     }
-
-    CLogging::LogMessage(_T("End CProfilerManager::GetInstrumentationMethod"));
 
     return E_NOINTERFACE;
 }
@@ -3936,7 +3902,6 @@ HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallShouldInstrumentOnInstrumentationMethods"));
 
     vector<CComPtr<IInstrumentationMethod>> instrumentMethodVector;
     IfFailRet(CopyInstrumentationMethods(instrumentMethodVector));
@@ -3956,15 +3921,12 @@ HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
         }
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallShouldInstrumentOnInstrumentationMethods"));
-
     return S_OK;
 }
 
 HRESULT CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallOnInstrumentationComplete"));
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -3981,7 +3943,6 @@ HRESULT CProfilerManager::CallOnInstrumentationComplete(_In_ IMethodInfo* pMetho
         }
     }
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallOnInstrumentationComplete"));
     return hr;
 }
 
@@ -4019,7 +3980,6 @@ HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
     )
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Start CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
 
     vector<CComPtr<IInstrumentationMethod>> methods;
     IfFailRet(CopyInstrumentationMethods(methods));
@@ -4042,7 +4002,6 @@ HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
 
     *pbShouldInline = bShouldAllowInline;
 
-    CLogging::LogMessage(_T("End CProfilerManager::CallAllowInlineOnInstrumentationMethods"));
     return hr;
 }
 

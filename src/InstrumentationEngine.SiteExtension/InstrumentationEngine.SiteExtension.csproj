@@ -6,7 +6,7 @@
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <Title>InstrumentationEngine</Title>
     <Authors>$(PackageAuthors)</Authors>

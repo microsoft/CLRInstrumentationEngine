@@ -96,7 +96,6 @@
     <ClInclude Include="ConfigurationLocator.h" />
     <ClInclude Include="ConfigurationSource.h" />
     <ClInclude Include="DataContainer.h" />
-    <ClInclude Include="Encoding.h" />
     <ClInclude Include="EnumeratorImpl.h" />
     <ClInclude Include="InstrumentationMethodAttachContext.h" />
     <ClInclude Include="InstrumentationMethodSetting.h" />
@@ -106,7 +105,6 @@
     <ClInclude Include="DebugLoggerSink.h" />
     <ClInclude Include="EventLoggerSink.h" />
     <ClInclude Include="File.h" />
-    <ClInclude Include="ImplQueryInterface.h" />
     <ClInclude Include="FileLoggerSink.h" />
     <ClInclude Include="InstrumentationMethod.h" />
     <ClInclude Include="LoggerService.h" />
@@ -118,18 +116,14 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="XmlDocWrapper.h" />
-    <ClInclude Include="XmlNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigurationLocator.cpp" />
     <ClCompile Include="ConfigurationSource.cpp" />
     <ClCompile Include="DataContainer.cpp" />
     <ClCompile Include="DebugLoggerSink.cpp" />
-    <ClCompile Include="Encoding.cpp" />
     <ClCompile Include="EventLoggerSink.cpp" />
     <ClCompile Include="ConfigurationLoader.cpp" />
-    <ClCompile Include="ImplQueryInterface.cpp" />
     <ClCompile Include="FileLoggerSink.cpp" />
     <ClCompile Include="InstrumentationMethod.cpp" />
     <ClCompile Include="InstrumentationMethodAttachContext.cpp" />
@@ -143,8 +137,6 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="XmlDocWrapper.cpp" />
-    <ClCompile Include="XmlNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Lib\Common.Lib.vcxproj">

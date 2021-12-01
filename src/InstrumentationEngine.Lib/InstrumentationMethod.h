@@ -27,10 +27,10 @@ namespace MicrosoftInstrumentationEngine
 
     public:
         CInstrumentationMethod(
-            _In_ BSTR bstrModuleFolder,
-            _In_ BSTR bstrName,
-            _In_ BSTR bstrDescription,
-            _In_ BSTR bstrModule,
+            _In_ LPCWSTR zwModuleFolder,
+            _In_ LPCWSTR zwName,
+            _In_ LPCWSTR zwDescription,
+            _In_ LPCWSTR zwModule,
             _In_ GUID& guidClassId,
             _In_ DWORD dwPriority
             );

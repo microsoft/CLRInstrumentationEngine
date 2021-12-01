@@ -442,32 +442,74 @@ HRESULT MicrosoftInstrumentationEngine::CCorProfilerInfoWrapper::SetILFunctionBo
     CComPtr<CAppDomainCollection> pAppDomainCollection;
     IfFailRet(m_pProfilerManager->GetAppDomainCollection((IAppDomainCollection**)&pAppDomainCollection));
 
+    bool userBufferEnabled = InstrumentationEngineFeatures::UserBufferEnabled();
+
     CComPtr<CModuleInfo> pModuleInfo;
-    if (SUCCEEDED(pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
+    if (SUCCEEDED(hr = pAppDomainCollection->GetModuleInfoById(moduleId, (IModuleInfo**)&pModuleInfo)))
     {
         CComPtr<CMethodInfo> pMethodInfo;
         hr = pModuleInfo->GetMethodInfoByToken(methodToken, &pMethodInfo);
+
         if (SUCCEEDED(hr))
         {
-            if (m_pMethodMalloc == nullptr)
+            if (!userBufferEnabled)
             {
-                CLogging::LogError(_T("Incorrect buffer passed to SetFunctionBodyMalloc"));
-                return E_FAIL;
+                if (m_pMethodMalloc == nullptr)
+                {
+                    CLogging::LogError(_T("Incorrect buffer passed to SetFunctionBodyMalloc"));
+                    return E_FAIL;
+                }
+                BYTE* pBuffer;
+                ULONG cbBuffer = 0;
+                IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
+
+                if (pbNewILMethodHeader != pBuffer)
+                {
+                    CLogging::LogError(_T("Incorrect buffer passed to SetFunctionBodyMalloc"));
+                    return E_FAIL;
+                }
+
+                // NOTE: Relying on the size of the buffer that was handed out by the IMethodMalloc.
+                // this relies on the serialization of jit events by the profiler manager.
+                // Calculating the actual method size would require a fourth parse of header.
+                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbBuffer));
             }
+            else
+            {
+                ULONG methodSize = 0;
+                if (m_pMethodMalloc != nullptr)
+                {
+                    BYTE* pBuffer = nullptr;
+                    ULONG cbBuffer = 0;
+                    IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
+                    if (pbNewILMethodHeader == pBuffer)
+                    {
+                        methodSize = cbBuffer;
+                    }
+                }
+
+                IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, methodSize));
+            }
+        }
+    }
+
+    if (FAILED(hr) && userBufferEnabled)
+    {
+        // It's possible for a raw profiler to define a new method during ModuleLoad (e.g. CodeCoverage) or JitCompilationStarted
+        // (e.g. DataDog) in which case we will not be able to find it.
+        IfFailRet(m_pRealCorProfilerInfo->SetILFunctionBody(moduleId, methodToken, pbNewILMethodHeader));
+
+        //Method was possibly allocated using GetILFunctionBodyAllocator. If it was we have to make sure
+        //the buffer is not destroyed since it will be used by the runtime.
+        if (m_pMethodMalloc != nullptr)
+        {
             BYTE* pBuffer;
             ULONG cbBuffer = 0;
             IfFailRet(m_pMethodMalloc->GetCurrentBufferAndLen(&pBuffer, &cbBuffer));
-
-            if (pbNewILMethodHeader != pBuffer)
+            if (pbNewILMethodHeader == pBuffer)
             {
-                CLogging::LogError(_T("Incorrect buffer passed to SetFunctionBodyMalloc"));
-                return E_FAIL;
+                m_pMethodMalloc->DetachCurrentBuffer();
             }
-
-            // NOTE: Relying on the size of the buffer that was handed out by the IMethodMalloc.
-            // this relies on the serialization of jit events by the profiler manager.
-            // Calculating the actual method size would require a fourth parse of header.
-            IfFailRet(pMethodInfo->SetFinalRenderedFunctionBody(pbNewILMethodHeader, cbBuffer));
         }
     }
 

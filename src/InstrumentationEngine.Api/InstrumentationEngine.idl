@@ -59,7 +59,7 @@ library MicrosoftInstrumentationEngine
     // If IProfilerManager3::GetApiVersion returns a number greater than or equal to this number,
     // the client can be guaranteed that at least every interface and enumeration defined in
     // the api that the client is compiled against exists in the linked version.
-    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 6;
+    const DWORD CLR_INSTRUMENTATION_ENGINE_API_VER = 7;
 
     [
         object,
@@ -175,6 +175,18 @@ library MicrosoftInstrumentationEngine
         // instrumentation method class ID, regardless of the state of initialization of the
         // corresponding instrumentation method.
         HRESULT IsInstrumentationMethodRegistered([in] REFGUID cslid, [out] BOOL* pfRegistered);
+    };
+
+    [
+        object,
+        uuid(D7EAEC8F-C4BB-4F5D-99B9-7215FEB0ED57),
+        pointer_default(unique)
+    ]
+    interface IProfilerStringManager : IUnknown
+    {
+        // Frees the string that was allocated by one of the Clr Instrumentation Engine functions.
+        // This is a shortcut to the exported function InstrumentationEngineFreeString.
+        HRESULT FreeString([in, optional] BSTR bstr);
     };
 
     // The profiler manager host is created by the profiler manager during the call to initialize after the clr
@@ -423,6 +435,8 @@ library MicrosoftInstrumentationEngine
         HRESULT GetOffset([out] DWORD* pdwOffset);
         HRESULT GetOriginalOffset([out] DWORD* pdwOffset);
 
+        // Gets the name of the opcode as a newly allocated string.
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetOpCodeName([out] BSTR* pbstrName);
 
         HRESULT GetOpCode([out] enum ILOrdinalOpcode* pOpCode);
@@ -804,7 +818,12 @@ library MicrosoftInstrumentationEngine
     {
         HRESULT GetModuleInfo([out] IModuleInfo** ppModuleInfo);
 
+        // Gets the simple name of the method as a newly allocated string.
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out]BSTR* pbstrName);
+
+        // Gets the fully qualified name of the method (if available).
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetFullName([out] BSTR* pbstrFullName);
 
         // Obtain the graph of instructions.  Manipulating this graph will result in changes to the code
@@ -881,7 +900,13 @@ library MicrosoftInstrumentationEngine
     ]
     interface IModuleInfo : IUnknown
     {
+        // Gets the module name of the method as a newly allocated string
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetModuleName([out] BSTR* pbstrModuleName);
+
+        // Gets the path from where the module was loaded as a newly
+        // allocated string.
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetFullPath([out] BSTR* pbstrFullPath);
 
         // Get info about the assembly that contains this module
@@ -1030,6 +1055,9 @@ library MicrosoftInstrumentationEngine
 
         HRESULT GetPublicKeyToken([out] BSTR* pbstrPublicKeyToken);
         HRESULT GetID([out] AssemblyID* pAssemblyId);
+
+        // Gets the name of the assembly as a newly allocated string
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out] BSTR* pbstrName);
 
         HRESULT GetMetaDataToken([out] DWORD* pdwToken);
@@ -1076,6 +1104,8 @@ library MicrosoftInstrumentationEngine
         HRESULT GetIsSharedDomain([out] BOOL* pbValue);
         HRESULT GetIsDefaultDomain([out] BOOL* pbValue);
 
+        // Gets the name of the app domain as a newly allocated string
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out] BSTR* pbstrName);
 
         HRESULT GetAssemblies([out] IEnumAssemblyInfo** ppAssemblyInfos);
@@ -1337,6 +1367,9 @@ library MicrosoftInstrumentationEngine
         HRESULT IsPrimitive([out]BOOL* pIsPrimitive);
         HRESULT IsArray([out]BOOL* pIsArray);
         HRESULT IsClass([out]BOOL* pIsClass);
+
+        // Gets the name of the type as a newly allocated string
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName([out]BSTR* pbstrName);
 
         //GetBaseType();
@@ -1515,12 +1548,12 @@ library MicrosoftInstrumentationEngine
         // Note, for desktop CLR, this function is only valid if the current reJIT ID is
         // 0. In such cases, if the ReJIT id is greater than 0, then this function will return E_NOT_IMPL. For
         // CoreCLR 2 and above, this function should return valid maps on rejit.
-        HRESULT GetILNativeMapping([in] ULONG32 cMaps, [out] COR_DEBUG_IL_TO_NATIVE_MAP* pMap, [out] ULONG32* pcNeeded);
+        HRESULT GetILNativeMapping([in] ULONG32 cMaps, [in, out, size_is(cMaps)] COR_DEBUG_IL_TO_NATIVE_MAP pMap[], [out] ULONG32* pcNeeded);
 
         // Retrieves a mapping of original IL to final instrumented IL for this jitted method.
         // If cMaps is 0 or pMap is NULL, then this function will simply set *pcNeeded to the number of
         // COR_IL_MAP instances that are available.
-        HRESULT GetILInstrumentationMap([in] ULONG32 cMaps, [out] COR_IL_MAP* pMap, [out] ULONG32* pcNeeded);
+        HRESULT GetILInstrumentationMap([in] ULONG32 cMaps, [in, out, size_is(cMaps)] COR_IL_MAP pMap[], [out] ULONG32* pcNeeded);
 
         // Gets the method token for the jitted method.
         HRESULT GetMethodToken([out] mdMethodDef* pToken);
@@ -1559,12 +1592,14 @@ library MicrosoftInstrumentationEngine
     ]
     interface IInstrumentationMethodSetting : IUnknown
     {
-        // Gets the name of the instrumentation method setting.
+        // Gets the name of the instrumentation method setting as a newly allocated string.
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetName(
             [out] BSTR* pbstrName
             );
 
-        // Gets the value of the instrumentation method setting.
+        // Gets the value of the instrumentation method setting as a newly allocated string.
+        // For safe cleanup, use IProfilerStringManager::FreeString or InstrumentationEngineFreeString
         HRESULT GetValue(
             [out] BSTR* pbstrValue
             );
@@ -1630,5 +1665,4 @@ library MicrosoftInstrumentationEngine
         // of the CLR (for example, module enumeration, app domain enumeration, etc).
         HRESULT AttachComplete();
     }
-
 }

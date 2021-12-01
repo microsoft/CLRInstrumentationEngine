@@ -2,9 +2,21 @@
 
 The below links provide the latest released packages for CLRIE. Some Azure platforms already support CLRIE as a first party extension. (see [here](scenarios/azure.md) for details).
 
-## Current Release - 1.0.31
+## Windows
 
-|Platform|Installer|Merge Module|
+### Latest v1
+
+Installer
+* x64: https://aka.ms/clrie/v1/x64/msi
+* x86: https://aka.ms/clrie/v1/x86/msi
+
+Merge Module
+* x64: https://aka.ms/clrie/v1/x64/msm
+* x86: https://aka.ms/clrie/v1/x86/msm
+
+### Current Versions
+
+|Version|Installer (.msi)|Merge Module (.msm)|
 |-|-|-|
-|Windows (x64)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x64.1.0.31.msi)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x64.1.0.31.msm)
-|Windows (x86)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.installer_x86.1.0.31.msi)|[Download](https://aka.ms/clrie/release/1.0.31/instrumentationengine.module_x86.1.0.31.msm)
+|1.0.42 (latest)|[ [x64](https://aka.ms/clrie/1.0.42/x64/msi) \| [x86](https://aka.ms/clrie/1.0.42/x86/msi) ]|[ [x64](https://aka.ms/clrie/1.0.42/x64/msm) \| [x86](https://aka.ms/clrie/1.0.42/x86/msm) ]|
+|1.0.31|[ [x64](https://aka.ms/clrie/1.0.31/x64/msi) \| [x86](https://aka.ms/clrie/1.0.31/x86/msi) ]|[ [x64](https://aka.ms/clrie/1.0.31/x64/msm) \| [x86](https://aka.ms/clrie/1.0.31/x86/msm) ]|

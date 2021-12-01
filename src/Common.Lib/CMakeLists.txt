@@ -1,8 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Require at least version 2.8.12 of CMake
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.14)
 project(Common.Lib)
 find_package(LibXml2 REQUIRED)
 
@@ -13,7 +12,12 @@ build_init(CPP Common.Lib)
 #including ModuleHandle.cpp, EventLoggingBase.cpp, and PathUtils.cpp
 set(src_files
     ./stdafx.cpp
+    ./ImplQueryInterface.cpp
     ./refcount.cpp
+    ./systemstring.cpp
+    ./XmlDocWrapper.cpp
+    ./XmlNode.cpp
+    ./iids.cpp
 )
 
 add_lib(${PROJECT_NAME}

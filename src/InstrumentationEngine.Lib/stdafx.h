@@ -8,6 +8,8 @@
 
 #pragma once
 
+
+
 #ifdef PLATFORM_UNIX
 #include "unix.h"
 #include <ole.h>
@@ -23,7 +25,6 @@
 #include "string.h"
 #include <errorrep.h>       // for pfn_REPORTFAULT
 #include <eh.h>
-
 
 #include <sal.h>
 
@@ -46,13 +47,8 @@ using namespace ATL;
 #include <clrprofiler.h>
 #include <sal.h>
 
-// TODO: We should use the CommonLib xml doc wrapper instead.
 #ifndef PLATFORM_UNIX
-#include <msxml6.h>
 #include <Shlwapi.h>
-#else
-#include <libxml/parser.h>
-#include <libxml/tree.h>
 #endif
 
 #ifdef PLATFORM_UNIX
@@ -66,14 +62,29 @@ using namespace ATL;
 #define wcsstr        PAL_wcsstr
 #define wcslen        PAL_wcslen
 #define wcsnlen_s     PAL_wcsnlen_s
+#define wcsstr        PAL_wcsstr
+#define wcscmp        PAL_wcscmp
 #endif
 
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
+#pragma warning(disable: 6285) // bug in <functional> that compares 0 to 0, resulting in a warning.
 #include <queue>
 #include <vector>
 #include <memory>
 #include <unordered_map>
+
+#ifdef PLATFORM_UNIX
+#define __valid_backup __valid // sal.h redefines __valid, which is used by thread/chrono
+#undef __valid
+#endif
+
+#include <thread>  
+#include <mutex>   
+
+#ifdef PLATFORM_UNIX
+#define __valid __valid_backup
+#endif
 
 #ifdef PLATFORM_UNIX
 // pal.h defines these, but they aren't picked up for our build because std_c++ compatibility is defined
@@ -96,7 +107,7 @@ using namespace ATL;
 #pragma warning(pop)
 
 #include "Logging.h"
-#include "ImplQueryInterface.h"
+#include "../Common.Lib/ImplQueryInterface.h"
 #include "../Common.Lib/refcount.h"
 #include "SharedArray.h"
 

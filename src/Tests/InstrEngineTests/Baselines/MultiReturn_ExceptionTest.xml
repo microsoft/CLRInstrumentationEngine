@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>MultiExceptionTest</Name>
+    <FullName>InstrEngineTests.EmbeddedResources.Program.MultiExceptionTest</FullName>
+    <ClassID Volatile="True">0x70065a40</ClassID>
+    <FunctionID Volatile="True">0x00000001</FunctionID>
+    <MethodToken>0x06000002</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_I4</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x01 0x08 0x08 </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x00002060</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x03 0x08 0x12 0x19 0x08 </LocalSignature>
+    <MaxStack>0x00000002</MaxStack>
+    <Instructions><![CDATA[
+IL_0000 ldarg.0
+IL_0001 ldc.i4.5
+IL_0002 bne.un IL_000e
+IL_0007 ldc.i4.1
+IL_0008 stloc.0
+IL_0009 leave IL_0051
+IL_000e ldarg.0
+IL_000f ldc.i4.3
+IL_0010 bne.un IL_0020
+IL_0015 ldstr 0x70000001
+IL_001a newobj 0x0a000004
+IL_001f throw
+IL_0020 ldstr 0x70000027
+IL_0025 call 0x0a000005
+IL_002a leave IL_0047
+IL_002f stloc.1
+IL_0030 ldloc.1
+IL_0031 callvirt 0x0a000006
+IL_0036 stloc.0
+IL_0037 leave IL_0051
+IL_003c ldstr 0x70000049
+IL_0041 call 0x0a000005
+IL_0046 endfinally
+IL_0047 ldc.i4.0
+IL_0048 stloc 0x2
+IL_004c br IL_005b
+IL_0051 ldloc.0
+IL_0052 stloc 0x2
+IL_0056 br IL_005b
+IL_005b ldloc 0x2
+IL_005f ret
+    ]]></Instructions>
+    <ExceptionClauses>
+        <ExceptionClause>
+            <Flags>0x00000000</Flags>
+            <FirstTryOffset>0x00000000</FirstTryOffset>
+            <LastTryOffset>0x0000002a</LastTryOffset>
+            <FirstHandlerOffset>0x0000002f</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000037</LastHandlerOffset>
+            <FilterOffset>0x00000000</FilterOffset>
+            <ExceptionToken>0x01000006</ExceptionToken>
+        </ExceptionClause>
+        <ExceptionClause>
+            <Flags>0x00000002</Flags>
+            <FirstTryOffset>0x00000000</FirstTryOffset>
+            <LastTryOffset>0x00000037</LastTryOffset>
+            <FirstHandlerOffset>0x0000003c</FirstHandlerOffset>
+            <LastHandlerOffset>0x00000046</LastHandlerOffset>
+            <FilterOffset>0x00000000</FilterOffset>
+            <ExceptionToken>0x00000000</ExceptionToken>
+        </ExceptionClause>
+    </ExceptionClauses>
+    <CorIlMap>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000000</oldOffset>
+            <newOffset>0x00000000</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000001</oldOffset>
+            <newOffset>0x00000001</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000002</oldOffset>
+            <newOffset>0x00000002</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000004</oldOffset>
+            <newOffset>0x00000007</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000005</oldOffset>
+            <newOffset>0x00000008</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000006</oldOffset>
+            <newOffset>0x00000009</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000008</oldOffset>
+            <newOffset>0x0000000e</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000009</oldOffset>
+            <newOffset>0x0000000f</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000a</oldOffset>
+            <newOffset>0x00000010</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000c</oldOffset>
+            <newOffset>0x00000015</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000011</oldOffset>
+            <newOffset>0x0000001a</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000016</oldOffset>
+            <newOffset>0x0000001f</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000017</oldOffset>
+            <newOffset>0x00000020</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000001c</oldOffset>
+            <newOffset>0x00000025</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000021</oldOffset>
+            <newOffset>0x0000002a</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000023</oldOffset>
+            <newOffset>0x0000002f</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000024</oldOffset>
+            <newOffset>0x00000030</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000025</oldOffset>
+            <newOffset>0x00000031</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002a</oldOffset>
+            <newOffset>0x00000036</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002b</oldOffset>
+            <newOffset>0x00000037</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002d</oldOffset>
+            <newOffset>0x0000003c</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000032</oldOffset>
+            <newOffset>0x00000041</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000037</oldOffset>
+            <newOffset>0x00000046</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000038</oldOffset>
+            <newOffset>0x00000047</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000003a</oldOffset>
+            <newOffset>0x00000048</newOffset>
+        </CorIlMapEntry>
+    </CorIlMap>
+</InstrumentedMethod>

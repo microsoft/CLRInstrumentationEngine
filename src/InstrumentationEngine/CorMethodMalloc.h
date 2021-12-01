@@ -43,5 +43,10 @@ namespace MicrosoftInstrumentationEngine
         // Called by CCorProfilerInfoWrapper to obtain the last allocation and validate the buffer
         // NOTE: Relies on the serialization of jit callbacks for thread safety.
         HRESULT GetCurrentBufferAndLen(_Out_ BYTE** ppBuffer, _Out_ ULONG* pcbBufferLen);
+
+        // This is used for scenarios where a raw profiler hook uses Alloc to create memory
+        // for a method, but does so earlier than expected (such as ModuleLoad).
+        // We cannot cleanup this buffer since the runtime will use it for the final method body.
+        HRESULT DetachCurrentBuffer();
     };
 }

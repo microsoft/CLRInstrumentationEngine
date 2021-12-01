@@ -1,0 +1,42 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Note OSX isn't officially supported yet, but might be in the future.
+        # The build here will help ensure no changes are introduced that
+        # would make it difficult.
+        os: [ ubuntu-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/cache@v2
+      with:
+        path: out/packages
+        key: nuget
+
+    - run: src/build.sh x64 release
+
+    - name: archive so
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: libInstrumentationEngine.so
+        path: out/Linux/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.so
+
+    - name: archive dylib
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: libInstrumentationEngine.dylib
+        path: out/OSX/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.dylib

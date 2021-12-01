@@ -29,6 +29,7 @@ namespace MicrosoftInstrumentationEngine
         public IProfilerManager3,
         public IProfilerManager4,
         public IProfilerManager5,
+        public IProfilerStringManager,
         public IProfilerManagerLogging
     {
 
@@ -179,7 +180,7 @@ namespace MicrosoftInstrumentationEngine
 
         // This is the client that asked to receive the raw ICorProfiler event
         // model rather than using the simplified instrumentation method model.
-        // 
+        //
         // We use a raw pointer here to address perf issues around locks & critical sections
         // that cause thread context switching. This implementation uses InterlockedExchange functions
         // to read/write the pointer and will produce an expected memory leak since there are no
@@ -245,6 +246,7 @@ namespace MicrosoftInstrumentationEngine
             COM_INTERFACE_ENTRY(IProfilerManager3)
             COM_INTERFACE_ENTRY(IProfilerManager4)
             COM_INTERFACE_ENTRY(IProfilerManager5)
+            COM_INTERFACE_ENTRY(IProfilerStringManager)
             COM_INTERFACE_ENTRY(IProfilerManagerLogging)
             COM_INTERFACE_ENTRY(ICorProfilerCallback)
             COM_INTERFACE_ENTRY(ICorProfilerCallback2)
@@ -349,11 +351,9 @@ namespace MicrosoftInstrumentationEngine
             // Send event to instrumentation methods
             for (CComPtr<TInterfaceType> pInstrumentationMethod : callbackVector)
             {
-                CLogging::LogMessage(_T("Sending event to Instrumentation Method"));
-
                 hr = (pInstrumentationMethod->*method)(parameters...);
 
-                CLogging::LogMessage(_T("Finished Sending event to Instrumentation Method. hr=%04x"), hr);
+                CLogging::LogMessage(_T("Finished sending event to Instrumentation Method. hr=%04x"), hr);
             }
 
             return hr;
@@ -394,8 +394,6 @@ namespace MicrosoftInstrumentationEngine
 
             if (pCallback != nullptr)
             {
-                CLogging::LogMessage(_T("Sending event to raw ICorProfilerCallback"));
-
                 hr = (pCallback->*method)(parameters...);
 
                 CLogging::LogMessage(_T("Finished Sending event to raw ICorProfilerCallback. hr=%04x"), hr);
@@ -480,7 +478,7 @@ namespace MicrosoftInstrumentationEngine
         // instrumentation method
         STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown);
 
-        STDMETHOD(RemoveInstrumentationMethod(_In_ IInstrumentationMethod* pInstrumentationMethod));
+        STDMETHOD(RemoveInstrumentationMethod)(_In_opt_ IInstrumentationMethod* pInstrumentationMethod);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
         STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
@@ -525,6 +523,13 @@ namespace MicrosoftInstrumentationEngine
 
         // Allows instrumentation methods and hosts to modify the current logging flags
         STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags);
+
+    // IProfilerStringManager Methods
+    public:
+        STDMETHOD(FreeString)(_In_opt_ BSTR bstr)
+        {
+            return InstrumentationEngineFreeString(bstr);
+        }
 
         // ICorProfilerCallback methods
     public:
@@ -1052,10 +1057,8 @@ public:
     CSEHTranslatorHolder translatorHolder; \
     try \
     { \
-    CLogging::LogMessage(_T("Starting ProfilerCallback ") __FUNCTIONW__);
 
 #define PROF_CALLBACK_END \
-    CLogging::LogMessage(_T("Ending ProfilerCallback") __FUNCTIONW__); \
     translatorHolder.RestoreSEHTranslator(); \
     } \
     catch (CSehException sehException) \
@@ -1073,11 +1076,8 @@ public:
 #define PROF_CALLBACK_BEGIN \
     try \
     { \
-    CLogging::LogMessage(_T("Starting ProfilerCallback ") WCHAR_SPEC, __FUNCTION__);
-
 
 #define PROF_CALLBACK_END \
-    CLogging::LogMessage(_T("Ending ProfilerCallback ") WCHAR_SPEC, __FUNCTION__); \
     } \
     catch (...) \
     { \

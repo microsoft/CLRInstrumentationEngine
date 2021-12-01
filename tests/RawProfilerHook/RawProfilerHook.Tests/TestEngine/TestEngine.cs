@@ -78,7 +78,7 @@ namespace RawProfilerHook.Tests
             return ExecuteTest(t.AssemblyQualifiedName, IsX86, expectedErrors);
         }
 
-        protected override void OnBeforeStarted(DebugeeProcess debugee)
+        protected override void OnBeforeStarted(Process debugee)
         {
             if (debugee == null)
             {
@@ -96,7 +96,8 @@ namespace RawProfilerHook.Tests
                 { "COR_PROFILER", InstrumentationEngineProfilerId },
                 { RawProfilerHookEnvVar, RawProfilerHookComponentId },
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors" },
-                { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath }
+                { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath },
+                { "MicrosoftInstrumentationEngine_UserBuffer", "1" }
 #if ALLOWNOTSIGNED
                 , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true"}
 #endif
@@ -143,7 +144,7 @@ namespace RawProfilerHook.Tests
             return result;
         }
 
-        protected override void OnComplete(DebugeeProcess debugee, string[] expectedErrors = null)
+        protected override void OnComplete(Process debugee, string[] expectedErrors = null)
         {
             string errors = string.Empty;
             try

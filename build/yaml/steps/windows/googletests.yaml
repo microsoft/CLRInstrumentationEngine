@@ -1,0 +1,17 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Test Windows Binaries using google test
+
+parameters:
+  Exes:
+
+# Google test generates exes to be executed.
+steps:
+- ${{ each exe in parameters.Exes }}:
+  - script: |
+     $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)\${{ exe }}
+    
+    failOnStderr: true
+    displayName: 'Executing test ${{ exe }}'
+    condition: succeededOrFailed()

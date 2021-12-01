@@ -7,6 +7,22 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.43
++ New:
+  + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
+  + Allow building on OSX. Note this is only experimental and not officially supported yet.
+  + Add API for safe string cleanup on non-Windows platforms.
+  + Increment API level
+  + Add support for Raw Profilers that use SetILFunctionBody with buffers not owned by ClrInstrumentationEngine.
++ BugFixes:
+  + Fix XmlReader.Create to read from stream instead of filepath string
+  + Remove references to libunwind8 and libuuid; they're not used anymore
+  + Fixes for compatibility with recent clang versions
+  + Fix bad memset argument order in AppDomainCollection::GetAppDomainIDs
++ Updates:
+  + Use net50 platform for restoring native dependencies on Unix
+  + Nagler instrumentation tests no longer depend exclusively on msxml for configuration reading.
+
 ## 1.0.42
 + BugFixes:
   + Fix Linux build
@@ -16,7 +32,7 @@ Please format the changes as follows:
   + Remove PathCch functions in order to support Win7
 
 ## 1.0.40
-Intentionally left unchanged with v1.0.39 due to App Service mitigation.
++ No new changes.
 
 ## 1.0.39
 + BugFixes:

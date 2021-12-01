@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>SwitchTest</Name>
+    <FullName>BasicManagedTest.Program.SwitchTest</FullName>
+    <ClassID Volatile="True">0x70065a60</ClassID>
+    <FunctionID Volatile="True">0x00000001</FunctionID>
+    <MethodToken>0x06000005</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_VOID</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x00 0x01 </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x000020f0</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x01 0x08 </LocalSignature>
+    <MaxStack>0x00000001</MaxStack>
+    <Instructions><![CDATA[
+IL_0000 ldc.i4.3
+IL_0001 stloc.0
+IL_0002 ldloc.0
+IL_0003 switch (IL_001d,IL_002a,IL_0037,IL_0044)
+IL_0018 br IL_0051
+IL_001d ldloca.s 0x0
+IL_001f call 0x0a000004
+IL_0024 call 0x0a000005
+IL_0029 ret
+IL_002a ldloca.s 0x0
+IL_002c call 0x0a000004
+IL_0031 call 0x0a000005
+IL_0036 ret
+IL_0037 ldloca.s 0x0
+IL_0039 call 0x0a000004
+IL_003e call 0x0a000005
+IL_0043 ret
+IL_0044 ldloca.s 0x0
+IL_0046 call 0x0a000004
+IL_004b call 0x0a000005
+IL_0050 ret
+IL_0051 ldstr 0x70000001
+IL_0056 call 0x0a000005
+IL_005b ret
+    ]]></Instructions>
+    <ExceptionClauses>
+    </ExceptionClauses>
+    <CorIlMap>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000000</oldOffset>
+            <newOffset>0x00000000</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000001</oldOffset>
+            <newOffset>0x00000001</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000002</oldOffset>
+            <newOffset>0x00000002</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000003</oldOffset>
+            <newOffset>0x00000003</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000018</oldOffset>
+            <newOffset>0x00000018</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000001a</oldOffset>
+            <newOffset>0x0000001d</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000001c</oldOffset>
+            <newOffset>0x0000001f</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000021</oldOffset>
+            <newOffset>0x00000024</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000026</oldOffset>
+            <newOffset>0x00000029</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000027</oldOffset>
+            <newOffset>0x0000002a</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000029</oldOffset>
+            <newOffset>0x0000002c</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000002e</oldOffset>
+            <newOffset>0x00000031</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000033</oldOffset>
+            <newOffset>0x00000036</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000034</oldOffset>
+            <newOffset>0x00000037</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000036</oldOffset>
+            <newOffset>0x00000039</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000003b</oldOffset>
+            <newOffset>0x0000003e</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000040</oldOffset>
+            <newOffset>0x00000043</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000041</oldOffset>
+            <newOffset>0x00000044</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000043</oldOffset>
+            <newOffset>0x00000046</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000048</oldOffset>
+            <newOffset>0x0000004b</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000004d</oldOffset>
+            <newOffset>0x00000050</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000004e</oldOffset>
+            <newOffset>0x00000051</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000053</oldOffset>
+            <newOffset>0x00000056</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000058</oldOffset>
+            <newOffset>0x0000005b</newOffset>
+        </CorIlMapEntry>
+    </CorIlMap>
+</InstrumentedMethod>

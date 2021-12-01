@@ -8,15 +8,25 @@ parameters:
 steps:
 # nuget restore InstrumentationEngine.sln
 - ${{ if eq(parameters.NuGetRestore, true) }}:
-  - template: nugetrestore.yaml
+  - template: enginerestore.yaml
     parameters:
-      Solution: InstrumentationEngine.sln
+      BinLogCategory: Build
 
 # msbuild InstrumentationEngine.sln
+- task: DotNetCoreCLI@2
+  displayName: 'Build InstrumentationEngine.sln'
+  inputs:
+    command: build
+    projects: InstrumentationEngine.sln
+    arguments: -c $(Configuration) -bl:"$(Build.ArtifactStagingDirectory)\logs\Build_Windows_AnyCPU_$(Configuration).binlog"
+  condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+
 - task: MSBuild@1
-  displayName: 'Build solution InstrumentationEngine.sln'
+  displayName: 'Build InstrumentationEngine.sln'
   inputs:
     solution: InstrumentationEngine.sln
     msbuildVersion: 16.0
     platform: $(Platform)
     configuration: $(Configuration)
+    msbuildArguments: /bl:"$(Build.ArtifactStagingDirectory)\logs\Build_Windows_$(Platform)_$(Configuration).binlog"
+  condition: and(succeeded(), ne(variables['Platform'], 'Any CPU'))

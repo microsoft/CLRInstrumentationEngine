@@ -71,22 +71,22 @@ namespace InstrEngineTests
 
             public object OnEnd(object context, object retValue, object thisObj)
             {
-                TestResult.InvokedMethods.Add(new MethodInvocationInfo
-                    {
-                        MethodName = "OnEnd",
-                        Arguments = new[] { context, retValue, thisObj }
-                    });
+                MethodInvocationInfo info = new MethodInvocationInfo { MethodName = "OnEnd" };
+                info.AddArgument(context);
+                info.AddArgument(retValue);
+                info.AddArgument(thisObj);
+                TestResult.InvokedMethods.Add(info);
 
                 return retValue;
             }
 
             public void OnException(object context, Exception exc, object thisObj)
             {
-                TestResult.InvokedMethods.Add(new MethodInvocationInfo
-                    {
-                        MethodName = "OnException",
-                        Arguments = new[] { context, exc, thisObj }
-                    });
+                MethodInvocationInfo info = new MethodInvocationInfo { MethodName = "OnException" };
+                info.AddArgument(context);
+                info.AddArgument(exc);
+                info.AddArgument(thisObj);
+                TestResult.InvokedMethods.Add(info);
             }
         }
 
@@ -96,7 +96,8 @@ namespace InstrEngineTests
         [DeploymentItem("..\\" + TestEngine.InstrumentationEngineDefaultMethodModuleName, ".")]
         [DeploymentItem("..\\..\\AnyCPU\\" + TestEngine.MscorlibExtensionMethodsBaseModuleName, ".")]
         [DeploymentItem(".\\Microsoft.AI.Agent.Intercept.dll", Constants.InterceptVersion)]
-        [DeploymentItem("Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.dll", ".")]
+        [DeploymentItem("Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll", ".")]
         public void InterceptCallsBeginEndOnExceptionCallbacksOfHttpGetResponse()
         {
             TestEngine.ExecuteTest<SimpleDecorate>();

@@ -37,7 +37,7 @@ namespace InstrumentationEngineProfilerProxyTests
             {
                 tstring tsError(L"Error");
                 tsError.append(to_wstring(i));
-                eventLogger.LogError(tsError.c_str());
+                eventLogger.LogError(L"%s", tsError.c_str());
             }
 
             // Check log counts are correct.
@@ -72,17 +72,17 @@ namespace InstrumentationEngineProfilerProxyTests
                 case 0:
                     // Log Error
                     tsError.append(to_wstring(i));
-                    eventLogger.LogError(tsError.c_str());
+                    eventLogger.LogError(L"%s", tsError.c_str());
                     break;
                 case 1:
                     // Log Warning
                     tsWarning.append(to_wstring(i));
-                    eventLogger.LogWarning(tsWarning.c_str());
+                    eventLogger.LogWarning(L"%s", tsWarning.c_str());
                     break;
                 case 2:
                     // Log Message
                     tsMessage.append(to_wstring(i));
-                    eventLogger.LogMessage(tsMessage.c_str());
+                    eventLogger.LogMessage(L"%s", tsMessage.c_str());
                     break;
                 }
             }

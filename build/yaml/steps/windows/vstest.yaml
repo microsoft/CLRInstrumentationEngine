@@ -1,0 +1,21 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: Test Windows Binaries
+
+parameters:
+  SubFolder: ''
+  RunTitle: ''
+
+steps:
+- task: VSTest@2
+  displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
+  inputs:
+    testAssemblyVer2: '${{ parameters.SubFolder }}*Tests*.dll'
+    searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)'
+    vsTestVersion: 16.0
+    runInParallel: false
+    codeCoverageEnabled: false
+    runSettingsFile: tests/TestSettings/$(RunSettingsFile)
+    testRunTitle: ${{ parameters.RunTitle }}
+  condition: succeededOrFailed()

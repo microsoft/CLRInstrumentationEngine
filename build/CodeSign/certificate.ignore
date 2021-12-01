@@ -1,5 +1,7 @@
 obj\*, Ignore Intermediates
 
+bin\*\commonlibtests.exe, Ignore test assembly
+bin\*\instrumentationenginelibtests.exe, Ignore test assembly
 bin\*\instrumentationengine.lib.tests.dll, Ignore test assembly
 bin\*\instrumentationengine.profilerproxy.tests.dll, Ignore test assembly
 bin\*\instrenginetests_anycpu.dll, Ignore test assembly

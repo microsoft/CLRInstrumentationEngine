@@ -311,6 +311,13 @@ typedef interface IProfilerManager5 IProfilerManager5;
 #endif 	/* __IProfilerManager5_FWD_DEFINED__ */
 
 
+#ifndef __IProfilerStringManager_FWD_DEFINED__
+#define __IProfilerStringManager_FWD_DEFINED__
+typedef interface IProfilerStringManager IProfilerStringManager;
+
+#endif 	/* __IProfilerStringManager_FWD_DEFINED__ */
+
+
 #ifndef __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_FWD_DEFINED__
 typedef interface IInstrumentationMethodExceptionEvents IInstrumentationMethodExceptionEvents;
@@ -497,7 +504,7 @@ extern "C"{
 
 
 
-#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 6 )
+#define	CLR_INSTRUMENTATION_ENGINE_API_VER	( 7 )
 
 
 enum LoggingFlags
@@ -7038,6 +7045,86 @@ EXTERN_C const IID IID_IProfilerManager5;
 #endif 	/* __IProfilerManager5_INTERFACE_DEFINED__ */
 
 
+#ifndef __IProfilerStringManager_INTERFACE_DEFINED__
+#define __IProfilerStringManager_INTERFACE_DEFINED__
+
+/* interface IProfilerStringManager */
+/* [unique][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IProfilerStringManager;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("D7EAEC8F-C4BB-4F5D-99B9-7215FEB0ED57")
+    IProfilerStringManager : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE FreeString( 
+            /* [optional][in] */ __RPC__in BSTR bstr) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IProfilerStringManagerVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            __RPC__in IProfilerStringManager * This,
+            /* [in] */ __RPC__in REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            __RPC__in IProfilerStringManager * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            __RPC__in IProfilerStringManager * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *FreeString )( 
+            __RPC__in IProfilerStringManager * This,
+            /* [optional][in] */ __RPC__in BSTR bstr);
+        
+        END_INTERFACE
+    } IProfilerStringManagerVtbl;
+
+    interface IProfilerStringManager
+    {
+        CONST_VTBL struct IProfilerStringManagerVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IProfilerStringManager_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IProfilerStringManager_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IProfilerStringManager_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IProfilerStringManager_FreeString(This,bstr)	\
+    ( (This)->lpVtbl -> FreeString(This,bstr) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IProfilerStringManager_INTERFACE_DEFINED__ */
+
+
 #ifndef __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__
 #define __IInstrumentationMethodExceptionEvents_INTERFACE_DEFINED__
 
@@ -8720,12 +8807,12 @@ EXTERN_C const IID IID_IMethodJitInfo2;
     public:
         virtual HRESULT STDMETHODCALLTYPE GetILNativeMapping( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_DEBUG_IL_TO_NATIVE_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetILInstrumentationMap( 
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_IL_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMethodToken( 
@@ -8782,13 +8869,13 @@ EXTERN_C const IID IID_IMethodJitInfo2;
         HRESULT ( STDMETHODCALLTYPE *GetILNativeMapping )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_DEBUG_IL_TO_NATIVE_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_DEBUG_IL_TO_NATIVE_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetILInstrumentationMap )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
-            /* [out] */ __RPC__out COR_IL_MAP *pMap,
+            /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_IL_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 

@@ -87,8 +87,7 @@ namespace MicrosoftInstrumentationEngine
 
         // Raw IL stream. Set after instrumentation methods are finished, but before raw profiler callbacks.
         // This does not include method headers or exception handlers
-        CAutoVectorPtr<BYTE> m_pILStream;
-        DWORD m_dwILStreamLen;
+        vector<BYTE> m_pILStream;
 
         // map of old offsets to new offsets. Originally set when instrumentation methods have finished.
         // Updated if raw callbacks modify il. Note, this is a CSharedArray because it is also cached by this
@@ -97,14 +96,17 @@ namespace MicrosoftInstrumentationEngine
 
         // The rendered method body including headers and exception handlers after instrumenation methods have finished, but before
         // raw profilers execute. This includes the updated core header, the il body, the exception ranges etc...
-        CAutoVectorPtr<BYTE> m_pIntermediateRenderedMethod;
-        DWORD m_cbIntermediateRenderedMethod;
+        vector<BYTE> m_pIntermediateRenderedMethod;
 
         // The final rendered method body after all instrumenation methods and raw profiler hooks have instrumented
         // NOTE: a seperate copy is needed because the clr requires a callee destroyed buffer in the rejit cases, and
         // some hosts, including MMA, will try to consume the buffer after the set to calculate the cor il map.
-        CAutoVectorPtr<BYTE> m_pFinalRenderedMethod;
-        DWORD m_cbFinalRenderedMethod;
+        vector<BYTE> m_pFinalRenderedMethod;
+
+        //There are raw profiler hook situations where we will not be in control of the buffer passed to SetILFunctionBody:
+        // - The user allocates the buffer, skipping GetILFunctionBodyAllocator (in newer runtimes, RVA's do not have any specific memory location requirements)
+        // - Raw profiler hook calls SetILFunctionBody right after DefineMethod
+        LPCBYTE m_userDefinedBuffer;
 
         // Set to true if any client has instrumented the method.
         bool m_bIsInstrumented;
@@ -172,9 +174,8 @@ namespace MicrosoftInstrumentationEngine
         // Called after the raw profiler hook has instrumented the function. Sets the IL transformation
         // status of this method to true.
         HRESULT SetFinalRenderedFunctionBody(
-            _In_ LPCBYTE pMethodHeader,
-            _In_ ULONG cbMethodSize
-            );
+            _In_reads_bytes_(cbMethodSize) LPCBYTE pMethodHeader,
+            _In_ ULONG cbMethodSize);
 
          bool IsInstrumented() const
          {
@@ -184,7 +185,7 @@ namespace MicrosoftInstrumentationEngine
          // Applys all IL transformations and sets the IL cached transformation status of this method to true.
          HRESULT ApplyFinalInstrumentation();
 
-         HRESULT MergeILInstrumentedCodeMap(_In_ ULONG cILMapEntries, _In_reads_(cILMapEntries) COR_IL_MAP rgILMapEntries[]);
+         HRESULT MergeILInstrumentedCodeMap(_In_ ULONG cILMapEntries, _In_reads_(cILMapEntries) COR_IL_MAP* rgILMapEntries);
 
         // Recreate the instruction graph, exception section, and cor_il_map from the
         // raw results. This is used by the diagnostic logging engine.
@@ -280,7 +281,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT InitializeInstructionsAndExceptions();
         HRESULT InitializeGenericParameters(mdToken tkFunction);
 
-        HRESULT GetFinalInstrumentation(_Out_ DWORD* pcbMethodBody, _Out_ BYTE** ppMethodBody);
+        HRESULT GetFinalInstrumentation(_Out_ DWORD* pcbMethodBody, _Out_ LPCBYTE* ppMethodBody);
 
         HRESULT InitializeFullName();
 

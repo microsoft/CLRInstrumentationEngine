@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<InstrumentedMethod>
+    <Name>MultiIfTest</Name>
+    <FullName>InstrEngineTests.EmbeddedResources.Program.MultiIfTest</FullName>
+    <ClassID Volatile="True">0x70065a40</ClassID>
+    <FunctionID Volatile="True">0x00000001</FunctionID>
+    <MethodToken>0x06000004</MethodToken>
+    <GenericParameterCount>0x00000000</GenericParameterCount>
+    <IsStatic>1</IsStatic>
+    <IsPublic>0</IsPublic>
+    <IsPrivate>1</IsPrivate>
+    <IsPropGetter>0</IsPropGetter>
+    <IsPropSetter>0</IsPropSetter>
+    <IsFinalizer>0</IsFinalizer>
+    <IsConstructor>0</IsConstructor>
+    <IsStaticConstructor>0</IsStaticConstructor>
+    <DeclaringTypeToken>0x02000002</DeclaringTypeToken>
+    <RetValueCorElementType>ELEMENT_TYPE_I4</RetValueCorElementType>
+    <RetTypeToken>0x00000000</RetTypeToken>
+    <CorSignature>0x00 0x01 0x08 0x08 </CorSignature>
+    <CorMethodAttr>0x00000091</CorMethodAttr>
+    <CodeRVA>0x00002101</CodeRVA>
+    <MethodImpl>0x00000000</MethodImpl>
+    <LocalSignature>0x07 0x01 0x08 </LocalSignature>
+    <MaxStack>0x00000002</MaxStack>
+    <Instructions><![CDATA[
+IL_0000 ldarg.0
+IL_0001 ldc.i4.1
+IL_0002 bne.un IL_0011
+IL_0007 ldc.i4.1
+IL_0008 stloc 0x0
+IL_000c br IL_003e
+IL_0011 ldarg.0
+IL_0012 ldc.i4.2
+IL_0013 bne.un IL_0022
+IL_0018 ldc.i4.2
+IL_0019 stloc 0x0
+IL_001d br IL_003e
+IL_0022 ldarg.0
+IL_0023 ldc.i4.s 0xa
+IL_0025 bne.un IL_0034
+IL_002a ldc.i4.3
+IL_002b stloc 0x0
+IL_002f br IL_003e
+IL_0034 ldc.i4.4
+IL_0035 stloc 0x0
+IL_0039 br IL_003e
+IL_003e ldloc 0x0
+IL_0042 ret
+    ]]></Instructions>
+    <ExceptionClauses>
+    </ExceptionClauses>
+    <CorIlMap>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000000</oldOffset>
+            <newOffset>0x00000000</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000001</oldOffset>
+            <newOffset>0x00000001</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000002</oldOffset>
+            <newOffset>0x00000002</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000004</oldOffset>
+            <newOffset>0x00000007</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000006</oldOffset>
+            <newOffset>0x00000008</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000007</oldOffset>
+            <newOffset>0x00000012</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000008</oldOffset>
+            <newOffset>0x00000013</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000a</oldOffset>
+            <newOffset>0x00000018</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000c</oldOffset>
+            <newOffset>0x00000019</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000d</oldOffset>
+            <newOffset>0x00000023</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x0000000f</oldOffset>
+            <newOffset>0x00000025</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000011</oldOffset>
+            <newOffset>0x0000002a</newOffset>
+        </CorIlMapEntry>
+        <CorIlMapEntry>
+            <fAccurate>1</fAccurate>
+            <oldOffset>0x00000013</oldOffset>
+            <newOffset>0x0000002b</newOffset>
+        </CorIlMapEntry>
+    </CorIlMap>
+</InstrumentedMethod>

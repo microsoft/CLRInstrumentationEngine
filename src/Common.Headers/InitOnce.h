@@ -5,12 +5,14 @@
 
 #pragma warning(push)
 #pragma warning(disable: 4995) // disable so that memcpy can be used
+#pragma warning(disable: 6285) // bug in <functional> that compares 0 to 0, resulting in a warning.
 #include <atomic>
 #include <functional>
 #include <atlsync.h>
 #pragma warning(pop)
 
-#include "CriticalSectionHolder.h"
+#include <thread>
+#include <mutex>
 
 namespace CommonLib
 {
@@ -18,7 +20,7 @@ namespace CommonLib
     {
     private:
         std::atomic_bool m_isCreated;
-        CCriticalSection m_cs;
+        std::mutex m_mutex;
         std::function<HRESULT()> m_func;
         HRESULT m_result;
 
@@ -30,7 +32,7 @@ namespace CommonLib
         {
             if (!m_isCreated.load(std::memory_order_acquire))
             {
-                CCriticalSectionHolder holder(&m_cs);
+                std::lock_guard<std::mutex> lock(m_mutex);
                 if (!m_isCreated.load(std::memory_order_relaxed))
                 {
                     m_result = m_func();
@@ -49,7 +51,7 @@ namespace CommonLib
         {
             if (m_isCreated.load(std::memory_order_acquire))
             {
-                CCriticalSectionHolder holder(&m_cs);
+                std::lock_guard<std::mutex> lock(m_mutex);
                 if (m_isCreated.load(std::memory_order_relaxed))
                 {
                     m_result = S_OK;

@@ -36,6 +36,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+  
+  - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/signing.yaml
@@ -55,6 +57,11 @@ jobs:
         PublishSymbols: ${{ parameters.PublishSymbols }}
 
   - ${{ if eq('true', parameters.PublishFiles) }}:
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+      parameters:
+        PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
+        ArtifactName: 'logs'
+
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
       inputs:
@@ -64,7 +71,6 @@ jobs:
         CleanTargetFolder: true
         OverWrite: true
 
-  - ${{ if eq('true', parameters.PublishFiles) }}:
     - template: ../../steps/azuredevops/publishbuildartifacts.yaml
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'

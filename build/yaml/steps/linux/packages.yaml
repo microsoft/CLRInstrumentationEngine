@@ -21,4 +21,4 @@ steps:
     solution: src/InstrumentationEngine.NuGet/InstrumentationEngine.Nuget.csproj
     platform: x64
     configuration: $(Configuration)
-    msbuildArguments: '/p:PlatformOS="Linux" /p:LinuxDistro="$(Distro)" /p:NugetBinInput="$(Build.ArtifactStagingDirectory)\binaries-linux-$(Distro)-$(Configuration)\ClrInstrumentationEngine"'
+    msbuildArguments: '/p:PlatformOS="Linux" /p:LinuxDistro="$(Distro)" /p:NugetBinInput="$(Build.ArtifactStagingDirectory)\binaries-linux-$(Distro)-$(Configuration)\ClrInstrumentationEngine" /bl:"$(Build.ArtifactStagingDirectory)\logs\Package_Linux_x64_$(Configuration).binlog"'

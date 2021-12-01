@@ -69,11 +69,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Initialize(_In_ CMeth
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CInstructionGraph::Initialize"));
-
     m_pMethodInfo = pMethodInfo;
-
-    CLogging::LogMessage(_T("End CInstructionGraph::Initialize"));
 
     return hr;
 }
@@ -224,7 +220,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtUnins
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_In_ LPCBYTE pCodeBase, _In_ LPCBYTE pEndOfCode)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::Decode"));
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -363,17 +358,13 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::DecodeInstructions(_I
 
 // Generate an IL image from a list of instructions. At the same time produce a map from the old instructions to the new ones.
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
-    _Out_ CAutoVectorPtr<BYTE>* ppILBuffer,
-    _Out_ DWORD* pdwILStreamLen,
-    _Out_ CAutoVectorPtr<COR_IL_MAP>* ppCorILMap,
-    _Out_ DWORD* pdwCorILMapmLen
+    _Inout_ vector<BYTE>& ppILBuffer,
+    _Inout_ vector<COR_IL_MAP>& ppCorILMap
     )
 {
     HRESULT hr = S_OK;
     ULONG cCorILMap = 0;
     ULONG cbBuffer = 0;
-    *pdwILStreamLen = 0;
-    *pdwCorILMapmLen = 0;
 
     CCriticalSectionHolder lock(&m_cs);
 
@@ -388,27 +379,33 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
 
         if (!bIsNewInstruction)
         {
+            // Check for overflow.
+            IfFalseRet((cCorILMap + 1) > cCorILMap, E_BOUNDS);
             cCorILMap++;
         }
 
-        cbBuffer += dwInstructionSize;
+        // Check for overflow
+        ULONG cbBufferTemp = cbBuffer + dwInstructionSize;
+        IfFalseRet(cbBufferTemp >= cbBuffer, E_BOUNDS);
+
+        cbBuffer = cbBufferTemp;
         pInstruction = pInstruction->NextInstructionInternal();
     }
 
     IfFailRet(CalculateInstructionOffsets());
 
     // Allocate the il buffer
-    CAutoVectorPtr<BYTE> pILArray;
+    vector<BYTE> pILArray;
     if (cbBuffer > 0)
     {
-        pILArray.Attach(new BYTE[cbBuffer]{});
+        pILArray.resize(cbBuffer);
     }
 
     // Allocate the il map.
-    CAutoVectorPtr<COR_IL_MAP> pCorILMap;
+    vector<COR_IL_MAP> pCorILMap;
     if(cCorILMap > 0)
     {
-        pCorILMap.Attach(new COR_IL_MAP[cCorILMap]{});
+        pCorILMap.resize(cCorILMap);
     }
 
     DWORD iCorILMap = 0;
@@ -422,7 +419,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     while (pCurrent != NULL)
     {
         // Encode this instruction
-        IfFailRet(pCurrent->EmitIL(pILArray, cbBuffer));
+        IfFailRet(pCurrent->EmitIL(pILArray.data(), cbBuffer));
 
         BOOL bIsNewInstruction = FALSE;
         pCurrent->GetIsNew(&bIsNewInstruction);
@@ -480,10 +477,8 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::EncodeIL(
     // Make a reverse pass back through the il map entries setting the new offset to the last instruction that
     // was
 
-    *ppILBuffer = pILArray;
-    *pdwILStreamLen = cbBuffer;
-    *ppCorILMap = pCorILMap;
-    *pdwCorILMapmLen = cCorILMap;
+    ppILBuffer = std::move(pILArray);
+    ppCorILMap = std::move(pCorILMap);
 
     return S_OK;
 }
@@ -517,7 +512,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtEndOf
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateInstructionOffsets()
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::CalculateInstructionOffsets"));
     CCriticalSectionHolder lock(&m_cs);
 
     ULONG pos = 0;
@@ -539,14 +533,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateInstructionO
         pCurrent = pCurrent->NextInstructionInternal();
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::CalculateInstructionOffsets"));
     return S_OK;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::ExpandBranches()
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::ExpandBranches"));
     CCriticalSectionHolder lock(&m_cs);
 
     ULONG pos = 0;
@@ -564,7 +556,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::ExpandBranches()
     }
 
     MarkInstructionsStale();
-    CLogging::LogMessage(_T("End CInstructionGraph::ExpandBranches"));
 
     return S_OK;
 }
@@ -573,7 +564,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetMethodInfo(_Out_ I
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CInstructionGraph::Initialize"));
     IfNullRetPointer(ppMethodInfo);
 
     if (!m_pMethodInfo)
@@ -584,8 +574,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetMethodInfo(_Out_ I
     *ppMethodInfo = m_pMethodInfo;
     (*ppMethodInfo)->AddRef();
 
-    CLogging::LogMessage(_T("End CInstructionGraph::Initialize"));
-
     return hr;
 }
 
@@ -593,7 +581,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetMethodInfo(_Out_ I
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetFirstInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetFirstInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -604,15 +591,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetFirstInstruction(_
         (*ppInstruction)->AddRef();
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetFirstInstruction"));
-
     return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetLastInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetLastInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -623,15 +607,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetLastInstruction(_O
         (*ppInstruction)->AddRef();
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetLastInstruction"));
-
     return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetOriginalFirstInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetOriginalFirstInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -639,15 +620,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetOriginalFirstInstr
     *ppInstruction = (IInstruction*)(m_pOrigFirstInstruction.p);
     (*ppInstruction)->AddRef();
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetOriginalFirstInstruction"));
-
     return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetOriginalLastInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetOriginalLastInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -655,15 +633,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetOriginalLastInstru
     *ppInstruction = (IInstruction*)(m_pOrigLastInstruction.p);
     (*ppInstruction)->AddRef();
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetOriginalLastInstruction"));
-
     return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedFirstInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetUninstrumentedFirstInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -676,15 +651,12 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedFirs
 
     hr = m_pUninstrumentedFirstInstruction.QueryInterface(ppInstruction);
 
-    CLogging::LogMessage(_T("End CInstructionGraph::GetUninstrumentedFirstInstruction"));
-
     return hr;
 }
 
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedLastInstruction(_Out_ IInstruction** ppInstruction)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::GetUninstrumentedFirstInstruction"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
@@ -695,8 +667,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetUninstrumentedLast
         return S_FALSE;
     }
     hr = m_pUninstrumentedLastInstruction.QueryInterface(ppInstruction);
-
-    CLogging::LogMessage(_T("End CInstructionGraph::GetUninstrumentedFirstInstruction"));
 
     return hr;
 }
@@ -717,9 +687,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOffse
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(ppInstruction);
-
     CInstruction* pCurrInstruction = m_pFirstInstruction;
-
     while (pCurrInstruction != NULL)
     {
         DWORD currOffset = 0;
@@ -788,7 +756,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::GetInstructionAtOrigi
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBefore(_In_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::InsertBefore"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(pInstructionOrig);
@@ -822,12 +789,9 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBefore(_In_ IIn
         m_pFirstInstruction = pInstrNew;
     }
 
-    
     // NOTE: Unlike intellitrace's engine, the offsets of instructions are updated after each change.
     // This is necessary since this is an API to be consumed by multiple instermentation methods.
     MarkInstructionsStale();
-
-    CLogging::LogMessage(_T("End CInstructionGraph::InsertBefore"));
 
     return hr;
 }
@@ -837,7 +801,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBefore(_In_ IIn
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertAfter(_In_opt_ IInstruction* pInstructionOrig, _In_ IInstruction* pInstructionNew)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::InsertAfter"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(pInstructionNew);
@@ -885,8 +848,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertAfter(_In_opt_ 
     // This is necessary since this is an API to be consumed by multiple instermentation methods.
     MarkInstructionsStale();
 
-    CLogging::LogMessage(_T("End CInstructionGraph::InsertAfter"));
-
     return hr;
 }
 
@@ -896,7 +857,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CInstructionGraph::InsertBeforeAndRetargetOffsets"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(pInstructionOrig);
@@ -949,8 +909,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
         }
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::InsertBeforeAndRetargetOffsets"));
-
     return hr;
 }
 
@@ -959,7 +917,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::InsertBeforeAndRetarg
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Replace(_In_ IInstruction* pInstructionOrig, _In_ IInstruction *pInstructionNew)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::Replace"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(pInstructionOrig);
@@ -1017,8 +974,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Replace(_In_ IInstruc
         }
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::Replace"));
-
     return hr;
 }
 
@@ -1027,7 +982,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Remove(_In_ IInstruct
 {
     HRESULT hr = S_OK;
 
-    CLogging::LogMessage(_T("Starting CInstructionGraph::Remove"));
     CCriticalSectionHolder lock(&m_cs);
 
     IfNullRetPointer(pInstruction);
@@ -1092,8 +1046,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Remove(_In_ IInstruct
         }
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::Remove"));
-
     return hr;
 }
 
@@ -1102,7 +1054,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::Remove(_In_ IInstruct
 HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::RemoveAll()
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CInstructionGraph::RemoveAll"));
     CCriticalSectionHolder lock(&m_cs);
 
     CInstruction* pInstr = m_pFirstInstruction.p;
@@ -1127,8 +1078,6 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::RemoveAll()
         IfFailRet(pExceptionSection->RemoveAllExceptionClauses());
     }
 
-    CLogging::LogMessage(_T("End CInstructionGraph::Remove"));
-
     return hr;
 }
 
@@ -1142,28 +1091,89 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     DWORD maxStackDepth = 0;
     DWORD stackDepth = 0;
 
-    // Heuristic to calculate maxstack. This may guess sligthly high as control flow
-    // is not taken into account. It makes a linear pass over the instructions looking at
+    unordered_map<DWORD, DWORD> offsetToStackDepthMap;
+
+    auto insertOrUpdateStackDepthMap = [](unordered_map<DWORD, DWORD>& stackDepthMap, DWORD offset, DWORD stackDepth)
+    {
+        auto it = stackDepthMap.find(offset);
+        if (it != stackDepthMap.end())
+        {
+            if (stackDepth > it->second)
+            {
+                it->second = stackDepth;
+            }
+        }
+        else
+        {
+            stackDepthMap.insert(make_pair(offset, stackDepth));
+        }
+    };
+
+    // Heuristic to calculate maxstack. This may guess slightly high.
+    // It makes a linear pass over the instructions looking at
     // the stack impact of each instruction and maintaining a theoretical maximum.
     // The actual maximum may be slightly smaller.
+    // Map is used to remember maximal stack depths for target instructions.
     CInstruction* pInstr = m_pFirstInstruction.p;
     while (pInstr != NULL)
     {
         CInstruction* pNextInstruction = pInstr->NextInstructionInternal();
+
+        if (!offsetToStackDepthMap.empty())
+        {
+            DWORD dwOffset = 0;
+            IfFailRet(pInstr->GetOffset(&dwOffset));
+            auto it = offsetToStackDepthMap.find(dwOffset);
+            if (it != offsetToStackDepthMap.end() && it->second > stackDepth)
+            {
+                stackDepth = it->second;
+            }
+        }
+
+        // If this instruction is the first instruction in a catch block or exception filter block,
+        // the stack will be emptied first, and the exception object will be pushed
+        // on the stack by the runtime
+        bool isFirstInstructionInCatchOrFilter = false;
+        IfFailRet(IsFirstInstructionInCatchOrFilter(pInstr, &isFirstInstructionInCatchOrFilter));
+        if (isFirstInstructionInCatchOrFilter)
+        {
+            stackDepth = 1;
+
+            if (maxStackDepth < 1)
+            {
+                maxStackDepth = 1;
+            }
+        }
 
         int stackImpact = 0;
         IfFailRet(pInstr->GetStackImpact(m_pMethodInfo, stackDepth, &stackImpact));
 
         stackDepth += stackImpact;
 
-        // If this instruction is the first instruction in a catch block,
-        // the stack will be emptied first, and the exception object will be pushed
-        // on the stack by the runtime
-        bool isFirstInstructionInCatch = false;
-        IfFailRet(IsFirstInstructionInCatch(pInstr, &isFirstInstructionInCatch));
-        if (isFirstInstructionInCatch)
+        if (pInstr->GetIsBranchInternal())
         {
-            stackDepth = 1;
+            CBranchInstruction* pBranch = static_cast<CBranchInstruction*>(pInstr);
+
+            DWORD dwTargetOffset = 0;
+            IfFailRet(pBranch->GetTargetOffset(&dwTargetOffset));
+
+            insertOrUpdateStackDepthMap(offsetToStackDepthMap, dwTargetOffset, stackDepth);
+        }
+
+        if (pInstr->GetIsSwitchInternal())
+        {
+            CSwitchInstruction* pSwitch = static_cast<CSwitchInstruction*>(pInstr);
+
+            DWORD branchCount = 0;
+            IfFailRet(pSwitch->GetBranchCount(&branchCount));
+
+            for (ULONG i = 0; i < branchCount; i++)
+            {
+                ULONG dwTargetOffset = 0;
+                IfFailRet(pSwitch->GetBranchOffset(i, &dwTargetOffset));
+
+                insertOrUpdateStackDepthMap(offsetToStackDepthMap, dwTargetOffset, stackDepth);
+            }
         }
 
         if (stackDepth > maxStackDepth)
@@ -1179,11 +1189,11 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::CalculateMaxStack(_Ou
     return S_OK;
 }
 
-HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInCatch(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatch)
+HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInCatchOrFilter(_In_ IInstruction* pInstr, _Out_ bool* pIsFirstInstructionInCatchOrFilter)
 {
     HRESULT hr = S_OK;
-    IfNullRetPointer(pIsFirstInstructionInCatch);
-    *pIsFirstInstructionInCatch = false;
+    IfNullRetPointer(pIsFirstInstructionInCatchOrFilter);
+    *pIsFirstInstructionInCatchOrFilter = false;
 
     CComPtr<IExceptionSection> pExceptionSection;
     IfFailRet(m_pMethodInfo->GetExceptionSection(&pExceptionSection));
@@ -1200,14 +1210,26 @@ HRESULT MicrosoftInstrumentationEngine::CInstructionGraph::IsFirstInstructionInC
         DWORD exceptionFlags;
         IfFailRet(pExceptionClause->GetFlags(&exceptionFlags));
 
-        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_NONE)
+        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_NONE || exceptionFlags == COR_ILEXCEPTION_CLAUSE_FILTER)
         {
             CComPtr<IInstruction> pCurrHandlerInstr;
             IfFailRet(pExceptionClause->GetHandlerFirstInstruction(&pCurrHandlerInstr));
 
             if (pCurrHandlerInstr.IsEqualObject(pInstr))
             {
-                *pIsFirstInstructionInCatch = true;
+                *pIsFirstInstructionInCatchOrFilter = true;
+                break;
+            }
+        }
+
+        if (exceptionFlags == COR_ILEXCEPTION_CLAUSE_FILTER)
+        {
+            CComPtr<IInstruction> pCurrFilterInstr;
+            IfFailRet(pExceptionClause->GetFilterFirstInstruction(&pCurrFilterInstr));
+
+            if (pCurrFilterInstr.IsEqualObject(pInstr))
+            {
+                *pIsFirstInstructionInCatchOrFilter = true;
                 break;
             }
         }

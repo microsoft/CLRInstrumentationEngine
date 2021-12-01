@@ -185,7 +185,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstruction::LogInstruction(bool ignore
         }
     }
 
-    CLogging::LogDumpMessage(strInstruction.c_str());
+    CLogging::LogDumpMessage(_T("%s"), strInstruction.c_str());
 
     return hr;
 }
@@ -1195,7 +1195,6 @@ IInstruction* MicrosoftInstrumentationEngine::CSwitchInstruction::GetBranchTarge
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::SetBranchTarget(_In_ DWORD index, _In_ IInstruction* pTarget)
 {
     HRESULT hr = S_OK;
-    CLogging::LogMessage(_T("Starting CSwitchInstruction::SetBranchTarget"));
 
     CComPtr<CInstruction> oldTarget = m_branchTargets[index];
     CComPtr<CInstruction> pNewTarget;
@@ -1233,7 +1232,10 @@ HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::RemoveBranchTarget(_
 HRESULT MicrosoftInstrumentationEngine::CSwitchInstruction::ReplaceBranchTarget(_In_ IInstruction* pOriginal, _In_  IInstruction *pNew)
 {
     HRESULT hr = S_OK;
-    for(ULONG i = 0; i < m_branchTargets.size(); i++)
+    DWORD cbranchTargets = static_cast<DWORD>(m_branchTargets.size());
+    IfFalseRet(cbranchTargets > 0, E_BOUNDS);
+
+    for(DWORD i = 0; i < cbranchTargets; i++)
     {
         if(m_branchTargets[i] == pOriginal)
         {
