@@ -17,13 +17,7 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-      name: DotNet-Build
-      demands:
-      - docker
-      - sh
-    ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
-      vmImage: ubuntu-latest
+    vmImage: ubuntu-latest
 
   workspace:
     clean: outputs
