@@ -37,7 +37,9 @@ jobs:
       downloadPath: $(Build.ArtifactStagingDirectory)
 
   - task: NodeTool@0
-    displayName: 'Use Node 6.x'
+    displayName: 'Use Node 14.x'
+    inputs:
+      versionSpec: '14.x'
 
   # Scan only native files that are released as part of the product.
   - task: CopyFiles@2
@@ -77,6 +79,6 @@ jobs:
     parameters:
       BuildName: ApiScan
       Tags: CLRIEApiScan
-      
+
   # Microbuild Cleanup
   - template: ../../steps/microbuild/cleanup.yaml
