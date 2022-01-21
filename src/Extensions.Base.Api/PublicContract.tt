@@ -8,7 +8,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#
-    var maxargs = 17;
+    var maxargs = 15;
     var argsComma = new Dictionary<int, string>();
     var argsDef = new Dictionary<int, string>();
     var argsDefWithName = new Dictionary<int, string>();
