@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.44
++ Updates:
+  + Extend Extensions.Base.API to include all supported parameter counts for `System.Func<>`
 
 ## 1.0.43
 + New:
