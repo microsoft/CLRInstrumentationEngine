@@ -33,6 +33,26 @@ namespace Microsoft.Diagnostics.Instrumentation.Extensions.Base
                 callbacks5 = new Dictionary<int, Func<object, object, object, object, object, object, object, object>>();
             internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object>>
                 callbacks6 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>
+                callbacks7 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks8 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks9 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks10 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks11 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks12 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks13 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks14 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks15 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks16 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
     }
 
 }
@@ -103,6 +123,86 @@ namespace _System.Diagnostics
             Func<object, object, object, object, object, object, object, object, object> func = null;
             if (ECB<int>.callbacks6.TryGetValue(methodId, out func) && (func != null))
                 return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks7.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks8.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks9.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks10.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks11.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks12.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks13.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks14.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13, object arg14)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks15.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+            else
+                return returnValue;
+        }
+        public static object ApplicationInsights_OnEnd(int methodId, object context, object returnValue, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13, object arg14, object arg15)
+        {
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> func = null;
+            if (ECB<int>.callbacks16.TryGetValue(methodId, out func) && (func != null))
+                return func(context, returnValue, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
             else
                 return returnValue;
         }

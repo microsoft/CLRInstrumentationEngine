@@ -9,7 +9,7 @@
 <#@ output extension=".cs" #>
 
 <#
-    var maxargs = 7;
+    var maxargs = 17;
     var argsComma = new Dictionary<int, string>();
     var argsDef = new Dictionary<int, string>();
     var argsDefWithName = new Dictionary<int, string>();

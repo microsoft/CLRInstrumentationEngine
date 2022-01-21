@@ -344,6 +344,466 @@ namespace _System.Diagnostics
             }
         }
 
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock7, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock7
+                        var newBeginCallbacks7 = new Dictionary<int, Func<object, object, object, object, object, object, object, object>>(BCB<int>.callbacks7);
+                        var newEndCallbacks7 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks7);
+                        var newExceptionCallbacks7 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object>>(ExCB<int>.callbacks7);
+
+                        newBeginCallbacks7.Add(methodId, onBegin);
+                        newEndCallbacks7.Add(methodId, onEnd);
+                        newExceptionCallbacks7.Add(methodId, onException);
+
+                        BCB<int>.callbacks7 = newBeginCallbacks7;
+                        ECB<int>.callbacks7 = newEndCallbacks7;
+                        ExCB<int>.callbacks7 = newExceptionCallbacks7;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock7 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock7; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock8, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock8
+                        var newBeginCallbacks8 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks8);
+                        var newEndCallbacks8 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks8);
+                        var newExceptionCallbacks8 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks8);
+
+                        newBeginCallbacks8.Add(methodId, onBegin);
+                        newEndCallbacks8.Add(methodId, onEnd);
+                        newExceptionCallbacks8.Add(methodId, onException);
+
+                        BCB<int>.callbacks8 = newBeginCallbacks8;
+                        ECB<int>.callbacks8 = newEndCallbacks8;
+                        ExCB<int>.callbacks8 = newExceptionCallbacks8;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock8 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock8; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock9, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock9
+                        var newBeginCallbacks9 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks9);
+                        var newEndCallbacks9 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks9);
+                        var newExceptionCallbacks9 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks9);
+
+                        newBeginCallbacks9.Add(methodId, onBegin);
+                        newEndCallbacks9.Add(methodId, onEnd);
+                        newExceptionCallbacks9.Add(methodId, onException);
+
+                        BCB<int>.callbacks9 = newBeginCallbacks9;
+                        ECB<int>.callbacks9 = newEndCallbacks9;
+                        ExCB<int>.callbacks9 = newExceptionCallbacks9;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock9 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock9; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock10, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock10
+                        var newBeginCallbacks10 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks10);
+                        var newEndCallbacks10 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks10);
+                        var newExceptionCallbacks10 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks10);
+
+                        newBeginCallbacks10.Add(methodId, onBegin);
+                        newEndCallbacks10.Add(methodId, onEnd);
+                        newExceptionCallbacks10.Add(methodId, onException);
+
+                        BCB<int>.callbacks10 = newBeginCallbacks10;
+                        ECB<int>.callbacks10 = newEndCallbacks10;
+                        ExCB<int>.callbacks10 = newExceptionCallbacks10;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock10 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock10; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock11, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock11
+                        var newBeginCallbacks11 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks11);
+                        var newEndCallbacks11 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks11);
+                        var newExceptionCallbacks11 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks11);
+
+                        newBeginCallbacks11.Add(methodId, onBegin);
+                        newEndCallbacks11.Add(methodId, onEnd);
+                        newExceptionCallbacks11.Add(methodId, onException);
+
+                        BCB<int>.callbacks11 = newBeginCallbacks11;
+                        ECB<int>.callbacks11 = newEndCallbacks11;
+                        ExCB<int>.callbacks11 = newExceptionCallbacks11;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock11 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock11; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock12, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock12
+                        var newBeginCallbacks12 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks12);
+                        var newEndCallbacks12 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks12);
+                        var newExceptionCallbacks12 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks12);
+
+                        newBeginCallbacks12.Add(methodId, onBegin);
+                        newEndCallbacks12.Add(methodId, onEnd);
+                        newExceptionCallbacks12.Add(methodId, onException);
+
+                        BCB<int>.callbacks12 = newBeginCallbacks12;
+                        ECB<int>.callbacks12 = newEndCallbacks12;
+                        ExCB<int>.callbacks12 = newExceptionCallbacks12;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock12 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock12; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock13, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock13
+                        var newBeginCallbacks13 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks13);
+                        var newEndCallbacks13 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks13);
+                        var newExceptionCallbacks13 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks13);
+
+                        newBeginCallbacks13.Add(methodId, onBegin);
+                        newEndCallbacks13.Add(methodId, onEnd);
+                        newExceptionCallbacks13.Add(methodId, onException);
+
+                        BCB<int>.callbacks13 = newBeginCallbacks13;
+                        ECB<int>.callbacks13 = newEndCallbacks13;
+                        ExCB<int>.callbacks13 = newExceptionCallbacks13;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock13 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock13; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock14, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock14
+                        var newBeginCallbacks14 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks14);
+                        var newEndCallbacks14 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks14);
+                        var newExceptionCallbacks14 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks14);
+
+                        newBeginCallbacks14.Add(methodId, onBegin);
+                        newEndCallbacks14.Add(methodId, onEnd);
+                        newExceptionCallbacks14.Add(methodId, onException);
+
+                        BCB<int>.callbacks14 = newBeginCallbacks14;
+                        ECB<int>.callbacks14 = newEndCallbacks14;
+                        ExCB<int>.callbacks14 = newExceptionCallbacks14;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock14 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock14; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock15, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock15
+                        var newBeginCallbacks15 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks15);
+                        var newEndCallbacks15 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks15);
+                        var newExceptionCallbacks15 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks15);
+
+                        newBeginCallbacks15.Add(methodId, onBegin);
+                        newEndCallbacks15.Add(methodId, onEnd);
+                        newExceptionCallbacks15.Add(methodId, onException);
+
+                        BCB<int>.callbacks15 = newBeginCallbacks15;
+                        ECB<int>.callbacks15 = newEndCallbacks15;
+                        ExCB<int>.callbacks15 = newExceptionCallbacks15;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock15 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock15; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
+        public static void ApplicationInsights_AddCallbacks(int methodId,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onBegin,
+            Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onEnd,
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> onException)
+        {
+           for (int i = 0; i < 20; ++i)
+           {
+                int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock16, 1, 0);
+
+                if (originalValue == 0)
+                {
+                    try
+                    {
+                        // this thread updated lock16
+                        var newBeginCallbacks16 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks16);
+                        var newEndCallbacks16 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks16);
+                        var newExceptionCallbacks16 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks16);
+
+                        newBeginCallbacks16.Add(methodId, onBegin);
+                        newEndCallbacks16.Add(methodId, onEnd);
+                        newExceptionCallbacks16.Add(methodId, onException);
+
+                        BCB<int>.callbacks16 = newBeginCallbacks16;
+                        ECB<int>.callbacks16 = newEndCallbacks16;
+                        ExCB<int>.callbacks16 = newExceptionCallbacks16;
+                    }
+                    finally
+                    {
+                        BCB<int>.Lock16 = 0;
+                    }
+
+                    break;
+                }
+
+                // some other thread updated Lock16; wait and try again
+                if (i < 19)
+                {
+                    Thread.Sleep(5);
+                }
+                else
+                {
+                     throw new InvalidOperationException("Could not add callbacks because of the concurrency issue.");
+                }
+            }
+        }
+
         public static void ApplicationInsights_RemoveCallbacks(int methodId, int argsCount)
         {
             switch (argsCount)
@@ -631,6 +1091,426 @@ namespace _System.Diagnostics
                         }
 
                         // some other thread updated Lock6; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 7 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock7, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock7
+                                var newBeginCallbacks7 = new Dictionary<int, Func<object, object, object, object, object, object, object, object>>(BCB<int>.callbacks7);
+                                var newEndCallbacks7 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks7);
+                                var newExceptionCallbacks7 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object>>(ExCB<int>.callbacks7);
+
+                                newBeginCallbacks7.Remove(methodId);
+                                newEndCallbacks7.Remove(methodId);
+                                newExceptionCallbacks7.Remove(methodId);
+
+                                BCB<int>.callbacks7 = newBeginCallbacks7;
+                                ECB<int>.callbacks7 = newEndCallbacks7;
+                                ExCB<int>.callbacks7 = newExceptionCallbacks7;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock7 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock7; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 8 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock8, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock8
+                                var newBeginCallbacks8 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks8);
+                                var newEndCallbacks8 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks8);
+                                var newExceptionCallbacks8 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks8);
+
+                                newBeginCallbacks8.Remove(methodId);
+                                newEndCallbacks8.Remove(methodId);
+                                newExceptionCallbacks8.Remove(methodId);
+
+                                BCB<int>.callbacks8 = newBeginCallbacks8;
+                                ECB<int>.callbacks8 = newEndCallbacks8;
+                                ExCB<int>.callbacks8 = newExceptionCallbacks8;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock8 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock8; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 9 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock9, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock9
+                                var newBeginCallbacks9 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks9);
+                                var newEndCallbacks9 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks9);
+                                var newExceptionCallbacks9 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks9);
+
+                                newBeginCallbacks9.Remove(methodId);
+                                newEndCallbacks9.Remove(methodId);
+                                newExceptionCallbacks9.Remove(methodId);
+
+                                BCB<int>.callbacks9 = newBeginCallbacks9;
+                                ECB<int>.callbacks9 = newEndCallbacks9;
+                                ExCB<int>.callbacks9 = newExceptionCallbacks9;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock9 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock9; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 10 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock10, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock10
+                                var newBeginCallbacks10 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks10);
+                                var newEndCallbacks10 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks10);
+                                var newExceptionCallbacks10 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks10);
+
+                                newBeginCallbacks10.Remove(methodId);
+                                newEndCallbacks10.Remove(methodId);
+                                newExceptionCallbacks10.Remove(methodId);
+
+                                BCB<int>.callbacks10 = newBeginCallbacks10;
+                                ECB<int>.callbacks10 = newEndCallbacks10;
+                                ExCB<int>.callbacks10 = newExceptionCallbacks10;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock10 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock10; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 11 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock11, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock11
+                                var newBeginCallbacks11 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks11);
+                                var newEndCallbacks11 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks11);
+                                var newExceptionCallbacks11 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks11);
+
+                                newBeginCallbacks11.Remove(methodId);
+                                newEndCallbacks11.Remove(methodId);
+                                newExceptionCallbacks11.Remove(methodId);
+
+                                BCB<int>.callbacks11 = newBeginCallbacks11;
+                                ECB<int>.callbacks11 = newEndCallbacks11;
+                                ExCB<int>.callbacks11 = newExceptionCallbacks11;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock11 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock11; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 12 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock12, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock12
+                                var newBeginCallbacks12 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks12);
+                                var newEndCallbacks12 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks12);
+                                var newExceptionCallbacks12 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks12);
+
+                                newBeginCallbacks12.Remove(methodId);
+                                newEndCallbacks12.Remove(methodId);
+                                newExceptionCallbacks12.Remove(methodId);
+
+                                BCB<int>.callbacks12 = newBeginCallbacks12;
+                                ECB<int>.callbacks12 = newEndCallbacks12;
+                                ExCB<int>.callbacks12 = newExceptionCallbacks12;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock12 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock12; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 13 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock13, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock13
+                                var newBeginCallbacks13 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks13);
+                                var newEndCallbacks13 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks13);
+                                var newExceptionCallbacks13 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks13);
+
+                                newBeginCallbacks13.Remove(methodId);
+                                newEndCallbacks13.Remove(methodId);
+                                newExceptionCallbacks13.Remove(methodId);
+
+                                BCB<int>.callbacks13 = newBeginCallbacks13;
+                                ECB<int>.callbacks13 = newEndCallbacks13;
+                                ExCB<int>.callbacks13 = newExceptionCallbacks13;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock13 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock13; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 14 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock14, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock14
+                                var newBeginCallbacks14 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks14);
+                                var newEndCallbacks14 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks14);
+                                var newExceptionCallbacks14 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks14);
+
+                                newBeginCallbacks14.Remove(methodId);
+                                newEndCallbacks14.Remove(methodId);
+                                newExceptionCallbacks14.Remove(methodId);
+
+                                BCB<int>.callbacks14 = newBeginCallbacks14;
+                                ECB<int>.callbacks14 = newEndCallbacks14;
+                                ExCB<int>.callbacks14 = newExceptionCallbacks14;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock14 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock14; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 15 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock15, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock15
+                                var newBeginCallbacks15 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks15);
+                                var newEndCallbacks15 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks15);
+                                var newExceptionCallbacks15 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks15);
+
+                                newBeginCallbacks15.Remove(methodId);
+                                newEndCallbacks15.Remove(methodId);
+                                newExceptionCallbacks15.Remove(methodId);
+
+                                BCB<int>.callbacks15 = newBeginCallbacks15;
+                                ECB<int>.callbacks15 = newEndCallbacks15;
+                                ExCB<int>.callbacks15 = newExceptionCallbacks15;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock15 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock15; wait and try again
+                        if (i < 19)
+                        {
+                            Thread.Sleep(5);
+                        }
+                        else
+                        {
+                             throw new InvalidOperationException("Could not remove callbacks because of the concurrency issue.");
+                        }
+                    }
+
+                    break;
+                case 16 :
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        int originalValue = Interlocked.CompareExchange(ref BCB<int>.Lock16, 1, 0);
+
+                        if (originalValue == 0)
+                        {
+                            try
+                            {
+                                // this thread updated lock16
+                                var newBeginCallbacks16 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(BCB<int>.callbacks16);
+                                var newEndCallbacks16 = new Dictionary<int, Func<object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ECB<int>.callbacks16);
+                                var newExceptionCallbacks16 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(ExCB<int>.callbacks16);
+
+                                newBeginCallbacks16.Remove(methodId);
+                                newEndCallbacks16.Remove(methodId);
+                                newExceptionCallbacks16.Remove(methodId);
+
+                                BCB<int>.callbacks16 = newBeginCallbacks16;
+                                ECB<int>.callbacks16 = newEndCallbacks16;
+                                ExCB<int>.callbacks16 = newExceptionCallbacks16;
+                            }
+                            finally
+                            {
+                                BCB<int>.Lock16 = 0;
+                            }
+
+                            break;
+                        }
+
+                        // some other thread updated Lock16; wait and try again
                         if (i < 19)
                         {
                             Thread.Sleep(5);

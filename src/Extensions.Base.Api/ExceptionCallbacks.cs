@@ -33,6 +33,26 @@ namespace Microsoft.Diagnostics.Instrumentation.Extensions.Base
                 callbacks5 = new Dictionary<int, Action<object, Exception, object, object, object, object, object>>();
             internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object>>
                 callbacks6 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object>>
+                callbacks7 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object>>
+                callbacks8 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object>>
+                callbacks9 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object>>
+                callbacks10 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks11 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks12 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks13 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks14 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks15 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
+            internal static Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>
+                callbacks16 = new Dictionary<int, Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>();
     }
 
 }
@@ -85,6 +105,56 @@ namespace _System.Diagnostics
         {
             Action<object, Exception, object, object, object, object, object, object> act = null;
             if (ExCB<int>.callbacks6.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks7.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks8.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks9.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks10.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks11.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks12.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks13.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks14.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13, object arg14)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks15.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+        }
+        public static void ApplicationInsights_OnException(int methodId, object context, object exception, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5, object arg6, object arg7, object arg8, object arg9, object arg10, object arg11, object arg12, object arg13, object arg14, object arg15)
+        {
+            Action<object, Exception, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object> act = null;
+            if (ExCB<int>.callbacks16.TryGetValue(methodId, out act) && (act != null)) act(context, exception as Exception, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
         }
     }
 }
