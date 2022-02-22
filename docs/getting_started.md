@@ -20,7 +20,7 @@ In addition to the CLR which supports the full .NET Framework, Microsoft has als
 
 ### What is the CLR Instrumentation Engine?
 
-The CLR exposes a profiling API which reports events and messages of what is happening to during the execution of a managed process or
+The CLR exposes a profiling API which reports events and messages of what is happening during the execution of a managed process or
 application (such as what methods are JIT compiled or if a class is loaded). The problem is that only one profiler can interact with the CLR
 Profiler APIs at a time. The CLR Instrumentation Engine was written to address this by acting as a host and inverse multiplexes the APIs for
 multiple profiler clients.
@@ -68,7 +68,7 @@ See [CLRIE in Azure](scenarios/azure.md) for details about leveraging CLRIE on s
 ### How do I write an Instrumentation Method?
 
 A simple example of an InstrumentationMethod can be found in
-[NaglerInstrumentationMethod.cpp](../tests/InstrEngineTests/NaglerInstrumentationMethod/NaglerInstrumentationMethod.cpp).
+[NaglerInstrumentationMethod.cpp](../src/Tests/InstrEngineTests/NaglerInstrumentationMethod/NaglerInstrumentationMethod.cpp).
 
 ### How do I provide my Instrumentation Method to the CLR Instrumentation Engine?
 
