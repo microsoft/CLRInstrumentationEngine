@@ -141,7 +141,7 @@ CLRIE either calls CLogging directly or via the `IfFailRet` macro. Instrumentati
 
 The LoggingWrapper is a thin static wrapper around the CLogging static class and allows InstrumentationMethods to log independently of any profiler manager's lifetime. This plays an important role in SxS CLR scenarios as InstrumentationMethods can log from a static context if needed.
 
-### ProfilerManagerForInstrumentationMethod ([.h](../src/InstrumentationEngine.Lib/HostLoggerSink.h)|[.cpp](../src/InstrumentationEngine.Lib/HostLoggerSink.cpp))
+### ProfilerManagerForInstrumentationMethod ([.h](../src/InstrumentationEngine/ProfilerManagerForInstrumentationMethod.h)|[.cpp](../src/InstrumentationEngine/ProfilerManagerForInstrumentationMethod.cpp))
 
 ProfilerManagerForInstrumentationMethod (PMforIM) is a thin wrapper around the CProfilerManager instance. It contains information about the InstrumentationMethod classId GUID and parses the corresponding environment variable `MicrosoftInstrumentationEngine_LogLevel_GUID`. It hijacks Log*() calls by filtering against the InstrumentationMethod loglevel as well as injecting a prefix `[IM:GUID]` before each Log*() call to differentiate from other InstrumentationMethods.
 
