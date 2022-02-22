@@ -88,7 +88,7 @@ The `CLoggerService::RecalculateLoggingFlags()` iterates through each sink and c
 
 ### ILoggerSink <a name="iloggersink" /> ([.h](../src/InstrumentationEngine.Lib/LoggerSink.h))
 
-The ILoggerSink is an interface surface that is implemented by actual LoggerSinks and consises of the three Log() functions, Initialize(), and Reset().
+The ILoggerSink is an interface surface that is implemented by actual LoggerSinks and consists of the three Log() functions, Initialize(), and Reset().
 
 As mentioned in the CLoggerService section, Reset() is the mechanism where the sink declares what subset of loggingflags it supports.
 
