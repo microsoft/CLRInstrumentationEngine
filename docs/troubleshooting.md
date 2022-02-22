@@ -6,7 +6,7 @@ See [CLRIE in Azure](scenarios/azure.md).
 
 ## Mitigation
 
-When an issue occurs in production, the first step is to mitigate it so the application continues to run. A common cause of problems are from updates to either CLRIE or to one of the Instrumentation Method client that introduces potential conflicts with another client or incompatiblities with the app.
+When an issue occurs in production, the first step is to mitigate it so the application continues to run. A common cause of problems are from updates to either CLRIE or to one of the Instrumentation Method clients that introduces potential conflicts with another client or incompatiblities with the app.
 
 ### Remove CLRIE
 
@@ -22,11 +22,11 @@ Currently this feature is not supported. We could potentially create a tool that
 
 ## Investigations and Diagnosing Issues
 
-After mitigation and having the application back up and running, the next step is to figure out who the culprit is that produced the error. We recommend using a test environment rather than testing in production to prvent giving customers a very negative experience.
+After mitigation and having the application back up and running, the next step is to figure out who the culprit is that produced the error. We recommend using a test environment rather than testing in production to prevent giving customers a very negative experience.
 
 ### Enable CLRIE only
 
-It is recommended to just enable CLRIE without any Instrumentation Methods to ensure there's no regression in CLRIE's steady-state behavior. This is especially important if CLRIE was recently updated because regressions or incomptibilities might be introduced for the current application. We expect these issues to be rare as CLRIE is tested on a variety of platforms and apps and features are added incrementally with emphasis on supporting backwards compatibility.
+It is recommended to just enable CLRIE without any Instrumentation Methods to ensure there's no regression in CLRIE's steady-state behavior. This is especially important if CLRIE was recently updated because regressions or incompatibilities might be introduced for the current application. We expect these issues to be rare as CLRIE is tested on a variety of platforms and apps and features are added incrementally with emphasis on supporting backwards compatibility.
 
 ### Enable Instrumentation Methods (one at a time)
 
@@ -34,7 +34,7 @@ Profilers are the main feature providers and so should be the focal point of inv
 
 The user should enable each Instrumentation Method by itself and see if the application runs into the issue. This can confirm directly whether an Instrumentation Method by itself is causing the issue. This does not confirm if the Instrumentation Method is causing the issue or if it relies on behavior from CLRIE that is broken or has bugs.
 
-The more complex scenarios occur when multiple Instrumentation Methods are running as their behaviors may conflict without either parties being aware. For these scenarios it is difficult to find a sole owner. We **recommend** starting a discussion by posting a GitHub issue with tags for each of the involved Instrumentation Methods products. Private discussions or discussions with sensitive information can be done via email or other channels once the involved parties are established.
+The more complex scenarios occur when multiple Instrumentation Methods are running as their behaviors may conflict without either party being aware. For these scenarios it is difficult to find a sole owner. We **recommend** starting a discussion by posting a GitHub issue with tags for each of the involved Instrumentation Methods products. Private discussions or discussions with sensitive information can be done via email or other channels once the involved parties are established.
 
 ### Enable Instrumentation Engine Logging
 
