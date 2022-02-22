@@ -129,7 +129,7 @@ For legacy reasons, CLRIE also supports `MicrosoftInstrumentationEngine_FileLog`
 
 CLRIE supports the notion of allowing Instrumentation Methods to set a custom LoggingHost which is directly settable via the `IProfilerManager` interface.
 
-The custom host logger just needs to implemented the `IProfilerManagerLoggingHost` which consists of the three Log*() functions only.
+The custom host logger just needs to implement the `IProfilerManagerLoggingHost` which only consists of the three Log*() functions.
 
 Both of these interfaces can be found in [InstrumentationEngine.idl](../src/InstrumentationEngine.Api/InstrumentationEngine.idl)
 
