@@ -34,7 +34,7 @@ jobs:
         Debug_AnyCPU:
           Configuration: 'Debug'
           Platform: 'AnyCPU'
-          RunSettingsFile: 'x86.runsettings'
+          RunSettingsFile: 'x64.runsettings'
 
 # Linux Binaries (TBD)
 #- template: linux/tests.yaml
