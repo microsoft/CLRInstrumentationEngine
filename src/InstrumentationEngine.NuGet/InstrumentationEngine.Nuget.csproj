@@ -44,24 +44,24 @@
   </ItemGroup>
   <ItemGroup Condition="'$(PlatformOS)'!='Linux' and '$(Platform)'!='ARM64'">
     <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
-        <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll">
-        <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb">
-        <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.Base_$(Platform).pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll">
-        <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(InputBinCfgRoot)\AnyCPU\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb">
-        <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
