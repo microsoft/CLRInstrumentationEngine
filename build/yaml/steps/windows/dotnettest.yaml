@@ -13,8 +13,6 @@ steps:
   inputs:
     command: test
     arguments: >-
-      --runtime
-      "win-x86"
       --settings
       "tests/TestSettings/$(RunSettingsFile)"
       $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)\${{ parameters.SubFolder }}*Tests*.dll
