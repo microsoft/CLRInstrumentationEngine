@@ -6,7 +6,7 @@ See [CLRIE in Azure](scenarios/azure.md).
 
 ## Mitigation
 
-When an issue occurs in production, the first step is to mitigate it so the application continues to run. A common cause of problems are from updates to either CLRIE or to one of the Instrumentation Method clients that introduces potential conflicts with another client or incompatiblities with the app.
+When an issue occurs in production, the first step is to mitigate it so the application continues to run. A common cause of problems are from updates to either CLRIE or to one of the Instrumentation Method clients that introduces potential conflicts with another client or incompatibilities with the app.
 
 ### Remove CLRIE
 
