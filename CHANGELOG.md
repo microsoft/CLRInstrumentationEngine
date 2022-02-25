@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.44
++ BugFixes: 
+  + Fixed build scripts to explicitly point to v142 toolsets
 
 ## 1.0.43
 + New:
