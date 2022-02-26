@@ -57,7 +57,11 @@ param(
 
     [Parameter(Mandatory=$false)]
     [switch]
-    $VerboseMsbuild
+    $VerboseMsbuild,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $ARM64
 )
 
 $ErrorActionPreference = 'Stop'
@@ -210,24 +214,33 @@ if (!$SkipBuild)
             Remove-Item -Force -Recurse "$repoPath\obj\"
         }
 
-        # NuGet restore disregards platform/configuration
         # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-        $restoreArgsInit = "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
-        $restoreArgs = @(
-            "$restoreArgsInit /p:platform=`"x86`""
-            "$restoreArgsInit /p:platform=`"x64`""
-            "$restoreArgsInit /p:platform=`"Any CPU`""
-        )
-        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+        $dotnetRestoreArgs = "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
+        if ($ARM64)
+        {
+            $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64='True'"
+        }
+
+        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solutions'
+
+        # NuGet restore disregards platform/configuration
+        $nugetRestoreArgs = "restore $repoPath\NativeNugetRestore.sln -configfile $repoPath\NuGet.config"
+        Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solutions'
     }
 
     # Build InstrumentationEngine.sln
     $buildArgsInit = "$repoPath\InstrumentationEngine.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams)"
-    $buildArgs = @(
+    $buildArgs = [System.Collections.ArrayList]@(
         "$buildArgsInit /p:platform=`"x86`""
         "$buildArgsInit /p:platform=`"x64`""
         "$buildArgsInit /p:platform=`"Any CPU`" /m"
     )
+
+    if ($ARM64)
+    {
+        $buildArgs.Add("$buildArgsInit /p:platform=`"ARM64`" /m")
+    }
+
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
 
