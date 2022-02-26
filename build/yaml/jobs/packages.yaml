@@ -36,6 +36,13 @@ jobs:
         Debug_AnyCPU:
           Configuration: 'Debug'
           Platform: 'Any CPU'
+      ${{ if eq(parameters.IsMicroBuildInternal, 'true') )}}:
+        Release_ARM64:
+          Configuration: 'Release'
+          Platform: 'ARM64'
+        Debug_ARM64:
+          Configuration: 'Debug'
+          Platform: 'ARM64'
 
 # Linux Packages
 - template: linux/packages.yaml
