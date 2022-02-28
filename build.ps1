@@ -260,21 +260,33 @@ if (!$SkipPackaging)
 
     # NuGet restore disregards platform/configuration
     # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-    $restoreArgsInit = "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
-    $restoreArgs = @(
+    $restoreArgsInit = "restore `"$repoPath\src\InstrumentationEngine.Packages.sln`" --configfile $repoPath\NuGet.config"
+    $restoreArgs = [System.Collections.ArrayList]@(
         "$restoreArgsInit /p:platform=`"x86`""
         "$restoreArgsInit /p:platform=`"x64`""
         "$restoreArgsInit /p:platform=`"Any CPU`""
     )
+
+    if ($ARM64)
+    {
+        $restoreArgs.Add("$restoreArgsInit /p:platform=`"ARM64`"")
+    }
+
     Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgsInit = "$repoPath\src\InstrumentationEngine.Packages.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
-    $buildArgs = @(
+    $buildArgs = [System.Collections.ArrayList]@(
         "$buildArgsInit /p:platform=`"x86`""
         "$buildArgsInit /p:platform=`"x64`""
         "$buildArgsInit /p:platform=`"Any CPU`""
     )
+
+    if ($ARM64)
+    {
+        $buildArgs.Add("$buildArgsInit /p:platform=`"ARM64`"")
+    }
+
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
