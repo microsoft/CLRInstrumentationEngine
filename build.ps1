@@ -275,7 +275,7 @@ if (!$SkipPackaging)
     Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
 
     # Build InstrumentationEngine.Packages.sln
-    $buildArgsInit = "$repoPath\src\InstrumentationEngine.Packages.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
+    $buildArgsInit = "`"$repoPath\src\InstrumentationEngine.Packages.sln`" /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
     $buildArgs = [System.Collections.ArrayList]@(
         "$buildArgsInit /p:platform=`"x86`""
         "$buildArgsInit /p:platform=`"x64`""
