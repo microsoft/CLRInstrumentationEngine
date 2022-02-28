@@ -215,7 +215,7 @@ if (!$SkipBuild)
         }
 
         # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-        $dotnetRestoreArgs = "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config /p:platform=`"Any CPU`""
+        $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$repoPath\NuGet.config`" /p:platform=`"Any CPU`""
         if ($ARM64)
         {
             $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64='True'"
