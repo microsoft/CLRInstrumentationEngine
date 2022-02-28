@@ -224,7 +224,7 @@ if (!$SkipBuild)
         Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solutions'
 
         # NuGet restore disregards platform/configuration
-        $nugetRestoreArgs = "restore $repoPath\NativeNugetRestore.sln -configfile $repoPath\NuGet.config"
+        $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$repoPath\NuGet.config`""
         Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solutions'
     }
 
