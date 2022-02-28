@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<package>
+  <metadata>
+    <id>$packageid$</id>
+    <version>$version$</version>
+    <title>Microsoft Instrumentation Engine Headers</title>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <projectUrl>https://github.com/Microsoft/CLRInstrumentationEngine</projectUrl>
+    <license type="file">$licenseFile$</license>
+    <icon>icon.png</icon>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>NuGet package for the Microsoft Instrumentation Engine Headers.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>native</tags>
+    <dependencies>
+      <group targetFramework="native0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
+    <file src="$apidir$\InstrumentationEngine.h" target="lib\native\ARM64\include" />
+    <file src="$apidir$\InstrumentationEngine_i.cpp" target="lib\native\ARM64\include" />
+
+    <!-- Support installation on managed projects -->
+    <file src="" target="lib\net40\_._" />
+    <file src="" target="lib\portable-net4+win8\_._" />
+
+    <!-- Licensing -->
+    <file src="$enlistmentroot$\$licenseFile$*" target="" />
+
+    <!-- Icon -->
+    <file src="$enlistmentroot$\src\SharedNuGetAssets\icon.png" target="" />
+  </files>
+</package>
