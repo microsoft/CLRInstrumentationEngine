@@ -5,10 +5,13 @@
 
 parameters:
   Solution: ''
-  Condition: 'succeeded()'
   BinLogCategory: ''
 
 steps:
+- task: NuGetAuthenticate@0
+  inputs:
+    forceReinstallCredentialProvider: true
+
   # 'command: restore' does not take additional arguments, thus set
   # 'command: custom' and 'custom: restore' which then requires setting
   # of all arguments.
@@ -22,4 +25,18 @@ steps:
       --configfile
       $(Build.SourcesDirectory)\NuGet.Config
       -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_AnyCPU_$(Configuration)_Restore.binlog"
-  condition: ${{ parameters.Condition }}
+  condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+
+- task: DotNetCoreCLI@2
+  displayName: Restore ${{ parameters.Solution }}
+  inputs:
+    command: custom
+    custom: restore
+    arguments: >-
+      $(Build.SourcesDirectory)\${{ parameters.Solution }}
+      --configfile
+      $(Build.SourcesDirectory)\NuGet.internal.Config
+      /p:IncludeARM64=True
+      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_ARM64_$(Configuration)_Restore.binlog"
+  condition: and(succeeded(), eq(variables['Platform'], 'ARM64'))
+  

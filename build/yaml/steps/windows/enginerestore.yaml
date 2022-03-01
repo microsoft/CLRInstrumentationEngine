@@ -25,11 +25,10 @@ parameters:
   BinLogCategory: ''
 
 steps:
-# nuget restore InstrumentationEngine.sln
+# restore InstrumentationEngine.sln packages
 - template: dotnetrestore.yaml
   parameters:
     Solution: InstrumentationEngine.sln
-    Condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
     BinLogCategory: ${{ parameters.BinLogCategory }}
 
 - template: nugetrestore.yaml
