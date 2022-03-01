@@ -40,9 +40,6 @@ jobs:
         Release_ARM64:
           Configuration: 'Release'
           Platform: 'ARM64'
-        Debug_ARM64:
-          Configuration: 'Debug'
-          Platform: 'ARM64'
 
 # Linux Packages
 - template: linux/packages.yaml
