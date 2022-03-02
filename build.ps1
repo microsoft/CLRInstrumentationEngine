@@ -162,8 +162,8 @@ if (-not ($repoPath))
 $VsRequirements = @(
     'Microsoft.Component.MSBuild'
     'Microsoft.VisualStudio.Workload.NativeDesktop'
-    'Microsoft.VisualStudio.Component.VC.ATL.Spectre'
-    'Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre'
+    'Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre'
+    'Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64.Spectre'
 )
 
 Write-Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
