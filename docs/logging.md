@@ -88,7 +88,7 @@ The `CLoggerService::RecalculateLoggingFlags()` iterates through each sink and c
 
 ### ILoggerSink <a name="iloggersink" /> ([.h](../src/InstrumentationEngine.Lib/LoggerSink.h))
 
-The ILoggerSink is an interface surface that is implemented by actual LoggerSinks and consises of the three Log() functions, Initialize(), and Reset().
+The ILoggerSink is an interface surface that is implemented by actual LoggerSinks and consists of the three Log() functions, Initialize(), and Reset().
 
 As mentioned in the CLoggerService section, Reset() is the mechanism where the sink declares what subset of loggingflags it supports.
 
@@ -129,7 +129,7 @@ For legacy reasons, CLRIE also supports `MicrosoftInstrumentationEngine_FileLog`
 
 CLRIE supports the notion of allowing Instrumentation Methods to set a custom LoggingHost which is directly settable via the `IProfilerManager` interface.
 
-The custom host logger just needs to implemented the `IProfilerManagerLoggingHost` which consists of the three Log*() functions only.
+The custom host logger just needs to implement the `IProfilerManagerLoggingHost` which only consists of the three Log*() functions.
 
 Both of these interfaces can be found in [InstrumentationEngine.idl](../src/InstrumentationEngine.Api/InstrumentationEngine.idl)
 
@@ -141,7 +141,7 @@ CLRIE either calls CLogging directly or via the `IfFailRet` macro. Instrumentati
 
 The LoggingWrapper is a thin static wrapper around the CLogging static class and allows InstrumentationMethods to log independently of any profiler manager's lifetime. This plays an important role in SxS CLR scenarios as InstrumentationMethods can log from a static context if needed.
 
-### ProfilerManagerForInstrumentationMethod ([.h](../src/InstrumentationEngine.Lib/HostLoggerSink.h)|[.cpp](../src/InstrumentationEngine.Lib/HostLoggerSink.cpp))
+### ProfilerManagerForInstrumentationMethod ([.h](../src/InstrumentationEngine/ProfilerManagerForInstrumentationMethod.h)|[.cpp](../src/InstrumentationEngine/ProfilerManagerForInstrumentationMethod.cpp))
 
 ProfilerManagerForInstrumentationMethod (PMforIM) is a thin wrapper around the CProfilerManager instance. It contains information about the InstrumentationMethod classId GUID and parses the corresponding environment variable `MicrosoftInstrumentationEngine_LogLevel_GUID`. It hijacks Log*() calls by filtering against the InstrumentationMethod loglevel as well as injecting a prefix `[IM:GUID]` before each Log*() call to differentiate from other InstrumentationMethods.
 
