@@ -169,6 +169,7 @@ leverage CLRIE and some do not.
 See [Application Insights Overview](https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview)
 
 Also refer to Application Insights extension
+<!-- markdown-link-check-disable-next-line -->
 [design specs](https://github.com/Microsoft/InstrumentationEngine-Intercept/blob/develop/design-principles.md)
 
 

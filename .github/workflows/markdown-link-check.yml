@@ -11,3 +11,5 @@ jobs:
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           config-file: .github/linters/check_links_config.json
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'no'
