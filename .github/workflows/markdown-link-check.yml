@@ -1,10 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-on:
-  pull_request:
-    branches:
-    - main
+on: [push]
 
 jobs:
   markdown-link-check:
