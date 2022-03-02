@@ -16,7 +16,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 ## Pull Request Process
 
 1. Ensure the README.md and any documentation are up-to-date with details of changes made. This will help maintain the accuracy of the documentation to the current state of the code.
-2. Increment the semantic version number and date in the [Version.props](build/version.props) file if necessary. The CLR Instrumentation Engine follows the [semantic versioning](https://semver.org/) scheme.
+2. Increment the semantic version number and date in the [Version.props](build/Version.props) file if necessary. The CLR Instrumentation Engine follows the [semantic versioning](https://semver.org/) scheme.
 3. Submit your Pull Requests and notify clrieowners@microsoft.com. We will initiate the Pull Request validation build if we have no concerns with your changes.
 3. Once at least two approvals are given for the PR, you may merge your changes.
 
