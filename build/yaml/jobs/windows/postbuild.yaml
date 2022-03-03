@@ -3,12 +3,12 @@
 
 # Job Template: PostBuild steps
 
-parameters:
-  SignType: None
-
 jobs:
 - job: PostBuild
   displayName: PostBuild
+
+  variables:
+    Packaging.EnableSBOMSigning: true
 
   pool:
     name: VSEngSS-MicroBuild2019-1ES

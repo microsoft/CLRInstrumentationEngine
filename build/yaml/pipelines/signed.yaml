@@ -10,7 +10,6 @@ name: $(date:yyyyMMdd)$(rev:rr)
 
 variables:
   TeamName: ClrInstrumentationEngine
-  Packaging.EnableSBOMSigning: true
 
 stages:
 - stage: Build
@@ -25,11 +24,7 @@ stages:
 
 - stage: PostBuild
   jobs:
-  - template: ../jobs/windows/postbuild.yaml 
-    parameters:
-      SignType: $(SignType) # NOTE this string won't be replaced until runtime
-      Configuration: Release
-      IsMicroBuildInternal: true
+  - template: ../jobs/windows/postbuild.yaml
 
 - stage: Package
   jobs:
@@ -37,3 +32,5 @@ stages:
   - template: ../jobs/packages.yaml
     parameters:
       SignType: $(SignType) # NOTE this string won't be replaced until runtime
+      Configuration: Release
+      IsMicroBuildInternal: true
