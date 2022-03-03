@@ -1,6 +1,3 @@
 {
-    "aliveStatusCodes": [200, 203],
-    "ignorePatterns": [
-        { "pattern": "^https://github.com/microsoft/InstrumentationEngine-Intercept" }
-      ]
+    "aliveStatusCodes": [200, 203]
 }
