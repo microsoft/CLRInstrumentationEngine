@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.44
++ New:
+  + Add support for Windows ARM64 (Internal)
 + BugFixes: 
   + Fixed build scripts to explicitly point to v142 toolsets
 

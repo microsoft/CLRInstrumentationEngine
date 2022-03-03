@@ -159,12 +159,18 @@ if (-not ($repoPath))
 ###
 # Picks up msbuild from vs2019 installation
 ###
-$VsRequirements = @(
+$VsRequirements = [System.Collections.ArrayList]@(
     'Microsoft.Component.MSBuild'
     'Microsoft.VisualStudio.Workload.NativeDesktop'
     'Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre'
     'Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64.Spectre'
 )
+
+if ($ARM64)
+{
+    $VsRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.ARM64.Spectre')
+    $VsRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ARM64.Spectre')
+}
 
 Write-Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
