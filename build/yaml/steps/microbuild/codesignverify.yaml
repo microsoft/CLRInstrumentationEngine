@@ -4,7 +4,8 @@
 # Step Template: MicroBuild Signing and Verification
 
 parameters:
-    SignType: None
+  SignType: None
+  TargetFolder: $(Build.StagingDirectory)
 
 steps:
 
@@ -18,6 +19,6 @@ steps:
   displayName: Verify Signed Files
   condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
   inputs:
-    TargetFolder: $(Build.StagingDirectory)
+    TargetFolder: ${{ parameters.TargetFolder }}
     WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
     WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'

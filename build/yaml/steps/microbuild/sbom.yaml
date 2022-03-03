@@ -1,0 +1,14 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Step Template: MicroBuild SBOM generator
+
+parameters:
+  Configuration: Release
+
+steps:
+- task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0
+  displayName: 'Generate SBOM For Insertion'
+  inputs:
+    BuildDropPath: '$(Build.ArtifactStagingDirectory)'
+
