@@ -23,6 +23,7 @@
 
 parameters:
   BinLogCategory: ''
+  IsMicroBuildInternal: false
 
 steps:
 # restore InstrumentationEngine.sln packages
@@ -30,6 +31,7 @@ steps:
   parameters:
     Solution: InstrumentationEngine.sln
     BinLogCategory: ${{ parameters.BinLogCategory }}
+    IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
 
 - template: nugetrestore.yaml
   parameters:

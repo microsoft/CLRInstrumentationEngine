@@ -6,6 +6,7 @@
 parameters:
   Solution: ''
   BinLogCategory: ''
+  IsMicroBuildInternal: false
 
 steps:
 - task: NuGetAuthenticate@0
@@ -24,19 +25,20 @@ steps:
       $(Build.SourcesDirectory)\${{ parameters.Solution }}
       --configfile
       $(Build.SourcesDirectory)\NuGet.Config
-      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_AnyCPU_$(Configuration)_Restore.binlog"
+      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_$(Platform)_$(Configuration)_Restore.binlog"
   condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
 
-- task: DotNetCoreCLI@2
-  displayName: Restore ${{ parameters.Solution }}
-  inputs:
-    command: custom
-    custom: restore
-    arguments: >-
-      $(Build.SourcesDirectory)\${{ parameters.Solution }}
-      --configfile
-      $(Build.SourcesDirectory)\NuGet.internal.Config
-      /p:IncludeARM64=True
-      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_ARM64_$(Configuration)_Restore.binlog"
-  condition: and(succeeded(), eq(variables['Platform'], 'ARM64'))
-  
+# We can only restore from the internal config on internal build machines.
+- ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - task: DotNetCoreCLI@2
+    displayName: Internal Restore ${{ parameters.Solution }}
+    inputs:
+      command: custom
+      custom: restore
+      arguments: >-
+        $(Build.SourcesDirectory)\${{ parameters.Solution }}
+        --configfile
+        $(Build.SourcesDirectory)\NuGet.internal.Config
+        /p:IncludeARM64=True
+        -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_ARM64_$(Configuration)_Restore.binlog"
+    condition: and(succeeded(), eq(variables['Platform'], 'ARM64'))

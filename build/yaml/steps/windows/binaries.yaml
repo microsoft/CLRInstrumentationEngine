@@ -4,6 +4,7 @@
 # Step Template: Build Windows Binaries
 parameters:
   NuGetRestore: true
+  IsMicroBuildInternal: false
 
 steps:
 # nuget restore InstrumentationEngine.sln
@@ -11,6 +12,7 @@ steps:
   - template: enginerestore.yaml
     parameters:
       BinLogCategory: Build
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
 
 # msbuild InstrumentationEngine.sln
 - task: DotNetCoreCLI@2
