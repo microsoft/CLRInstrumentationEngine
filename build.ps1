@@ -205,6 +205,12 @@ $msbuild = "`"$msbuild`""
 ###
 Verify-DotnetExists
 
+$configFile = "$repoPath\NuGet.config"
+if ($ARM64)
+{
+    $configFile = "$repoPath\NuGet.internal.config"   
+}
+
 if (!$SkipBuild)
 {
     if (!$SkipCleanAndRestore)
@@ -221,17 +227,17 @@ if (!$SkipBuild)
         }
 
         # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-        $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$repoPath\NuGet.config`" /p:platform=`"Any CPU`""
+        $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$configFile`""
         if ($ARM64)
         {
             $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64='True'"
         }
 
-        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solutions'
+        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solution'
 
         # NuGet restore disregards platform/configuration
-        $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$repoPath\NuGet.config`""
-        Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solutions'
+        $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$configFile`""
+        Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
     }
 
     # Build InstrumentationEngine.sln
@@ -265,20 +271,9 @@ if (!$SkipPackaging)
     }
 
     # NuGet restore disregards platform/configuration
-    # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-    $restoreArgsInit = "restore `"$repoPath\src\InstrumentationEngine.Packages.sln`" --configfile $repoPath\NuGet.config"
-    $restoreArgs = [System.Collections.ArrayList]@(
-        "$restoreArgsInit /p:platform=`"x86`""
-        "$restoreArgsInit /p:platform=`"x64`""
-        "$restoreArgsInit /p:platform=`"Any CPU`""
-    )
+    $restoreArgs = "restore `"$repoPath\src\InstrumentationEngine.Packages.sln`" -configfile `"$configFile`""
 
-    if ($ARM64)
-    {
-        $restoreArgs.Add("$restoreArgsInit /p:platform=`"ARM64`"")
-    }
-
-    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+    Invoke-ExpressionHelper -Executable "nuget" -Arguments $restoreArgs -Activity 'nuget Restore Solution'
 
     # Build InstrumentationEngine.Packages.sln
     $buildArgsInit = "`"$repoPath\src\InstrumentationEngine.Packages.sln`" /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
@@ -321,7 +316,7 @@ if ($IncludeTests)
     $testBuildArgs = @(
         ($x86Tests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x86.runsettings`""
         ($x64Tests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x64.runsettings`""
-        ($anyCpuTests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x86.runsettings`"" # AnyCPU
+        ($anyCpuTests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x64.runsettings`"" # AnyCPU
     )
 
     Invoke-ExpressionHelper -Executable "$vstest" -Arguments $testBuildArgs -Activity 'Run Tests'

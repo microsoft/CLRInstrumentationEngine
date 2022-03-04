@@ -3,8 +3,8 @@
      Licensed under the MIT License. -->
 <Project>
   <PropertyGroup Condition="'$(Platform)'=='ARM64'">
-    <PackageId>Microsoft.InstrumentationEngine.Headers.ARM64</PackageId>
-    <NuspecFile>InstrumentationEngine.Headers.ARM64.nuspec</NuspecFile>
+    <PackageId>Microsoft.InstrumentationEngine.Headers.arm64</PackageId>
+    <NuspecFile>InstrumentationEngine.Headers.arm64.nuspec</NuspecFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'!='ARM64'">
     <PackageId>Microsoft.InstrumentationEngine.Headers</PackageId>

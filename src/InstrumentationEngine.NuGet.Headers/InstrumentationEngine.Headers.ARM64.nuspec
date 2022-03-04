@@ -21,8 +21,8 @@
   </metadata>
   <files>
     <!-- See http://docs.nuget.org/consume/support-for-native-projects -->
-    <file src="$apidir$\InstrumentationEngine.h" target="lib\native\ARM64\include" />
-    <file src="$apidir$\InstrumentationEngine_i.cpp" target="lib\native\ARM64\include" />
+    <file src="$apidir$\InstrumentationEngine.h" target="lib\native\arm64\include" />
+    <file src="$apidir$\InstrumentationEngine_i.cpp" target="lib\native\arm64\include" />
 
     <!-- Support installation on managed projects -->
     <file src="" target="lib\net40\_._" />

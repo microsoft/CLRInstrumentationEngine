@@ -46,7 +46,7 @@
     <TargetName>MicrosoftInstrumentationEngine_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='ARM64'">
-    <TargetName>MicrosoftInstrumentationEngine_ARM64</TargetName>
+    <TargetName>MicrosoftInstrumentationEngine_arm64</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">

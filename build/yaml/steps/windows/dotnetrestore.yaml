@@ -40,5 +40,5 @@ steps:
         --configfile
         $(Build.SourcesDirectory)\NuGet.internal.Config
         /p:IncludeARM64=True
-        -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_ARM64_$(Configuration)_Restore.binlog"
+        -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_arm64_$(Configuration)_Restore.binlog"
     condition: and(succeeded(), eq(variables['Platform'], 'ARM64'))
