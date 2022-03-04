@@ -16,7 +16,7 @@
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
+    <Platforms>AnyCPU;x64;x86;arm64</Platforms>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
