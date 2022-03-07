@@ -10,6 +10,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <PropertyGroup>
+    <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(ArchitectureFolderName)_$(LinuxDistro)</NugetSuffix>
+    <NugetSuffix Condition="'$(NugetSuffix)'==''">$(ArchitectureFolderName)</NugetSuffix>
+    <PackageId>Microsoft.InstrumentationEngine_$(NugetSuffix)</PackageId>
+  </PropertyGroup>
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
@@ -18,9 +23,6 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>InstrumentationEngine.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);scriptdir=$(MSBuildProjectDirectory)</NuspecProperties>
-    <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(ArchitectureFolderName)_$(LinuxDistro)</NugetSuffix>
-    <NugetSuffix Condition="'$(NugetSuffix)'==''">$(ArchitectureFolderName)</NugetSuffix>
-    <PackageId>Microsoft.InstrumentationEngine_$(NugetSuffix)</PackageId>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <ProjectGuid>{0B12FD8F-83DE-4A80-9BC1-ABE67E0E808A}</ProjectGuid>
     <OutputType>Library</OutputType>
