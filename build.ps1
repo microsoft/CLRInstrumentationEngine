@@ -159,7 +159,14 @@ if (-not ($repoPath))
 ###
 # Picks up msbuild from vs2019 installation
 ###
-$VsRequirements = [System.Collections.ArrayList]@(
+$Vs2019Requirements = [System.Collections.ArrayList]@(
+    'Microsoft.Component.MSBuild'
+    'Microsoft.VisualStudio.Workload.NativeDesktop'
+    'Microsoft.VisualStudio.Component.VC.ATL.Spectre'
+    'Microsoft.VisualStudio.Component.VC.Tools.x86.x64'
+)
+
+$VsNextRequirements = [System.Collections.ArrayList]@(
     'Microsoft.Component.MSBuild'
     'Microsoft.VisualStudio.Workload.NativeDesktop'
     'Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre'
@@ -168,32 +175,59 @@ $VsRequirements = [System.Collections.ArrayList]@(
 
 if ($ARM64)
 {
-    $VsRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.ARM64.Spectre')
-    $VsRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ARM64.Spectre')
+    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre')
+    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.Runtimes.ARM64.Spectre')
+
+    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.ARM64.Spectre')
+    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ARM64.Spectre')
 }
 
-Write-Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
-$vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
-$filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
+Write-Verbose "Compatible VS2019 must have these installed components: `n$($Vs2019Requirements | % {"  $_"} | Out-String)`n"
+Write-Verbose "If none are found, searching for any VS installation with these installed components: `n$($VsNextRequirements | % {"  $_"} | Out-String)`n"
+Write-Warning "Using a VS developer command prompt skips this check."
 
-# Restrict the VS version if running from a context that has the VisualStudioVersion env variable (e.g. Developer Command Prompt).
+$vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
+
+$filterArgsFor2019 = "-latest -prerelease -requires $($Vs2019Requirements -join ' ') -property installationPath -version `"[16.0,17.0)`""
+$filterArgsForNext = "-latest -prerelease -requires $($VsNextRequirements -join ' ') -property installationPath"
+
+# Restrict the VS version if running from a context that has the VSINSTALLDIR env variable (e.g. Developer Command Prompt).
 # This will make sure that VisualStudioVersion matches the VS version of MSBuild in order to avoid mismatches (e.g. using a Dev15
 # Developer Command Prompt but invoking Dev16's MSBuild).
-if ($env:VisualStudioVersion)
+$installationPath = ''
+if ($env:VSINSTALLDIR)
 {
-    $vsversion = [version]$($env:VisualStudioVersion)
-    # This is a version range that looks like "[15.0,16.0)"
-    $filterArgs = "$filterArgs -version `"[$($vsversion.Major).0,$($vsversion.Major + 1).0)`""
+    Write-Verbose "Detected developer command prompt, using '$env:VSINSTALLDIR'"
+    $installationPath = $env:VSINSTALLDIR
 }
 
-$installationPath = Invoke-Expression "& $vswhere $filterArgs"
+if (-not $installationPath -or -not (Test-Path "$installationPath"))
+{
+    Write-Verbose "Search for compatible VS2019..."
+    $installationPath = Invoke-Expression "& $vswhere $filterArgsFor2019"
+    if (-not $installationPath -or -not (Test-Path "$installationPath"))
+    {
+        Write-Verbose "Unable to find compatible VS2019. Search for any compatible VS..."
+        $installationPath = Invoke-Expression "& $vswhere $filterArgsForNext"
+    }
+
+    if (-not $installationPath -or -not (Test-Path "$installationPath"))
+    {
+        Write-Error 'Cannot find compatible VS installation.'
+    }
+    else
+    {
+        Write-Verbose "Found compatible VS at '$installationPath'"
+    }
+}
+
 $msbuild = Join-Path $installationPath 'MSBuild\Current\bin\MSBuild.exe'
-if (-not (Test-Path $msbuild))
+if (-not (Test-Path "$msbuild"))
 {
     $msbuild = Join-Path (Read-Host "Please enter the full path to your VS installation (eg. 'C:\Program Files (x86)\Microsoft Visual Studio\Preview\Enterprise)'`r`n") 'MSBuild\15.0\Bin\MSBuild.exe'
 }
 
-if (-not (Test-Path $msbuild))
+if (-not (Test-Path "$msbuild"))
 {
     Write-Error 'Cannot find msbuild.exe. Please check your VS installation.'
 }
