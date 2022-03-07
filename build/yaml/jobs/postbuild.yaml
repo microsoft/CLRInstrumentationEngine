@@ -12,9 +12,6 @@ jobs:
 
   pool:
     name: VSEngSS-MicroBuild2019-1ES
-    demands:
-    - msbuild
-    - vstest
 
   workspace:
     clean: outputs
@@ -22,15 +19,15 @@ jobs:
   steps:
   - checkout: none
 
-  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml
     parameters:
-      ArtifactName: binaries-windows-Release
+      ArtifactName: packages-all
 
-  - template: ../../steps/microbuild/sbom.yaml
+  - template: ../steps/microbuild/sbom.yaml
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\_manifest'
       ArtifactName: 'SBOM-manifest'
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - template: ../steps/microbuild/cleanup.yaml

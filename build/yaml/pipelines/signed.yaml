@@ -22,10 +22,6 @@ stages:
       Configuration: Release
       IsMicroBuildInternal: true
 
-- stage: PostBuild
-  jobs:
-  - template: ../jobs/windows/postbuild.yaml
-
 - stage: Package
   jobs:
   # Packages (Windows & Linux)
@@ -34,3 +30,7 @@ stages:
       SignType: $(SignType) # NOTE this string won't be replaced until runtime
       Configuration: Release
       IsMicroBuildInternal: true
+
+- stage: PostBuild
+  jobs:
+  - template: ../jobs/postbuild.yaml
