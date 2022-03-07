@@ -12,8 +12,11 @@
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
+    <DefineConstants>$(DefineConstants);X64</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup>
-    <Platforms>x64;x86</Platforms>
+    <Platforms>x64;x86;AnyCPU</Platforms>
     <RootNamespace>RawProfilerHook.Tests</RootNamespace>
     <AssemblyName>RawProfilerHook.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
