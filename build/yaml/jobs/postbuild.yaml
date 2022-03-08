@@ -22,7 +22,12 @@ jobs:
   - template: ../steps/azuredevops/downloadbuildartifacts.yaml
     parameters:
       ArtifactName: packages-all
-
+      ItemPattern: |
+        **\*.nupkg
+        **\*.zip
+        **\*.msi
+        **\*.msm
+        
   - template: ../steps/microbuild/sbom.yaml
 
   - template: ../steps/azuredevops/publishbuildartifacts.yaml
