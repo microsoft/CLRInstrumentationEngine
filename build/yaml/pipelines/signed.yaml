@@ -31,6 +31,6 @@ stages:
       Configuration: Release
       IsMicroBuildInternal: true
 
-- stage: PostBuild
+- stage: PostPackage
   jobs:
-  - template: ../jobs/postbuild.yaml
+  - template: ../jobs/postpackage.yaml

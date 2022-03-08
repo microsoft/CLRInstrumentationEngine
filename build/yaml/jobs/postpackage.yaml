@@ -1,11 +1,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Job Template: PostBuild steps
+# Job Template: PostPackage steps
 
 jobs:
-- job: PostBuild
-  displayName: PostBuild
+- job: PostPackage
+  displayName: PostPackage
 
   variables:
     Packaging.EnableSBOMSigning: true
