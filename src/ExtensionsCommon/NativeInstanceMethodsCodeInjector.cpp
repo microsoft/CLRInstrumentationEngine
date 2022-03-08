@@ -99,11 +99,11 @@ namespace Instrumentation
 
 #if defined(_M_X64)
 		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I8;
-#endif
-#if defined(_M_IX86)
+#elif defined(_M_IX86)
 		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I4;
-#endif
-#if (!defined(_M_X64)) && !defined(_M_IX86)
+#elif defined(_M_ARM64)
+		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I8;
+#else
 		static_assert(true, "Unsupported processor architecture");
 #endif
 

@@ -2,13 +2,21 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved.
      Licensed under the MIT License. -->
 <Project>
+  <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+    <PackageId>Microsoft.InstrumentationEngine.Headers.arm64</PackageId>
+    <NuspecFile>InstrumentationEngine.Headers.arm64.nuspec</NuspecFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'!='ARM64'">
+    <PackageId>Microsoft.InstrumentationEngine.Headers</PackageId>
+    <NuspecFile>InstrumentationEngine.Headers.nuspec</NuspecFile>
+  </PropertyGroup>
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetExt>.nupkg</TargetExt>
-    <PackageId>Microsoft.InstrumentationEngine.Headers</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
@@ -17,11 +25,9 @@
     <ResolveNuGetPackages>true</ResolveNuGetPackages>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>InstrumentationEngine.Headers.nuspec</NuspecFile>
     <NuspecProperties>$(NuspecProperties);apidir=$(InstrumentationEngineApiInc)</NuspecProperties>
     <ProjectGuid>{3D3BA42C-4A1E-4135-B750-4D8CB0A7117F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>

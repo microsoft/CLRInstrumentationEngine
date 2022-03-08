@@ -5,10 +5,14 @@
 
 parameters:
   Solution: ''
-  Condition: 'succeeded()'
   BinLogCategory: ''
+  IsMicroBuildInternal: false
 
 steps:
+- task: NuGetAuthenticate@0
+  inputs:
+    forceReinstallCredentialProvider: true
+
   # 'command: restore' does not take additional arguments, thus set
   # 'command: custom' and 'custom: restore' which then requires setting
   # of all arguments.
@@ -21,5 +25,20 @@ steps:
       $(Build.SourcesDirectory)\${{ parameters.Solution }}
       --configfile
       $(Build.SourcesDirectory)\NuGet.Config
-      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_AnyCPU_$(Configuration)_Restore.binlog"
-  condition: ${{ parameters.Condition }}
+      -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_$(Platform)_$(Configuration)_Restore.binlog"
+  condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
+
+# We can only restore from the internal config on internal build machines.
+- ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - task: DotNetCoreCLI@2
+    displayName: Internal Restore ${{ parameters.Solution }}
+    inputs:
+      command: custom
+      custom: restore
+      arguments: >-
+        $(Build.SourcesDirectory)\${{ parameters.Solution }}
+        --configfile
+        $(Build.SourcesDirectory)\NuGet.internal.Config
+        /p:IncludeARM64=True
+        -bl:"$(Build.ArtifactStagingDirectory)\logs\${{ parameters.BinLogCategory }}_Windows_arm64_$(Configuration)_Restore.binlog"
+    condition: and(succeeded(), eq(variables['Platform'], 'ARM64'))

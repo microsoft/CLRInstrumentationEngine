@@ -17,7 +17,11 @@ jobs:
       ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
-    vmImage: ubuntu-latest
+    ${{ if eq(variables['System.TeamProject'], 'devdiv') }}:
+      name: AzurePipelines-EO
+      demands: ImageOverride -equals AzurePipelinesUbuntu20.04compliant
+    ${{ else }}:
+      vmImage: ubuntu-latest
 
   workspace:
     clean: outputs
