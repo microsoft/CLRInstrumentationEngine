@@ -30,3 +30,7 @@ stages:
       SignType: $(SignType) # NOTE this string won't be replaced until runtime
       Configuration: Release
       IsMicroBuildInternal: true
+
+- stage: PostPackage
+  jobs:
+  - template: ../jobs/postpackage.yaml
