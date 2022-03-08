@@ -5,14 +5,16 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <TargetExt>.nupkg</TargetExt>
-    <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(Platform)_$(LinuxDistro)</NugetSuffix>
-    <NugetSuffix Condition="'$(NugetSuffix)'==''">$(Platform)</NugetSuffix>
-    <PackageId>Microsoft.InstrumentationEngine_$(NugetSuffix)</PackageId>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Common.props" />
+  <PropertyGroup>
+    <NugetSuffix Condition="'$(PlatformOS)'=='Linux'">$(ArchitectureFolderName)_$(LinuxDistro)</NugetSuffix>
+    <NugetSuffix Condition="'$(NugetSuffix)'==''">$(ArchitectureFolderName)</NugetSuffix>
+    <PackageId>Microsoft.InstrumentationEngine_$(NugetSuffix)</PackageId>
+  </PropertyGroup>
   <Import Project="$(EnlistmentRoot)\build\Packaging.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
@@ -27,7 +29,7 @@
     <RootNamespace>Microsoft.Diagnostics.InstrumentationEngine.NuGet</RootNamespace>
     <!-- NU5100: Package is used as a means to acquire the engine and not to have its assets referenced directly. -->
     <NoWarn>$(NoWarn);NU5100</NoWarn>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>AnyCPU;x64;x86;ARM64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -42,7 +44,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
+  <ItemGroup Condition="'$(PlatformOS)'!='Linux' and '$(Platform)'!='ARM64'">
     <Content Include="$(InputBinCfgRoot)\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config">
       <Link>InstrumentationEngine\$(Platform)\Microsoft.InstrumentationEngine.Extensions.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -63,12 +65,14 @@
       <Link>InstrumentationEngine\$(Platform)\Microsoft.Diagnostics.Instrumentation.Extensions.Base.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(PlatformOS)'!='Linux'">
     <Content Include="$(InputBinCfgRoot)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll">
-      <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).dll</Link>
+      <Link>InstrumentationEngine\$(ArchitectureFolderName)\MicrosoftInstrumentationEngine_$(ArchitectureFolderName).dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(InputBinCfgRoot)\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb">
-      <Link>InstrumentationEngine\$(Platform)\MicrosoftInstrumentationEngine_$(Platform).pdb</Link>
+      <Link>InstrumentationEngine\$(ArchitectureFolderName)\MicrosoftInstrumentationEngine_$(ArchitectureFolderName).pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

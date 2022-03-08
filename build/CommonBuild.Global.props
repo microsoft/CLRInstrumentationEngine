@@ -89,6 +89,7 @@
         <ArchitectureFolderName Condition=" '$(Platform)' == 'x86' ">x86</ArchitectureFolderName>
         <ArchitectureFolderName Condition=" '$(Platform)' == 'Any CPU' ">Any CPU</ArchitectureFolderName>
         <ArchitectureFolderName Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</ArchitectureFolderName>
+        <ArchitectureFolderName Condition=" '$(Platform)' == 'ARM64' ">arm64</ArchitectureFolderName>
 
         <!-- Obj -->
         <!-- Sets up Obj folder outputs to contain the same folder structure as the Src -->
