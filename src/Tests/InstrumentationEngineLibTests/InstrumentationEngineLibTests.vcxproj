@@ -78,7 +78,7 @@
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ClCompile>
-      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
+      <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(EnlistmentRoot)\inc\clr\prof;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
