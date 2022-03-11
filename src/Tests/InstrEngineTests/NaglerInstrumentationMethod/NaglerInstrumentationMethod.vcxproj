@@ -62,6 +62,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(OutDir);$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ImportGroup Label="PropertySheets">

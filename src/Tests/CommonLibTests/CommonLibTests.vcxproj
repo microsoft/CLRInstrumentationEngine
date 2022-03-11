@@ -78,6 +78,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <ClCompile>
+      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>

@@ -77,9 +77,8 @@
       <AdditionalDependencies>msxml6.lib;%(AdditionalDependencies);PathCch.lib</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup>
     <ClCompile>
+      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
