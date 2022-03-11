@@ -20,6 +20,7 @@
       <PreprocessorDefinitions>_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
     </ClCompile>
     <Midl>
       <HeaderFileName>RawProfilerHook_i.h</HeaderFileName>

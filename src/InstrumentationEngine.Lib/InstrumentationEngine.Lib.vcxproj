@@ -50,6 +50,7 @@
       <AdditionalIncludeDirectories>$(OutDir);..\..\inc;..\..\inc\clr\inc;$(InstrumentationEngineApiInc);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalOptions>/ZH:SHA_256</AdditionalOptions>
     </ClCompile>
     <Midl>
       <AdditionalIncludeDirectories>..\..\inc\clr\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
