@@ -55,6 +55,7 @@
       <AdditionalIncludeDirectories>..\..\inc\clr\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <Link>
+      <CETCompat>true</CETCompat>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>

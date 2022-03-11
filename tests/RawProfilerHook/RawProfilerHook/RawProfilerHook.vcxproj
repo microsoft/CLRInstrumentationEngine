@@ -30,6 +30,7 @@
       <ValidateAllParameters>true</ValidateAllParameters>
     </Midl>
     <Link>
+      <CETCompat>true</CETCompat>
       <ModuleDefinitionFile>.\RawProfilerHook.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
