@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <Link>
+      <CETCompat>true</CETCompat>
       <AdditionalDependencies>msxml6.lib;%(AdditionalDependencies);PathCch.lib</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
