@@ -19,7 +19,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -35,7 +35,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -51,7 +51,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -67,7 +67,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -83,7 +83,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -99,7 +99,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -115,7 +115,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -131,7 +131,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -147,7 +147,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -163,7 +163,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -179,7 +179,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -195,7 +195,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -211,7 +211,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -227,7 +227,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -243,7 +243,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -259,7 +259,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -275,7 +275,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -291,7 +291,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -307,7 +307,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
@@ -323,7 +323,7 @@
       ],
       "tool": "binskim",
       "ruleId": "BA2004",
-      "justification": "linking to libs we cannot change.",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
       "createdDate": "2022-03-11 02:48:08Z",
       "expirationDate": null,
       "type": null
