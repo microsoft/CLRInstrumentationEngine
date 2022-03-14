@@ -1,0 +1,38 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: PostPackage steps
+
+jobs:
+- job: PostPackage
+  displayName: PostPackage
+
+  variables:
+    Packaging.EnableSBOMSigning: true
+
+  pool:
+    name: VSEngSS-MicroBuild2019-1ES
+
+  workspace:
+    clean: outputs
+
+  steps:
+  - checkout: none
+
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: packages-all
+      ItemPattern: |
+        **\*.nupkg
+        **\*.zip
+        **\*.msi
+        **\*.msm
+        
+  - template: ../steps/microbuild/sbom.yaml
+
+  - template: ../steps/azuredevops/publishbuildartifacts.yaml
+    parameters:
+      PathToPublish: '$(Build.ArtifactStagingDirectory)\_manifest'
+      ArtifactName: 'SBOM-manifest'
+
+  - template: ../steps/microbuild/cleanup.yaml

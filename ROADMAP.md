@@ -6,7 +6,7 @@ The CLRIE's goal is to provide the foundation for cooperation among profilers. B
 
 ## Released Versions
 
-* [Latest Updates](changelog.md)
+* [Latest Updates](CHANGELOG.md)
 
 ## Upcoming Milestones and Releases
 

@@ -23,6 +23,14 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{df259ed5-4041-4089-8a55-d0c7e695ee3c}</ProjectGuid>
@@ -63,12 +71,14 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <Link>
+      <CETCompat>true</CETCompat>
       <AdditionalDependencies>msxml6.lib;%(AdditionalDependencies);PathCch.lib</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <ClCompile>
+      <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>

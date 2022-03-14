@@ -57,7 +57,11 @@ param(
 
     [Parameter(Mandatory=$false)]
     [switch]
-    $VerboseMsbuild
+    $VerboseMsbuild,
+
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $ARM64
 )
 
 $ErrorActionPreference = 'Stop'
@@ -155,35 +159,75 @@ if (-not ($repoPath))
 ###
 # Picks up msbuild from vs2019 installation
 ###
-$VsRequirements = @(
+$Vs2019Requirements = [System.Collections.ArrayList]@(
     'Microsoft.Component.MSBuild'
     'Microsoft.VisualStudio.Workload.NativeDesktop'
     'Microsoft.VisualStudio.Component.VC.ATL.Spectre'
-    'Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre'
+    'Microsoft.VisualStudio.Component.VC.Tools.x86.x64'
 )
 
-Write-Verbose "Checking for VS installation with these installed components: `n`n$($VsRequirements | Out-String)`n"
-$vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
-$filterArgs = "-latest -prerelease -requires $($VsRequirements -join ' ') -property installationPath"
+$VsNextRequirements = [System.Collections.ArrayList]@(
+    'Microsoft.Component.MSBuild'
+    'Microsoft.VisualStudio.Workload.NativeDesktop'
+    'Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre'
+    'Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64.Spectre'
+)
 
-# Restrict the VS version if running from a context that has the VisualStudioVersion env variable (e.g. Developer Command Prompt).
-# This will make sure that VisualStudioVersion matches the VS version of MSBuild in order to avoid mismatches (e.g. using a Dev15
-# Developer Command Prompt but invoking Dev16's MSBuild).
-if ($env:VisualStudioVersion)
+if ($ARM64)
 {
-    $vsversion = [version]$($env:VisualStudioVersion)
-    # This is a version range that looks like "[15.0,16.0)"
-    $filterArgs = "$filterArgs -version `"[$($vsversion.Major).0,$($vsversion.Major + 1).0)`""
+    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre')
+    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.Runtimes.ARM64.Spectre')
+
+    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.ARM64.Spectre')
+    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ARM64.Spectre')
 }
 
-$installationPath = Invoke-Expression "& $vswhere $filterArgs"
+Write-Verbose "Compatible VS2019 must have these installed components: `n$($Vs2019Requirements | % {"  $_"} | Out-String)`n"
+Write-Verbose "If none are found, searching for any VS installation with these installed components: `n$($VsNextRequirements | % {"  $_"} | Out-String)`n"
+Write-Warning "Using a VS developer command prompt skips this check."
+
+$vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
+
+$filterArgsFor2019 = "-latest -prerelease -requires $($Vs2019Requirements -join ' ') -property installationPath -version `"[16.0,17.0)`""
+$filterArgsForNext = "-latest -prerelease -requires $($VsNextRequirements -join ' ') -property installationPath"
+
+# Restrict the VS version if running from a context that has the VSINSTALLDIR env variable (e.g. Developer Command Prompt).
+# This will make sure that VisualStudioVersion matches the VS version of MSBuild in order to avoid mismatches (e.g. using a Dev15
+# Developer Command Prompt but invoking Dev16's MSBuild).
+$installationPath = ''
+if ($env:VSINSTALLDIR)
+{
+    Write-Verbose "Detected developer command prompt, using '$env:VSINSTALLDIR'"
+    $installationPath = $env:VSINSTALLDIR
+}
+
+if (-not $installationPath -or -not (Test-Path "$installationPath"))
+{
+    Write-Verbose "Search for compatible VS2019..."
+    $installationPath = Invoke-Expression "& $vswhere $filterArgsFor2019"
+    if (-not $installationPath -or -not (Test-Path "$installationPath"))
+    {
+        Write-Verbose "Unable to find compatible VS2019. Search for any compatible VS..."
+        $installationPath = Invoke-Expression "& $vswhere $filterArgsForNext"
+    }
+
+    if (-not $installationPath -or -not (Test-Path "$installationPath"))
+    {
+        Write-Error 'Cannot find compatible VS installation.'
+    }
+    else
+    {
+        Write-Verbose "Found compatible VS at '$installationPath'"
+    }
+}
+
 $msbuild = Join-Path $installationPath 'MSBuild\Current\bin\MSBuild.exe'
-if (-not (Test-Path $msbuild))
+if (-not (Test-Path "$msbuild"))
 {
     $msbuild = Join-Path (Read-Host "Please enter the full path to your VS installation (eg. 'C:\Program Files (x86)\Microsoft Visual Studio\Preview\Enterprise)'`r`n") 'MSBuild\15.0\Bin\MSBuild.exe'
 }
 
-if (-not (Test-Path $msbuild))
+if (-not (Test-Path "$msbuild"))
 {
     Write-Error 'Cannot find msbuild.exe. Please check your VS installation.'
 }
@@ -194,6 +238,12 @@ $msbuild = "`"$msbuild`""
 # Local Build
 ###
 Verify-DotnetExists
+
+$configFile = "$repoPath\NuGet.config"
+if ($ARM64)
+{
+    $configFile = "$repoPath\NuGet.internal.config"   
+}
 
 if (!$SkipBuild)
 {
@@ -210,24 +260,33 @@ if (!$SkipBuild)
             Remove-Item -Force -Recurse "$repoPath\obj\"
         }
 
-        # NuGet restore disregards platform/configuration
         # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-        $restoreArgsInit = "restore $repoPath\InstrumentationEngine.sln --configfile $repoPath\NuGet.config"
-        $restoreArgs = @(
-            "$restoreArgsInit /p:platform=`"x86`""
-            "$restoreArgsInit /p:platform=`"x64`""
-            "$restoreArgsInit /p:platform=`"Any CPU`""
-        )
-        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+        $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$configFile`""
+        if ($ARM64)
+        {
+            $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64='True'"
+        }
+
+        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solution'
+
+        # NuGet restore disregards platform/configuration
+        $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$configFile`""
+        Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
     }
 
     # Build InstrumentationEngine.sln
     $buildArgsInit = "$repoPath\InstrumentationEngine.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams)"
-    $buildArgs = @(
+    $buildArgs = [System.Collections.ArrayList]@(
         "$buildArgsInit /p:platform=`"x86`""
         "$buildArgsInit /p:platform=`"x64`""
         "$buildArgsInit /p:platform=`"Any CPU`" /m"
     )
+
+    if ($ARM64)
+    {
+        $buildArgs.Add("$buildArgsInit /p:platform=`"ARM64`" /m")
+    }
+
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.sln'
 }
 
@@ -246,22 +305,23 @@ if (!$SkipPackaging)
     }
 
     # NuGet restore disregards platform/configuration
-    # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-    $restoreArgsInit = "restore $repoPath\src\InstrumentationEngine.Packages.sln --configfile $repoPath\NuGet.config"
-    $restoreArgs = @(
-        "$restoreArgsInit /p:platform=`"x86`""
-        "$restoreArgsInit /p:platform=`"x64`""
-        "$restoreArgsInit /p:platform=`"Any CPU`""
-    )
-    Invoke-ExpressionHelper -Executable "dotnet" -Arguments $restoreArgs -Activity 'dotnet Restore Solutions'
+    $restoreArgs = "restore `"$repoPath\src\InstrumentationEngine.Packages.sln`" -configfile `"$configFile`""
+
+    Invoke-ExpressionHelper -Executable "nuget" -Arguments $restoreArgs -Activity 'nuget Restore Solution'
 
     # Build InstrumentationEngine.Packages.sln
-    $buildArgsInit = "$repoPath\src\InstrumentationEngine.Packages.sln /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
-    $buildArgs = @(
+    $buildArgsInit = "`"$repoPath\src\InstrumentationEngine.Packages.sln`" /p:configuration=`"$configuration`" /p:SignType=$SignType /p:BuildVersion=$BuildVersion /clp:$($clParams) /m"
+    $buildArgs = [System.Collections.ArrayList]@(
         "$buildArgsInit /p:platform=`"x86`""
         "$buildArgsInit /p:platform=`"x64`""
         "$buildArgsInit /p:platform=`"Any CPU`""
     )
+
+    if ($ARM64)
+    {
+        $buildArgs.Add("$buildArgsInit /p:platform=`"ARM64`"")
+    }
+
     Invoke-ExpressionHelper -Executable "$msbuild" -Arguments $buildArgs -Activity 'Build InstrumentationEngine.Packages.sln'
 }
 
@@ -290,7 +350,7 @@ if ($IncludeTests)
     $testBuildArgs = @(
         ($x86Tests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x86.runsettings`""
         ($x64Tests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x64.runsettings`""
-        ($anyCpuTests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x86.runsettings`"" # AnyCPU
+        ($anyCpuTests -join ' ') + " /Settings:`"$repoPath\tests\TestSettings\x64.runsettings`"" # AnyCPU
     )
 
     Invoke-ExpressionHelper -Executable "$vstest" -Arguments $testBuildArgs -Activity 'Run Tests'

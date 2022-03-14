@@ -15,11 +15,12 @@
     <AssemblyName>Intercept.Latest.Tests_x64</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
-    <Platforms>x64;x86</Platforms>
+    <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>Intercept.Latest.Tests</RootNamespace>
     <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Dependencies\NativeDependencies.csproj">

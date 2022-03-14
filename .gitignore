@@ -164,6 +164,7 @@ OperationTracking/Msbuild.OperationTracking.Mixed Platforms.*
 *.err
 *.prf
 *.wrn
+*.binlog
 
 *_i.h
 *_h.h

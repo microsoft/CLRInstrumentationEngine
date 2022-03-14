@@ -43,6 +43,11 @@
           <PrivateAssets>All</PrivateAssets>
         </PackageReference>
       </ItemGroup>
+      <ItemGroup Condition="'$(IncludeARM64)'=='True'">
+        <PackageReference Include="Microsoft.VisualStudio.ARM64.SDK" Version="17.0.0">
+          <ExcludeAssets>All</ExcludeAssets>
+        </PackageReference>
+      </ItemGroup>
     </Otherwise>
   </Choose>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
