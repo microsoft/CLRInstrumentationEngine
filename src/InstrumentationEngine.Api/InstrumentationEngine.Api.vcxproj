@@ -50,7 +50,7 @@
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(OutDir);..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OutDir);..\..\inc;$(EnlistmentRoot)\inc\clr\prof;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
@@ -58,6 +58,7 @@
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\inc\clr\prof;$(EnlistmentRoot)\inc\clr\extra;$(NETFXKitsDir)\Include\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <Link>
+      <CETCompat>true</CETCompat>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>

@@ -13,11 +13,12 @@
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <Platforms>x64;x86;AnyCPU</Platforms>
+    <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>Intercept_2_0_1.Tests</RootNamespace>
     <AssemblyName>Intercept.2.0.1.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Dependencies\LegacyDependencies.csproj">

@@ -8,6 +8,326 @@
     }
   },
   "results": {
+    "314cea1b6deefd251bf13ecf10566ae3db4700f6b21ae4fe130fabed17849154": {
+      "signature": "314cea1b6deefd251bf13ecf10566ae3db4700f6b21ae4fe130fabed17849154",
+      "alternativeSignatures": [
+        "74fbc162fb33461daf572e28d61feee2144e1c74980f5ba1b8d9ec65996e76df"
+      ],
+      "target": "binaries-windows-Release/x64/CommonLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "46a4af156d09100e6f4ca1ae074e6652994eb280611699ef16491daa4f6f905e": {
+      "signature": "46a4af156d09100e6f4ca1ae074e6652994eb280611699ef16491daa4f6f905e",
+      "alternativeSignatures": [
+        "b2fd5087f929432c96e926bcac24737328f1cc67f3c954154d671ead2d56f504"
+      ],
+      "target": "binaries-windows-Release/x64/InstrumentationEngine.Lib.Tests.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "4623c5782ca9e326256b7e9d42e89e75f19260890384c4e922bb03f5cd50e3ad": {
+      "signature": "4623c5782ca9e326256b7e9d42e89e75f19260890384c4e922bb03f5cd50e3ad",
+      "alternativeSignatures": [
+        "e6c3008c97723ac456646d12a48510edd3b42256e3f2a5f924abd25ff6cede5b"
+      ],
+      "target": "binaries-windows-Release/x64/InstrumentationEngine.ProfilerProxy.Tests.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "96f705159260a4e7c96b024da1326b49fca6c41eab8a90ecb06d5526ad89cf30": {
+      "signature": "96f705159260a4e7c96b024da1326b49fca6c41eab8a90ecb06d5526ad89cf30",
+      "alternativeSignatures": [
+        "1300cb63548168e890ff95f7543dbfed831b3861970a43cb508a2306fcbe29c2"
+      ],
+      "target": "binaries-windows-Release/x64/InstrumentationEngine.ProfilerProxy_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "dfb7946c239d81c2e15ecd11306d5a27de27f059037d2c873d7fc037fa4f3a97": {
+      "signature": "dfb7946c239d81c2e15ecd11306d5a27de27f059037d2c873d7fc037fa4f3a97",
+      "alternativeSignatures": [
+        "345956fa254fca0a80d9684e8d0445bf0c3a8d8efa82ea20aa3c3f73a6104eca"
+      ],
+      "target": "binaries-windows-Release/x64/InstrumentationEngineLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "01367740a2cd8c1e2ff3cfdf1d07244e7954df0680ebc40c9597f91102214968": {
+      "signature": "01367740a2cd8c1e2ff3cfdf1d07244e7954df0680ebc40c9597f91102214968",
+      "alternativeSignatures": [
+        "beaec7ed6c115e6f9ba2d192f66d7d93e25ec1f90205c6616456ad64abae006f"
+      ],
+      "target": "binaries-windows-Release/x64/Microsoft.InstrumentationEngine.Extensions.Base_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "c5932260bad80fcf5580c2dfc2784181eb2ad05d5f0f3ca79edb3a5439e310d0": {
+      "signature": "c5932260bad80fcf5580c2dfc2784181eb2ad05d5f0f3ca79edb3a5439e310d0",
+      "alternativeSignatures": [
+        "1b7e5f6163a373e22e2887a4dddaf249a932d0e5a347cbbc33b88c43c13442ea"
+      ],
+      "target": "binaries-windows-Release/x64/Microsoft.TestsHostExtension_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "b9572895e4e34660d1b8383e59fd5b3a79d0d32f6d682ff590d906ca5271bc80": {
+      "signature": "b9572895e4e34660d1b8383e59fd5b3a79d0d32f6d682ff590d906ca5271bc80",
+      "alternativeSignatures": [
+        "dc8edb8226af3cc238271f9cfadccc56191938eeabbd05ada24e148ab0f56ba3"
+      ],
+      "target": "binaries-windows-Release/x64/MicrosoftInstrumentationEngine_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "c2499511da5eb31bada427c99dc3152ff55d4b5b91ee0652a936724990a30f15": {
+      "signature": "c2499511da5eb31bada427c99dc3152ff55d4b5b91ee0652a936724990a30f15",
+      "alternativeSignatures": [
+        "421f3d4f191e3f23d9f01fa239ac0a3e21170c215c3a18740b00ce98a39e133e"
+      ],
+      "target": "binaries-windows-Release/x64/NaglerInstrumentationMethod_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "77197a8a80ee2c5646a29d787dc01e11fdbacbc7b68b74b100b24b62bac0b533": {
+      "signature": "77197a8a80ee2c5646a29d787dc01e11fdbacbc7b68b74b100b24b62bac0b533",
+      "alternativeSignatures": [
+        "fb0424d6ba51d70ce3fcb40dc7d1718349783d5e36b5eef8aab73bffb7efe40e"
+      ],
+      "target": "binaries-windows-Release/x86/CommonLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "fdbe7e83b45cda2072e7bab8f49acac0b90c0c14f33d4bd267c627d959d1c081": {
+      "signature": "fdbe7e83b45cda2072e7bab8f49acac0b90c0c14f33d4bd267c627d959d1c081",
+      "alternativeSignatures": [
+        "d083e72026ee734c3148b175cc58622625b111b311514b0743342ec8af2575d1"
+      ],
+      "target": "binaries-windows-Release/x86/InstrumentationEngine.Lib.Tests.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "a198b0470e82d9037efd27b83b604f88e54d4081f2f86173e7674fae8e89effa": {
+      "signature": "a198b0470e82d9037efd27b83b604f88e54d4081f2f86173e7674fae8e89effa",
+      "alternativeSignatures": [
+        "7f3705ffb477900b986d397b3091e17917c76a00755ae6db53c96397f831f48b"
+      ],
+      "target": "binaries-windows-Release/x86/InstrumentationEngine.ProfilerProxy.Tests.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "667eaad59ac21463911b39fd2642ba5bfd7fd0fc7b3f397bf1f16dcb71a0055a": {
+      "signature": "667eaad59ac21463911b39fd2642ba5bfd7fd0fc7b3f397bf1f16dcb71a0055a",
+      "alternativeSignatures": [
+        "94d036627af33e352efa07a660b109c76c1afb02e87aee9d1553528551af1242"
+      ],
+      "target": "binaries-windows-Release/x86/InstrumentationEngine.ProfilerProxy_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "ef1b10160fb279ff3eea85a5ee9210b1c5855db410bae0bc7566009cf926ab6d": {
+      "signature": "ef1b10160fb279ff3eea85a5ee9210b1c5855db410bae0bc7566009cf926ab6d",
+      "alternativeSignatures": [
+        "60e1f16af83ccd329539b7e76ece1fe72dcd412ead9b781a6967e9794e1cb7dc"
+      ],
+      "target": "binaries-windows-Release/x86/InstrumentationEngineLibTests.exe",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, gtest.lib, gtest_main.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "82cc6fa92266e86eaf540314ec11e62f83e7571e2c0591e8b9087e667f34d214": {
+      "signature": "82cc6fa92266e86eaf540314ec11e62f83e7571e2c0591e8b9087e667f34d214",
+      "alternativeSignatures": [
+        "145787eca2cb36c924d8c219673d9a64f30c064d2c814d9154523dcdfd55d6a0"
+      ],
+      "target": "binaries-windows-Release/x86/Microsoft.InstrumentationEngine.Extensions.Base_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "790407f3062e8156868ba85e47ffa0684dcec69ad99567d140cc567fd99fbc2e": {
+      "signature": "790407f3062e8156868ba85e47ffa0684dcec69ad99567d140cc567fd99fbc2e",
+      "alternativeSignatures": [
+        "ae0465e3deb585dcb54bf043c78eecdcdd9607edb7eb9bb27922ed53296446dc"
+      ],
+      "target": "binaries-windows-Release/x86/Microsoft.TestsHostExtension_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "241591ff16e564c05ffe5be314a3cd9213e54d148cc1645e64ad604e80109f28": {
+      "signature": "241591ff16e564c05ffe5be314a3cd9213e54d148cc1645e64ad604e80109f28",
+      "alternativeSignatures": [
+        "1eb3bb50a4fd9dd952e7f7a31a680c782b519d2503e87de323d1c787c5eb2ef3"
+      ],
+      "target": "binaries-windows-Release/x86/MicrosoftInstrumentationEngine_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "54440cc5f550fdb1614b325e6f7d240186214ceeefa86f9d82f54e1fe8da1259": {
+      "signature": "54440cc5f550fdb1614b325e6f7d240186214ceeefa86f9d82f54e1fe8da1259",
+      "alternativeSignatures": [
+        "fbd7700272565d0367bea4b7a49350ea380b011f3faf70410d0ed30c349d92c1"
+      ],
+      "target": "binaries-windows-Release/x86/NaglerInstrumentationMethod_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "464cf32b37b0f5c9785cb081321655296f0095dc0b3dc4501a5873dcb591aed0": {
+      "signature": "464cf32b37b0f5c9785cb081321655296f0095dc0b3dc4501a5873dcb591aed0",
+      "alternativeSignatures": [
+        "ba44e4918afd6acd7651c6308ca72ad071b3fe6521be727c743e2d0d7836321a"
+      ],
+      "target": "binaries-windows-Release/x64/RawProfilerHook.Tests/Microsoft.RawProfilerHook_x64.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "a1bfeb234ef49e277ff9d7ec894c2c26fc6e0f75c16d88a7d78134a88a253df9": {
+      "signature": "a1bfeb234ef49e277ff9d7ec894c2c26fc6e0f75c16d88a7d78134a88a253df9",
+      "alternativeSignatures": [
+        "75bfcc4b02a0b9fac8188736cd8e3dc5510e04e048e8946e5fa667a30270a57f"
+      ],
+      "target": "binaries-windows-Release/x86/RawProfilerHook.Tests/Microsoft.RawProfilerHook_x86.dll",
+      "memberOf": [
+        "BinSkimSuppression"
+      ],
+      "tool": "binskim",
+      "ruleId": "BA2004",
+      "justification": "linking to libs we cannot change: libcmt.lib, libvcruntime.lib, atls.lib, libcpmt.lib.",
+      "createdDate": "2022-03-11 02:48:08Z",
+      "expirationDate": null,
+      "type": null
+    },
     "67c5533291875bf56cdca19105b6b22411ecdd7c22e8abec4f1a22090580f80b": {
       "signature": "67c5533291875bf56cdca19105b6b22411ecdd7c22e8abec4f1a22090580f80b",
       "alternativeSignatures": [

@@ -4,6 +4,7 @@
 <Project>
     <PropertyGroup>
         <SubComponent>$(TargetFramework)</SubComponent>
+        <Platforms>x86</Platforms>
     </PropertyGroup>
     <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
 

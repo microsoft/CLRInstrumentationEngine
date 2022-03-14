@@ -54,12 +54,14 @@
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(OutDir);..\..\inc\clr\prof;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;$(VCInstallDir)Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OutDir);..\..\src\InstrumentationEngine.Lib;$(OutDir);$(EnlistmentRoot)\inc\clr\prof;$(InstrumentationEngineApiInc);$(VCInstallDir)UnitTest\include;$(VCInstallDir)Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
+      <CETCompat>true</CETCompat>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);..\..\inc;$(VCInstallDir)UnitTest\lib;$(VCInstallDir)Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

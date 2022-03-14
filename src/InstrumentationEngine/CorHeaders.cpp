@@ -28,7 +28,7 @@ void __stdcall DecoderInit(COR_ILMETHOD_DECODER * pThis, const COR_ILMETHOD_FAT*
     * (COR_ILMETHOD_FAT*) pThis = * header;
     pThis->Code = header->GetCode();
     ASSERT (header->Size >= 3);        // Size if valid
-    pThis->Sect = header->GetSect ();
+    pThis->Sect = header->GetSect();
     if (pThis->Sect != 0 && pThis->Sect->Kind() == CorILMethod_Sect_EHTable)
 	{
         pThis->EH = (COR_ILMETHOD_SECT_EH*) (pThis)->Sect;

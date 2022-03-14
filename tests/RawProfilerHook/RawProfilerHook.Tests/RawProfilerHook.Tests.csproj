@@ -16,11 +16,12 @@
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <Platforms>x64;x86;AnyCPU</Platforms>
+    <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>RawProfilerHook.Tests</RootNamespace>
     <AssemblyName>RawProfilerHook.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />

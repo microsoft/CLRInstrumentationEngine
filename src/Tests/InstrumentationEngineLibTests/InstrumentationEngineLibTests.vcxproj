@@ -23,6 +23,14 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B1FFBD51-80A9-41D6-BC54-07B7E0DE7CF6}</ProjectGuid>
@@ -65,13 +73,13 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <Link>
+      <CETCompat>true</CETCompat>
       <AdditionalDependencies>msxml6.lib;%(AdditionalDependencies);PathCch.lib</AdditionalDependencies>
       <AdditionalOptions Condition="'$(Platform)'=='Win32'">/SafeSEH %(AdditionalOptions)</AdditionalOptions>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(EnlistmentRoot)\src;$(EnlistmentRoot)\inc\clr\prof;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

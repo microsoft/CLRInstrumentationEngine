@@ -11,8 +11,11 @@ Please format the changes as follows:
 + New:
   + Add support for Windows ARM64 (Internal)
 + BugFixes: 
-  + Fixed build scripts to explicitly point to v142 toolsets
-
+  + Fixed build scripts to explicitly point to v142 toolsets regardless of VS version
++ Updates:
+  + Setup automated PR builds
+  + Add linter for doc link fixes
+  
 ## 1.0.43
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.

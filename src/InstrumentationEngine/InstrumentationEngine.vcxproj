@@ -73,8 +73,10 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
+      <CETCompat>true</CETCompat>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -54,7 +54,7 @@
 #endif
 
 #include "cor.h"
-#include "corprof.h"
+#include <clrprofiler.h>
 
 #include "Common.Lib/systemstring.h"
 #include "Common.Lib/refcount.h"

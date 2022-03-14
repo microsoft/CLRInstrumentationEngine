@@ -3,6 +3,7 @@
 <Project>
   <PropertyGroup>
     <SubComponent>Tools\Attach</SubComponent>
+    <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
   <PropertyGroup>
@@ -14,6 +15,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>Enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <XsdSchemaFile Include="InstrumentationConfigurationSources.xsd">
@@ -43,14 +45,14 @@
   <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
     <PropertyGroup>
-      <XsdToolPath Condition = "!Exists('$(XsdToolPath)')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
-      <XsdToolPath Condition = "!Exists('$(XsdToolPath)')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
+      <XsdToolPath Condition="!Exists('$(XsdToolPath)')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
+      <XsdToolPath Condition="!Exists('$(XsdToolPath)')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>
     </PropertyGroup>
     <Error Condition="!Exists('$(XsdToolPath)')" Text="Unable to locate xsd.exe tool." />
     <Exec Command="&quot;$(XsdToolPath)&quot; &quot;%(XsdSchemaFile.FullPath)&quot; /classes /namespace:%(XsdSchemaFile.Namespace) /language:%(XsdSchemaFile.Language) /out:$(MSBuildThisFileDirectory)" />
   </Target>
   <ItemGroup>
     <!-- dotnet core 3.1 produces both a dll and exe -->
-    <FilesToSign Include="$(OutputPath)\Microsoft.InstrumentationEngine.Attach.exe"/>
+    <FilesToSign Include="$(OutputPath)\Microsoft.InstrumentationEngine.Attach.exe" />
   </ItemGroup>
 </Project>
