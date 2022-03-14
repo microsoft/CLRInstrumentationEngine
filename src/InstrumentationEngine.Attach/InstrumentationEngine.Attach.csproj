@@ -15,7 +15,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>Enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PlatformTarget Condition="'$(Platform)'=='ARM64'">arm64</PlatformTarget>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <XsdSchemaFile Include="InstrumentationConfigurationSources.xsd">

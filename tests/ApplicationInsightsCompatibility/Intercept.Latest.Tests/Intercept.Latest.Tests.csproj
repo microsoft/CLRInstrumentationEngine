@@ -20,7 +20,7 @@
     <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
     <TargetFramework>net45</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <PlatformTarget Condition="'$(Platform)'=='ARM64'">arm64</PlatformTarget>
+    <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Dependencies\NativeDependencies.csproj">
