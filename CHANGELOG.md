@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.45
+
 ## 1.0.44
 + New:
   + Add support for Windows ARM64 (Internal)
