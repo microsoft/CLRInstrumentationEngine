@@ -53,7 +53,7 @@
       <AdditionalOptions>/ZH:SHA_256 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <CETCompat>true</CETCompat>
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
