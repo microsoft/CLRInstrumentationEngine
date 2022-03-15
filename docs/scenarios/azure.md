@@ -22,7 +22,7 @@ and management capabilities.
 
 In addition, there exists a notion of [Site Extensions](https://github.com/projectkudu/kudu/wiki/Azure-Site-Extensions) which provide powerful
 customizable behaviors for the web app. This customization is done through a mechanism in IIS called
-[xdt transformations](https://msdn.microsoft.com/library/dd465326.aspx).
+[xdt transformations](https://docs.microsoft.com/previous-versions/aspnet/dd465326(v=vs.110)).
 
 App Services are hosted by Azure VMs with both Windows and Linux flavors. Currently, only App Service on Windows supports Site Extensions.
 
