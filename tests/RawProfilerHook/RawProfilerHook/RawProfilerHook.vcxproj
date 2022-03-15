@@ -57,7 +57,7 @@
       <ValidateAllParameters>true</ValidateAllParameters>
     </Midl>
     <Link>
-      <CETCompat>true</CETCompat>
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
       <ModuleDefinitionFile>.\RawProfilerHook.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>

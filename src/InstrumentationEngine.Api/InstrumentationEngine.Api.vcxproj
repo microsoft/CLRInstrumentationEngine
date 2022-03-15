@@ -58,7 +58,7 @@
       <AdditionalIncludeDirectories>$(EnlistmentRoot)\inc\clr\prof;$(EnlistmentRoot)\inc\clr\extra;$(NETFXKitsDir)\Include\um;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <Link>
-      <CETCompat>true</CETCompat>
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
