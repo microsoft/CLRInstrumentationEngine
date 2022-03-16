@@ -56,7 +56,7 @@
       <AdditionalIncludeDirectories>..\..\inc\clr\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </Midl>
     <Link>
-      <CETCompat>true</CETCompat>
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
