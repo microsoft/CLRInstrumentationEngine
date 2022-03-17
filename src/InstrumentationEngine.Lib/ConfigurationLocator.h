@@ -22,10 +22,12 @@ namespace MicrosoftInstrumentationEngine
         static constexpr const char s_cEnvironmentVariableNameValueSeparator = '=';
         static constexpr const char s_cEnvironmentVariablePathDelimiter = ':';
 #else  // PLATFORM_UNIX
-#if defined(_WIN64)
-        static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPath64_");
-#else
+#ifdef _M_IX86
         static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPath32_");
+#elif defined(_M_ARM64)
+        static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPathARM64_");
+#else
+        static constexpr const WCHAR* s_wszConfigurationPathEnvironmentVariablePrefix = _T("MicrosoftInstrumentationEngine_ConfigPath64_");
 #endif
         static constexpr const WCHAR* s_wszEnvironmentVariableNameValueSeparator = _T("=");
         static constexpr const WCHAR* s_wszEnvironmentVariablePathDelimiter = _T(";");
