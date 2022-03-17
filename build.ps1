@@ -249,6 +249,10 @@ if (!$SkipBuild)
 {
     if (!$SkipCleanAndRestore)
     {
+        # Remove $env:NUGET_PACKAGES global variable if set
+        $tempNugetPackages = $env:NUGET_PACKAGES
+        $env:NUGET_PACKAGES = $null
+
         # Clean up bin & obj folder if exists
         if (Test-Path "$repoPath\bin\$configuration")
         {
@@ -272,6 +276,9 @@ if (!$SkipBuild)
         # NuGet restore disregards platform/configuration
         $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$configFile`""
         Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
+
+        # Restore global variable
+        $env:NUGET_PACKAGES = $tempNugetPackages
     }
 
     # Build InstrumentationEngine.sln
