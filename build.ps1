@@ -242,15 +242,16 @@ Verify-DotnetExists
 $configFile = "$repoPath\NuGet.config"
 if ($ARM64)
 {
-    $configFile = "$repoPath\NuGet.internal.config"   
+    $configFile = "$repoPath\NuGet.internal.config"
 }
 
 if (!$SkipBuild)
 {
     if (!$SkipCleanAndRestore)
     {
-        # Remove $env:NUGET_PACKAGES global variable if set
-        $tempNugetPackages = $env:NUGET_PACKAGES
+        # The $env:NUGET_PACKAGES variable overrides the globalPackagesFolder set in nuget.config.
+        # This clears it out temporarily for proper nuget restore behavior.
+        $tempGlobalCache = $env:NUGET_PACKAGES
         $env:NUGET_PACKAGES = $null
 
         # Clean up bin & obj folder if exists
@@ -268,7 +269,7 @@ if (!$SkipBuild)
         $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$configFile`""
         if ($ARM64)
         {
-            $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64='True'"
+            $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64=True"
         }
 
         Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solution'
@@ -278,7 +279,7 @@ if (!$SkipBuild)
         Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
 
         # Restore global variable
-        $env:NUGET_PACKAGES = $tempNugetPackages
+        $env:NUGET_PACKAGES = $tempGlobalCache
     }
 
     # Build InstrumentationEngine.sln
