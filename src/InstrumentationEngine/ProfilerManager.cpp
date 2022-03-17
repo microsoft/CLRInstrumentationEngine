@@ -1103,7 +1103,7 @@ HRESULT CProfilerManager::InitializeCore(
     IfFailRet(DetermineClrVersion());
 
     //set event mask to be default one. Later host and Instrumentation methods may call it again
-    IfFailRet(this->SetEventMask(m_dwEventMask));
+    IfFailRet(SetEventMask(m_dwEventMask));
 
     m_pWrappedProfilerInfo = (ICorProfilerInfo*)(new CCorProfilerInfoWrapper(this, m_pRealProfilerInfo));
 
