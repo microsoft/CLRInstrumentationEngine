@@ -701,7 +701,6 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
             // Track duplicate guids
             m_instrumentationMethodGuids.push_back(currentMethodGuid);
         }
-        AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod);
     }
 
     return S_OK;
