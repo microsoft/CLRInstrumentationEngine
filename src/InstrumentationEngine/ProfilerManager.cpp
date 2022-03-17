@@ -666,17 +666,19 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
 
     CConfigurationLoader loader;
 
-    std::vector<CInstrumentationMethod*> tempMethods;
     std::vector<CInstrumentationMethod*> instrumentationMethods;
 
-    if (FAILED(loader.LoadConfiguration(bstrConfigPath, tempMethods)))
+    if (FAILED(loader.LoadConfiguration(bstrConfigPath, instrumentationMethods)))
     {
         CLogging::LogError(_T("Failed to load configuration file '%s'."), bstrConfigPath.m_str);
     }
 
-    // Remove methods with duplicate classIds
-    for (CInstrumentationMethod* method : tempMethods)
+    CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
+    IfFailRet(pConfigurationSource->EnumSettings(&pSettingsEnum));
+
+    for (CInstrumentationMethod* method : instrumentationMethods)
     {
+        // Skip methods that share duplicate classIds with ones already loaded.
         GUID currentMethodGuid = method->GetClassId();
         std::vector<GUID>::iterator it = std::find(m_instrumentationMethodGuids.begin(), m_instrumentationMethodGuids.end(), currentMethodGuid);
         if (it != m_instrumentationMethodGuids.end())
@@ -687,25 +689,18 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
                 CLogging::LogMessage(_T("CProfilerManager::LoadInstrumentationMethods - Instrumentation Method found with duplicate ClassId '%s' of another previously loaded method. Skipping."), wszCurrentMethodGuid);
             }
 
-            delete method;
+            continue;
         }
-        else
-        {
-            instrumentationMethods.push_back(method);
-            m_instrumentationMethodGuids.push_back(currentMethodGuid);
-        }
-    }
 
-    CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
-    IfFailRet(pConfigurationSource->EnumSettings(&pSettingsEnum));
-
-    for (CInstrumentationMethod* method : instrumentationMethods)
-    {
         // Reset the position of the enumerator before initializing the next instrumentation method
         IfFailRet(pSettingsEnum->Reset());
 
         IInstrumentationMethod* pInstrumentationMethod = nullptr;
-        AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod);
+        if (S_OK == AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod))
+        {
+            // Track duplicate guids
+            m_instrumentationMethodGuids.push_back(currentMethodGuid);
+        }
     }
 
     return S_OK;
@@ -860,7 +855,7 @@ HRESULT CProfilerManager::AddInstrumentationMethod(
     CComPtr<IEnumInstrumentationMethodSettings> pSettingsEnum;
     IfFailRet(pSource->EnumSettings(&pSettingsEnum));
 
-    return this->AddInstrumentationMethod(pInstrumentationMethod.release(), pSettingsEnum, ppInstrumentationMethod);
+    return AddInstrumentationMethod(pInstrumentationMethod.release(), pSettingsEnum, ppInstrumentationMethod);
 }
 
 HRESULT CProfilerManager::DisableProfiling()
