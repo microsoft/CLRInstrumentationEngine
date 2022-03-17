@@ -705,7 +705,7 @@ HRESULT CProfilerManager::LoadInstrumentationMethods(_In_ CConfigurationSource* 
         IfFailRet(pSettingsEnum->Reset());
 
         IInstrumentationMethod* pInstrumentationMethod = nullptr;
-        this->AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod);
+        AddInstrumentationMethod(method, pSettingsEnum, &pInstrumentationMethod);
     }
 
     return S_OK;
