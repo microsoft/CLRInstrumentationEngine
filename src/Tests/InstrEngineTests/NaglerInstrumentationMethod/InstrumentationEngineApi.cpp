@@ -4,10 +4,12 @@
 
 #include <Windows.h>
 
-#if defined(X86)
+#if defined(_M_IX86)
 const WCHAR InstrumentationEngineModule[] = _T("MicrosoftInstrumentationEngine_x86.dll");
-#elif defined(X64)
+#elif defined(_M_X64)
 const WCHAR InstrumentationEngineModule[] = _T("MicrosoftInstrumentationEngine_x64.dll");
+#elif defined(_M_ARM64)
+const WCHAR InstrumentationEngineModule[] = _T("MicrosoftInstrumentationEngine_arm64.dll");
 #else
 #error "Platform Not Supported"
 #endif
