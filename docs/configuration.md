@@ -36,7 +36,6 @@ The CLR Instrumentation Engine checks for environment variables with these prefi
 * x64: `MicrosoftInstrumentationEngine_ConfigPath64_`
 * x86: `MicrosoftInstrumentationEngine_ConfigPath32_`
 
-
 The value of these variables should be a **full path** to the *.config file.
 
 ### Testing Custom Instrumentation Method
