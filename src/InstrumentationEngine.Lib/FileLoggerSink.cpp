@@ -80,8 +80,23 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
 
         // The file name is empty if (a) the last character in the path is a path separator
         // or (b) if no file name is given e.g. the file starts with a period.
-        // Generate a file name if the file name is empty and the ext is either empty or "."
-        if (tsFile.empty() && (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T(""))))
+        // Generate a file name if we're given a directory.
+        bool isDirectory = false;
+        if (tsFile.empty())
+        {
+            isDirectory = (0 == tsExtension.compare(_T(".")) || 0 == tsExtension.compare(_T("")));
+        }
+        else 
+        {
+            // Check if fileName is actually a directory, meaning the path separator was left off
+            if ((GetFileAttributes(m_tsPathCandidate.c_str()) & FILE_ATTRIBUTE_DIRECTORY) != 0)
+            {
+                wcscat_s(wszDirectory, wszFile);
+                isDirectory = true;
+            }
+        }
+
+        if (isDirectory)
         {
             tsFile.assign(_T("ProfilerLog_"));
 
@@ -185,7 +200,7 @@ void CFileLoggerSink::WritePrefix(_In_ LoggingFlags flags)
 #else
                 WCHAR szFormatted[MAX_PATH];
                 wcsftime(szFormatted, MAX_PATH, szFormat, &localTime);
-                fwprintf(pOutputFile, L"%s", szFormatted);  
+                fwprintf(pOutputFile, L"%s", szFormatted);
 #endif
             }
         }
@@ -251,6 +266,6 @@ HRESULT CFileLoggerSink::SetLogFileLevel(_In_ LoggingFlags fileLogFlags)
 
     m_pOutputFile = nullptr; // resets the pointer & releases the FILE object
     m_tsPathActual.clear();
- 
+
     return S_OK;
 }
