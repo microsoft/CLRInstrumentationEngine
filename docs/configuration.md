@@ -34,7 +34,7 @@ Priority|Integer ordering for InstrumentationMethod consumption. Higher priority
 The CLR Instrumentation Engine checks for environment variables with these prefixes:
 * ARM64: `MicrosoftInstrumentationEngine_ConfigPathARM64_`
 * x64: `MicrosoftInstrumentationEngine_ConfigPath64_`
-* x86/32-bit: `MicrosoftInstrumentationEngine_ConfigPath32_`
+* x86: `MicrosoftInstrumentationEngine_ConfigPath32_`
 
 
 The value of these variables should be a **full path** to the *.config file.
