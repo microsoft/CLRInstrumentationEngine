@@ -453,7 +453,7 @@ typedef interface IInstrumentationMethodAttach IInstrumentationMethodAttach;
 
 /* header files for imported files */
 #include "ocidl.h"
-#include <clrprofiler.h>
+#include "corprof.h"
 
 #ifdef __cplusplus
 extern "C"{

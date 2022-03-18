@@ -10,6 +10,8 @@ Please format the changes as follows:
 ## 1.0.45
 + New:
   + Add ARM64 environment variable support
++ BugFixes:
+  + Refactor duplicate instrumentation method check
 
 ## 1.0.44
 + New:
