@@ -8,7 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.45
-+ Updates:
++ BugFixes:
+  + Refactor duplicate instrumentation method check
   + Allow FileLogPath to not require a trailing path separator
 
 ## 1.0.44
