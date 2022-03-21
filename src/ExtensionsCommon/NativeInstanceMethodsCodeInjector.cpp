@@ -97,12 +97,10 @@ namespace Instrumentation
 
 		const auto NumberOfExtraMethodParameters = 1;
 
-#if defined(_M_X64)
+#if (defined(_M_X64)) || (defined(_M_ARM64))
 		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I8;
 #elif defined(_M_IX86)
 		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I4;
-#elif defined(_M_ARM64)
-		const auto NativeObjThisPointerElementType = ELEMENT_TYPE_I8;
 #else
 		static_assert(true, "Unsupported processor architecture");
 #endif
@@ -189,21 +187,19 @@ namespace Instrumentation
 	{
 		IInstructionSptr spLoadNativeObjAddressInstruction;
 
-#if defined(_M_X64)
+#if (defined(_M_X64)) || (defined(_M_ARM64))
 		IfFailRet(
 			spInstructionFactory->CreateLongOperandInstruction(
 			Cee_Ldc_I8,
 			pInstance,
 			&spLoadNativeObjAddressInstruction));
-#endif
-#if defined(_M_IX86)
+#elif defined(_M_IX86)
 		IfFailRet(
 			spInstructionFactory->CreateIntOperandInstruction(
 			Cee_Ldc_I4,
 			pInstance,
 			&spLoadNativeObjAddressInstruction));
-#endif
-#if (!defined(_M_X64)) && !defined(_M_IX86)
+#else
 		static_assert(true, "Unsupported processor architecture");
 #endif
 
@@ -226,21 +222,19 @@ namespace Instrumentation
 	{
 		IInstructionSptr spLoadCallbackAddress;
 
-#if defined(_M_X64)
+#if (defined(_M_X64)) || (defined(_M_ARM64))
 		IfFailRet(
 			spInstructionFactory->CreateLongOperandInstruction(
 			Cee_Ldc_I8,
 			pMethod,
 			&spLoadCallbackAddress));
-#endif
-#if defined(_M_IX86)
+#elif defined(_M_IX86)
 		IfFailRet(
 			spInstructionFactory->CreateIntOperandInstruction(
 			Cee_Ldc_I4,
 			pMethod,
 			&spLoadCallbackAddress));
-#endif
-#if (!defined(_M_X64)) && !defined(_M_IX86)
+#else
 		static_assert(true, "Unsupported processor architecture");
 #endif
 
