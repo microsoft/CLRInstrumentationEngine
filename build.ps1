@@ -252,34 +252,40 @@ if (!$SkipBuild)
         # The $env:NUGET_PACKAGES variable overrides the globalPackagesFolder set in nuget.config.
         # This clears it out temporarily for proper nuget restore behavior.
         $tempGlobalCache = $env:NUGET_PACKAGES
-        $env:NUGET_PACKAGES = $null
 
-        # Clean up bin & obj folder if exists
-        if (Test-Path "$repoPath\bin\$configuration")
+        try
         {
-            Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
-        }
+            $env:NUGET_PACKAGES = $null
 
-        if (Test-Path "$repoPath\obj\")
+            # Clean up bin & obj folder if exists
+            if (Test-Path "$repoPath\bin\$configuration")
+            {
+                Remove-Item -Force -Recurse "$repoPath\bin\$configuration"
+            }
+
+            if (Test-Path "$repoPath\obj\")
+            {
+                Remove-Item -Force -Recurse "$repoPath\obj\"
+            }
+
+            # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
+            $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$configFile`""
+            if ($ARM64)
+            {
+                $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64=True"
+            }
+
+            Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solution'
+
+            # NuGet restore disregards platform/configuration
+            $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$configFile`""
+            Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
+        }
+        finally 
         {
-            Remove-Item -Force -Recurse "$repoPath\obj\"
+            # Restore global variable
+            $env:NUGET_PACKAGES = $tempGlobalCache
         }
-
-        # dotnet restore defaults to Debug|Any CPU, which requires the /p:platform specification in order to replicate NuGet restore behavior.
-        $dotnetRestoreArgs = "restore `"$repoPath\InstrumentationEngine.sln`" --configfile `"$configFile`""
-        if ($ARM64)
-        {
-            $dotnetRestoreArgs = "$dotnetRestoreArgs /p:IncludeARM64=True"
-        }
-
-        Invoke-ExpressionHelper -Executable "dotnet" -Arguments $dotnetRestoreArgs -Activity 'dotnet Restore Solution'
-
-        # NuGet restore disregards platform/configuration
-        $nugetRestoreArgs = "restore `"$repoPath\NativeNugetRestore.sln`" -configfile `"$configFile`""
-        Invoke-ExpressionHelper -Executable "nuget" -Arguments $nugetRestoreArgs -Activity 'nuget Restore Solution'
-
-        # Restore global variable
-        $env:NUGET_PACKAGES = $tempGlobalCache
     }
 
     # Build InstrumentationEngine.sln
