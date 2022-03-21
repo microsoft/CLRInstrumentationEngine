@@ -89,7 +89,9 @@ HRESULT CFileLoggerSink::Reset(_In_ LoggingFlags defaultFlags, _Out_ LoggingFlag
         else 
         {
             // Check if fileName is actually a directory, meaning the path separator was left off
-            if ((GetFileAttributes(m_tsPathCandidate.c_str()) & FILE_ATTRIBUTE_DIRECTORY) != 0)
+            DWORD fileFlags = GetFileAttributes(m_tsPathCandidate.c_str());
+            if ((fileFlags & INVALID_FILE_ATTRIBUTES) != INVALID_FILE_ATTRIBUTES && // path exists
+                (fileFlags & FILE_ATTRIBUTE_DIRECTORY) != 0) // is a directory
             {
                 wcscat_s(wszDirectory, _MAX_DIR, wszFile);
                 isDirectory = true;
