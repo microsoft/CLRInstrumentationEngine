@@ -122,17 +122,16 @@ The EventLoggerSink is restricted to Error messages to reduce noise.
 
 File logging is configured not only by the LogLevel variable but also the `MicrosoftInstrumentationEngine_FileLogPath` variable to specify where the log file is generated. If the FileLogPath is set to an existing directory (optional trailing slash), then the filename defaults to "ProfilerLog_PID.txt" where PID is the process id. 
 
-The CFileLoggerSink  will try taking an exclusive lock on the file so if the file already exists and is unlocked then log messages will be appended.
+The CFileLoggerSink will try taking an exclusive lock on the file so if the file already exists and is unlocked then log messages will be appended.
 
 This logic can be demonstrated with the following table (assume `C:\Folder\` exists)
 
 |Variable Value|Comments|Resolved LogFile Path|
 |:--|:--|:--|
-|C:\Folder\ or C:\Folder\\. |Existing folder with trailing slash|C:\Folder\Profiler_PID.txt|
-|C:\Folder|Existing folder, no trailling slash|C:\Folder\Profiler_PID.txt|
-|C:\Folder\File.txt|`File.txt` created if not exist|C:\Folder\File.txt|
-|C:\Folder\File|`File` created if not exist, doesn't exist as a folder|C:\Folder\File|
-|C:\Folder2\File.txt|Nonexistent folder|[no file]|
+|"C:\Folder\ "<br/>"C:\Folder\\."<br/>"C:\Folder"|Existing folder (optional trailing slash)|C:\Folder\Profiler_PID.txt|
+|"C:\Folder\File.txt"|`File.txt` created if not exist|C:\Folder\File.txt|
+|"C:\Folder\File"|`File` doesn't exist as a folder, created if not exist|C:\Folder\File|
+|"C:\Folder2\File.txt"|Nonexistent folder|[no file]|
 
 For legacy reasons, CLRIE also supports `MicrosoftInstrumentationEngine_FileLog` variable which supercedes the global log level.
 
