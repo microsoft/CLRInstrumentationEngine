@@ -12,6 +12,7 @@ COR_ENABLE_PROFILING|1|The CLR will only connect to a profiler if this is set to
 COR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CLR will search for the CLSID or ProgID specified.|
 COR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
 COR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+COR_PROFILER_PATH_ARM64|"[FULL PATH TO MicrosoftInstrumentationEngine_arm64.dll]"|Skips the registry lookup, uses the arm64 dll from the path. This is only supported on .NET framework 4.8.1+
 
 Alternatively, for CoreCLR:
 
@@ -21,6 +22,7 @@ CORECLR_ENABLE_PROFILING|1|The CoreCLR will only connect to a profiler if this i
 CORECLR_PROFILER|"{324F817A-7420-4E6D-B3C1-143FBED6D855}"|The CoreCLR will search for the CLSID or ProgID specified.
 CORECLR_PROFILER_PATH_32 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x86.dll or InstrumentationEngine.ProfilerProxy_x86.dll]"|Skips the registry lookup, uses the 32bit dll from the path.
 CORECLR_PROFILER_PATH_64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_x64.dll or InstrumentationEngine.ProfilerProxy_x64.dll]"|Skips the registry lookup, uses the 64bit dll from the path.
+CORECLR_PROFILER_PATH_ARM64 (see below)|"[FULL PATH TO MicrosoftInstrumentationEngine_arm64.dll]"|Skips the registry lookup, uses the arm64 dll from the path. This is only supported on .NET 6+
 
 > Please see [Profiler Proxy](profilerproxy.md) for details on using the Profiler Proxy dll. We recommend setting the COR_PROFILER variables to
 the proxy whenever applicable since it redirects to the latest CLRIE installed on every process re/start.
@@ -58,7 +60,7 @@ For reference, InstrumentationEngine versions are expected to be in one of the b
 
 | Variable | Value | Description |
 |-|-|-|
-InstrumentationEngineProxy_UseDebug|1|Toggles the proxy to **only** consider versions with `_debug` suffix. 
+InstrumentationEngineProxy_UseDebug|1|Toggles the proxy to **only** consider versions with `_debug` suffix.
 InstrumentationEngineProxy_UsePreview|1|Toggles the proxy to also consider versions with `-build###` suffix.
 InstrumentationEngineProxy_UseSpecificVersion|1.0.0-build1234|Forces the proxy to only use the specific folder version.
 
@@ -69,7 +71,7 @@ The RawProfilerHook allows one additional profiler that has not yet on-boarded t
 | Variable | Value | Description |
 |-|-|-|
 MicrosoftInstrumentationEngine_RawProfilerHook|"{GUID}"|This would be the value set to CORECLR/COR_PROFILER.
-MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64|"[FULL PATH TO raw profiler dll]"|This would be the value set to CORECLR/COR_PROFILER_PATH_32/64.
+MicrosoftInstrumentationEngine_RawProfilerHookPath_32/64/ARM64|"[FULL PATH TO raw profiler dll]"|This would be the value set to CORECLR/COR_PROFILER_PATH_32/64/ARM64.
 
 ## Deprecated as of Version 1.0.22
 The following variables allowed custom ExtensionHosts for the InstrumentationEngine. The responsibility of the ExtensionsHost involves setting
