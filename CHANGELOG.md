@@ -13,6 +13,7 @@ Please format the changes as follows:
 + BugFixes:
   + Refactor duplicate instrumentation method check
   + Address package restore issue with Build.ps1
+  + Allow FileLogPath to handle directories without trailing path
 
 ## 1.0.44
 + New:

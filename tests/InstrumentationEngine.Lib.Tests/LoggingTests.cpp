@@ -72,9 +72,30 @@ namespace InstrumentationEngineLibTests
             AssertSucceeded(loggerService.Shutdown());
         }
 
+        // Tests that the log file sink gracefully fails to create
+        // the log file when the specified filepath contains a non-
+        // leaf folder that does not exist.
+        TEST_METHOD(LogFileCannotWriteNonexistentPath)
+        {
+            CTestLoggerService loggerService;
+            loggerService.SetFileFlags(LoggingFlags_Errors);
+
+            // Set nonexistent logging path shall not create a new log file
+            auto fileName = fs::current_path() / L"NotExist/Log.txt";
+            loggerService.SetFilePath(fileName);
+
+            AssertSucceeded(loggerService.Initialize());
+
+            loggerService.LogError(L"Error1");
+
+            AssertNoLogFile(loggerService);
+
+            AssertSucceeded(loggerService.Shutdown());
+        }
+
         // Tests that the log file sink can write to a file using
         // an automatically generated file name.
-        TEST_METHOD(LogFileCanWrite)
+        TEST_METHOD(LogFileCanWriteInExistingDirectory)
         {
             CTestLoggerService loggerService;
             loggerService.SetFileFlags(LoggingFlags_Errors);
@@ -103,6 +124,44 @@ namespace InstrumentationEngineLibTests
             // Check file content only has one error
             Assert::AreEqual((size_t)1, lines.size(), filePath.c_str());
             Assert::AreNotEqual(wstring::npos, lines.at(0).find(L"Error1"), lines.at(0).c_str());
+        }
+
+        // Tests that the log file sink doesn't require trailing slash
+        // on an existing directory when automatically generating the
+        // file name.
+        TEST_METHOD(LogFileDoesNotRequireTrailingSlash)
+        {
+            CTestLoggerService loggerService;
+
+            loggerService.SetFileFlags(LoggingFlags_Errors);
+
+            // Create partial file paths
+            auto dir1 = fs::current_path();
+            loggerService.SetFilePath(dir1);
+
+            AssertSucceeded(loggerService.Initialize());
+            fs::path filePath1(loggerService.GetFilePathIfExists());
+
+            AssertSucceeded(loggerService.Shutdown());
+
+            // Remove old log file
+            remove(filePath1);
+
+            auto dir2 = fs::current_path() / L"\\.";
+            loggerService.SetFilePath(dir2);
+
+            AssertSucceeded(loggerService.Initialize());
+            fs::path filePath2(loggerService.GetFilePathIfExists());
+
+            AssertSucceeded(loggerService.Shutdown());
+
+            // Remove old log file
+            remove(filePath2);
+
+
+            Assert::IsFalse(filePath1.empty());
+            Assert::IsFalse(filePath2.empty());
+            Assert::IsTrue(filePath1.compare(filePath2) == 0);
         }
 
         // Tests that the log file sink can write to
@@ -139,6 +198,87 @@ namespace InstrumentationEngineLibTests
             // Check file content only has one error
             Assert::AreEqual((size_t)1, lines.size(), fileName.c_str());
             Assert::AreNotEqual(wstring::npos, lines.at(0).find(L"Error1"), lines.at(0).c_str());
+        }
+
+        // Tests that the log file sink will treat a path where the 
+        // leaf does not exist as a file and not a directory.
+        TEST_METHOD(LogFileDoesNotRequireFileExtension)
+        {
+            CTestLoggerService loggerService;
+            loggerService.SetFileFlags(LoggingFlags_Errors);
+
+            // Create exact file path
+            auto fileName = fs::current_path() / L"Log";
+            if (exists(fileName))
+            {
+                remove(fileName);
+            }
+
+            loggerService.SetFilePath(fileName);
+
+            AssertSucceeded(loggerService.Initialize());
+
+            loggerService.LogError(L"Error1");
+
+            AssertLogFileExists(loggerService);
+
+            // Get contents of log file
+            vector<tstring> lines;
+            ReadAllLines(fileName, lines);
+
+            AssertSucceeded(loggerService.Shutdown());
+
+            // Remove old log file
+            remove(fileName);
+
+            // Check file content only has one error
+            Assert::AreEqual((size_t)1, lines.size(), fileName.c_str());
+            Assert::AreNotEqual(wstring::npos, lines.at(0).find(L"Error1"), lines.at(0).c_str());
+        }
+
+        // Tests that the log file sink will reuse an existing file if exists
+        TEST_METHOD(LogFileReusesExistingFile)
+        {
+            CTestLoggerService loggerService;
+            loggerService.SetFileFlags(LoggingFlags_Errors);
+
+            // Create exact file path
+            auto fileName = fs::current_path() / L"Log";
+            if (exists(fileName))
+            {
+                remove(fileName);
+            }
+
+            loggerService.SetFilePath(fileName);
+
+            AssertSucceeded(loggerService.Initialize());
+
+            loggerService.LogError(L"Error1");
+
+            AssertLogFileExists(loggerService);
+
+            AssertSucceeded(loggerService.Shutdown());
+
+            AssertLogFileExists(loggerService);
+
+            // Reinitialize and re-use the filepath
+            AssertSucceeded(loggerService.Initialize());
+
+            loggerService.LogError(L"Error2");
+
+            // Get contents of log file
+            vector<tstring> lines;
+            ReadAllLines(fileName, lines);
+
+            AssertSucceeded(loggerService.Shutdown());
+
+            // Remove old log file
+            remove(fileName);
+
+            // Check file content only has one error
+            Assert::AreEqual((size_t)2, lines.size(), fileName.c_str());
+            Assert::AreNotEqual(wstring::npos, lines.at(0).find(L"Error1"), lines.at(0).c_str());
+            Assert::AreNotEqual(wstring::npos, lines.at(1).find(L"Error2"), lines.at(1).c_str());
         }
 
         // Tests that the log file sink can write to the log file
