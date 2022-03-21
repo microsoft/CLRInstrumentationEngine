@@ -12,7 +12,8 @@ Please format the changes as follows:
   + Add ARM64 environment variable support
 + BugFixes:
   + Refactor duplicate instrumentation method check
-  + Allow FileLogPath to handle directories without trailing path separator
+  + Address package restore issue with Build.ps1
+  + Allow FileLogPath to handle directories without trailing path
 
 ## 1.0.44
 + New:
