@@ -10,8 +10,12 @@ namespace MicrosoftInstrumentationEngine
     LPCWSTR cszRawProfilerHookPathVariableNameNoBitness = L"MicrosoftInstrumentationEngine_RawProfilerHookPath";
 #ifdef X86
     LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_32";
-#else
+#elif defined(_M_X64)
     LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_64";
+#elif defined(_M_ARM64)
+    LPCWSTR cszRawProfilerHookPathVariableName = L"MicrosoftInstrumentationEngine_RawProfilerHookPath_ARM64";
+#else
+    static_assert(true, "Unsupported processor architecture");
 #endif
 
     CRawProfilerHookSettingsReader::CRawProfilerHookSettingsReader() noexcept
