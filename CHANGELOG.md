@@ -12,6 +12,7 @@ Please format the changes as follows:
   + Add ARM64 environment variable support
 + BugFixes:
   + Refactor duplicate instrumentation method check
+  + Address package restore issue with Build.ps1
 
 ## 1.0.44
 + New:
