@@ -12,7 +12,7 @@ Please format the changes as follows:
   + Add ARM64 environment variable support
 + BugFixes:
   + Refactor duplicate instrumentation method check
-  + Allow FileLogPath to not require a trailing path separator
+  + Allow FileLogPath to handle directories without trailing path separator
 
 ## 1.0.44
 + New:
