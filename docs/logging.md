@@ -48,7 +48,6 @@ Combination of flags can be set using the `|` character such as `Errors|Messages
 
 See FileLoggerSink section for details around `MicrosoftInstrumentationEngine_FileLogPath` and `MicrosoftInstrumentationEngine_FileLog`.
 
-
 ## Logging Classes <a name="loggingclasses" />
 There are three key classes that make up the Logging infrastructure:
 * [CLogging](#clogging)
@@ -121,7 +120,19 @@ The EventLoggerSink is restricted to Error messages to reduce noise.
 
 #### CFileLoggerSink ([.h](../src/InstrumentationEngine.Lib/FileLoggerSink.h)|[.cpp](../src/InstrumentationEngine.Lib/FileLoggerSink.cpp))
 
-File logging is configured not only by the LogLevel variable but also the `MicrosoftInstrumentationEngine_FileLogPath` variable to specify where the log file is generated. If the FileLogPath is set to a directory, then the filename defaults to "ProfilerLog_PID.txt" where PID is the process id.
+File logging is configured not only by the LogLevel variable but also the `MicrosoftInstrumentationEngine_FileLogPath` variable to specify where the log file is generated. If the FileLogPath is set to an existing directory (optional trailing slash), then the filename defaults to "ProfilerLog_PID.txt" where PID is the process id. 
+
+The CFileLoggerSink  will try taking an exclusive lock on the file so if the file already exists and is unlocked then log messages will be appended.
+
+This logic can be demonstrated with the following table (assume `C:\Folder\` exists)
+
+|Variable Value|Comments|Resolved LogFile Path|
+|:--|:--|:--|
+|C:\Folder\ or C:\Folder\\. |Existing folder with trailing slash|C:\Folder\Profiler_PID.txt|
+|C:\Folder|Existing folder, no trailling slash|C:\Folder\Profiler_PID.txt|
+|C:\Folder\File.txt|`File.txt` created if not exist|C:\Folder\File.txt|
+|C:\Folder\File|`File` created if not exist, doesn't exist as a folder|C:\Folder\File|
+|C:\Folder2\File.txt|Nonexistent folder|[no file]|
 
 For legacy reasons, CLRIE also supports `MicrosoftInstrumentationEngine_FileLog` variable which supercedes the global log level.
 
