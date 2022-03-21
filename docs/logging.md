@@ -130,7 +130,7 @@ This logic can be demonstrated with the following table (assume `C:\Folder\` exi
 |:--|:--|:--|
 |"C:\Folder\ "<br/>"C:\Folder\\."<br/>"C:\Folder"|Existing folder (optional trailing slash)|C:\Folder\Profiler_PID.txt|
 |"C:\Folder\File.txt"|`File.txt` created if not exist|C:\Folder\File.txt|
-|"C:\Folder\File"|`File` doesn't exist as a folder, created if not exist|C:\Folder\File|
+|"C:\Folder\File"|`File` doesn't exist as a folder, created as a file if not exist|C:\Folder\File|
 |"C:\Folder2\File.txt"|Nonexistent folder|[no file]|
 
 For legacy reasons, CLRIE also supports `MicrosoftInstrumentationEngine_FileLog` variable which supercedes the global log level.
