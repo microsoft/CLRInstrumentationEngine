@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <RuleSet Name="Microsoft SDL Roslyn Rules - Required and Recommended (Error) PreRelease version"
          Description="This rule set contains all Microsoft SDL required and recommended rules for Microsoft.CodeAnalysis.NetAnalyzers v5.0.3 (and Microsoft.CodeAnalysis.FxCopAnalyzers), configured to error rather than warn.  Generated 2021-02-08T19:40:15Z."
          ToolsVersion="15.0">

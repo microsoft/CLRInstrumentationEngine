@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
 <!--    When adding new values, please use UPPER CASE - all values will be compared only to the UPPER CASE strings -->
 <PoliCheckExclusions>
 
@@ -7,10 +9,10 @@
 
   <!-- Each of these exclusions is a folder name - if any folder or file starts with "\[name]", it will be skipped -->
   <!--<Exclusion Type="FolderPathStart">ABC|XYZ</Exclusion>-->
-  
+
   <!-- Each of these file types will be completely skipped for the entire scan -->
   <!--<Exclusion Type="FileType">.ABC|.XYZ</Exclusion>-->
-  
+
   <!-- The specified file names will be skipped during the scan regardless which folder they are in -->
   <Exclusion Type="FileName">CODESIGNVERIFY.YAML</Exclusion>
 
