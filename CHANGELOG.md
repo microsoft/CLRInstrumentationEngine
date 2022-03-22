@@ -7,15 +7,23 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.45
++ New:
+  + Add ARM64 environment variable support
++ BugFixes:
+  + Refactor duplicate instrumentation method check
+  + Address package restore issue with Build.ps1
+  + Allow FileLogPath to handle directories without trailing path
+
 ## 1.0.44
 + New:
   + Add support for Windows ARM64 (Internal)
-+ BugFixes: 
++ BugFixes:
   + Fixed build scripts to explicitly point to v142 toolsets regardless of VS version
 + Updates:
   + Setup automated PR builds
   + Add linter for doc link fixes
-  
+
 ## 1.0.43
 + New:
   + On Unix, environment is now scanned for instrumentation methods instead of looking for hardcoded ProductionBreakpoints.
