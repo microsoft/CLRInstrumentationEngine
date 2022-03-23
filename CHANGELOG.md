@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.46
+
 ## 1.0.45
 + New:
   + Add ARM64 environment variable support
