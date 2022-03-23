@@ -8,6 +8,8 @@ Please format the changes as follows:
 + Updates:
 
 ## 1.0.46
++ BugFixes:
+  + Check the values for configuration variables
 
 ## 1.0.45
 + New:

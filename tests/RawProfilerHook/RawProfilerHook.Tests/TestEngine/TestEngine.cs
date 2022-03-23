@@ -99,7 +99,7 @@ namespace RawProfilerHook.Tests
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath },
                 { "MicrosoftInstrumentationEngine_UserBuffer", "1" }
 #if ALLOWNOTSIGNED
-                , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true"}
+                , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "1"}
 #endif
             };
 
