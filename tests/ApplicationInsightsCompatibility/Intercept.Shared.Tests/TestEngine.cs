@@ -50,7 +50,7 @@ namespace ApplicationInsightsCompatibility
             //vars.Add("MicrosoftInstrumentationEngine_FileLogPath", ""); //can be overridden if needed
 
 #if ALLOWNOTSIGNED
-            vars.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true");
+            vars.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "1");
 #endif
         }
 

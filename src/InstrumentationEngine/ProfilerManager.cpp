@@ -47,15 +47,17 @@ CProfilerManager::CProfilerManager() :
     WCHAR wszEnvVar[MAX_PATH];
 
 #ifndef PLATFORM_UNIX
-    GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH);
-    if (wcscmp(wszEnvVar, _T("1")) == 0)
+    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_MessageboxAtAttach"), wszEnvVar, MAX_PATH) > 0 &&
+        wcscmp(wszEnvVar, _T("1")) == 0)
     {
         std::wstringstream mboxStream;
         DWORD pid = GetCurrentProcessId();
         mboxStream << _T("MicrosoftInstrumentationEngine ProfilerAttach. PID: ") << pid;
         MessageBoxW(NULL, mboxStream.str().c_str(), L"", MB_OK);
     }
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0)
+
+    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0 &&
+        wcscmp(wszEnvVar, _T("1")) == 0)
     {
         while (!IsDebuggerPresent())
         {
@@ -74,7 +76,8 @@ CProfilerManager::CProfilerManager() :
     // We consider this variable as secure as COR_ENABLE_PROFILER because we read it very early in process lifetime so malicious code
     // inside the process cannot modify it. Make sure you do not move this initialization logic and do not make it lazily initialized
     //
-    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation"), nullptr, 0) > 0)
+    if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation"), wszEnvVar, MAX_PATH) > 0 &&
+        wcscmp(wszEnvVar, _T("1")) == 0)
     {
         m_bValidateCodeSignature = false;
     }
