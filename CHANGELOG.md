@@ -10,6 +10,8 @@ Please format the changes as follows:
 ## 1.0.46
 + BugFixes:
   + Check the values for configuration variables
++ Updates:
+  + Use VS2022 with v143 toolsets and latest Win10 SDK
 
 ## 1.0.45
 + New:

@@ -54,6 +54,12 @@
     </PropertyGroup>
 
     <PropertyGroup>
+      <!-- See Microsoft.googletest.v140.windesktop.msvcstl.static.rt-static.targets
+           Microsoft.GoogleTest only supports up to v142 toolset. This flag overrides that check -->
+      <Force-Enable-Microsoft-googletest-v140-windesktop-msvcstl-static-rt-static>true</Force-Enable-Microsoft-googletest-v140-windesktop-msvcstl-static-rt-static>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <MsiSuffix Condition=" '$(Configuration)' == 'Debug' ">_$(Configuration)</MsiSuffix>
     </PropertyGroup>
 
