@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #pragma once
+#include "stdafx.h"
 
 namespace MicrosoftInstrumentationEngine
 {
@@ -18,7 +19,7 @@ namespace MicrosoftInstrumentationEngine
         {
             if (m_pMetadataImport == nullptr)
             {
-                ATLASSERT(!L"m_pMetadataImport is null. Potential memory leak");
+                AssertFailed(_T("m_pMetadataImport is null. Potential memory leak"));
             }
         }
 

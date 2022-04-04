@@ -6,3 +6,11 @@
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"
+
+void AssertFailed(const WCHAR* message)
+{
+    #ifdef PLATFORM_UNIX
+    #else
+        _ASSERT_EXPR(0, message);
+    #endif
+}

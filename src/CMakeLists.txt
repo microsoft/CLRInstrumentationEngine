@@ -365,6 +365,7 @@ add_subdirectory(Common.Lib)
 add_subdirectory(InstrumentationEngine.Api)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine)
+add_subdirectory(Tests/InstrEngineTests/NaglerInstrumentationMethod)
 
 enable_testing()
 add_subdirectory(Tests/CommonLibTests)
