@@ -47,7 +47,7 @@
         <ApplicationInsightsAgentInterceptVersion>2.4.0</ApplicationInsightsAgentInterceptVersion>
         <LegacyApplicationInsightsAgentInterceptVersion>2.0.1</LegacyApplicationInsightsAgentInterceptVersion>
         <MicroBuildCoreVersion>0.4.1</MicroBuildCoreVersion>
-        <MicrosoftNETTestSdkVersion>16.9.1</MicrosoftNETTestSdkVersion>
+        <MicrosoftNETTestSdkVersion>17.1.0</MicrosoftNETTestSdkVersion>
         <MSTestTestAdapterVersion>2.1.2</MSTestTestAdapterVersion>
         <MSTestTestFrameworkVersion>2.1.2</MSTestTestFrameworkVersion>
         <NETFrameworkReferenceVersion>1.0.2</NETFrameworkReferenceVersion>
