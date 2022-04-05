@@ -21,13 +21,25 @@ jobs:
 
   - template: ../steps/azuredevops/downloadbuildartifacts.yaml
     parameters:
-      ArtifactName: packages-all
+      ArtifactName: packages-windows-Release
       ItemPattern: |
         **\*.nupkg
         **\*.zip
         **\*.msi
         **\*.msm
-        
+
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: packages-linux-ubuntu-Release
+      ItemPattern: |
+        **\*.nupkg
+
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: packages-linux-alpine-Release
+      ItemPattern: |
+        **\*.nupkg
+
   - template: ../steps/microbuild/sbom.yaml
 
   - template: ../steps/azuredevops/publishbuildartifacts.yaml

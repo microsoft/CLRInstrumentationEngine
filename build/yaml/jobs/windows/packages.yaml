@@ -76,11 +76,6 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-windows-$(Configuration)'
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
-    parameters:
-      PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
-      ArtifactName: 'packages-all'
-
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
