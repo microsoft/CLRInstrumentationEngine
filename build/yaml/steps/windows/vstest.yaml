@@ -13,7 +13,7 @@ steps:
   inputs:
     testAssemblyVer2: '${{ parameters.SubFolder }}*Tests*.dll'
     searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)'
-    vsTestVersion: 16.0
+    vsTestVersion: 17.0
     runInParallel: false
     codeCoverageEnabled: false
     runSettingsFile: tests/TestSettings/$(RunSettingsFile)

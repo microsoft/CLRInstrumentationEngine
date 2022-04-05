@@ -22,7 +22,7 @@ steps:
   displayName: 'Build solution InstrumentationEngine.Packages.sln $(Platform)'
   inputs:
     solution: src/InstrumentationEngine.Packages.sln
-    msbuildVersion: 16.0
+    msbuildVersion: 17.0
     platform: $(Platform)
     configuration: $(Configuration)
     msbuildArguments: '/p:InputBinCfgRoot="${{ parameters.WindowsBinRoot }}" /bl:"$(Build.ArtifactStagingDirectory)\logs\Package_Windows_$(LogPlatform)_$(Configuration).binlog"'
