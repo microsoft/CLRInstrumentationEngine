@@ -18,7 +18,7 @@
     <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>Intercept.Latest.Tests</RootNamespace>
     <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
   </PropertyGroup>
@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="$(NETFrameworkReferenceVersion)" />
   </ItemGroup>
   <Import Project="..\Intercept.Shared.Tests\Shared.projitems" Label="Shared" />
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />

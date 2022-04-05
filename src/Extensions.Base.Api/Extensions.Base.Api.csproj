@@ -6,10 +6,9 @@
   <PropertyGroup>
     <RootNamespace>Microsoft.Diagnostics.Instrumentation.Extensions.Base</RootNamespace>
     <AssemblyName>Microsoft.Diagnostics.Instrumentation.Extensions.Base</AssemblyName>
-    <TargetFramework>net40</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <NoStdLib>true</NoStdLib>
     <ShouldSign>true</ShouldSign>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
@@ -83,6 +82,9 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net40" Version="$(NETFrameworkReferenceVersion)" />
+  </ItemGroup>
   <Target Name="BeforeBuild">
     <Error Text="Unsupported platform: $(Platform)" Condition="'$(Platform)' != 'AnyCPU'" />
     <Error Text="Unsupported configuration: $(Configuration)" Condition="'$(Configuration)' != 'Debug' And '$(Configuration)' != 'Release'" />

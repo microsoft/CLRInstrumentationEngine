@@ -43,9 +43,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{78F69D10-7F29-4645-AD77-91A2D06FF7F4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <RootNamespace>CLRInstrumentationEngineProfilerProxy</RootNamespace>
     <RC_VERSION_FILE_DESCRIPTION>CLR Instrumentation Engine Profiler Proxy</RC_VERSION_FILE_DESCRIPTION>
