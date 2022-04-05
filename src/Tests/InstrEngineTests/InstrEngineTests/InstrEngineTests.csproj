@@ -7,7 +7,7 @@
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1;net50;net60</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net50;net60</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>InstrEngineTests</RootNamespace>
   </PropertyGroup>

@@ -33,9 +33,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{659CA07D-C239-48EF-B5F1-E8C7D96916CB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <RC_VERSION_FILE_DESCRIPTION>Microsoft Instrumentation Engine</RC_VERSION_FILE_DESCRIPTION>
   </PropertyGroup>

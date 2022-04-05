@@ -27,7 +27,7 @@ steps:
   displayName: 'Build InstrumentationEngine.sln'
   inputs:
     solution: InstrumentationEngine.sln
-    msbuildVersion: 16.0
+    msbuildVersion: 17.0
     platform: $(Platform)
     configuration: $(Configuration)
     msbuildArguments: /bl:"$(Build.ArtifactStagingDirectory)\logs\Build_Windows_$(Platform)_$(Configuration).binlog"

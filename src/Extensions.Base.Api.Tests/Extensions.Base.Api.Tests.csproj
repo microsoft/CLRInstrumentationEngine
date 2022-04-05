@@ -6,7 +6,7 @@
   <PropertyGroup>
     <RootNamespace>Extensions.Base.Api.Tests</RootNamespace>
     <AssemblyName>Extensions.Base.Api.Tests</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
   <ItemGroup>
@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="$(NETFrameworkReferenceVersion)" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

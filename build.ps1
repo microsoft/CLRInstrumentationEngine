@@ -157,39 +157,27 @@ if (-not ($repoPath))
 }
 
 ###
-# Picks up msbuild from vs2019 installation
+# Picks up msbuild from vs2022 installation
 ###
-$Vs2019Requirements = [System.Collections.ArrayList]@(
+$Vs2022Requirements = [System.Collections.ArrayList]@(
     'Microsoft.Component.MSBuild'
     'Microsoft.VisualStudio.Workload.NativeDesktop'
     'Microsoft.VisualStudio.Component.VC.ATL.Spectre'
-    'Microsoft.VisualStudio.Component.VC.Tools.x86.x64'
-)
-
-$VsNextRequirements = [System.Collections.ArrayList]@(
-    'Microsoft.Component.MSBuild'
-    'Microsoft.VisualStudio.Workload.NativeDesktop'
-    'Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre'
-    'Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64.Spectre'
+    'Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre'
 )
 
 if ($ARM64)
 {
-    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre')
-    $Vs2019Requirements.Add('Microsoft.VisualStudio.Component.VC.Runtimes.ARM64.Spectre')
-
-    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.ARM64.Spectre')
-    $VsNextRequirements.Add('Microsoft.VisualStudio.Component.VC.14.29.16.11.ARM64.Spectre')
+    $Vs2022Requirements.Add('Microsoft.VisualStudio.Component.VC.ATL.ARM64.Spectre')
+    $Vs2022Requirements.Add('Microsoft.VisualStudio.Component.VC.Runtimes.ARM64.Spectre')
 }
 
-Write-Verbose "Compatible VS2019 must have these installed components: `n$($Vs2019Requirements | % {"  $_"} | Out-String)`n"
-Write-Verbose "If none are found, searching for any VS installation with these installed components: `n$($VsNextRequirements | % {"  $_"} | Out-String)`n"
+Write-Verbose "Compatible VS2022 must have these installed components: `n$($Vs2022Requirements | % {"  $_"} | Out-String)`n"
 Write-Warning "Using a VS developer command prompt skips this check."
 
 $vswhere = "`"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe`""
 
-$filterArgsFor2019 = "-latest -prerelease -requires $($Vs2019Requirements -join ' ') -property installationPath -version `"[16.0,17.0)`""
-$filterArgsForNext = "-latest -prerelease -requires $($VsNextRequirements -join ' ') -property installationPath"
+$filterArgsFor2022 = "-latest -prerelease -requires $($Vs2022Requirements -join ' ') -property installationPath -version `"[17.0,18.0)`""
 
 # Restrict the VS version if running from a context that has the VSINSTALLDIR env variable (e.g. Developer Command Prompt).
 # This will make sure that VisualStudioVersion matches the VS version of MSBuild in order to avoid mismatches (e.g. using a Dev15
@@ -203,13 +191,8 @@ if ($env:VSINSTALLDIR)
 
 if (-not $installationPath -or -not (Test-Path "$installationPath"))
 {
-    Write-Verbose "Search for compatible VS2019..."
-    $installationPath = Invoke-Expression "& $vswhere $filterArgsFor2019"
-    if (-not $installationPath -or -not (Test-Path "$installationPath"))
-    {
-        Write-Verbose "Unable to find compatible VS2019. Search for any compatible VS..."
-        $installationPath = Invoke-Expression "& $vswhere $filterArgsForNext"
-    }
+    Write-Verbose "Search for compatible VS2022..."
+    $installationPath = Invoke-Expression "& $vswhere $filterArgsFor2022"
 
     if (-not $installationPath -or -not (Test-Path "$installationPath"))
     {
