@@ -54,11 +54,6 @@ jobs:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-linux-$(Distro)-$(Configuration)'
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
-    parameters:
-      PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
-      ArtifactName: 'packages-all'
-
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml
 
