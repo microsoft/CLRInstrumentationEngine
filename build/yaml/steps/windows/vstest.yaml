@@ -8,12 +8,13 @@ parameters:
   RunTitle: ''
 
 steps:
+# https://github.com/microsoft/azure-pipelines-tasks/issues/15537
+# Don't specify VsTestVersion
 - task: VSTest@2
   displayName: 'Run Tests: $(Platform)\${{ parameters.SubFolder }}*Tests*.dll'
   inputs:
     testAssemblyVer2: '${{ parameters.SubFolder }}*Tests*.dll'
     searchFolder: '$(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)\$(Platform)'
-    vsTestVersion: 17.0
     runInParallel: false
     codeCoverageEnabled: false
     runSettingsFile: tests/TestSettings/$(RunSettingsFile)
