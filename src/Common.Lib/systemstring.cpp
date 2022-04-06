@@ -27,7 +27,7 @@ namespace CommonLib
         }
     };
 
-    HRESULT ErrnoToHResult(int& err) 
+    HRESULT ErrnoToHResult(int& err)
     {
         HRESULT hr;
         switch (err)
@@ -44,7 +44,7 @@ namespace CommonLib
         return E_FAIL;
     }
 
-    HRESULT SystemString::Convert(_In_ const CHAR* lpzStr, _Inout_ tstring& result)
+    HRESULT SystemString::Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result)
     {
         if (lpzStr == nullptr)
         {
@@ -79,7 +79,7 @@ namespace CommonLib
         return S_OK;
     }
 
-    HRESULT SystemString::Convert(_In_ const WCHAR* lpzwStr, _Inout_ string& result)
+    HRESULT SystemString::Convert(_In_z_ const WCHAR* lpzwStr, _Inout_ string& result)
     {
         if (lpzwStr == nullptr)
         {
@@ -126,7 +126,7 @@ namespace CommonLib
 #else
 
 
-    HRESULT SystemString::Convert(_In_ const WCHAR* lpzwStr, _Inout_ string& result)
+    HRESULT SystemString::Convert(_In_z_ const WCHAR* lpzwStr, _Inout_ string& result)
     {
 
         // WideCharToMultiByte will null check lpzwStr, so we don't need to.
@@ -147,7 +147,7 @@ namespace CommonLib
         return HRESULT_FROM_WIN32(errorCode);
     }
 
-    HRESULT SystemString::Convert(_In_ const CHAR* lpzStr, _Inout_ tstring& result)
+    HRESULT SystemString::Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result)
     {
         // MultiByteToWideChar will null check lpzStr, so we don't need to.
         int required = MultiByteToWideChar(CP_UTF8, 0, lpzStr, /*null terminated*/ -1, nullptr, 0);
