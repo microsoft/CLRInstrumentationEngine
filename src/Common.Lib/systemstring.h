@@ -36,7 +36,7 @@ namespace CommonLib
         /// <param name="lpzStr">The input string.</param>
         /// <param name="result">The output string.</param>
         /// <returns>S_OK for success, error otherwise.</returns>
-        static HRESULT Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result); // lgtm[cpp/inconsistentsal] SAL annoations match definition in cpp file
+        static HRESULT Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result); // lgtm[cpp/inconsistentsal] SAL annotations match definition in cpp file
     };
 
 }
