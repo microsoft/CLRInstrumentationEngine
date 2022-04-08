@@ -29,14 +29,14 @@ jobs:
 
     - name: archive so
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: libInstrumentationEngine.so
         path: out/Linux/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.so
 
     - name: archive dylib
       if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: libInstrumentationEngine.dylib
         path: out/OSX/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.dylib
