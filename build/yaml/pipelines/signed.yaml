@@ -22,7 +22,6 @@ stages:
       Configuration: Release
       IsMicroBuildInternal: true
 
-stages:
 - stage: BuildDebug
   jobs:
   # Binaries (Windows & Linux)
