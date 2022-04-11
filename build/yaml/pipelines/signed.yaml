@@ -18,6 +18,7 @@ stages:
   - template: ../jobs/binaries.yaml
     parameters:
       Configuration: Debug
+      SignType: $(SignType)
 
 - stage: TestDebug
   dependsOn: BuildDebug
