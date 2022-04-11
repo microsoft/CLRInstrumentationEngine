@@ -12,6 +12,22 @@ variables:
   TeamName: ClrInstrumentationEngine
 
 stages:
+- stage: BuildDebug
+  jobs:
+  # Binaries (Windows & Linux)
+  - template: ../jobs/binaries.yaml
+    parameters:
+      Configuration: Debug
+      SignType: None # Specifically never sign debug builds
+
+- stage: TestDebug
+  dependsOn: BuildDebug
+  jobs:
+  # Tests (Windows)
+  - template: ../jobs/tests.yaml
+    parameters:
+      Configuration: Debug
+
 - stage: Build
   jobs:
   # Binaries (Windows & Linux)

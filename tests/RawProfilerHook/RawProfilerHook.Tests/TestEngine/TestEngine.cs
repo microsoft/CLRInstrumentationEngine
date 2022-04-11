@@ -98,7 +98,7 @@ namespace RawProfilerHook.Tests
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors" },
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath },
                 { "MicrosoftInstrumentationEngine_UserBuffer", "1" }
-#if ALLOWNOTSIGNED
+#if ALLOWNOTSIGNED || DEBUG
                 , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "1"}
 #endif
             };
