@@ -12,6 +12,7 @@ Please format the changes as follows:
   + Check the values for configuration variables
 + Updates:
   + Use VS2022 with v143 toolsets and latest Win10 SDK
+  + Added debug tests to signed build pipeline
 
 ## 1.0.45
 + New:
