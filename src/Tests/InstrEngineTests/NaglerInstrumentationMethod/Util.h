@@ -9,7 +9,7 @@ namespace MicrosoftInstrumentationEngine
     template<class T> class CMetadataEnumCloser final
     {
     private:
-        ATL::CComPtr<T> m_pMetadataImport;
+        CComPtr<T> m_pMetadataImport;
         HCORENUM m_hEnum;
 
     public:

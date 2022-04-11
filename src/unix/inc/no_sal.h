@@ -74,3 +74,4 @@
 #define _Out_cap_post_count_(cap,count)
 #define _Deref_out_
 #define _In_count_(size)
+#define __control_entrypoint(category)

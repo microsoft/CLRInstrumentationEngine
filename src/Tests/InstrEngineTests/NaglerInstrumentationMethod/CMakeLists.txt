@@ -18,6 +18,7 @@ set(src_files
     ./InstrumentationEngineApi.cpp
     ../../../InstrumentationEngine.Api/InstrumentationEngine_i.cpp
     ./NaglerInstrumentationMethod.cpp
+    ./wcrt.cpp
     ./stdafx.cpp
 )
 
