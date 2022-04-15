@@ -19,7 +19,6 @@
 #include "no_sal.h"
 #include "mincom/mincom.h"
 #include "mincom/ccomptrs.h"
-#include "mincor/mincor.h"
 #include "wcrt.h"
 #define COM_NO_WINDOWS_H
 #define __RPC_H__ // skip inclusion of rpc.h
@@ -43,8 +42,8 @@ using namespace ATL;
 #endif
 
 
+#include <cor.h>
 #include <corhdr.h>
-//#include <cor.h>
 #include <clrprofiler.h>
 
 #include "InstrumentationEngine.h"

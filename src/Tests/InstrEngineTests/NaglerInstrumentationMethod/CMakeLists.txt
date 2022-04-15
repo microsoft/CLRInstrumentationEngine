@@ -11,8 +11,6 @@ include_directories(. ${REPOSITORY_ROOT}/src ${LIBXML2_INCLUDE_DIR})
 # don't use the PAL for tests
 build_init(CPP InstrumentationEngine)
 
-#note: we purposfully exclude windows-only files,
-#including ModuleHandle.cpp, EventLoggingBase.cpp, and PathUtils.cpp
 set(src_files
     ./dllmain.cpp
     ./InstrumentationEngineApi.cpp
@@ -24,10 +22,13 @@ set(src_files
 
 add_lib(${PROJECT_NAME}
     STATIC
+    false # use_pal
     false # use_redefines
     true # hide_symbols
     ${src_files}
     )
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${REPOSITORY_ROOT}/src/unix/inc/mincor )
 
 # For some reason linking against musl-libc we need libintl and on glibc we need libdl.
 # They have nothing to do with one another, each is just a quirk of the environment.

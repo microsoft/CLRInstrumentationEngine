@@ -64,7 +64,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     {
         CComPtr<IProfilerManagerLogging> spGlobalLogger;
         CComPtr<IProfilerManager4> pProfilerManager4;
-        IfFailRet(pProfilerManager->QueryInterface(pProfilerManager4));
+        IfFailRet(pProfilerManager->QueryInterface(&pProfilerManager4));
         pProfilerManager4->GetGlobalLoggingInstance(&spGlobalLogger);
         spGlobalLogger->LogDumpMessage(_T("<InstrumentationMethodLog>"));
 
@@ -174,9 +174,13 @@ HRESULT CInstrumentationMethod::LoadTestScript()
         }
         else if (wcscmp(strCurrNodeName.c_str(), _T("InjectAssembly")) == 0)
         {
-            shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
-            ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
-            m_spInjectAssembly = spNewInjectAssembly;
+            #ifndef PLATFORM_UNIX
+                shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
+                ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
+                m_spInjectAssembly = spNewInjectAssembly;
+            #else
+                fprintf(stderr, "Inject Assembly tests are currently only supported on Windows platforms.")
+            #endif
         }
         else if (wcscmp(strCurrNodeName.c_str(), _T("MethodLogging")) == 0)
         {
@@ -691,6 +695,8 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
     InstrStr(clrieStrModuleName);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
+// Skip importing modules on non-Windows platforms for now.
+#ifndef PLATFORM_UNIX
     if ((m_spInjectAssembly != nullptr) && (wcscmp(clrieStrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
     {
         CComPtr<IMetaDataDispenserEx> pDisp;
@@ -715,7 +721,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
 
         IfFailRet(pModuleInfo->ImportModule(pSourceImport, pSourceImage));
     }
-
+#endif
 
     // get the moduleId and method token for instrument method entry
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
@@ -777,7 +783,7 @@ HRESULT CInstrumentationMethod::OnShutdown()
     {
         CComPtr<IProfilerManagerLogging> spLogger;
         CComPtr<IProfilerManager4> pProfilerManager4;
-        IfFailRet(m_pProfilerManager->QueryInterface(pProfilerManager4));
+        IfFailRet(m_pProfilerManager->QueryInterface(&pProfilerManager4));
         pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
         spLogger->LogDumpMessage(_T("</InstrumentationMethodLog>"));
     }
@@ -1534,7 +1540,7 @@ HRESULT CInstrumentationMethod::ExceptionThrown(
     IfFailRet(m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo));
 
     CComPtr<ICorProfilerInfo2> pCorProfilerInfo2;
-    pCorProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo2), (void**)&pCorProfilerInfo2);
+    pCorProfilerInfo->QueryInterface(&pCorProfilerInfo2);
 
     IfFailRet(pCorProfilerInfo2->DoStackSnapshot(
         NULL,

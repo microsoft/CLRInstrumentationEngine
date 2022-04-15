@@ -1,4 +1,4 @@
-#include "widechar.h"
+#include "wcrt.h"
 
 int __cdecl wcscmp(const char16_t* string1, const char16_t* string2)
 {
