@@ -11,10 +11,13 @@
 #include "InstrumentationEngineString.h"
 #include "InstrStr.h"
 
+#include <type_traits>
+
 const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = _T("Nagler_TestOutputPath");
 const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = _T("Nagler_TestScript");
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = _T("TestScripts");
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = _T("Nagler_IsRejit");
+
 
 
 // Convenience macro for defining strings.
@@ -186,7 +189,7 @@ HRESULT CInstrumentationMethod::LoadTestScript()
                 ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
                 m_spInjectAssembly = spNewInjectAssembly;
             #else
-                fprintf(stderr, "Inject Assembly tests are currently only supported on Windows platforms.")
+                AssertFailed("Inject Assembly tests are currently only supported on Windows platforms.");
             #endif
         }
         else if (wcscmp(strCurrNodeName.c_str(), _T("MethodLogging")) == 0)
@@ -295,9 +298,9 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
             // We may want to update the xml reader to support using whatever encoding
             // is used on the system.
             std::string utf8NodeValue;
-            SystemString::Convert(varNodeValue.c_str(), &utf8NodeValue);
+            SystemString::Convert(varNodeValue.c_str(), utf8NodeValue);
 
-            stringstream corIlMapString(varNodeValue);
+            stringstream corIlMapString(utf8NodeValue);
             DWORD oldOffset = 0;
             DWORD newOffset = 0;
 
@@ -758,7 +761,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
                     MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
                     mdToken methodDefs[16];
                     ULONG cMethod = 0;
-                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, _countof(methodDefs), &cMethod);
+                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, extent<decltype(methodDefs)>::value, &cMethod);
 
                     if (cMethod > 0)
                     {
@@ -780,6 +783,7 @@ HRESULT CInstrumentationMethod::OnModuleUnloaded(_In_ IModuleInfo* pModuleInfo)
 
 HRESULT CInstrumentationMethod::OnShutdown()
 {
+    HRESULT hr = S_OK;
     if (m_bExceptionTrackingEnabled)
     {
         CComPtr<IProfilerManagerLogging> spLogger;
@@ -795,7 +799,7 @@ HRESULT CInstrumentationMethod::OnShutdown()
         spLogger->LogDumpMessage(_T("</InstrumentationMethodLog>"));
     }
 
-    return S_OK;
+    return hr;
 }
 
 HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
@@ -808,7 +812,7 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
     InstrStr(clrieStrModule);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModule.m_bstr));
 
-    tstring moduleName = clrieStrModule;
+    tstring moduleName = clrieStrModule.BStr();
 
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
@@ -916,7 +920,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         std::shared_ptr<CInstrumentMethodPointTo> spPointTo = pMethodEntry->GetPointTo();
         BYTE pSignature[256] = {};
         DWORD cbSignature = 0;
-        pMethodInfo->GetCorSignature(_countof(pSignature), pSignature, &cbSignature);
+        pMethodInfo->GetCorSignature(extent<decltype(pSignature)>::value, pSignature, &cbSignature);
 
 
         mdToken tkMethodToken = mdTokenNil;
@@ -1239,13 +1243,13 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
 
     if (tailcallCount > 0)
     {
-        ATLASSERT(_T("Trying to add exception handler to method with tailcall"));
+        AssertFailed("Trying to add exception handler to method with tailcall");
         return E_FAIL;
     }
 
     if (returnCount > 1) // note it would be valid to have method with zero returns, as we could end in a throw
     {
-        ATLASSERT(_T("Trying to add exception handler to method with more than one return"));
+        AssertFailed("Trying to add exception handler to method with more than one return");
         return E_FAIL;
     }
 
@@ -1399,7 +1403,7 @@ HRESULT CInstrumentationMethod::InstrumentLocals(IMethodInfo* pMethodInfo, share
 HRESULT CInstrumentationMethod::GetType(IModuleInfo* pModuleInfo, const CLocalType& localType, IType** pType)
 {
     HRESULT hr = S_OK;
-    const wstring& typeName = localType.GetTypeName();
+    const tstring& typeName = localType.GetTypeName();
 
     CComPtr<ITypeCreator> pTypeFactory;
     IfFailRet(pModuleInfo->CreateTypeFactory(&pTypeFactory));
