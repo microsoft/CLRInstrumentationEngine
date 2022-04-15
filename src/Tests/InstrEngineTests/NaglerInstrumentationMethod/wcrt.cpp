@@ -1,11 +1,16 @@
+#include "mstypes.h"
 #include "wcrt.h"
+#include "tstring.h"
+#include "Common.Lib/systemstring.h"
 
-int __cdecl wcscmp(const char16_t* string1, const char16_t* string2)
+using namespace CommonLib;
+
+int __cdecl wcscmp(const WCHAR* string1, const WCHAR* string2)
 {
-    return wcsncmp(string1, string2, 0x7fffffff);
+    return wcsncmp(string1, string2, (size_t)0x7fffffff);
 }
 
-int __cdecl wcsncmp(const char16_t *string1, const char16_t *string2, size_t count)
+int __cdecl wcsncmp(const WCHAR* string1, const WCHAR* string2, size_t count)
 {
     size_t i;
     int diff = 0;
@@ -19,4 +24,29 @@ int __cdecl wcsncmp(const char16_t *string1, const char16_t *string2, size_t cou
     }
 
     return diff;
+}
+
+INT32 __cdecl _wtoi(const WCHAR* s)
+{
+    std::string utf8;
+    HRESULT hr = SystemString::Convert(s, utf8);
+    if (hr < 0)
+    {
+        return 0;
+    }
+
+    return std::stoi(utf8);
+
+}
+
+INT64 __cdecl _wtoi64(const WCHAR* s)
+{
+    std::string utf8;
+    HRESULT hr = SystemString::Convert(s, utf8);
+    if (hr < 0)
+    {
+        return 0;
+    }
+
+    return std::stoll(s);
 }
