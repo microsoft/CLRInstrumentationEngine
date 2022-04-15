@@ -35,6 +35,7 @@ ILOpcodeInfo ilOpcodeInfo[] =
 
 struct ComInitializer
 {
+    #ifndef PLATFORM_UNIX
     HRESULT _hr;
     ComInitializer(DWORD mode = COINIT_APARTMENTTHREADED)
     {
@@ -47,6 +48,7 @@ struct ComInitializer
             CoUninitialize();
         }
     }
+    #endif
 };
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
@@ -55,10 +57,15 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     m_pProfilerManager = pProfilerManager;
     IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
 
+#ifdef PLATFORM_UNIX
+    DWORD retVal = LoadInstrumentationMethodXml(nullptr);
+#else
+    // On Windows, xml reading is done in a single-threaded appartment using 
+    // COM, so we need to spin up a new thread for it.
     CHandle hConfigThread;
-    hConfigThread.Attach(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
-
+    hConfigThread.Attach(CreateThread(NULL, 0, LoadInstrumentationMethodXml, this, 0, NULL));
     DWORD retVal = WaitForSingleObject(hConfigThread, 15000);
+#endif
 
     if (m_bTestInstrumentationMethodLogging)
     {
@@ -99,7 +106,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
 // as that would screw up the com state for the application's thread. Spin up a new thread to allow the instrumentation
 // method to co create a free threaded version of msxml on a thread that it owns to avoid this.
-DWORD WINAPI CInstrumentationMethod::InstrumentationMethodThreadProc(
+DWORD WINAPI CInstrumentationMethod::LoadInstrumentationMethodXml(
     _In_  LPVOID lpParameter
 )
 {

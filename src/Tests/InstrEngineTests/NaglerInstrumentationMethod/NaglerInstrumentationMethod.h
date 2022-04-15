@@ -181,7 +181,7 @@ private:
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
 
-    static DWORD WINAPI InstrumentationMethodThreadProc(
+    static DWORD WINAPI LoadInstrumentationMethodXml(
         _In_  LPVOID lpParameter
         );
 
