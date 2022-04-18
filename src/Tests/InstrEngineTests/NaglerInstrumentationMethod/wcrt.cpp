@@ -1,7 +1,6 @@
-#include "mstypes.h"
+#include "stdafx.h"
 #include "wcrt.h"
-#include "tstring.h"
-#include "Common.Lib/systemstring.h"
+#include <string>
 
 using namespace CommonLib;
 
@@ -48,5 +47,5 @@ INT64 __cdecl _wtoi64(const WCHAR* s)
         return 0;
     }
 
-    return std::stoll(s);
+    return std::stoll(utf8);
 }
