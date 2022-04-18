@@ -10,6 +10,7 @@
 #include "Util.h"
 #include "InstrumentationEngineString.h"
 #include "InstrStr.h"
+#include "SystemUtils.h"
 
 #include <type_traits>
 
@@ -128,26 +129,15 @@ HRESULT CInstrumentationMethod::LoadTestScript()
 {
     HRESULT hr = S_OK;
 
-    WCHAR testScript[MAX_PATH] = { 0 };
-    DWORD dwRes = GetEnvironmentVariableW(TestScriptFileEnvName, testScript, MAX_PATH);
-    if (dwRes == 0)
-    {
-        AssertFailed("Failed to get testScript file name");
-        return E_FAIL;
-    }
+    tstring testScript;
+    IfFailRet(NaglerSystemUtils::GetEnvVar(TestScriptFileEnvName, testScript));
+   
+    IfFailRet(NaglerSystemUtils::GetEnvVar(TestOutputPathEnvName, m_strBinaryDir));
 
-    WCHAR testOutputPath[MAX_PATH] = { 0 };
-    dwRes = GetEnvironmentVariableW(TestOutputPathEnvName, testOutputPath, MAX_PATH);
-    if (dwRes == 0)
-    {
-        AssertFailed("Failed to get test path");
-        return E_FAIL;
-    }
-    m_strBinaryDir = testOutputPath;
     CComPtr<CXmlDocWrapper> pDocument;
     pDocument.Attach(new CXmlDocWrapper());
 
-    hr = pDocument->LoadFile(testScript);
+    hr = pDocument->LoadFile(testScript.c_str());
     if (hr != S_OK)
     {
         AssertFailed("Failed to load test configuration");
@@ -216,15 +206,9 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
 {
     HRESULT hr = S_OK;
 
-    WCHAR isRejitEnvValue[MAX_PATH];
-    DWORD dwRes = GetEnvironmentVariableW(IsRejitEnvName, isRejitEnvValue, MAX_PATH);
-    if (dwRes == 0)
-    {
-        AssertFailed("Failed to get isrejit variable");
-        return E_FAIL;
-    }
-
-    bool rejitAllInstruMethods = (wcscmp(isRejitEnvValue, _T("True")) == 0);
+    tstring isRejitEnvValue;
+    IfFailRet(NaglerSystemUtils::GetEnvVar(IsRejitEnvName, isRejitEnvValue));
+    bool rejitAllInstruMethods = (wcscmp(isRejitEnvValue.c_str(), _T("True")) == 0);
 
     tstring moduleName;
     tstring methodName;
