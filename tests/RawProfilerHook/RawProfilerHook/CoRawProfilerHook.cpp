@@ -75,7 +75,7 @@ HRESULT STDMETHODCALLTYPE CCoRawProfilerHook::ModuleLoadFinished(
     WCHAR modName[MAX_PATH];
     HRESULT hr = S_OK;
 
-    const WCHAR* testModuleName = L"RawProfilerHook.Tests_x"
+    const WCHAR* testModuleName = L"RawProfilerHook.Tests.x"
 #if defined(_X86_)
         L"86"
 #else
