@@ -9,7 +9,7 @@ namespace RemoteUnitTestExecutor
     /// </summary>
     public abstract class TestBase : ITestBase
     {
-        public TestBase()
+        protected TestBase()
         {
             TestResult = new TestResult();
         }

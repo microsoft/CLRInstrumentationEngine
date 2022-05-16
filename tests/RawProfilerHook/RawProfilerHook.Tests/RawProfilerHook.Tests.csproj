@@ -18,7 +18,7 @@
   <PropertyGroup>
     <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>RawProfilerHook.Tests</RootNamespace>
-    <AssemblyName>RawProfilerHook.Tests_$(Platform)</AssemblyName>
+    <AssemblyName>RawProfilerHook.Tests.$(Platform)</AssemblyName>
     <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>
