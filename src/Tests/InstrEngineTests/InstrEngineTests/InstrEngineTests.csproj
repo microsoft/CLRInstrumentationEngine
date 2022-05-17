@@ -27,6 +27,7 @@
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
     <PackageReference Include="Microsoft.NET.Sdk.IL" Version="$(NetCoreVersion)" />
     <PackageReference Include="Microsoft.NETCore.ILAsm" Version="$(NetCoreVersion)" />
+    <PackageReference Include="Microsoft.NETCore.ILDAsm" Version="$(NetCoreVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Baselines\AddBranchTargets_ArrayForeachTest.xml">
