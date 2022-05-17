@@ -11,6 +11,10 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>InstrEngineTests</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup>
+    <NetCoreVersion>7.0.0-preview.4.22229.4</NetCoreVersion>
+    <IlAsmLocation>$(NuGetPackageRoot)\microsoft.netcore.ilasm\$(NetCoreVersion)\runtimes\native\ilasm.exe</IlAsmLocation>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="EmbeddedResources\**" />
     <EmbeddedResource Include="EmbeddedResources\**" />
@@ -21,6 +25,8 @@
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
+    <PackageReference Include="Microsoft.NET.Sdk.IL" Version="$(NetCoreVersion)" />
+    <PackageReference Include="Microsoft.NETCore.ILAsm" Version="$(NetCoreVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Baselines\AddBranchTargets_ArrayForeachTest.xml">
@@ -491,6 +497,11 @@
     </Content>
     <Content Include="..\TestScripts\MultiReturn_SwitchTest.xml">
       <Link>TestScripts\MultiReturn_SwitchTest.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(ILAsmLocation)')">
+    <Content Include="$(ILAsmLocation)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

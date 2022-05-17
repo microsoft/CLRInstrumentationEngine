@@ -25,3 +25,6 @@ dotnet_diagnostic.CA1822.severity = none
 dotnet_diagnostic.CA1016.severity = none
 dotnet_diagnostic.CA1031.severity = none
 dotnet_diagnostic.CA1711.severity = none
+
+[{*.csproj, *.vcxproj, *.xml}]
+indent_size = 2
