@@ -10,25 +10,111 @@
 {
     .maxstack 2
     .entrypoint
+
+    call void Test_InvalidStructWithRefField()
+    call void Test_InvalidRefFieldAlignment()
+    call void Test_InvalidObjectRefRefFieldOverlap()
+    call void Test_InnerValidByRef()
+    call void Test_IntPtrOverlapWithInnerFieldType()
+    call void Test_WithRefField()
+    call void Test_WithRefStructField()
+    call void Test_WithTypedReferenceField()
+
+    ldstr "We made it to the end!"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_InvalidStructWithRefField()
+{
+    .maxstack 2
+
+    ldstr "**Test_InvalidStructWithRefField**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_InvalidRefFieldAlignment()
+{
+    .maxstack 2
+
+    ldstr "**Test_InvalidRefFieldAlignment**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_InvalidObjectRefRefFieldOverlap()
+{
+    .maxstack 2
+
+    ldstr "**Test_InvalidObjectRefRefFieldOverlap**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_InnerValidByRef()
+{
+    .maxstack 2
+
+    ldstr "**Test_InnerValidByRef**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_IntPtrOverlapWithInnerFieldType()
+{
+    .maxstack 2
+
+    ldstr "**Test_IntPtrOverlapWithInnerFieldType**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+.method static void Test_WithRefField()
+{
+    .maxstack 2
+
+    ldstr "**Test_WithRefField**"
+    call void [mscorlib]System.Console::WriteLine(string)
+
     .locals init (string testString, valuetype InvalidCSharp.WithRefField withRefFieldClass)
 
     ldstr "Test"
     stloc testString
 
-    //ldloca testString
-
-    //call instance void InvalidCSharp.WithRefField::.ctor(string &)
+    ldloca withRefFieldClass
+    ldloca testString
+    call instance void InvalidCSharp.WithRefField::.ctor(string &)
 
     ldloca withRefFieldClass
-    //ldloc testString
+    ldloc testString
+    call instance bool InvalidCSharp.WithRefField::ConfirmFieldInstance(string)
+    call void [mscorlib]System.Console::WriteLine(bool) // Probably isn't necessary
 
-    //call instance bool InvalidCSharp.WithRefField::ConfirmFieldInstance(string)
-    call instance string InvalidCSharp.WithRefField::SimpleTest()
+    ret
+}
 
-    //call void [mscorlib]System.Console::WriteLine(bool)
+.method static void Test_WithRefStructField()
+{
+    .maxstack 2
+
+    ldstr "**Test_WithRefStructField**"
     call void [mscorlib]System.Console::WriteLine(string)
 
-    ldstr "We made it to the end!"
+    ret
+}
+
+.method static void Test_WithTypedReferenceField()
+{
+    .maxstack 2
+
+    ldstr "**Test_WithTypedReferenceField**"
     call void [mscorlib]System.Console::WriteLine(string)
 
     ret
@@ -111,7 +197,6 @@
         01 00 00 00
     )
     .field public string& Str
-    //.field public string Str
 
     .method public hidebysig specialname rtspecialname
         instance void .ctor (
@@ -134,13 +219,6 @@
         ldind.ref
         ldarg.1
         ceq
-        ret
-    }
-
-    .method public hidebysig
-        instance string SimpleTest () cil managed
-    {
-        ldstr "Successfully got to SimpleTest"
         ret
     }
 }
