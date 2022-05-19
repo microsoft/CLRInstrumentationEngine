@@ -1,9 +1,38 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+.assembly extern mscorlib {}
 .assembly extern System.Runtime { .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A ) }
 
 .assembly InvalidCSharp { }
+
+.method static void Main() cil managed
+{
+    .maxstack 2
+    .entrypoint
+    .locals init (string testString, valuetype InvalidCSharp.WithRefField withRefFieldClass)
+
+    ldstr "Test"
+    stloc testString
+
+    //ldloca testString
+
+    //call instance void InvalidCSharp.WithRefField::.ctor(string &)
+
+    ldloca withRefFieldClass
+    //ldloc testString
+
+    //call instance bool InvalidCSharp.WithRefField::ConfirmFieldInstance(string)
+    call instance string InvalidCSharp.WithRefField::SimpleTest()
+
+    //call void [mscorlib]System.Console::WriteLine(bool)
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ldstr "We made it to the end!"
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
 
 .class public sequential ansi sealed beforefieldinit InvalidCSharp.InvalidStructWithRefField
     extends [System.Runtime]System.ValueType
@@ -82,6 +111,7 @@
         01 00 00 00
     )
     .field public string& Str
+    //.field public string Str
 
     .method public hidebysig specialname rtspecialname
         instance void .ctor (
@@ -104,6 +134,13 @@
         ldind.ref
         ldarg.1
         ceq
+        ret
+    }
+
+    .method public hidebysig
+        instance string SimpleTest () cil managed
+    {
+        ldstr "Successfully got to SimpleTest"
         ret
     }
 }
