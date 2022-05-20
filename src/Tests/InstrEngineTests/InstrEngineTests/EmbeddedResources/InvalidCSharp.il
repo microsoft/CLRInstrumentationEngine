@@ -26,12 +26,33 @@
     ret
 }
 
+.method static void PrintMethodName(string methodName)
+{
+    ldstr "--"
+    call void [mscorlib]System.Console::Write(string)
+
+    ldarg methodName
+    call void [mscorlib]System.Console::WriteLine(string)
+
+    ret
+}
+
+// My understanding is that this isn't supposed to succeed -> explore/ask about whether we should check that an error is produced (System.TypeLoadException - A ByRef-like type cannot be used as the type for an instance field in a non-ByRef-like type.)
 .method static void Test_InvalidStructWithRefField()
 {
     .maxstack 2
 
-    ldstr "**Test_InvalidStructWithRefField**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_InvalidStructWithRefField"
+    call void PrintMethodName(string)
+
+    //.locals init (string testString, valuetype InvalidCSharp.InvalidStructWithRefField invalidStructWithRefField)
+
+    //ldstr "Test"
+    //stloc testString
+
+    //ldloca invalidStructWithRefField
+    //ldloca testString
+    //call instance void InvalidCSharp.InvalidStructWithRefField::TestFieldInstance(string &)
 
     ret
 }
@@ -40,8 +61,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_InvalidRefFieldAlignment**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_InvalidRefFieldAlignment"
+    call void PrintMethodName(string)
 
     ret
 }
@@ -50,8 +71,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_InvalidObjectRefRefFieldOverlap**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_InvalidObjectRefRefFieldOverlap"
+    call void PrintMethodName(string)
 
     ret
 }
@@ -60,8 +81,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_InnerValidByRef**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_InnerValidByRef"
+    call void PrintMethodName(string)
 
     ret
 }
@@ -70,8 +91,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_IntPtrOverlapWithInnerFieldType**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_IntPtrOverlapWithInnerFieldType"
+    call void PrintMethodName(string)
 
     ret
 }
@@ -80,8 +101,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_WithRefField**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_WithRefField"
+    call void PrintMethodName(string)
 
     .locals init (string testString, valuetype InvalidCSharp.WithRefField withRefFieldClass)
 
@@ -104,8 +125,26 @@
 {
     .maxstack 2
 
-    ldstr "**Test_WithRefStructField**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_WithRefStructField"
+    call void PrintMethodName(string)
+
+    .locals init (string testString, valuetype InvalidCSharp.WithRefField withRefFieldClass, valuetype InvalidCSharp.WithRefStructField withRefStructFieldClass)
+
+    ldstr "Test"
+    stloc testString
+
+    ldloca withRefFieldClass
+    ldloca testString
+    call instance void InvalidCSharp.WithRefField::.ctor(string &)
+
+    ldloca withRefStructFieldClass
+    ldloca withRefFieldClass
+    call instance void InvalidCSharp.WithRefStructField::.ctor(valuetype InvalidCSharp.WithRefField &)
+
+    ldloca withRefStructFieldClass
+    ldloca withRefFieldClass
+    call instance bool InvalidCSharp.WithRefStructField::ConfirmFieldInstance(valuetype InvalidCSharp.WithRefField &)
+    call void [mscorlib]System.Console::WriteLine(bool) // Probably isn't necessary
 
     ret
 }
@@ -114,8 +153,8 @@
 {
     .maxstack 2
 
-    ldstr "**Test_WithTypedReferenceField**"
-    call void [mscorlib]System.Console::WriteLine(string)
+    ldstr "Test_WithTypedReferenceField"
+    call void PrintMethodName(string)
 
     ret
 }
@@ -125,6 +164,17 @@
 {
     // Type requires IsByRefLikeAttribute to be valid.
     .field public string& Invalid
+
+    .method public hidebysig specialname rtspecialname
+        instance void TestFieldInstance (
+            string&
+        ) cil managed
+    {
+        ldarg.0
+        ldarg.1
+        stfld string& InvalidCSharp.WithRefField::Invalid
+        ret
+    }
 }
 
 .class public explicit ansi sealed beforefieldinit InvalidCSharp.InvalidRefFieldAlignment
@@ -190,6 +240,7 @@
     .field [0] public valuetype InvalidCSharp.InnerValidByRef Invalid
 }
 
+// TESTED
 .class public sequential ansi sealed beforefieldinit InvalidCSharp.WithRefField
     extends [System.Runtime]System.ValueType
 {
@@ -223,6 +274,7 @@
     }
 }
 
+// TESTED
 .class public sequential ansi sealed beforefieldinit InvalidCSharp.WithRefStructField
     extends [System.Runtime]System.ValueType
 {
