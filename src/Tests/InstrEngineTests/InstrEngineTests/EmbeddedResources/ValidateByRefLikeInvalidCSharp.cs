@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ByRefLikeInvalidCSharp;
 
-namespace Validate
+namespace ValidateByRefLikeInvalidCSharp
 {
     class Program
     {

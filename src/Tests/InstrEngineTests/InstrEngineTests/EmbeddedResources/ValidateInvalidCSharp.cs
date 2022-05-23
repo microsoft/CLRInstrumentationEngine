@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using InvalidCSharp;
 
-namespace Validate
+namespace ValidateInvalidCSharp
 {
-    class Program
+    class Validate
     {
         static int error = 0;
 
@@ -22,6 +22,13 @@ namespace Validate
             Validate_Create_TypedReferenceRefField();
 
             return error; // If everything works as expected, error should be 0
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        private ref struct Explicit
+        {
+            [FieldOffset(0)] public Span<byte> Bytes;
+            [FieldOffset(0)] public Guid Guid;
         }
 
         private static void Validate_Invalid_RefField_Fails()
@@ -80,7 +87,7 @@ namespace Validate
                 };
 
                 ref var i = ref t.Invalid;
-                var size iSize = i.Size;
+                var iSize = i.Size;
             }
             catch (TypeLoadException)
             {

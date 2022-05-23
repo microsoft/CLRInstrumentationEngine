@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFramework>net70</TargetFramework>
     <OutputType>Exe</OutputType>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ByRefLikeInvalidCSharp.cs" />
+    <Compile Include="ValidateInvalidCSharp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="InvalidCSharp.ilproj" />

@@ -11,7 +11,23 @@
     .maxstack 2
     .entrypoint
 
-    call void Test_InvalidStructWithRefField()
+    .try
+    {
+        call void Test_InvalidStructWithRefField()
+
+        leave.s _CONTINUE
+    }
+    catch [mscorlib]System.Exception
+    {
+        callvirt instance string [mscorlib]System.Exception::get_Message()
+        call void [mscorlib]System.Console::WriteLine(string)
+
+        leave.s _CONTINUE
+    }
+
+_CONTINUE:
+
+    /*
     call void Test_InvalidRefFieldAlignment()
     call void Test_InvalidObjectRefRefFieldOverlap()
     call void Test_InnerValidByRef()
@@ -22,7 +38,7 @@
 
     ldstr "We made it to the end!"
     call void [mscorlib]System.Console::WriteLine(string)
-
+    */
     ret
 }
 
@@ -37,7 +53,6 @@
     ret
 }
 
-// My understanding is that this isn't supposed to succeed -> explore/ask about whether we should check that an error is produced (System.TypeLoadException - A ByRef-like type cannot be used as the type for an instance field in a non-ByRef-like type.)
 .method static void Test_InvalidStructWithRefField()
 {
     .maxstack 2
@@ -47,12 +62,7 @@
 
     //.locals init (string testString, valuetype InvalidCSharp.InvalidStructWithRefField invalidStructWithRefField)
 
-    //ldstr "Test"
-    //stloc testString
-
-    //ldloca invalidStructWithRefField
-    //ldloca testString
-    //call instance void InvalidCSharp.InvalidStructWithRefField::TestFieldInstance(string &)
+    .locals init (valuetype InvalidCSharp.InvalidStructWithRefField invalidStructWithRefField)
 
     ret
 }
