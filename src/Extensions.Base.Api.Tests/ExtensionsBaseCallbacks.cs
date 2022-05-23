@@ -19,6 +19,8 @@ namespace ProfilerCallbacksTests
 
         private readonly object thisObj = new object();
         private readonly object returnValue = new object();
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "This is specifically used for test code.")]
         private readonly Exception exception = new Exception();
 
         private CallbackStubIsCalled callbacksStub;
