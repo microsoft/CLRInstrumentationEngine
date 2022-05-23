@@ -12,3 +12,16 @@ indent_style = space
 indent_size = 4
 end_of_line = crlf
 trim_trailing_whitespace = true
+
+[{*.cs, *.vb}]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1852.severity = none
+dotnet_diagnostic.CA1014.severity = none
+dotnet_diagnostic.CA1805.severity = none
+dotnet_diagnostic.CA1502.severity = none
+dotnet_diagnostic.CA1813.severity = none
+dotnet_diagnostic.CA5392.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1016.severity = none
+dotnet_diagnostic.CA1031.severity = none
+dotnet_diagnostic.CA1711.severity = none

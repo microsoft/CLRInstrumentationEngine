@@ -21,7 +21,7 @@
 
   <PropertyGroup>
     <DefineConstants Condition="'$(PublicRelease)' != 'True'">$(DefineConstants);ALLOWNOTSIGNED</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants;DEBUG</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);DEBUG</DefineConstants>
     <EnableNetAnalyzers>true</EnableNetAnalyzers>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeAnalysis\Sdl.Recommended.Error.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
