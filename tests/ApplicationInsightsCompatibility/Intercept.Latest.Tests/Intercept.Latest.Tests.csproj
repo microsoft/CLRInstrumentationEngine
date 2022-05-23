@@ -8,16 +8,16 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), EnlistmentRoot.marker))\build\Managed.props" />
   <PropertyGroup Condition="'$(Platform)' == 'x86'">
     <DefineConstants>$(DefineConstants);X86</DefineConstants>
-    <AssemblyName>Intercept.Latest.Tests_x86</AssemblyName>
+    <AssemblyName>Intercept.Latest.Tests.x86</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <DefineConstants>$(DefineConstants);X64</DefineConstants>
-    <AssemblyName>Intercept.Latest.Tests_x64</AssemblyName>
+    <AssemblyName>Intercept.Latest.Tests.x64</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <Platforms>x64;x86;AnyCPU;ARM64</Platforms>
     <RootNamespace>Intercept.Latest.Tests</RootNamespace>
-    <AssemblyName>Intercept.Latest.Tests_$(Platform)</AssemblyName>
+    <AssemblyName>Intercept.Latest.Tests.$(Platform)</AssemblyName>
     <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <PlatformTarget Condition="'$(Platform)'=='ARM64'">ARM64</PlatformTarget>

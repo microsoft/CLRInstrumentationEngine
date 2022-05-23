@@ -344,6 +344,7 @@ namespace _System.Diagnostics
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1502:Method has cyclomatic complexity of '29'", Justification = "This function is not changed often, and should not be updated.")]
         public static void ApplicationInsights_RemoveCallbacks(int methodId, int argsCount)
         {
             switch (argsCount)
