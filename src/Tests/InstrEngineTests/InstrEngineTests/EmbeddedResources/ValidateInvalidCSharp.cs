@@ -15,6 +15,8 @@ namespace ValidateInvalidCSharp
 
         static int Main(string[] args)
         {
+            throw new Exception("TESTING");
+
             Validate_Invalid_RefField_Fails();
             Validate_RefStructWithRefField_Load();
             Validate_Create_RefField();

@@ -8,24 +8,115 @@
 
 .method static void Main() cil managed
 {
-    .maxstack 2
+    .maxstack 8
     .entrypoint
 
+    .locals init (int32 currentErrorCount, int32 expectedErrorCount)
+
+    ldc.i4 5 // Come fix this for number of expected errors
+    stloc expectedErrorCount
+
+    ldc.i4 0
+    stloc currentErrorCount
+
+    //////////////////////////////////////
+    // InvalidStructWithRefField /////////
+    //////////////////////////////////////
     .try
     {
         call void Test_InvalidStructWithRefField()
-
-        leave.s _CONTINUE
+        leave.s _CONTINUE1
     }
-    catch [mscorlib]System.Exception
+    catch [mscorlib]System.TypeLoadException
     {
-        callvirt instance string [mscorlib]System.Exception::get_Message()
-        call void [mscorlib]System.Console::WriteLine(string)
-
-        leave.s _CONTINUE
+        ldloc currentErrorCount
+        ldc.i4 1
+        add
+        stloc currentErrorCount
+        leave.s _CONTINUE1
     }
 
-_CONTINUE:
+_CONTINUE1:
+
+    //////////////////////////////////////
+    // InvalidRefFieldAlignment //////////
+    //////////////////////////////////////
+    .try
+    {
+        call void Test_InvalidRefFieldAlignment()
+        leave.s _CONTINUE2
+    }
+    catch [mscorlib]System.TypeLoadException
+    {
+        ldloc currentErrorCount
+        ldc.i4 1
+        add
+        stloc currentErrorCount
+        leave.s _CONTINUE2
+    }
+
+_CONTINUE2:
+
+    //////////////////////////////////////
+    // InvalidObjectRefRefFieldOverlap ///
+    //////////////////////////////////////
+    .try
+    {
+        call void Test_InvalidObjectRefRefFieldOverlap()
+        leave.s _CONTINUE3
+    }
+    catch [mscorlib]System.TypeLoadException
+    {
+        ldloc currentErrorCount
+        ldc.i4 1
+        add
+        stloc currentErrorCount
+        leave.s _CONTINUE3
+    }
+
+_CONTINUE3:
+
+    //////////////////////////////////////
+    // IntPtrRefFieldOverlap /////////////
+    //////////////////////////////////////
+    .try
+    {
+        call void Test_IntPtrRefFieldOverlap()
+        leave.s _CONTINUE4
+    }
+    catch [mscorlib]System.TypeLoadException
+    {
+        ldloc currentErrorCount
+        ldc.i4 1
+        add
+        stloc currentErrorCount
+        leave.s _CONTINUE4
+    }
+
+_CONTINUE4:
+
+    //////////////////////////////////////
+    // IntPtrOverlapWithInnerFieldType ///
+    //////////////////////////////////////
+    .try
+    {
+        call void Test_IntPtrOverlapWithInnerFieldType() // This is suspicious...seems that the erroring isn't because of the field overlap, but because of the second field's type
+        leave.s _CONTINUE5
+    }
+    catch [mscorlib]System.TypeLoadException
+    {
+        ldloc currentErrorCount
+        ldc.i4 1
+        add
+        stloc currentErrorCount
+        leave.s _CONTINUE5
+    }
+
+_CONTINUE5:
+
+
+    call void Test_WithRefField()
+
 
     /*
     call void Test_InvalidRefFieldAlignment()
@@ -39,6 +130,20 @@ _CONTINUE:
     ldstr "We made it to the end!"
     call void [mscorlib]System.Console::WriteLine(string)
     */
+
+
+    // Need to check that the error counter is the expected number
+    ldloc currentErrorCount
+    ldloc expectedErrorCount
+
+    beq SUCCESS
+      ldstr      "Incorrect Error Count"
+      newobj     instance void [System.Runtime]System.Exception::.ctor(string)
+      throw
+
+SUCCESS:
+    ldstr "SUCCESS!"
+    call void [mscorlib]System.Console::WriteLine(string)
     ret
 }
 
@@ -70,20 +175,14 @@ _CONTINUE:
 .method static void Test_InvalidRefFieldAlignment()
 {
     .maxstack 2
-
-    ldstr "Test_InvalidRefFieldAlignment"
-    call void PrintMethodName(string)
-
+    .locals init (valuetype InvalidCSharp.InvalidRefFieldAlignment invalidRefFieldAlignmentClass)
     ret
 }
 
 .method static void Test_InvalidObjectRefRefFieldOverlap()
 {
     .maxstack 2
-
-    ldstr "Test_InvalidObjectRefRefFieldOverlap"
-    call void PrintMethodName(string)
-
+    .locals init (valuetype InvalidCSharp.InvalidObjectRefRefFieldOverlap invalidObjectRefRefFieldOverlapClass)
     ret
 }
 
@@ -97,31 +196,59 @@ _CONTINUE:
     ret
 }
 
+.method static void Test_IntPtrRefFieldOverlap()
+{
+    .maxstack  2
+    .locals init (valuetype [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap V_0,
+            valuetype [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap V_1)
+    nop
+    ldloca.s   V_1
+    initobj    [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap
+    ldloca.s   V_1
+    ldsfld     native int [System.Runtime]System.IntPtr::Zero
+    stfld      native int [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap::Field
+    ldloc V_1
+    stloc V_0
+    ret
+
+
+
+
+
+
+
+
+    //.maxstack 2
+    //.locals init (valuetype InvalidCSharp.IntPtrRefFieldOverlap intPtrRefFieldOverlapClass)
+    //ret
+}
+
 .method static void Test_IntPtrOverlapWithInnerFieldType()
 {
     .maxstack 2
-
-    ldstr "Test_IntPtrOverlapWithInnerFieldType"
-    call void PrintMethodName(string)
-
+    .locals init (valuetype InvalidCSharp.IntPtrOverlapWithInnerFieldType intPtrOverlapWithInnerFieldTypeClass)
     ret
 }
 
 .method static void Test_WithRefField()
 {
-    .maxstack 2
+    .maxstack 8
 
     ldstr "Test_WithRefField"
     call void PrintMethodName(string)
 
-    .locals init (string testString, valuetype InvalidCSharp.WithRefField withRefFieldClass)
+    .locals init (string testString, int32 testInt, valuetype InvalidCSharp.WithRefField withRefFieldClass)
 
     ldstr "Test"
     stloc testString
 
+    ldc.i4 4
+    stloc testInt
+
     ldloca withRefFieldClass
-    ldloca testString
-    call instance void InvalidCSharp.WithRefField::.ctor(string &)
+    ldloc testString
+    ldloca testInt
+    call instance void InvalidCSharp.WithRefField::.ctor(string, int32 &)
 
     ldloca withRefFieldClass
     ldloc testString
@@ -257,16 +384,38 @@ _CONTINUE:
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
         01 00 00 00
     )
-    .field public string& Str
+    .field [0] public native int Str
+    .field [0] public int32& Int
 
     .method public hidebysig specialname rtspecialname
         instance void .ctor (
-            string&
+            string, int32&
         ) cil managed
     {
+        //ldarg.0
+        //ldarg.1
+        //stfld string InvalidCSharp.WithRefField::Str
+
         ldarg.0
-        ldarg.1
-        stfld string& InvalidCSharp.WithRefField::Str
+        ldsfld native int [System.Runtime]System.IntPtr::Zero
+        stfld native int InvalidCSharp.WithRefField::Str
+
+        ldarg.0
+        ldarg.2
+        stfld int32& InvalidCSharp.WithRefField::Int
+
+        ldarg.0
+        ldfld native int InvalidCSharp.WithRefField::Str
+        pop
+        //ldind.ref
+        //call void [mscorlib]System.Console::WriteLine(native int)
+
+        ldarg.0
+        ldfld int32& InvalidCSharp.WithRefField::Int
+        ldind.i4
+        call void [mscorlib]System.Console::WriteLine(int32)
+
+
         ret
     }
 
@@ -276,8 +425,8 @@ _CONTINUE:
         ) cil managed
     {
         ldarg.0
-        ldfld string& InvalidCSharp.WithRefField::Str
-        ldind.ref
+        ldfld string InvalidCSharp.WithRefField::Str
+        //ldind.ref
         ldarg.1
         ceq
         ret
