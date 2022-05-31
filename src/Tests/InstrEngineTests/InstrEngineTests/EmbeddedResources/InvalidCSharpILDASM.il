@@ -71,12 +71,12 @@
         .custom instance void System.Runtime.CompilerServices.NullableAttribute::.ctor(uint8) = ( 01 00 00 00 00 ) 
 
         .field public static initonly class RefFieldValidator/'<>c' '<>9'
-        .field public static class [System.Runtime]System.Action '<>9__2_0'
-        .field public static class [System.Runtime]System.Action '<>9__2_1'
-        .field public static class [System.Runtime]System.Action '<>9__2_2'
-        .field public static class [System.Runtime]System.Action '<>9__2_3'
-        .field public static class [System.Runtime]System.Action '<>9__2_4'
-        .field public static class [System.Runtime]System.Action '<>9__2_5'
+        .field public static class [System.Runtime]System.Action Action_0
+        .field public static class [System.Runtime]System.Action Action_1
+        .field public static class [System.Runtime]System.Action Action_2
+        .field public static class [System.Runtime]System.Action Action_3
+        .field public static class [System.Runtime]System.Action Action_4
+        .field public static class [System.Runtime]System.Action Action_5
 
         .method public hidebysig specialname rtspecialname static void .cctor() cil managed
         {
@@ -86,7 +86,7 @@
             ret
         }
 
-        .method public hidebysig specialname rtspecialname instance void  .ctor() cil managed
+        .method public hidebysig specialname rtspecialname instance void .ctor() cil managed
         {
             .maxstack  8
             ldarg.0
@@ -439,7 +439,7 @@
 
         nop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_0'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_0
         dup
         brtrue.s   VALIDATE1
         pop
@@ -447,12 +447,12 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_InvalidStructWithRefField_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_0'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_0
     VALIDATE1:
         call instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_1'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_1
         dup
         brtrue.s   VALIDATE2
         pop
@@ -460,12 +460,12 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_InvalidRefFieldAlignment_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_1'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_1
     VALIDATE2:
         call instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_2'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_2
         dup
         brtrue.s   VALIDATE3
         pop
@@ -473,12 +473,12 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_InvalidObjectRefRefFieldOverlap_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_2'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_2
     VALIDATE3:
         call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_3'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_3
         dup
         brtrue.s   VALIDATE4
         pop
@@ -486,12 +486,12 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_IntPtrRefFieldOverlap_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_3'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_3
     VALIDATE4:
         call instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_4'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_4
         dup
         brtrue.s   VALIDATE5
         pop
@@ -499,12 +499,12 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_IntPtrOverlapWithInnerFieldType_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_4'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_4
     VALIDATE5:
         call instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
         ldarg.0
-        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_5'
+        ldsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_5
         dup
         brtrue.s   VALIDATE6
         pop
@@ -512,7 +512,7 @@
         ldftn      instance void RefFieldValidator/'<>c'::Validate_RefFieldValidatorExplicit_Fails()
         newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
         dup
-        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::'<>9__2_5'
+        stsfld     class [System.Runtime]System.Action RefFieldValidator/'<>c'::Action_5
     VALIDATE6:
         call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
         pop
@@ -697,7 +697,6 @@
     .field [0] public valuetype InvalidCSharpILDASM.InnerValidByRef Invalid
 }
 
-// TESTED
 .class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.WithRefField
     extends [System.Runtime]System.ValueType
 {
@@ -731,7 +730,6 @@
     }
 }
 
-// TESTED
 .class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.WithRefStructField
     extends [System.Runtime]System.ValueType
 {
