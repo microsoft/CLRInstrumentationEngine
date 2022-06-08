@@ -168,13 +168,16 @@ namespace InstrEngineTests
 
 
             Platform platform = Platform.AnyCpu;
-            if (TestUtils.IsArmProcess)
+            if (is64bit.HasValue)
             {
-                platform = is64bit.Value ? Platform.Arm64 : Platform.Arm;
-            }
-            else
-            {
-                platform = is64bit.Value ? Platform.X64 : Platform.X86;
+                if (TestUtils.IsArmProcess)
+                {
+                    platform = is64bit.Value ? Platform.Arm64 : Platform.Arm;
+                }
+                else
+                {
+                    platform = is64bit.Value ? Platform.X64 : Platform.X86;
+                }
             }
 
             CSharpCompilationOptions compilationOptions = new CSharpCompilationOptions(outputKind)
