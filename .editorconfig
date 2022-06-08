@@ -12,6 +12,7 @@ indent_style = space
 indent_size = 4
 end_of_line = crlf
 trim_trailing_whitespace = true
+file_header_template = Copyright (c) Microsoft Corporation. All rights reserved.\nLicensed under the MIT License.
 
 [{*.cs, *.vb}]
 dotnet_diagnostic.CA1707.severity = none

@@ -197,7 +197,7 @@
 
     .method public hidebysig virtual instance void Validate() cil managed
     {
-        ldstr "Begin Validate"
+        ldstr "BEGIN - Validating RefInvalidCSharp..."
         call void [mscorlib]System.Console::WriteLine(string)
 
         // Responsible for calling everything in RefFieldValidator.cs
@@ -218,7 +218,7 @@
         ldarg.0
         call instance void RefFieldValidator::Validate_RefStructWithRefField_Load()
 
-        ldstr "End Validate"
+        ldstr "END - Validating RefInvalidCSharp..."
         call void [mscorlib]System.Console::WriteLine(string)
 
         ret

@@ -13,5 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="InvalidCSharp.ilproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="InvalidCSharp"/>
+  </ItemGroup>
 
 </Project>

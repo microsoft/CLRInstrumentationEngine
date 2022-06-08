@@ -8,7 +8,7 @@
 
 .class Program
 {
-    .method static void Main() cil managed
+    .method static void ValidateBoth() cil managed
     {
         .entrypoint
         .maxstack 8

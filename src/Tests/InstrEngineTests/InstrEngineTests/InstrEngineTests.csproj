@@ -502,9 +502,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup Condition="Exists('$(ILAsmLocation)')">
-    <Content Include="$(ILAsmLocation)">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="$(ILAsmLocation)">
+      <Link>EmbeddedResources\ilasm.exe</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

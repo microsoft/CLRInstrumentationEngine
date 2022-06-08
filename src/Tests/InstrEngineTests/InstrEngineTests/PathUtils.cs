@@ -11,6 +11,7 @@ namespace InstrEngineTests
         private const string BaselinesFolder = "Baselines";
         private const string TestResultsFolder = "TestResults";
         private const string TestScriptsFolder = "TestScripts";
+        private const string ResourcesFolder = "ExtractedResources";
 
         // All paths are relative to the AnyCPU binaries directory e.g. bin\Debug\AnyCPU
         public const string BaselinesBinPath = @".\" + BaselinesFolder;
@@ -25,6 +26,11 @@ namespace InstrEngineTests
         public static string GetAssetsPath()
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
+        public static string GetResourcesFolder()
+        {
+            return Path.Combine(GetAssetsPath(), ResourcesFolder);
         }
 
         public static string GetBaselinesPath()
