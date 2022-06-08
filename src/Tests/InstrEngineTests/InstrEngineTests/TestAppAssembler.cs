@@ -19,6 +19,7 @@ namespace InstrEngineTests
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             IEmbeddedResourceFile ilasm = EmbeddedResourceUtils.GetTestResourceFile("ilasm.exe");
+            Assert.IsFalse(ilasm == null, "Could not find ilasm.exe");
             if (ilasm == null)
             {
                 return false;
@@ -30,6 +31,10 @@ namespace InstrEngineTests
             psi.UseShellExecute = false;
             string debugSwitch = isDebug ? "/DEBUG=OPT" : string.Empty;
             string bitSwitch = is64Bit ? "/X64" : "/32BITPREFERRED";
+            if (TestUtils.IsArmProcess)
+            {
+                bitSwitch = is64Bit ? "/ARM64" : "/ARM";
+            }
             string outputType = isExe ? "/EXE" : "/DLL";
             string extension = isExe ? "exe" : "dll";
             string outputFile = Path.Combine(directoryPath, FormattableString.Invariant($"{assemblyName}.{extension}"));

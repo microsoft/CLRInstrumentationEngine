@@ -166,8 +166,13 @@ namespace InstrEngineTests
 #endif
             };
 
+
             Platform platform = Platform.AnyCpu;
-            if (is64bit.HasValue)
+            if (TestUtils.IsArmProcess)
+            {
+                platform = is64bit.Value ? Platform.Arm64 : Platform.Arm;
+            }
+            else
             {
                 platform = is64bit.Value ? Platform.X64 : Platform.X86;
             }
