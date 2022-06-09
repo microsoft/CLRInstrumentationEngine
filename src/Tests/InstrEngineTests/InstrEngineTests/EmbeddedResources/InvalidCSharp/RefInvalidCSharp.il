@@ -4,18 +4,7 @@
 .assembly extern mscorlib {}
 .assembly extern System.Runtime { .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A ) }
 
-.assembly InvalidCSharpILDASM { }
-
-.method static void Main() cil managed
-{
-    .entrypoint
-    .maxstack 8
-
-    newobj     instance void RefFieldValidator::.ctor()
-    callvirt   instance void Validator::Validate()
-
-    ret
-}
+.assembly InvalidCSharp { }
 
 .class private auto ansi sealed beforefieldinit Microsoft.CodeAnalysis.EmbeddedAttribute
        extends [System.Runtime]System.Attribute
@@ -100,7 +89,7 @@
             .maxstack  1
             .locals init (class [System.Runtime]System.Type V_0)
             nop
-            ldtoken    [InvalidCSharpILDASM]InvalidCSharpILDASM.InvalidStructWithRefField
+            ldtoken    [InvalidCSharp]InvalidCSharp.InvalidStructWithRefField
             call       class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
             stloc.0
             ret
@@ -111,7 +100,7 @@
             .maxstack  1
             .locals init (class [System.Runtime]System.Type V_0)
             nop
-            ldtoken    [InvalidCSharpILDASM]InvalidCSharpILDASM.InvalidRefFieldAlignment
+            ldtoken    [InvalidCSharp]InvalidCSharp.InvalidRefFieldAlignment
             call       class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
             stloc.0
             ret
@@ -122,7 +111,7 @@
             .maxstack  1
             .locals init (class [System.Runtime]System.Type V_0)
             nop
-            ldtoken    [InvalidCSharpILDASM]InvalidCSharpILDASM.InvalidObjectRefRefFieldOverlap
+            ldtoken    [InvalidCSharp]InvalidCSharp.InvalidObjectRefRefFieldOverlap
             call       class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
             stloc.0
             ret
@@ -131,14 +120,14 @@
         .method public hidebysig instance void Validate_IntPtrRefFieldOverlap_Fails() cil managed
         {
             .maxstack  2
-            .locals init (valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrRefFieldOverlap V_0,
-                    valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrRefFieldOverlap V_1)
+            .locals init (valuetype [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap V_0,
+                    valuetype [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap V_1)
             nop
             ldloca.s   V_1
-            initobj    [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrRefFieldOverlap
+            initobj    [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap
             ldloca.s   V_1
             ldsfld     native int [System.Runtime]System.IntPtr::Zero
-            stfld      native int [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrRefFieldOverlap::Field
+            stfld      native int [InvalidCSharp]InvalidCSharp.IntPtrRefFieldOverlap::Field
             ldloc.1
             stloc.0
             ret
@@ -147,19 +136,19 @@
         .method public hidebysig instance void Validate_IntPtrOverlapWithInnerFieldType_Fails() cil managed
         {
             .maxstack  2
-            .locals init (valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType V_0,
-                    valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.InnerValidByRef& V_1,
-                    valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType V_2)
+            .locals init (valuetype [InvalidCSharp]InvalidCSharp.IntPtrOverlapWithInnerFieldType V_0,
+                    valuetype [InvalidCSharp]InvalidCSharp.InnerValidByRef& V_1,
+                    valuetype [InvalidCSharp]InvalidCSharp.IntPtrOverlapWithInnerFieldType V_2)
             nop
             ldloca.s   V_2
-            initobj    [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType
+            initobj    [InvalidCSharp]InvalidCSharp.IntPtrOverlapWithInnerFieldType
             ldloca.s   V_2
             ldsfld     native int [System.Runtime]System.IntPtr::Zero
-            stfld      native int [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType::Field
+            stfld      native int [InvalidCSharp]InvalidCSharp.IntPtrOverlapWithInnerFieldType::Field
             ldloc.2
             stloc.0
             ldloca.s   V_0
-            ldflda     valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.InnerValidByRef [InvalidCSharpILDASM]InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType::Invalid
+            ldflda     valuetype [InvalidCSharp]InvalidCSharp.InnerValidByRef [InvalidCSharp]InvalidCSharp.IntPtrOverlapWithInnerFieldType::Invalid
             stloc.1
             ret
         }
@@ -279,7 +268,7 @@
     .method private hidebysig instance void  Create_TypedReferenceRefField_Worker(class RefFieldValidator v, int32 depth) cil managed noinlining
     {
         .maxstack  4
-        .locals init (valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithTypedReferenceField`1<class RefFieldValidator> V_0,
+        .locals init (valuetype [InvalidCSharp]InvalidCSharp.WithTypedReferenceField`1<class RefFieldValidator> V_0,
                 bool V_1)
         nop
         ldarg.2
@@ -292,7 +281,7 @@
         br.s       RETURN
     BRANCH:
         ldarga.s   v
-        newobj     instance void valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithTypedReferenceField`1<class RefFieldValidator>::.ctor(!0&)
+        newobj     instance void valuetype [InvalidCSharp]InvalidCSharp.WithTypedReferenceField`1<class RefFieldValidator>::.ctor(!0&)
         stloc.0
         ldarg.0
         ldarg.1
@@ -302,11 +291,11 @@
         call       instance void RefFieldValidator::Create_TypedReferenceRefField_Worker(class RefFieldValidator, int32)
         nop
         ldloca.s   V_0
-        call       instance class [System.Runtime]System.Type valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithTypedReferenceField`1<class RefFieldValidator>::GetFieldType()
+        call       instance class [System.Runtime]System.Type valuetype [InvalidCSharp]InvalidCSharp.WithTypedReferenceField`1<class RefFieldValidator>::GetFieldType()
         pop
         ldloca.s   V_0
         ldarg.1
-        call       instance bool valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithTypedReferenceField`1<class RefFieldValidator>::ConfirmFieldInstance(!0)
+        call       instance bool valuetype [InvalidCSharp]InvalidCSharp.WithTypedReferenceField`1<class RefFieldValidator>::ConfirmFieldInstance(!0)
         pop
         RETURN:  ret
     }
@@ -314,8 +303,8 @@
     .method private hidebysig instance void  Create_RefStructField_Worker(string str, int32 depth) cil managed noinlining
     {
         .maxstack  5
-        .locals init (valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField V_0,
-                valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefStructField V_1,
+        .locals init (valuetype [InvalidCSharp]InvalidCSharp.WithRefField V_0,
+                valuetype [InvalidCSharp]InvalidCSharp.WithRefStructField V_1,
                 bool V_2,
                 valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_3)
         nop
@@ -329,10 +318,10 @@
         br.s       RETURN
     BRANCH:
         ldarga.s   str
-        newobj     instance void [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField::.ctor(string&)
+        newobj     instance void [InvalidCSharp]InvalidCSharp.WithRefField::.ctor(string&)
         stloc.0
         ldloca.s   V_0
-        newobj     instance void [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefStructField::.ctor(valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField&)
+        newobj     instance void [InvalidCSharp]InvalidCSharp.WithRefStructField::.ctor(valuetype [InvalidCSharp]InvalidCSharp.WithRefField&)
         stloc.1
         ldarg.0
         ldarg.1
@@ -358,7 +347,7 @@
         nop
         ldloca.s   V_1
         ldloca.s   V_0
-        call       instance bool [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefStructField::ConfirmFieldInstance(valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField&)
+        call       instance bool [InvalidCSharp]InvalidCSharp.WithRefStructField::ConfirmFieldInstance(valuetype [InvalidCSharp]InvalidCSharp.WithRefField&)
         pop
     RETURN:
         ret
@@ -367,7 +356,7 @@
     .method private hidebysig instance void  Create_RefField_Worker(string str, int32 depth) cil managed noinlining
     {
         .maxstack  5
-        .locals init (valuetype [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField V_0,
+        .locals init (valuetype [InvalidCSharp]InvalidCSharp.WithRefField V_0,
                 string V_1,
                 bool V_2,
                 valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_3)
@@ -382,7 +371,7 @@
         br.s       RETURN
     BRANCH:
         ldarga.s   str
-        newobj     instance void [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField::.ctor(string&)
+        newobj     instance void [InvalidCSharp]InvalidCSharp.WithRefField::.ctor(string&)
         stloc.0
         ldarg.1
         call       valuetype [System.Runtime]System.ReadOnlySpan`1<char> [System.Runtime]System.String::op_Implicit(string)
@@ -412,11 +401,11 @@
         nop
         ldloca.s   V_0
         ldloc.1
-        call       instance bool [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField::ConfirmFieldInstance(string)
+        call       instance bool [InvalidCSharp]InvalidCSharp.WithRefField::ConfirmFieldInstance(string)
         pop
         ldloca.s   V_0
         ldarg.1
-        call       instance bool [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField::ConfirmFieldInstance(string)
+        call       instance bool [InvalidCSharp]InvalidCSharp.WithRefField::ConfirmFieldInstance(string)
         pop
     RETURN:
         ret
@@ -427,7 +416,7 @@
         .maxstack  8
         .locals init (class [System.Runtime]System.Type V_0)
         nop
-        ldtoken    [InvalidCSharpILDASM]InvalidCSharpILDASM.WithRefField
+        ldtoken    [InvalidCSharp]InvalidCSharp.WithRefField
         call       class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
         stloc.0
         ret
@@ -616,7 +605,7 @@
     }
 }
 
-.class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.InvalidStructWithRefField
+.class public sequential ansi sealed beforefieldinit InvalidCSharp.InvalidStructWithRefField
     extends [System.Runtime]System.ValueType
 {
     // Type requires IsByRefLikeAttribute to be valid.
@@ -629,12 +618,12 @@
     {
         ldarg.0
         ldarg.1
-        stfld string& InvalidCSharpILDASM.WithRefField::Invalid
+        stfld string& InvalidCSharp.WithRefField::Invalid
         ret
     }
 }
 
-.class public explicit ansi sealed beforefieldinit InvalidCSharpILDASM.InvalidRefFieldAlignment
+.class public explicit ansi sealed beforefieldinit InvalidCSharp.InvalidRefFieldAlignment
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -644,7 +633,7 @@
     .field [2] public int32& Invalid
 }
 
-.class public explicit ansi sealed beforefieldinit InvalidCSharpILDASM.InvalidObjectRefRefFieldOverlap
+.class public explicit ansi sealed beforefieldinit InvalidCSharp.InvalidObjectRefRefFieldOverlap
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -657,7 +646,7 @@
 // This is invalid metadata and is unable to be loaded.
 // -  [field sig] (0x80131815 (VER_E_FIELD_SIG))
 //
-// .class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.InvalidStructWithStaticRefField
+// .class public sequential ansi sealed beforefieldinit InvalidCSharp.InvalidStructWithStaticRefField
 //     extends [System.Runtime]System.ValueType
 // {
 //     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -666,7 +655,7 @@
 //     .field public static string& Invalid
 // }
 
-.class public explicit ansi sealed beforefieldinit InvalidCSharpILDASM.IntPtrRefFieldOverlap
+.class public explicit ansi sealed beforefieldinit InvalidCSharp.IntPtrRefFieldOverlap
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -676,7 +665,7 @@
     .field [0] public int32& Invalid
 }
 
-.class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.InnerValidByRef
+.class public sequential ansi sealed beforefieldinit InvalidCSharp.InnerValidByRef
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -686,7 +675,7 @@
     .field public int32 Size
 }
 
-.class public explicit ansi sealed beforefieldinit InvalidCSharpILDASM.IntPtrOverlapWithInnerFieldType
+.class public explicit ansi sealed beforefieldinit InvalidCSharp.IntPtrOverlapWithInnerFieldType
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -694,10 +683,10 @@
     )
     .field [0] public native int Field
     // This field's valid Type would illegally overlap this type's first field using a precise GC.
-    .field [0] public valuetype InvalidCSharpILDASM.InnerValidByRef Invalid
+    .field [0] public valuetype InvalidCSharp.InnerValidByRef Invalid
 }
 
-.class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.WithRefField
+.class public sequential ansi sealed beforefieldinit InvalidCSharp.WithRefField
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -712,7 +701,7 @@
     {
         ldarg.0
         ldarg.1
-        stfld string& InvalidCSharpILDASM.WithRefField::Str
+        stfld string& InvalidCSharp.WithRefField::Str
         ret
     }
 
@@ -722,7 +711,7 @@
         ) cil managed
     {
         ldarg.0
-        ldfld string& InvalidCSharpILDASM.WithRefField::Str
+        ldfld string& InvalidCSharp.WithRefField::Str
         ldind.ref
         ldarg.1
         ceq
@@ -730,32 +719,32 @@
     }
 }
 
-.class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.WithRefStructField
+.class public sequential ansi sealed beforefieldinit InvalidCSharp.WithRefStructField
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
         01 00 00 00
     )
-    .field public valuetype InvalidCSharpILDASM.WithRefField& Field
+    .field public valuetype InvalidCSharp.WithRefField& Field
 
     .method public hidebysig specialname rtspecialname
         instance void .ctor (
-            valuetype InvalidCSharpILDASM.WithRefField&
+            valuetype InvalidCSharp.WithRefField&
         ) cil managed
     {
         ldarg.0
         ldarg.1
-        stfld valuetype InvalidCSharpILDASM.WithRefField& InvalidCSharpILDASM.WithRefStructField::Field
+        stfld valuetype InvalidCSharp.WithRefField& InvalidCSharp.WithRefStructField::Field
         ret
     }
 
     .method public hidebysig
         instance bool ConfirmFieldInstance (
-            valuetype InvalidCSharpILDASM.WithRefField&
+            valuetype InvalidCSharp.WithRefField&
         ) cil managed
     {
         ldarg.0
-        ldfld valuetype InvalidCSharpILDASM.WithRefField& InvalidCSharpILDASM.WithRefStructField::Field
+        ldfld valuetype InvalidCSharp.WithRefField& InvalidCSharp.WithRefStructField::Field
         ldind.ref
         ldarg.1
         ldind.ref
@@ -764,7 +753,7 @@
     }
 }
 
-.class public sequential ansi sealed beforefieldinit InvalidCSharpILDASM.WithTypedReferenceField`1<T>
+.class public sequential ansi sealed beforefieldinit InvalidCSharp.WithTypedReferenceField`1<T>
     extends [System.Runtime]System.ValueType
 {
     .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
@@ -780,7 +769,7 @@
         ldarg.0
         ldarg.1
         mkrefany !T
-        stfld typedref valuetype InvalidCSharpILDASM.WithTypedReferenceField`1<!T>::Field
+        stfld typedref valuetype InvalidCSharp.WithTypedReferenceField`1<!T>::Field
         ret
     }
 
@@ -788,7 +777,7 @@
         instance class [System.Runtime]System.Type GetFieldType () cil managed
     {
         ldarg.0
-        ldfld typedref valuetype InvalidCSharpILDASM.WithTypedReferenceField`1<!T>::Field
+        ldfld typedref valuetype InvalidCSharp.WithTypedReferenceField`1<!T>::Field
         refanytype
         call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle )
         ret
@@ -800,7 +789,7 @@
         ) cil managed
     {
         ldarg.0
-        ldfld typedref valuetype InvalidCSharpILDASM.WithTypedReferenceField`1<!T>::Field
+        ldfld typedref valuetype InvalidCSharp.WithTypedReferenceField`1<!T>::Field
         refanyval !T
         ldind.ref
         ldarg.1
