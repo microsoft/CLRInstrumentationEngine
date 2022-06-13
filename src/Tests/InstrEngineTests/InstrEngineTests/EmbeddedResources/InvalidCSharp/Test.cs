@@ -10,17 +10,15 @@ namespace Test
     {
         static int Main(string[] args)
         {
-            Console.WriteLine("Begin");
+            Console.WriteLine("Beginning Validation...");
 
-            var brlv = new ByRefLikeValidator();
-            brlv.Validate();
+            var byRefLikeValidator = new ByRefLikeValidator();
+            byRefLikeValidator.Validate();
 
-            Exec.GenericClass();
+            var refFieldValidator = new RefFieldValidator();
+            refFieldValidator.Validate();
 
-            var rfv = new RefFieldValidator();
-            rfv.Validate();
-
-            Console.WriteLine("End");
+            Console.WriteLine("Finishing Validation...");
 
             return 0;
         }
