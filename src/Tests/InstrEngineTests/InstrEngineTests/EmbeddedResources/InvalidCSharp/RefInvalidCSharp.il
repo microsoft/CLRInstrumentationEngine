@@ -246,7 +246,7 @@
         ret
     }
 
-    .method private hidebysig instance void  Validate_Create_RefField() cil managed
+    .method private hidebysig instance void Validate_Create_RefField() cil managed
     {
         .maxstack  3
         .locals init (string V_0)
@@ -259,7 +259,7 @@
         ret
     }
 
-    .method private hidebysig instance void  Create_TypedReferenceRefField_Worker(class RefFieldValidator v, int32 depth) cil managed noinlining
+    .method private hidebysig instance void Create_TypedReferenceRefField_Worker(class RefFieldValidator v, int32 depth) cil managed noinlining
     {
         .maxstack  4
         .locals init (valuetype [InvalidCSharp]InvalidCSharp.WithTypedReferenceField`1<class RefFieldValidator> V_0,
