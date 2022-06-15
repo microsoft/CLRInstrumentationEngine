@@ -4,7 +4,7 @@
 using System;
 using InvalidCSharp;
 
-namespace Test
+namespace Entrypoint
 {
     class Program
     {

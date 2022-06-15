@@ -14,7 +14,6 @@
     <PackageReference Include="Microsoft.NETCore.ILAsm" Version="$(NetCoreVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.il" />
     <Compile Include="RefInvalidCSharp.il" />
     <Compile Include="ByRefLikeInvalidCSharp.il" />
   </ItemGroup>
