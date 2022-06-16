@@ -52,14 +52,39 @@ namespace InstrEngineTests
             "HttpMethodTests",
             "DynamicCodeTests",
             "MultiReturnTests",
-            "MaxStackSizeExample"
+            "MaxStackSizeExample"/*,
+            "RefStructsTests" // Do we need this here?*/
         };
 
-        private static string[] EmbeddedILPrefixes = new string[]
+        private const string ImplSuffix = "Impl";
+
+        /*
+        private static List<List<string>> EmbeddedIL = new List<List<string>>()
+        {
+            new List<string>()
+            {
+                "RefStructsTests.cs", "ByRefLikeInvalidCSharp.il", "ByRefFieldInvalidCSharp.il"
+            }
+        };*/
+
+        private static Dictionary<string, List<string>> EmbeddedILPrefixes = new Dictionary<string, List<string>>()
+        {
+            {
+                "RefStructsTests", new List<string>() { "ByRefLikeInvalidCSharp", "RefInvalidCSharp" }
+            }
+        };
+
+        /*
+        private static Tuple<string, List<string>> EmbeddedILPrefixes = new Tuple<string, List<string>>("RefStructsTests", new List<string>()
+        {
+            "ByRefLikeInvalidCSharp.il", "ByRefFieldInvalidCSharp.il"
+        });*/
+
+        /*private static string[] EmbeddedILPrefixes = new string[]
         {
             "ByRefLikeInvalidCSharp",
             "RefFieldInvalidCSharp"
-        };
+        };*/
 
         private const string DynamicCodeAssemblyName = "DynamicCodeAssembly";
 
@@ -68,8 +93,8 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
+            AssembleILTestCode(directoryPath); // NOTE: It's expected that the IL is assembled before the C#
             CompileCSharpTestCode(directoryPath);
-            AssembleILTestCode(directoryPath);
         }
 
         private static void CompileCSharpTestCode(string directoryPath)
@@ -96,6 +121,52 @@ namespace InstrEngineTests
 
         private static void AssembleILTestCode(string directoryPath)
         {
+            foreach (var pair in EmbeddedILPrefixes)
+            {
+                string entrypointPrefix = pair.Key;
+                List<string> ilPrefixes = pair.Value;
+
+                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"))).ToList();
+
+                foreach (bool isDebug in DebugChoice)
+                {
+                    foreach (bool is64Bit in Is64BitChoice)
+                    {
+                        string assemblyName = GetAssemblyName(entrypointPrefix, isDebug, is64Bit) + ImplSuffix;
+                        string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
+                        Assert.IsNotNull(ilAssemblyPath);
+
+                        string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{entrypointPrefix}.cs"));
+                        SourceText sourceText = SourceText.From(sourceCode);
+
+                        EmitResult result = CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath });
+                        Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+                    }
+                }
+
+            }
+
+            /*
+            foreach (List<string> grouping in EmbeddedIL)
+            {
+                foreach (string fileName in grouping)
+                {
+                    string[] parts = fileName.Split('.');
+
+                    Assert.AreEqual(2, parts.Count());
+
+                    string prefix = parts[0];
+                    string extension = parts[1];
+
+                    if (extension.ToLower().Equals("cs"))
+                    {
+
+                    }
+
+                }
+            }*/
+
+            /*
             foreach (string prefix in EmbeddedILPrefixes)
             {
                 IEmbeddedResourceFile embeddedResource = EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"));
@@ -106,12 +177,12 @@ namespace InstrEngineTests
                         Assert.IsTrue(TestAppAssembler.AssembleFile(embeddedResource, directoryPath, GetAssemblyName(prefix, isDebug, is64Bit), isDebug, is64Bit));
                     }
                 }
-            }
+            }*/
         }
 
         internal static void DeleteExistingBinary(string path)
         {
-            foreach (string prefix in EmbeddedCSharpPrefixes.Union(EmbeddedILPrefixes))
+            foreach (string prefix in EmbeddedCSharpPrefixes.Union(EmbeddedILPrefixes.Keys))
             {
                 foreach (bool isDebug in DebugChoice)
                 {
@@ -123,13 +194,13 @@ namespace InstrEngineTests
                             File.Delete(filePath);
                         }
                     }
-                }      
+                }
             }
         }
 
-        private static EmitResult CompileTestAppPrefix(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit)
+        private static EmitResult CompileTestAppPrefix(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit, List<string> referencePaths = null)
         {
-            return CompileAssembly(sourceText, path, GetAssemblyName(prefix, isDebug, is64bit), isDebug, is64bit, OutputKind.ConsoleApplication, EntryPointAssemblyExtension);
+            return CompileAssembly(sourceText, path, GetAssemblyName(prefix, isDebug, is64bit), isDebug, is64bit, OutputKind.ConsoleApplication, EntryPointAssemblyExtension, referencePaths);
         }
 
         private static EmitResult CompileAssembly(
@@ -139,7 +210,8 @@ namespace InstrEngineTests
             bool isDebug = false,
             bool? is64bit = null,
             OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary,
-            string extension = DynamicallyLinkedLibraryExtension)
+            string extension = DynamicallyLinkedLibraryExtension,
+            List<string> referencePaths = null)
         {
             IList<string> preprocessorSymbols = new List<string>();
             preprocessorSymbols.Add("TRACE");
@@ -155,7 +227,7 @@ namespace InstrEngineTests
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceText, parseOptions);
 
             string sharedFrameworkDir = RuntimeEnvironment.GetRuntimeDirectory();
-            MetadataReference[] references = new MetadataReference[]
+            List<MetadataReference> references = new List<MetadataReference>
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(HttpWebRequest).Assembly.Location),
@@ -166,6 +238,10 @@ namespace InstrEngineTests
 #endif
             };
 
+            if (null != referencePaths)
+            {
+                references.AddRange(referencePaths.Select(referencePath => MetadataReference.CreateFromFile(referencePath)));
+            }
 
             Platform platform = Platform.AnyCpu;
             if (is64bit.HasValue)

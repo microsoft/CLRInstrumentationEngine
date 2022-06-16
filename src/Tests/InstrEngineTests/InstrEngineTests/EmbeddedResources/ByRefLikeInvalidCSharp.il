@@ -6,6 +6,460 @@
 
 .assembly InvalidCSharp { }
 
+.class public auto ansi beforefieldinit ByRefLikeValidator extends Validator
+{
+    .method public hidebysig specialname rtspecialname instance void .ctor() cil managed
+    {
+        .maxstack  8
+        ldarg.0
+        call       instance void Validator::.ctor()
+        nop
+        ret
+    }
+
+    .method public hidebysig virtual instance void Validate() cil managed
+    {
+        .maxstack  4
+        .locals init (valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_0)
+
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   18
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- GenericClass: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_0
+        dup
+        brtrue.s   BRANCH_1
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_GenericClass_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_0
+    BRANCH_1:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   22
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- GenericInterface: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_1
+        dup
+        brtrue.s   BRANCH_2
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_GenericInterface_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_1
+    BRANCH_2:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   22
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- GenericValueType: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_2
+        dup
+        brtrue.s   BRANCH_3
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_GenericValueType_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_2
+    BRANCH_3:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   22
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- GenericByRefLike: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_3
+        dup
+        brtrue.s   BRANCH_4
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_GenericByRefLike_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_3
+    BRANCH_4:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   24
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- InstanceOf(object): "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        newobj     instance void [System.Runtime]System.Object::.ctor()
+        call       bool [InvalidCSharp]Exec::InstanceOfT(object)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   22
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Cast To (object): "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_4
+        dup
+        brtrue.s   BRANCH_5
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_CastToT()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_4
+    BRANCH_5:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.InvalidCastException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   23
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Unbox To (object): "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_5
+        dup
+        brtrue.s   BRANCH_6
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_UnboxToT()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_5
+    BRANCH_6:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.InvalidCastException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   15
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Unbox Any: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        call       bool [InvalidCSharp]Exec::BoxUnboxAny()
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   16
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Box Branch: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        call       bool [InvalidCSharp]Exec::BoxBranch()
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   18
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Boxed Is Any: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        call       bool [InvalidCSharp]Exec::BoxIsinstUnboxAny()
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   21
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Boxed Is Branch: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        call       bool [InvalidCSharp]Exec::BoxIsinstBranch()
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   20
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Allocate Array: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_6
+        dup
+        brtrue.s   BRANCH_7
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_AllocArrayOfT_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_6
+    BRANCH_7:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   38
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Allocate Multi Dimensional Array: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_7
+        dup
+        brtrue.s   BRANCH_8
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_AllocMultiDimArrayOfT_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_7
+    BRANCH_8:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   37
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Generic class with static field: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_8
+        dup
+        brtrue.s   BRANCH_9
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_GenericClassWithStaticField_Invalid()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_8
+    BRANCH_9:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.TypeLoadException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   19
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Box as object: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldarg.0
+        ldsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_9
+        dup
+        brtrue.s   BRANCH_10
+        pop
+        ldsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+        ldftn      instance void ByRefLikeValidator/'<>c'::Validate_BoxAsObject()
+        newobj     instance void [System.Runtime]System.Action::.ctor(object, native int)
+        dup
+        stsfld     class [System.Runtime]System.Action ByRefLikeValidator/'<>c'::Action_9
+    BRANCH_10:
+        call       instance bool Validator::ValidateException<class [System.Runtime]System.InvalidProgramException>(class [System.Runtime]System.Action)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+        ldloca.s   V_0
+        ldc.i4.s   20
+        ldc.i4.1
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32, int32)
+        ldloca.s   V_0
+        ldstr      " -- Avoid Inlining: "
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendLiteral(string)
+        nop
+        ldloca.s   V_0
+        ldc.i4.0
+        call       bool [InvalidCSharp]Exec::TypeLoadExceptionAvoidsInline(bool)
+        call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<bool>(!!0)
+        nop
+
+        ret
+    }
+
+    .class auto ansi serializable sealed nested private beforefieldinit '<>c' extends [System.Runtime]System.Object
+    {
+        .custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = ( 01 00 00 00 ) 
+
+        .field public static initonly class ByRefLikeValidator/'<>c' '<>9'
+        .field public static class [System.Runtime]System.Action Action_0
+        .field public static class [System.Runtime]System.Action Action_1
+        .field public static class [System.Runtime]System.Action Action_2
+        .field public static class [System.Runtime]System.Action Action_3
+        .field public static class [System.Runtime]System.Action Action_4
+        .field public static class [System.Runtime]System.Action Action_5
+        .field public static class [System.Runtime]System.Action Action_6
+        .field public static class [System.Runtime]System.Action Action_7
+        .field public static class [System.Runtime]System.Action Action_8
+        .field public static class [System.Runtime]System.Action Action_9
+
+        .method private hidebysig specialname rtspecialname static 
+        void  .cctor() cil managed
+        {
+            .maxstack  8
+            newobj     instance void ByRefLikeValidator/'<>c'::.ctor()
+            stsfld     class ByRefLikeValidator/'<>c' ByRefLikeValidator/'<>c'::'<>9'
+            ret
+        }
+
+        .method public hidebysig specialname rtspecialname instance void  .ctor() cil managed
+        {
+            .maxstack  8
+            ldarg.0
+            call       instance void [System.Runtime]System.Object::.ctor()
+            nop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_GenericClass_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       string [InvalidCSharp]Exec::GenericClass_Invalid()
+            pop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_GenericInterface_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       string [InvalidCSharp]Exec::GenericInterface_Invalid()
+            pop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_GenericValueType_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       string [InvalidCSharp]Exec::GenericValueType_Invalid()
+            pop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_GenericByRefLike_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       string [InvalidCSharp]Exec::GenericByRefLike_Invalid()
+            pop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_CastToT() cil managed
+        {
+            .maxstack  8
+            nop
+            newobj     instance void [System.Runtime]System.Object::.ctor()
+            call       void [InvalidCSharp]Exec::CastToT(object)
+            nop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_UnboxToT() cil managed
+        {
+            .maxstack  8
+            nop
+            newobj     instance void [System.Runtime]System.Object::.ctor()
+            call       void [InvalidCSharp]Exec::UnboxToT(object)
+            nop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_AllocArrayOfT_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       void [InvalidCSharp]Exec::AllocArrayOfT_Invalid()
+            nop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_AllocMultiDimArrayOfT_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       void [InvalidCSharp]Exec::AllocMultiDimArrayOfT_Invalid()
+            nop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_GenericClassWithStaticField_Invalid() cil managed
+        {
+            .maxstack  8
+            nop
+            call       string [InvalidCSharp]Exec::GenericClassWithStaticField_Invalid()
+            pop
+            ret
+        }
+
+        .method assembly hidebysig instance void Validate_BoxAsObject() cil managed
+        {
+            .maxstack  8
+            nop
+            call       object [InvalidCSharp]Exec::BoxAsObject()
+            pop
+            ret
+        }
+    }
+}
+
+
 //
 // Begin invalid
 //
