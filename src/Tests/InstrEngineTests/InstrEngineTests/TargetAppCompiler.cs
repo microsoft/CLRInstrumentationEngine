@@ -33,7 +33,7 @@ namespace InstrEngineTests
 #endif
 
         private const string DebugBinarySuffix = "Debug";
-        private const string ReleaseBinarySuffic = "Release";
+        private const string ReleaseBinarySuffix = "Release";
 
         private const string X86BinarySuffix = "x86";
         private const string X64BinarySuffix = "x64";
@@ -55,8 +55,6 @@ namespace InstrEngineTests
             "MaxStackSizeExample"
         };
 
-        private const string ImplSuffix = "Impl";
-
         private static Dictionary<string, List<string>> EmbeddedILPrefixes = new Dictionary<string, List<string>>()
         {
             {
@@ -71,7 +69,7 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
-            AssembleILTestCode(directoryPath); // NEED TO UPDATE THIS TO INCLUDE InvalidCSharp directory
+            AssembleILTestCode(directoryPath);
             CompileCSharpTestCode(directoryPath);
         }
 
@@ -110,7 +108,7 @@ namespace InstrEngineTests
                 {
                     foreach (bool is64Bit in Is64BitChoice)
                     {
-                        string assemblyName = GetAssemblyName(entrypointPrefix, isDebug, is64Bit) + ImplSuffix;
+                        string assemblyName = GetAssemblyName(entrypointPrefix, isDebug, is64Bit) + "Impl"; // "Impl" is appended so that this assembly has a different name than the one created in CompileTestAppPrefix(). 
                         string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
                         Assert.IsNotNull(ilAssemblyPath);
 
@@ -121,7 +119,6 @@ namespace InstrEngineTests
                         Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
                     }
                 }
-
             }
         }
 
@@ -236,7 +233,7 @@ namespace InstrEngineTests
         {
             Assert.IsFalse(string.IsNullOrEmpty(prefix));
 
-            return string.Format(CultureInfo.InvariantCulture, "{0}_{1}_{2}", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffic, is64bit ? X64BinarySuffix : X86BinarySuffix);
+            return string.Format(CultureInfo.InvariantCulture, "{0}_{1}_{2}", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffix, is64bit ? X64BinarySuffix : X86BinarySuffix);
         }
 
         private static string GetCompilerOptions(bool isDebug, bool is64bit)
