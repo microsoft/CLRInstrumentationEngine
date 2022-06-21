@@ -52,20 +52,10 @@ namespace InstrEngineTests
             "HttpMethodTests",
             "DynamicCodeTests",
             "MultiReturnTests",
-            "MaxStackSizeExample"/*,
-            "RefStructsTests" // Do we need this here?*/
+            "MaxStackSizeExample"
         };
 
         private const string ImplSuffix = "Impl";
-
-        /*
-        private static List<List<string>> EmbeddedIL = new List<List<string>>()
-        {
-            new List<string>()
-            {
-                "RefStructsTests.cs", "ByRefLikeInvalidCSharp.il", "ByRefFieldInvalidCSharp.il"
-            }
-        };*/
 
         private static Dictionary<string, List<string>> EmbeddedILPrefixes = new Dictionary<string, List<string>>()
         {
@@ -74,18 +64,6 @@ namespace InstrEngineTests
             }
         };
 
-        /*
-        private static Tuple<string, List<string>> EmbeddedILPrefixes = new Tuple<string, List<string>>("RefStructsTests", new List<string>()
-        {
-            "ByRefLikeInvalidCSharp.il", "ByRefFieldInvalidCSharp.il"
-        });*/
-
-        /*private static string[] EmbeddedILPrefixes = new string[]
-        {
-            "ByRefLikeInvalidCSharp",
-            "RefFieldInvalidCSharp"
-        };*/
-
         private const string DynamicCodeAssemblyName = "DynamicCodeAssembly";
 
         private static readonly bool[] DebugChoice = { true, false };
@@ -93,7 +71,7 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
-            AssembleILTestCode(directoryPath); // NOTE: It's expected that the IL is assembled before the C#
+            AssembleILTestCode(directoryPath); // NEED TO UPDATE THIS TO INCLUDE InvalidCSharp directory
             CompileCSharpTestCode(directoryPath);
         }
 
@@ -126,7 +104,7 @@ namespace InstrEngineTests
                 string entrypointPrefix = pair.Key;
                 List<string> ilPrefixes = pair.Value;
 
-                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"))).ToList();
+                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), isIntermediateLanguage: true)).ToList();
 
                 foreach (bool isDebug in DebugChoice)
                 {
@@ -145,39 +123,6 @@ namespace InstrEngineTests
                 }
 
             }
-
-            /*
-            foreach (List<string> grouping in EmbeddedIL)
-            {
-                foreach (string fileName in grouping)
-                {
-                    string[] parts = fileName.Split('.');
-
-                    Assert.AreEqual(2, parts.Count());
-
-                    string prefix = parts[0];
-                    string extension = parts[1];
-
-                    if (extension.ToLower().Equals("cs"))
-                    {
-
-                    }
-
-                }
-            }*/
-
-            /*
-            foreach (string prefix in EmbeddedILPrefixes)
-            {
-                IEmbeddedResourceFile embeddedResource = EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"));
-                foreach (bool isDebug in DebugChoice)
-                {
-                    foreach (bool is64Bit in Is64BitChoice)
-                    {
-                        Assert.IsTrue(TestAppAssembler.AssembleFile(embeddedResource, directoryPath, GetAssemblyName(prefix, isDebug, is64Bit), isDebug, is64Bit));
-                    }
-                }
-            }*/
         }
 
         internal static void DeleteExistingBinary(string path)
