@@ -75,24 +75,21 @@ namespace InstrEngineTests
 
         private static void CompileCSharpTestCode(string directoryPath)
         {
-            EmitResult result;
             foreach (string prefix in EmbeddedCSharpPrefixes)
             {
-                string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"));
-                SourceText sourceText = SourceText.From(sourceCode);
+                SourceText sourceText = GetSourceTextFromEmbeddedResource(prefix);
+
                 foreach (bool isDebug in DebugChoice)
                 {
                     foreach (bool is64Bit in Is64BitChoice)
                     {
-                        result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug, is64Bit);
-                        Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+                        ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug, is64Bit));
                     }
                 }
             }
 
-            SourceText dynamicCodeAssemblyText = SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{DynamicCodeAssemblyName}.cs")));
-            result = CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName);
-            Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+            SourceText dynamicCodeAssemblyText = GetSourceTextFromEmbeddedResource(DynamicCodeAssemblyName);
+            ValidateResult(CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName));
         }
 
         private static void AssembleILTestCode(string directoryPath)
@@ -112,14 +109,22 @@ namespace InstrEngineTests
                         string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
                         Assert.IsNotNull(ilAssemblyPath);
 
-                        string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{entrypointPrefix}.cs"), alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
-                        SourceText sourceText = SourceText.From(sourceCode);
+                        SourceText sourceText = GetSourceTextFromEmbeddedResource(entrypointPrefix, alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
 
-                        EmitResult result = CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath });
-                        Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+                        ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath }));
                     }
                 }
             }
+        }
+
+        private static SourceText GetSourceTextFromEmbeddedResource(string prefix, bool required = true, string alternateResourcesPath = null)
+        {
+            return SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"), required, alternateResourcesPath));
+        }
+
+        private static void ValidateResult(EmitResult result)
+        {
+            Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
         }
 
         internal static void DeleteExistingBinary(string path)

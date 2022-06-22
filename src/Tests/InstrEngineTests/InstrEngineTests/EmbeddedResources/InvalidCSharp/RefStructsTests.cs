@@ -57,7 +57,6 @@ namespace RefStructsTests
             {
                 throw new Exception();
             }
-
         }
 
         public static void Validate_Create_RefField()
@@ -82,7 +81,6 @@ namespace RefStructsTests
             {
                 throw new Exception();
             }
-
         }
 
         public static void Validate_Create_RefStructField()
@@ -141,7 +139,6 @@ namespace RefStructsTests
             {
                 throw new Exception();
             }
-
         }
 
         public static void Validate_Inlining_Behavior()
