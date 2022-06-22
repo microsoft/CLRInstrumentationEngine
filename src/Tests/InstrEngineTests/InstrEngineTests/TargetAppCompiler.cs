@@ -102,7 +102,7 @@ namespace InstrEngineTests
                 string entrypointPrefix = pair.Key;
                 List<string> ilPrefixes = pair.Value;
 
-                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), isIntermediateLanguage: true)).ToList();
+                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
 
                 foreach (bool isDebug in DebugChoice)
                 {
@@ -112,7 +112,7 @@ namespace InstrEngineTests
                         string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
                         Assert.IsNotNull(ilAssemblyPath);
 
-                        string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{entrypointPrefix}.cs"));
+                        string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{entrypointPrefix}.cs"), alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
                         SourceText sourceText = SourceText.From(sourceCode);
 
                         EmitResult result = CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath });

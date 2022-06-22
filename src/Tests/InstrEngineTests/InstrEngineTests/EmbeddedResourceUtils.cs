@@ -36,7 +36,7 @@ namespace InstrEngineTests
     internal class EmbeddedResourceUtils
     {
         private const string EmbeddedResourcesPath = "InstrEngineTests.EmbeddedResources";
-        private const string IL_EmbeddedResourcesPath = EmbeddedResourcesPath + ".InvalidCSharp";
+        public const string InvalidCSharp_EmbeddedResourcesPath = EmbeddedResourcesPath + ".InvalidCSharp";
         private static readonly object ExtractionLock = new object();
 
         /// <inheritdoc/>
@@ -65,9 +65,9 @@ namespace InstrEngineTests
             }
         }
 
-        public static string ReadEmbeddedResourceFile(string file, bool required = true)
+        public static string ReadEmbeddedResourceFile(string file, bool required = true, string alternateResourcesPath = null)
         {
-            Stream stream = GetEmbeddedResource(file, required: required);
+            Stream stream = GetEmbeddedResource(file, required, alternateResourcesPath);
             if (stream == null)
             {
                 return null;
@@ -86,12 +86,12 @@ namespace InstrEngineTests
         /// <param name="resourceName">The name of the resource.</param>
         /// <param name="required">True if an error should occur when the resource is not found.</param>
         /// <returns>An IEmbeddedResourceFile that has info about the extracted file.</returns>
-        public static IEmbeddedResourceFile GetTestResourceFile(string resourceName, bool required = true, bool isIntermediateLanguage = false)
+        public static IEmbeddedResourceFile GetTestResourceFile(string resourceName, bool required = true, string alternateResourcesPath = null)
         {
             // Don't allow parallel tests to overwrite extracted files.
             lock (ExtractionLock)
             {
-                Stream stream = GetEmbeddedResource(resourceName, required, isIntermediateLanguage);
+                Stream stream = GetEmbeddedResource(resourceName, required, alternateResourcesPath);
                 if (stream == null)
                 {
                     return null;
@@ -141,11 +141,11 @@ namespace InstrEngineTests
             }
         }
 
-        private static Stream GetEmbeddedResource(string fileName, bool required = true, bool isIntermediateLanguage = false)
+        private static Stream GetEmbeddedResource(string fileName, bool required = true, string alternateResourcesPath = null)
         {
             Assert.IsNotNull(fileName);
 
-            string resourcesPath = isIntermediateLanguage ? IL_EmbeddedResourcesPath : EmbeddedResourcesPath;
+            string resourcesPath = string.IsNullOrEmpty(alternateResourcesPath) ? EmbeddedResourcesPath : alternateResourcesPath;
 
             var fullPath = FormattableString.Invariant($"{resourcesPath}.{fileName}");
 
