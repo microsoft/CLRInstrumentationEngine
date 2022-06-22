@@ -97,10 +97,10 @@ namespace InstrEngineTests
 
         private static void AssembleILTestCode(string directoryPath)
         {
-            foreach (var pair in EmbeddedILPrefixes)
+            foreach (var prefixPair in EmbeddedILPrefixes)
             {
-                string entrypointPrefix = pair.Key;
-                List<string> ilPrefixes = pair.Value;
+                string entrypointPrefix = prefixPair.Key;
+                List<string> ilPrefixes = prefixPair.Value;
 
                 List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
 
