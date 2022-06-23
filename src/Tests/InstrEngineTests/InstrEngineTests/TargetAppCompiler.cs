@@ -69,7 +69,9 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
+#if NETCOREAPP
             AssembleILTestCode(directoryPath);
+#endif
             CompileCSharpTestCode(directoryPath);
         }
 
