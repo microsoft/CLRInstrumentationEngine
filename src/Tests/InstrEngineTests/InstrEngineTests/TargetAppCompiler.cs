@@ -111,7 +111,7 @@ namespace InstrEngineTests
                         string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
                         Assert.IsNotNull(ilAssemblyPath);
 
-                        SourceText sourceText = GetSourceTextFromEmbeddedResource(entrypointPrefix, alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
+                        SourceText sourceText = GetSourceTextFromEmbeddedResource(entrypointPrefix, resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
 
                         ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath }));
                     }
@@ -119,9 +119,9 @@ namespace InstrEngineTests
             }
         }
 
-        private static SourceText GetSourceTextFromEmbeddedResource(string prefix, bool required = true, string alternateResourcesPath = null)
+        private static SourceText GetSourceTextFromEmbeddedResource(string prefix, bool required = true, string resourcesPath = EmbeddedResourceUtils.EmbeddedResourcesPath)
         {
-            return SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"), required, alternateResourcesPath));
+            return SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"), required, resourcesPath));
         }
 
         private static void ValidateResult(EmitResult result)

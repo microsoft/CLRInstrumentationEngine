@@ -35,7 +35,7 @@ namespace InstrEngineTests
 
     internal class EmbeddedResourceUtils
     {
-        private const string EmbeddedResourcesPath = "InstrEngineTests.EmbeddedResources";
+        public const string EmbeddedResourcesPath = "InstrEngineTests.EmbeddedResources";
         public const string InvalidCSharp_EmbeddedResourcesPath = EmbeddedResourcesPath + ".InvalidCSharp";
         private static readonly object ExtractionLock = new object();
 
