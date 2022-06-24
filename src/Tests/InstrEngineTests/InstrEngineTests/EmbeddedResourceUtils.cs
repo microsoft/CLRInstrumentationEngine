@@ -65,9 +65,9 @@ namespace InstrEngineTests
             }
         }
 
-        public static string ReadEmbeddedResourceFile(string file, bool required = true, string alternateResourcesPath = null)
+        public static string ReadEmbeddedResourceFile(string file, bool required = true, string resourcesPath = EmbeddedResourcesPath)
         {
-            Stream stream = GetEmbeddedResource(file, required, alternateResourcesPath);
+            Stream stream = GetEmbeddedResource(file, required, resourcesPath);
             if (stream == null)
             {
                 return null;
@@ -86,12 +86,12 @@ namespace InstrEngineTests
         /// <param name="resourceName">The name of the resource.</param>
         /// <param name="required">True if an error should occur when the resource is not found.</param>
         /// <returns>An IEmbeddedResourceFile that has info about the extracted file.</returns>
-        public static IEmbeddedResourceFile GetTestResourceFile(string resourceName, bool required = true, string alternateResourcesPath = null)
+        public static IEmbeddedResourceFile GetTestResourceFile(string resourceName, bool required = true, string resourcesPath = EmbeddedResourcesPath)
         {
             // Don't allow parallel tests to overwrite extracted files.
             lock (ExtractionLock)
             {
-                Stream stream = GetEmbeddedResource(resourceName, required, alternateResourcesPath);
+                Stream stream = GetEmbeddedResource(resourceName, required, resourcesPath);
                 if (stream == null)
                 {
                     return null;
@@ -141,11 +141,9 @@ namespace InstrEngineTests
             }
         }
 
-        private static Stream GetEmbeddedResource(string fileName, bool required = true, string alternateResourcesPath = null)
+        private static Stream GetEmbeddedResource(string fileName, bool required = true, string resourcesPath = EmbeddedResourcesPath)
         {
             Assert.IsNotNull(fileName);
-
-            string resourcesPath = string.IsNullOrEmpty(alternateResourcesPath) ? EmbeddedResourcesPath : alternateResourcesPath;
 
             var fullPath = FormattableString.Invariant($"{resourcesPath}.{fileName}");
 

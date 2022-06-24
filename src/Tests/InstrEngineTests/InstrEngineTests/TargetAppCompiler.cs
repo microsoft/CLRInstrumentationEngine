@@ -69,7 +69,7 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
-#if NETCOREAPP
+#if NET7_0_OR_GREATER
             AssembleILTestCode(directoryPath);
 #endif
             CompileCSharpTestCode(directoryPath);
@@ -101,7 +101,7 @@ namespace InstrEngineTests
                 string entrypointPrefix = prefixPair.Key;
                 List<string> ilPrefixes = prefixPair.Value;
 
-                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), alternateResourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
+                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
 
                 foreach (bool isDebug in DebugChoice)
                 {
