@@ -6,64 +6,6 @@
 
 .assembly InvalidCSharp { }
 
-//
-// Begin invalid
-//
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericClass_Invalid`1<T>
-    extends [System.Runtime]System.Object
-{
-    .method public hidebysig specialname rtspecialname
-        instance void .ctor () cil managed
-    {
-        ldarg.0
-        call instance void [System.Runtime]System.Object::.ctor()
-        ret
-    }
-}
-
-.class interface public auto ansi abstract InvalidCSharp.GenericInterface_Invalid`1<T>
-{
-}
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericValueType_Invalid`1<T>
-    extends [System.Runtime]System.ValueType
-{
-}
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericByRefLike_Invalid`1<T>
-    extends [System.Runtime]System.ValueType
-{
-    .custom instance void [System.Runtime]System.Runtime.CompilerServices.IsByRefLikeAttribute::.ctor() = (
-        01 00 00 00
-    )
-}
-
-//
-// End invalid
-//
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericClass_Over`1<byreflike T>
-    extends [System.Runtime]System.Object
-{
-    .method public hidebysig specialname rtspecialname
-        instance void .ctor () cil managed
-    {
-        ldarg.0
-        call instance void [System.Runtime]System.Object::.ctor()
-        ret
-    }
-}
-
-.class interface public auto ansi abstract InvalidCSharp.GenericInterface_Over`1<byreflike T>
-{
-}
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericValueType_Over`1<byreflike T>
-    extends [System.Runtime]System.ValueType
-{
-}
-
 .class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericByRefLike_Over`1<byreflike T>
     extends [System.Runtime]System.ValueType
 {
@@ -72,14 +14,6 @@
     )
 
     .field public !T Field
-
-    .method public hidebysig
-        instance object BoxAsObject(!T) cil managed
-    {
-        ldarg.1
-        box !T
-        ret
-    }
 
     .method public hidebysig
         instance bool BoxUnboxAny(!T) cil managed
@@ -275,17 +209,6 @@
     }
 
     .method public hidebysig
-        instance bool AllocMultiDimArrayOfT() cil managed
-    {
-        ldc.i4.1
-        ldc.i4.1
-        newobj instance void !T[0..., 0...]::.ctor(int32, int32)
-        ldnull
-        cgt.un
-        ret
-    }
-
-    .method public hidebysig
         instance bool InstanceOfT(
             object o
         ) cil managed
@@ -296,55 +219,6 @@
         cgt.un
         ret
     }
-
-    .method public hidebysig
-        instance void CastToT(
-            object o
-        ) cil managed
-    {
-        ldarg.1
-        castclass !T
-        pop
-        ret
-    }
-
-    .method public hidebysig
-        instance void UnboxToT(
-            object o
-        ) cil managed
-    {
-        ldarg.1
-        unbox.any !T
-        pop
-        ret
-    }
-}
-
-.class public sequential ansi sealed beforefieldinit InvalidCSharp.GenericClass_WithStaticField`1<byreflike T>
-    extends [System.Runtime]System.Object
-{
-    .method public hidebysig specialname rtspecialname
-        instance void .ctor () cil managed
-    {
-        .locals init (
-            [0] !T,
-            [1] !T
-        )
-
-        ldarg.0
-        call instance void [System.Runtime]System.Object::.ctor()
-
-        ldloca.s 0
-        initobj !T
-
-        ldloc.0
-        stsfld !0 class InvalidCSharp.GenericClass_WithStaticField`1<!T>::StaticField
-        ldsfld !0 class InvalidCSharp.GenericClass_WithStaticField`1<!T>::StaticField
-        stloc.1
-        ret
-    }
-
-    .field public static !T StaticField
 }
 
 .class public sequential ansi sealed beforefieldinit ByRefLikeType
@@ -359,84 +233,11 @@
     extends [System.Runtime]System.Object
 {
     .method public hidebysig static
-        string GenericClass() cil managed
-    {
-        ldtoken class InvalidCSharp.GenericClass_Over`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
-        string GenericInterface() cil managed
-    {
-        ldtoken class InvalidCSharp.GenericInterface_Over`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
-        string GenericValueType() cil managed
-    {
-        ldtoken valuetype InvalidCSharp.GenericValueType_Over`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
         string GenericByRefLike() cil managed
     {
         ldtoken valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
         call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
         callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-
-    .method public hidebysig static
-        string GenericClass_Invalid() cil managed
-    {
-        ldtoken class InvalidCSharp.GenericClass_Invalid`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
-        string GenericInterface_Invalid() cil managed
-    {
-        ldtoken class InvalidCSharp.GenericInterface_Invalid`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
-        string GenericValueType_Invalid() cil managed
-    {
-        ldtoken valuetype InvalidCSharp.GenericValueType_Invalid`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-    .method public hidebysig static
-        string GenericByRefLike_Invalid() cil managed
-    {
-        ldtoken valuetype InvalidCSharp.GenericByRefLike_Invalid`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-
-    .method public hidebysig static
-        object BoxAsObject() cil managed
-    {
-        .locals init (
-            [0] valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        )
-
-        ldloca.s 0
-        initobj valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        ldloca.s 0
-        ldloc 0
-        ldfld !0 valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::Field
-        call instance object valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::BoxAsObject(!0)
         ret
     }
 
@@ -522,45 +323,6 @@
     }
 
     .method public hidebysig static
-        void AllocArrayOfT_Invalid() cil managed
-    {
-        .locals init (
-            [0] valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        )
-
-        ldloca.s 0
-        initobj valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        ldloca.s 0
-        call instance bool valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::AllocArrayOfT()
-        pop
-        ret
-    }
-
-    .method public hidebysig static
-        void AllocMultiDimArrayOfT_Invalid() cil managed
-    {
-        .locals init (
-            [0] valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        )
-
-        ldloca.s 0
-        initobj valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        ldloca.s 0
-        call instance bool valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::AllocMultiDimArrayOfT()
-        pop
-        ret
-    }
-
-    .method public hidebysig static
-        string GenericClassWithStaticField_Invalid() cil managed
-    {
-        ldtoken class InvalidCSharp.GenericClass_WithStaticField`1<valuetype ByRefLikeType>
-        call class [System.Runtime]System.Type [System.Runtime]System.Type::GetTypeFromHandle(valuetype [System.Runtime]System.RuntimeTypeHandle)
-        callvirt instance string [System.Runtime]System.Object::ToString()
-        ret
-    }
-
-    .method public hidebysig static
         bool InstanceOfT(object) cil managed
     {
         .locals init (
@@ -572,36 +334,6 @@
         ldloca.s 0
         ldarg.0
         call instance bool valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::InstanceOfT(object)
-        ret
-    }
-
-    .method public hidebysig static
-        void CastToT(object) cil managed
-    {
-        .locals init (
-            [0] valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        )
-
-        ldloca.s 0
-        initobj valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        ldloca.s 0
-        ldarg.0
-        call instance void valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::CastToT(object)
-        ret
-    }
-
-    .method public hidebysig static
-        void UnboxToT(object) cil managed
-    {
-        .locals init (
-            [0] valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        )
-
-        ldloca.s 0
-        initobj valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>
-        ldloca.s 0
-        ldarg.0
-        call instance void valuetype InvalidCSharp.GenericByRefLike_Over`1<valuetype ByRefLikeType>::UnboxToT(object)
         ret
     }
 

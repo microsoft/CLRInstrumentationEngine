@@ -33,7 +33,7 @@ namespace InstrEngineTests
 #endif
 
         private const string DebugBinarySuffix = "Debug";
-        private const string ReleaseBinarySuffic = "Release";
+        private const string ReleaseBinarySuffix = "Release";
 
         private const string X86BinarySuffix = "x86";
         private const string X64BinarySuffix = "x64";
@@ -55,10 +55,11 @@ namespace InstrEngineTests
             "MaxStackSizeExample"
         };
 
-        private static string[] EmbeddedILPrefixes = new string[]
+        private static Dictionary<string, List<string>> EmbeddedILPrefixes = new Dictionary<string, List<string>>()
         {
-            "ByRefLikeInvalidCSharp",
-            "RefFieldInvalidCSharp"
+            {
+                "RefStructsTests", new List<string>() { "ByRefLikeInvalidCSharp", "RefInvalidCSharp" }
+            }
         };
 
         private const string DynamicCodeAssemblyName = "DynamicCodeAssembly";
@@ -68,50 +69,69 @@ namespace InstrEngineTests
 
         internal static void CompileTestCode(string directoryPath)
         {
-            CompileCSharpTestCode(directoryPath);
+#if NET7_0_OR_GREATER
             AssembleILTestCode(directoryPath);
+#endif
+            CompileCSharpTestCode(directoryPath);
         }
 
         private static void CompileCSharpTestCode(string directoryPath)
         {
-            EmitResult result;
             foreach (string prefix in EmbeddedCSharpPrefixes)
             {
-                string sourceCode = EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"));
-                SourceText sourceText = SourceText.From(sourceCode);
+                SourceText sourceText = GetSourceTextFromEmbeddedResource(prefix);
+
                 foreach (bool isDebug in DebugChoice)
                 {
                     foreach (bool is64Bit in Is64BitChoice)
                     {
-                        result = CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug, is64Bit);
-                        Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+                        ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, prefix, isDebug, is64Bit));
                     }
                 }
             }
 
-            SourceText dynamicCodeAssemblyText = SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{DynamicCodeAssemblyName}.cs")));
-            result = CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName);
-            Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+            SourceText dynamicCodeAssemblyText = GetSourceTextFromEmbeddedResource(DynamicCodeAssemblyName);
+            ValidateResult(CompileAssembly(dynamicCodeAssemblyText, directoryPath, DynamicCodeAssemblyName));
         }
 
         private static void AssembleILTestCode(string directoryPath)
         {
-            foreach (string prefix in EmbeddedILPrefixes)
+            foreach (var prefixPair in EmbeddedILPrefixes)
             {
-                IEmbeddedResourceFile embeddedResource = EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"));
+                string entrypointPrefix = prefixPair.Key;
+                List<string> ilPrefixes = prefixPair.Value;
+
+                List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
+
                 foreach (bool isDebug in DebugChoice)
                 {
                     foreach (bool is64Bit in Is64BitChoice)
                     {
-                        Assert.IsTrue(TestAppAssembler.AssembleFile(embeddedResource, directoryPath, GetAssemblyName(prefix, isDebug, is64Bit), isDebug, is64Bit));
+                        string assemblyName = GetAssemblyName(entrypointPrefix, isDebug, is64Bit) + "Impl"; // "Impl" is appended so that this assembly has a different name than the one created in CompileTestAppPrefix(). 
+                        string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
+                        Assert.IsNotNull(ilAssemblyPath);
+
+                        SourceText sourceText = GetSourceTextFromEmbeddedResource(entrypointPrefix, resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
+
+                        ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath }));
                     }
                 }
             }
         }
 
+        private static SourceText GetSourceTextFromEmbeddedResource(string prefix, bool required = true, string resourcesPath = EmbeddedResourceUtils.EmbeddedResourcesPath)
+        {
+            return SourceText.From(EmbeddedResourceUtils.ReadEmbeddedResourceFile(FormattableString.Invariant($"{prefix}.cs"), required, resourcesPath));
+        }
+
+        private static void ValidateResult(EmitResult result)
+        {
+            Assert.IsTrue(result.Success, result.Diagnostics.Length > 0 ? result.Diagnostics[0].GetMessage() : null);
+        }
+
         internal static void DeleteExistingBinary(string path)
         {
-            foreach (string prefix in EmbeddedCSharpPrefixes.Union(EmbeddedILPrefixes))
+            foreach (string prefix in EmbeddedCSharpPrefixes.Union(EmbeddedILPrefixes.Keys))
             {
                 foreach (bool isDebug in DebugChoice)
                 {
@@ -123,13 +143,13 @@ namespace InstrEngineTests
                             File.Delete(filePath);
                         }
                     }
-                }      
+                }
             }
         }
 
-        private static EmitResult CompileTestAppPrefix(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit)
+        private static EmitResult CompileTestAppPrefix(SourceText sourceText, string path, string prefix, bool isDebug, bool is64bit, List<string> referencePaths = null)
         {
-            return CompileAssembly(sourceText, path, GetAssemblyName(prefix, isDebug, is64bit), isDebug, is64bit, OutputKind.ConsoleApplication, EntryPointAssemblyExtension);
+            return CompileAssembly(sourceText, path, GetAssemblyName(prefix, isDebug, is64bit), isDebug, is64bit, OutputKind.ConsoleApplication, EntryPointAssemblyExtension, referencePaths);
         }
 
         private static EmitResult CompileAssembly(
@@ -139,7 +159,8 @@ namespace InstrEngineTests
             bool isDebug = false,
             bool? is64bit = null,
             OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary,
-            string extension = DynamicallyLinkedLibraryExtension)
+            string extension = DynamicallyLinkedLibraryExtension,
+            List<string> referencePaths = null)
         {
             IList<string> preprocessorSymbols = new List<string>();
             preprocessorSymbols.Add("TRACE");
@@ -155,7 +176,7 @@ namespace InstrEngineTests
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceText, parseOptions);
 
             string sharedFrameworkDir = RuntimeEnvironment.GetRuntimeDirectory();
-            MetadataReference[] references = new MetadataReference[]
+            List<MetadataReference> references = new List<MetadataReference>
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(HttpWebRequest).Assembly.Location),
@@ -166,6 +187,10 @@ namespace InstrEngineTests
 #endif
             };
 
+            if (null != referencePaths)
+            {
+                references.AddRange(referencePaths.Select(referencePath => MetadataReference.CreateFromFile(referencePath)));
+            }
 
             Platform platform = Platform.AnyCpu;
             if (is64bit.HasValue)
@@ -215,7 +240,7 @@ namespace InstrEngineTests
         {
             Assert.IsFalse(string.IsNullOrEmpty(prefix));
 
-            return string.Format(CultureInfo.InvariantCulture, "{0}_{1}_{2}", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffic, is64bit ? X64BinarySuffix : X86BinarySuffix);
+            return string.Format(CultureInfo.InvariantCulture, "{0}_{1}_{2}", prefix, isDebug ? DebugBinarySuffix : ReleaseBinarySuffix, is64bit ? X64BinarySuffix : X86BinarySuffix);
         }
 
         private static string GetCompilerOptions(bool isDebug, bool is64bit)
