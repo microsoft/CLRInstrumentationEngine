@@ -13,6 +13,7 @@ Please format the changes as follows:
 + Updates:
   + Use VS2022 with v143 toolsets and latest Win10 SDK
   + Added debug tests to signed build pipeline
+  + Update Newtonsoft.Json version to 13.0.1
 
 ## 1.0.45
 + New:
