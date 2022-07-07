@@ -17,6 +17,8 @@
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="$(NETFrameworkReferenceVersion)" />
+    <!-- Used to upgrade to a higher version than what is provided from indirect dependencies. -->
+    <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>
