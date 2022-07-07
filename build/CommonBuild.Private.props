@@ -50,6 +50,7 @@
         <MicrosoftNETTestSdkVersion>16.9.1</MicrosoftNETTestSdkVersion>
         <MSTestTestAdapterVersion>2.1.2</MSTestTestAdapterVersion>
         <MSTestTestFrameworkVersion>2.1.2</MSTestTestFrameworkVersion>
+        <NewtonsoftJsonVersion>13.0.1</NewtonsoftJsonVersion>
         <WixVersion>3.11.1</WixVersion>
     </PropertyGroup>
 
