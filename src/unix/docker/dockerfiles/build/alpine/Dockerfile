@@ -1,9 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# This is the base image that coreclr uses to build its alpine/linux-musl release
-# REFERENCE: https://github.com/dotnet/coreclr/blob/v2.1.0-preview2-26406-04/buildpipeline/pipelines.json
-FROM microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
+FROM mcr.microsoft.com/dotnet-buildtools/prereqs:alpine-3.13-20211214164113-8a6f4f3
 
 WORKDIR /
 
