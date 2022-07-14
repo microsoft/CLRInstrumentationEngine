@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentationTestScript>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_RefStructWithRefField_Load</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_Create_RefField</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_Create_RefStructField</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_Create_TypedReferenceRefField</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_Casting_Scenarios</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_RecognizedOpCodeSequences_Scenarios</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+    <InstrumentMethod>
+        <ModuleName>RefStructsTests_Release_x64.exe</ModuleName>
+        <MethodName>Validate_Inlining_Behavior</MethodName>
+        <MakeSingleRet />
+    </InstrumentMethod>
+</InstrumentationTestScript>

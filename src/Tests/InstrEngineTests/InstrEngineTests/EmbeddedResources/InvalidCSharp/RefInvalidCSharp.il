@@ -3,8 +3,6 @@
 
 .assembly extern System.Runtime { .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A ) }
 
-.assembly InvalidCSharp { }
-
 .class public sequential ansi sealed beforefieldinit InvalidCSharp.WithRefField
     extends [System.Runtime]System.ValueType
 {

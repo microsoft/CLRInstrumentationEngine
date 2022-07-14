@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+#pragma warning disable CA1506
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,6 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -58,7 +60,7 @@ namespace InstrEngineTests
         private static Dictionary<string, List<string>> EmbeddedILPrefixes = new Dictionary<string, List<string>>()
         {
             {
-                "RefStructsTests", new List<string>() { "ByRefLikeInvalidCSharp", "RefInvalidCSharp" }
+                "RefStructsTests", new List<string>() { "RefStructsTestsImpl", "ByRefLikeInvalidCSharp", "RefInvalidCSharp" }
             }
         };
 
@@ -103,14 +105,14 @@ namespace InstrEngineTests
 
                 List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
 
+                string assemblyName = ilPrefixes[0];
+                string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, true, false);
+                Assert.IsNotNull(ilAssemblyPath);
+
                 foreach (bool isDebug in DebugChoice)
                 {
                     foreach (bool is64Bit in Is64BitChoice)
                     {
-                        string assemblyName = GetAssemblyName(entrypointPrefix, isDebug, is64Bit) + "Impl"; // "Impl" is appended so that this assembly has a different name than the one created in CompileTestAppPrefix(). 
-                        string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, isDebug, is64Bit);
-                        Assert.IsNotNull(ilAssemblyPath);
-
                         SourceText sourceText = GetSourceTextFromEmbeddedResource(entrypointPrefix, resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath);
 
                         ValidateResult(CompileTestAppPrefix(sourceText, directoryPath, entrypointPrefix, isDebug, is64Bit, new List<string>() { ilAssemblyPath }));
