@@ -1,328 +1,328 @@
 <?xml version="1.0"?>
 <ImportModule>
-    <ImportAssemblyRef>
-        <token>0x23000001</token>
-        <UseTarget>true</UseTarget>
+    <ImportAssemblyRef>
+        <token>0x23000001</token>
+        <UseTarget>true</UseTarget>
         <targetToken Volatile="True">0x20000001</targetToken>
 
-    </ImportAssemblyRef>
+    </ImportAssemblyRef>
 
-    <ImportTypeDef>
-        <token>0x01000005</token>
-        <Name>System.Attribute</Name>
+    <ImportTypeDef>
+        <token>0x01000005</token>
+        <Name>System.Attribute</Name>
         <targetToken Volatile="True">0x020000ad</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportParam>
-        <token>0x08000001</token>
+    <ImportParam>
+        <token>0x08000001</token>
         <Name Volatile="True">value</Name>
 
-    </ImportParam>
+    </ImportParam>
 
-    <ImportTypeDef>
-        <token>0x01000006</token>
-        <Name>System.Object</Name>
+    <ImportTypeDef>
+        <token>0x01000006</token>
+        <Name>System.Object</Name>
         <targetToken Volatile="True">0x0200003d</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportTypeDef>
-        <token>0x01000007</token>
-        <Name>System.Collections.Generic.List`1</Name>
+    <ImportTypeDef>
+        <token>0x01000007</token>
+        <Name>System.Collections.Generic.List`1</Name>
         <targetToken Volatile="True">0x020004af</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportFieldDef>
-        <token>0x04000001</token>
-        <Name>values</Name>
-        <Class>0x02000003</Class>
+    <ImportFieldDef>
+        <token>0x04000001</token>
+        <Name>values</Name>
+        <Class>0x02000003</Class>
         <targetToken Volatile="True">0x04003896</targetToken>
 
-    </ImportFieldDef>
+    </ImportFieldDef>
 
-    <ImportParam>
-        <token>0x08000002</token>
-        <Name>value</Name>
-    </ImportParam>
+    <ImportParam>
+        <token>0x08000002</token>
+        <Name>value</Name>
+    </ImportParam>
 
-    <ImportTypeSpec>
-        <token>0x1b000002</token>
+    <ImportTypeSpec>
+        <token>0x1b000002</token>
         <targetToken Volatile="True">0x1b0004d2</targetToken>
 
-    </ImportTypeSpec>
+    </ImportTypeSpec>
 
-    <ImportMemberRef>
-        <token>0x0a000008</token>
-        <Name>values</Name>
-        <DeclaringType>0x1b000002</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a000008</token>
+        <Name>values</Name>
+        <DeclaringType>0x1b000002</DeclaringType>
         <targetToken Volatile="True">0x0a000cf1</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportTypeSpec>
-        <token>0x1b000003</token>
+    <ImportTypeSpec>
+        <token>0x1b000003</token>
         <targetToken Volatile="True">0x1b0001da</targetToken>
 
-    </ImportTypeSpec>
+    </ImportTypeSpec>
 
-    <ImportMemberRef>
-        <token>0x0a000009</token>
-        <Name>Add</Name>
-        <DeclaringType>0x1b000003</DeclaringType>
-        <UseExisting>true</UseExisting>
+    <ImportMemberRef>
+        <token>0x0a000009</token>
+        <Name>Add</Name>
+        <DeclaringType>0x1b000003</DeclaringType>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x0a000448</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000004</token>
-        <Name>Add</Name>
-        <Class>0x02000003</Class>
+    <ImportMethodDef>
+        <token>0x06000004</token>
+        <Name>Add</Name>
+        <Class>0x02000003</Class>
         <targetToken Volatile="True">0x0600711a</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportTypeDef>
-        <token>0x01000008</token>
-        <Name>Enumerator</Name>
+    <ImportTypeDef>
+        <token>0x01000008</token>
+        <Name>Enumerator</Name>
         <targetToken Volatile="True">0x02000bae</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportLocalVarSig>
-        <token>0x11000002</token>
+    <ImportLocalVarSig>
+        <token>0x11000002</token>
         <targetToken Volatile="True">0x11000ed8</targetToken>
 
-    </ImportLocalVarSig>
+    </ImportLocalVarSig>
 
-    <ImportMemberRef>
-        <token>0x0a00000a</token>
-        <Name>GetEnumerator</Name>
-        <DeclaringType>0x1b000003</DeclaringType>
-        <UseExisting>true</UseExisting>
+    <ImportMemberRef>
+        <token>0x0a00000a</token>
+        <Name>GetEnumerator</Name>
+        <DeclaringType>0x1b000003</DeclaringType>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x0a00062b</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportTypeSpec>
-        <token>0x1b000004</token>
+    <ImportTypeSpec>
+        <token>0x1b000004</token>
         <targetToken Volatile="True">0x1b0002d3</targetToken>
 
-    </ImportTypeSpec>
+    </ImportTypeSpec>
 
-    <ImportMemberRef>
-        <token>0x0a00000b</token>
-        <Name>get_Current</Name>
-        <DeclaringType>0x1b000004</DeclaringType>
-        <UseExisting>true</UseExisting>
+    <ImportMemberRef>
+        <token>0x0a00000b</token>
+        <Name>get_Current</Name>
+        <DeclaringType>0x1b000004</DeclaringType>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x0a00062c</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMemberRef>
-        <token>0x0a00000c</token>
-        <Name>MoveNext</Name>
-        <DeclaringType>0x1b000004</DeclaringType>
-        <UseExisting>true</UseExisting>
+    <ImportMemberRef>
+        <token>0x0a00000c</token>
+        <Name>MoveNext</Name>
+        <DeclaringType>0x1b000004</DeclaringType>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x0a00062e</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportTypeDef>
-        <token>0x01000009</token>
-        <Name>System.IDisposable</Name>
+    <ImportTypeDef>
+        <token>0x01000009</token>
+        <Name>System.IDisposable</Name>
         <targetToken Volatile="True">0x020000ee</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportMemberRef>
-        <token>0x0a00000d</token>
-        <Name>Dispose</Name>
-        <DeclaringType>0x01000009</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a00000d</token>
+        <Name>Dispose</Name>
+        <DeclaringType>0x01000009</DeclaringType>
         <targetToken Volatile="True">0x0a000cf2</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000005</token>
-        <Name>GetSumValue</Name>
-        <Class>0x02000003</Class>
+    <ImportMethodDef>
+        <token>0x06000005</token>
+        <Name>GetSumValue</Name>
+        <Class>0x02000003</Class>
         <targetToken Volatile="True">0x0600711b</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMemberRef>
-        <token>0x0a00000e</token>
-        <Name>.ctor</Name>
-        <DeclaringType>0x01000006</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a00000e</token>
+        <Name>.ctor</Name>
+        <DeclaringType>0x01000006</DeclaringType>
         <targetToken Volatile="True">0x0a000cf3</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000006</token>
-        <Name>.ctor</Name>
-        <Class>0x02000003</Class>
+    <ImportMethodDef>
+        <token>0x06000006</token>
+        <Name>.ctor</Name>
+        <Class>0x02000003</Class>
         <targetToken Volatile="True">0x0600711c</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMemberRef>
-        <token>0x0a00000f</token>
-        <Name>.ctor</Name>
-        <DeclaringType>0x1b000003</DeclaringType>
-        <UseExisting>true</UseExisting>
+    <ImportMemberRef>
+        <token>0x0a00000f</token>
+        <Name>.ctor</Name>
+        <DeclaringType>0x1b000003</DeclaringType>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x0a00039a</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000007</token>
-        <Name>.cctor</Name>
-        <Class>0x02000003</Class>
+    <ImportMethodDef>
+        <token>0x06000007</token>
+        <Name>.cctor</Name>
+        <Class>0x02000003</Class>
         <targetToken Volatile="True">0x0600711d</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportGenericParam>
-        <token>0x2a000001</token>
-        <Name>T</Name>
+    <ImportGenericParam>
+        <token>0x2a000001</token>
+        <Name>T</Name>
         <targetToken Volatile="True">0x2a0006ed</targetToken>
 
-    </ImportGenericParam>
+    </ImportGenericParam>
 
-    <ImportTypeDef>
-        <token>0x02000003</token>
-        <Name>System.Diagnostics.Instrumentation.A`1</Name>
+    <ImportTypeDef>
+        <token>0x02000003</token>
+        <Name>System.Diagnostics.Instrumentation.A`1</Name>
         <targetToken Volatile="True">0x02000ce4</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportLocalVarSig>
-        <token>0x11000001</token>
+    <ImportLocalVarSig>
+        <token>0x11000001</token>
         <targetToken Volatile="True">0x11000ed9</targetToken>
 
-    </ImportLocalVarSig>
+    </ImportLocalVarSig>
 
-    <ImportTypeSpec>
-        <token>0x1b000001</token>
+    <ImportTypeSpec>
+        <token>0x1b000001</token>
         <targetToken Volatile="True">0x1b0004d3</targetToken>
 
-    </ImportTypeSpec>
+    </ImportTypeSpec>
 
-    <ImportMemberRef>
-        <token>0x0a000004</token>
-        <Name>.ctor</Name>
-        <DeclaringType>0x1b000001</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a000004</token>
+        <Name>.ctor</Name>
+        <DeclaringType>0x1b000001</DeclaringType>
         <targetToken Volatile="True">0x0a000cf4</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMemberRef>
-        <token>0x0a000005</token>
-        <Name>Add</Name>
-        <DeclaringType>0x1b000001</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a000005</token>
+        <Name>Add</Name>
+        <DeclaringType>0x1b000001</DeclaringType>
         <targetToken Volatile="True">0x0a000cf5</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMemberRef>
-        <token>0x0a000006</token>
-        <Name>GetSumValue</Name>
-        <DeclaringType>0x1b000001</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a000006</token>
+        <Name>GetSumValue</Name>
+        <DeclaringType>0x1b000001</DeclaringType>
         <targetToken Volatile="True">0x0a000cf6</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000001</token>
-        <Name>MethodToCallInstead</Name>
-        <Class>0x02000002</Class>
+    <ImportMethodDef>
+        <token>0x06000001</token>
+        <Name>MethodToCallInstead</Name>
+        <Class>0x02000002</Class>
         <targetToken Volatile="True">0x06007119</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMethodDef>
-        <token>0x06000002</token>
-        <Name>NoLocalVariablesMethod</Name>
-        <Class>0x02000002</Class>
+    <ImportMethodDef>
+        <token>0x06000002</token>
+        <Name>NoLocalVariablesMethod</Name>
+        <Class>0x02000002</Class>
         <targetToken Volatile="True">0x0600711e</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMemberRef>
-        <token>0x0a000007</token>
-        <Name>.ctor</Name>
-        <DeclaringType>0x01000005</DeclaringType>
+    <ImportMemberRef>
+        <token>0x0a000007</token>
+        <Name>.ctor</Name>
+        <DeclaringType>0x01000005</DeclaringType>
         <targetToken Volatile="True">0x0a000cf7</targetToken>
 
-    </ImportMemberRef>
+    </ImportMemberRef>
 
-    <ImportMethodDef>
-        <token>0x06000003</token>
-        <Name>.ctor</Name>
-        <Class>0x02000002</Class>
-        <UseExisting>true</UseExisting>
+    <ImportMethodDef>
+        <token>0x06000003</token>
+        <Name>.ctor</Name>
+        <Class>0x02000002</Class>
+        <UseExisting>true</UseExisting>
         <targetToken Volatile="True">0x060031e8</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportTypeDef>
-        <token>0x02000002</token>
-        <Name>_System.Diagnostics.DebuggerHiddenAttribute</Name>
-        <MergedToType>System.Diagnostics.DebuggerHiddenAttribute</MergedToType>
+    <ImportTypeDef>
+        <token>0x02000002</token>
+        <Name>_System.Diagnostics.DebuggerHiddenAttribute</Name>
+        <MergedToType>System.Diagnostics.DebuggerHiddenAttribute</MergedToType>
         <targetToken Volatile="True">0x020003bc</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
-    <ImportParam>
-        <token>0x08000003</token>
-        <Name>args</Name>
-    </ImportParam>
+    <ImportParam>
+        <token>0x08000003</token>
+        <Name>args</Name>
+    </ImportParam>
 
-    <ImportString>
-        <token>0x70000001</token>
+    <ImportString>
+        <token>0x70000001</token>
         <targetToken Volatile="True">0x70006294</targetToken>
 
-    </ImportString>
+    </ImportString>
 
-    <ImportParam>
-        <token>0x08000004</token>
-        <Name>value</Name>
-    </ImportParam>
+    <ImportParam>
+        <token>0x08000004</token>
+        <Name>value</Name>
+    </ImportParam>
 
-    <ImportMethodDef>
-        <token>0x06000009</token>
-        <Name>InjectToMscorlib</Name>
-        <Class>0x02000004</Class>
+    <ImportMethodDef>
+        <token>0x06000009</token>
+        <Name>InjectToMscorlib</Name>
+        <Class>0x02000004</Class>
         <targetToken Volatile="True">0x06007120</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMethodDef>
-        <token>0x06000008</token>
-        <Name>Main</Name>
-        <Class>0x02000004</Class>
+    <ImportMethodDef>
+        <token>0x06000008</token>
+        <Name>Main</Name>
+        <Class>0x02000004</Class>
         <targetToken Volatile="True">0x0600711f</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportMethodDef>
-        <token>0x0600000a</token>
-        <Name>.ctor</Name>
-        <Class>0x02000004</Class>
+    <ImportMethodDef>
+        <token>0x0600000a</token>
+        <Name>.ctor</Name>
+        <Class>0x02000004</Class>
         <targetToken Volatile="True">0x06007121</targetToken>
 
-    </ImportMethodDef>
+    </ImportMethodDef>
 
-    <ImportTypeDef>
-        <token>0x02000004</token>
-        <Name>InstruOperationsTests.Program</Name>
+    <ImportTypeDef>
+        <token>0x02000004</token>
+        <Name>InstruOperationsTests.Program</Name>
         <targetToken Volatile="True">0x02000ce5</targetToken>
 
-    </ImportTypeDef>
+    </ImportTypeDef>
 
 </ImportModule>
 <?xml version="1.0"?>
@@ -350,13 +350,11 @@
     <MethodImpl>0x00000000</MethodImpl>
     <LocalSignature>0x07 0x00 </LocalSignature>
     <MaxStack>0x00000001</MaxStack>
-    <Instructions>
-        <![CDATA[
+    <Instructions><![CDATA[
 IL_0000 ldarg.0
 IL_0001 call 0x0a000010
 IL_0006 ret
-    ]]>
-    </Instructions>
+    ]]></Instructions>
     <ExceptionClauses>
     </ExceptionClauses>
     <CorIlMap>
