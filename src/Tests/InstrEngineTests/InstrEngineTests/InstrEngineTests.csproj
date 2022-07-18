@@ -186,8 +186,32 @@
       <Link>Baselines\Instru_ReplaceTest2.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Baselines\RefStructsTest.xml">
-      <Link>Baselines\RefStructsTests.xml</Link>
+    <Content Include="..\Baselines\RefStructsTest_Casting_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefStructField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>Baselines\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Inlining_Behavior.xml">
+      <Link>Baselines\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>Baselines\RefStructsTest_RefStructWithRefField_Load.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\RoundTrip_ForTest.xml">
@@ -424,8 +448,32 @@
       <Link>TestScripts\Instru_ReplaceTest2.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestScripts\RefStructsTest.xml">
-      <Link>TestScripts\RefStructsTest.xml</Link>
+    <Content Include="..\TestScripts\RefStructsTest_Casting_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefStructField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Inlining_Behavior.xml">
+      <Link>TestScripts\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>TestScripts\RefStructsTest_RefStructWithRefField_Load.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\RoundTrip_ForTest.xml">

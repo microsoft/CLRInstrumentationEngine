@@ -38,10 +38,9 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "RefStructsTest.xml");
+                "RefStructsTest_RefStructWithRefField_Load.xml");
         }
 
-        /*
         [TestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefField()
@@ -49,7 +48,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+                "RefStructsTest_Create_RefField.xml");
         }
 
         [TestMethod]
@@ -59,7 +58,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+                "RefStructsTest_Create_RefStructField.xml");
         }
 
         [TestMethod]
@@ -69,7 +68,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+                "RefStructsTest_Create_TypedReferenceRefField.xml");
         }
 
         [TestMethod]
@@ -79,7 +78,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+                "RefStructsTest_Casting_Scenarios.xml");
         }
 
         [TestMethod]
@@ -89,7 +88,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
+                "RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml");
         }
 
         [TestMethod]
@@ -99,7 +98,7 @@ namespace InstrEngineTests
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
-                "Empty_CalculateMaxStackSizeExceptionFilterTest.xml");
-        }*/
+                "RefStructsTest_Inlining_Behavior.xml");
+        }
     }
 }
