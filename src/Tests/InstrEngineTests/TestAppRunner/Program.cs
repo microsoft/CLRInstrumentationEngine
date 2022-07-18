@@ -60,7 +60,6 @@ namespace TestAppRunner
 
                 return entryPointDelegate(entryPointArgs);
             }
-
         }
 
         private static Assembly LoadAssemblyFromDisk(string assemblyPath)

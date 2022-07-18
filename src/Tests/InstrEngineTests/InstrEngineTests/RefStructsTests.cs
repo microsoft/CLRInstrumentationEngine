@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
 {
+#if NET7_0_OR_GREATER
     [TestClass]
     // "dotnet test" runs tests in-place (instead of copying them to a deployment
     // directory). DeploymentItems that copy from a source path to a destination
@@ -101,4 +102,5 @@ namespace InstrEngineTests
                 "RefStructsTest_Inlining_Behavior.xml");
         }
     }
+#endif
 }
