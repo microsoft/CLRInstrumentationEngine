@@ -58,6 +58,7 @@ jobs:
         & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x64' -InstallDir $dotnetX64Dir
         & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
         & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '7.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
         $dotnetX64Path = Join-Path -Path $dotnetX64Dir -ChildPath 'dotnet.exe' -Resolve
         # Install x86 runtimes
         $dotnetX86Dir = Join-Path -Path $dotnetDir -ChildPath 'x86'
@@ -65,6 +66,7 @@ jobs:
         & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x86' -InstallDir $dotnetX86Dir
         & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
         & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '7.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
         $dotnetX86Path = Join-Path -Path $dotnetX86Dir -ChildPath 'dotnet.exe' -Resolve
         # Set job variables
         Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
@@ -113,6 +115,12 @@ jobs:
       parameters:
         SubFolder: 'net60\'
         RunTitle: '$(Build.BuildNumber)_Windows_Net60_$(Configuration)'
+
+    - template: ../../steps/windows/dotnettest.yaml
+      parameters:
+        SubFolder: 'net70\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net70_$(Configuration)'
+
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml
