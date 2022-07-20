@@ -75,6 +75,10 @@ namespace TestAppRunner
             }
         }
 
+        // Prior to adding this, the RefStructsTestsImpl assembly referenced by RefStructsTests
+        // was not being loaded, despite being located in the same directory. This is called
+        // when a referenced assembly isn't found automatically, and the missing assembly
+        // is loaded retroactively.
         private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
         {
             AssemblyName assemblyName = new AssemblyName(args.Name);

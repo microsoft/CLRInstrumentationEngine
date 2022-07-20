@@ -21,7 +21,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="EmbeddedResources\InvalidCSharp\readme.txt" />
-    <None Remove="EmbeddedResources\InvalidCSharp\RefStructsTestsImpl.il" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <Compile Remove="RefStructsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />

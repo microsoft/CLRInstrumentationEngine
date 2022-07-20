@@ -5,17 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace InstrEngineTests
 {
-#if NET7_0_OR_GREATER
     [TestClass]
     // "dotnet test" runs tests in-place (instead of copying them to a deployment
     // directory). DeploymentItems that copy from a source path to a destination
     // that is the same location are not necessary and cause file locking issues
     // when initializing the tests. Only use DeploymentItem for paths with different
     // destinations for .NET Core test assemblies.
-#if !NETCOREAPP
-    [DeploymentItem(PathUtils.BaselinesBinPath, PathUtils.BaselinesBinPath)]
-    [DeploymentItem(PathUtils.TestScriptsBinPath, PathUtils.TestScriptsBinPath)]
-#endif
     [DeploymentItem(PathUtils.InstrumentationEngineX64BinPath)]
     [DeploymentItem(PathUtils.InstrumentationEngineX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationConfigX64BinPath)]
@@ -102,5 +97,4 @@ namespace InstrEngineTests
                 "RefStructsTest_Inlining_Behavior.xml");
         }
     }
-#endif
 }

@@ -105,6 +105,9 @@ namespace InstrEngineTests
 
                 List<IEmbeddedResourceFile> embeddedResources = ilPrefixes.Select(prefix => EmbeddedResourceUtils.GetTestResourceFile(FormattableString.Invariant($"{prefix}.il"), resourcesPath: EmbeddedResourceUtils.InvalidCSharp_EmbeddedResourcesPath)).ToList();
 
+                // To ensure that the assembly name matches the assembly name given in RefStructsTestsImpl.il,
+                // we cannot have distinct assemblies for DebugChoice and Is64BitChoice. This requires the IL
+                // file with our assembly's name to be the first ilPrefix; otherwise, the names won't match.
                 string assemblyName = ilPrefixes[0];
                 string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, true, false);
                 Assert.IsNotNull(ilAssemblyPath);
