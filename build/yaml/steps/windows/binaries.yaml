@@ -20,7 +20,7 @@ steps:
   inputs:
     command: build
     projects: InstrumentationEngine.sln
-    arguments: -c $(Configuration) -bl:"$(Build.ArtifactStagingDirectory)\logs\Build_Windows_AnyCPU_$(Configuration).binlog"
+    arguments: -c $(Configuration)
   condition: and(succeeded(), eq(variables['Platform'], 'Any CPU'))
 
 - task: MSBuild@1

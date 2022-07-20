@@ -3,11 +3,11 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 8.01.0622 */
+ /* File created by MIDL compiler version 8.01.0626 */
 /* at Mon Jan 18 19:14:07 2038
  */
 /* Compiler settings for InstrumentationEngine.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=ARM64 8.01.0622 
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=ARM64 8.01.0626 
     protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
@@ -41,6 +41,14 @@
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
+#endif
+
+#ifndef DECLSPEC_XFGVIRT
+#if _CONTROL_FLOW_GUARD_XFG
+#define DECLSPEC_XFGVIRT(base, func) __declspec(xfg_virtual(base, func))
+#else
+#define DECLSPEC_XFGVIRT(base, func)
+#endif
 #endif
 
 /* Forward Declarations */ 
@@ -925,63 +933,78 @@ EXTERN_C const IID IID_IProfilerManager;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManager * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManager * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, SetupProfilingEnvironment)
         HRESULT ( STDMETHODCALLTYPE *SetupProfilingEnvironment )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__deref_in_opt BSTR bstrConfigPath[  ],
             /* [in] */ UINT numConfigPaths);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, AddRawProfilerHook)
         HRESULT ( STDMETHODCALLTYPE *AddRawProfilerHook )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in_opt IUnknown *pUnkProfilerCallback);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, RemoveRawProfilerHook)
         HRESULT ( STDMETHODCALLTYPE *RemoveRawProfilerHook )( 
             __RPC__in IProfilerManager * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetCorProfilerInfo)
         HRESULT ( STDMETHODCALLTYPE *GetCorProfilerInfo )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppCorProfiler);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetProfilerHost)
         /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *GetProfilerHost )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IProfilerManagerHost **ppProfilerManagerHost);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetLoggingInstance)
         HRESULT ( STDMETHODCALLTYPE *GetLoggingInstance )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, SetLoggingHost)
         HRESULT ( STDMETHODCALLTYPE *SetLoggingHost )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in_opt IProfilerManagerLoggingHost *pLoggingHost);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetAppDomainCollection)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainCollection )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt IAppDomainCollection **ppAppDomainCollection);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, CreateSignatureBuilder)
         HRESULT ( STDMETHODCALLTYPE *CreateSignatureBuilder )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignatureBuilder);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetInstrumentationMethod)
         HRESULT ( STDMETHODCALLTYPE *GetInstrumentationMethod )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in REFGUID cslid,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppUnknown);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, RemoveInstrumentationMethod)
         HRESULT ( STDMETHODCALLTYPE *RemoveInstrumentationMethod )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in_opt IInstrumentationMethod *pInstrumentationMethod);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, AddInstrumentationMethod)
         HRESULT ( STDMETHODCALLTYPE *AddInstrumentationMethod )( 
             __RPC__in IProfilerManager * This,
             /* [in] */ __RPC__in BSTR bstrModulePath,
@@ -992,6 +1015,7 @@ EXTERN_C const IID IID_IProfilerManager;
             /* [in] */ DWORD dwPriority,
             /* [out] */ __RPC__deref_out_opt IInstrumentationMethod **pInstrumentationMethod);
         
+        DECLSPEC_XFGVIRT(IProfilerManager, GetRuntimeType)
         HRESULT ( STDMETHODCALLTYPE *GetRuntimeType )( 
             __RPC__in IProfilerManager * This,
             /* [out] */ __RPC__out COR_PRF_RUNTIME_TYPE *pRuntimeType);
@@ -1096,18 +1120,22 @@ EXTERN_C const IID IID_IProfilerManagerHost;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManagerHost * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManagerHost * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManagerHost * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerHost, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in IProfilerManagerHost * This,
             /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager);
@@ -1191,38 +1219,47 @@ EXTERN_C const IID IID_IProfilerManagerLogging;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManagerLogging * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManagerLogging * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, LogMessage)
         HRESULT ( STDMETHODCALLTYPE *LogMessage )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ __RPC__in const WCHAR *wszMessage);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, LogError)
         HRESULT ( STDMETHODCALLTYPE *LogError )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ __RPC__in const WCHAR *wszError);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, LogDumpMessage)
         HRESULT ( STDMETHODCALLTYPE *LogDumpMessage )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ __RPC__in const WCHAR *wszMessage);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, EnableDiagnosticLogToDebugPort)
         HRESULT ( STDMETHODCALLTYPE *EnableDiagnosticLogToDebugPort )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ BOOL enable);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, GetLoggingFlags)
         HRESULT ( STDMETHODCALLTYPE *GetLoggingFlags )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [out] */ __RPC__out enum LoggingFlags *pLoggingFlags);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLogging, SetLoggingFlags)
         HRESULT ( STDMETHODCALLTYPE *SetLoggingFlags )( 
             __RPC__in IProfilerManagerLogging * This,
             /* [in] */ enum LoggingFlags loggingFlags);
@@ -1312,26 +1349,32 @@ EXTERN_C const IID IID_IProfilerManagerLoggingHost;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManagerLoggingHost * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManagerLoggingHost * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManagerLoggingHost * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLoggingHost, LogMessage)
         HRESULT ( STDMETHODCALLTYPE *LogMessage )( 
             __RPC__in IProfilerManagerLoggingHost * This,
             /* [in] */ __RPC__in const WCHAR *wszMessage);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLoggingHost, LogError)
         HRESULT ( STDMETHODCALLTYPE *LogError )( 
             __RPC__in IProfilerManagerLoggingHost * This,
             /* [in] */ __RPC__in const WCHAR *wszError);
         
+        DECLSPEC_XFGVIRT(IProfilerManagerLoggingHost, LogDumpMessage)
         HRESULT ( STDMETHODCALLTYPE *LogDumpMessage )( 
             __RPC__in IProfilerManagerLoggingHost * This,
             /* [in] */ __RPC__in const WCHAR *wszMessage);
@@ -1448,70 +1491,86 @@ EXTERN_C const IID IID_IInstrumentationMethod;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethod * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethod * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnAppDomainCreated)
         HRESULT ( STDMETHODCALLTYPE *OnAppDomainCreated )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnAppDomainShutdown)
         HRESULT ( STDMETHODCALLTYPE *OnAppDomainShutdown )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IAppDomainInfo *pAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnAssemblyLoaded)
         HRESULT ( STDMETHODCALLTYPE *OnAssemblyLoaded )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnAssemblyUnloaded)
         HRESULT ( STDMETHODCALLTYPE *OnAssemblyUnloaded )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IAssemblyInfo *pAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnModuleLoaded)
         HRESULT ( STDMETHODCALLTYPE *OnModuleLoaded )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnModuleUnloaded)
         HRESULT ( STDMETHODCALLTYPE *OnModuleUnloaded )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IModuleInfo *pModuleInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnShutdown)
         HRESULT ( STDMETHODCALLTYPE *OnShutdown )( 
             __RPC__in IInstrumentationMethod * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, ShouldInstrumentMethod)
         HRESULT ( STDMETHODCALLTYPE *ShouldInstrumentMethod )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit,
             /* [out] */ __RPC__out BOOL *pbInstrument);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, BeforeInstrumentMethod)
         HRESULT ( STDMETHODCALLTYPE *BeforeInstrumentMethod )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, InstrumentMethod)
         HRESULT ( STDMETHODCALLTYPE *InstrumentMethod )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, OnInstrumentationComplete)
         HRESULT ( STDMETHODCALLTYPE *OnInstrumentationComplete )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
             /* [in] */ BOOL isRejit);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethod, AllowInlineSite)
         HRESULT ( STDMETHODCALLTYPE *AllowInlineSite )( 
             __RPC__in IInstrumentationMethod * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfoInlinee,
@@ -1625,24 +1684,29 @@ EXTERN_C const IID IID_IDataContainer;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IDataContainer * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IDataContainer * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IDataContainer * This);
         
+        DECLSPEC_XFGVIRT(IDataContainer, SetDataItem)
         HRESULT ( STDMETHODCALLTYPE *SetDataItem )( 
             __RPC__in IDataContainer * This,
             /* [in] */ __RPC__in const GUID *componentId,
             /* [in] */ __RPC__in const GUID *objectGuid,
             /* [in] */ __RPC__in_opt IUnknown *pDataItem);
         
+        DECLSPEC_XFGVIRT(IDataContainer, GetDataItem)
         HRESULT ( STDMETHODCALLTYPE *GetDataItem )( 
             __RPC__in IDataContainer * This,
             /* [in] */ __RPC__in const GUID *componentId,
@@ -1779,102 +1843,127 @@ EXTERN_C const IID IID_IInstruction;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstruction * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstruction * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstruction * This);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOffset)
         HRESULT ( STDMETHODCALLTYPE *GetOffset )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out DWORD *pdwOffset);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOriginalOffset)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalOffset )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out DWORD *pdwOffset);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOpCodeName)
         HRESULT ( STDMETHODCALLTYPE *GetOpCodeName )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOpCode)
         HRESULT ( STDMETHODCALLTYPE *GetOpCode )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetAlternateOrdinalOpcode)
         HRESULT ( STDMETHODCALLTYPE *GetAlternateOrdinalOpcode )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum ILOrdinalOpcode *pOpCode);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetInstructionLength)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionLength )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out DWORD *pdwLength);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOpcodeFlags)
         HRESULT ( STDMETHODCALLTYPE *GetOpcodeFlags )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum ILOpcodeFlags *pFlags);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOpcodeLength)
         HRESULT ( STDMETHODCALLTYPE *GetOpcodeLength )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out DWORD *pdwLength);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOperandType)
         HRESULT ( STDMETHODCALLTYPE *GetOperandType )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum ILOperandType *pType);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOperandLength)
         HRESULT ( STDMETHODCALLTYPE *GetOperandLength )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out DWORD *pdwLength);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsNew)
         HRESULT ( STDMETHODCALLTYPE *GetIsNew )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsRemoved)
         HRESULT ( STDMETHODCALLTYPE *GetIsRemoved )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsBranch)
         HRESULT ( STDMETHODCALLTYPE *GetIsBranch )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsSwitch)
         HRESULT ( STDMETHODCALLTYPE *GetIsSwitch )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsCallInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetIsCallInstruction )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetTerminationType)
         HRESULT ( STDMETHODCALLTYPE *GetTerminationType )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum InstructionTerminationType *pTerminationType);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetIsFallThrough)
         HRESULT ( STDMETHODCALLTYPE *GetIsFallThrough )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out BOOL *pbIsFallThrough);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetNextInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetNextInstruction )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetPreviousInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetPreviousInstruction )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOriginalNextInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalNextInstruction )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppNextInstruction);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetOriginalPreviousInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalPreviousInstruction )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppPrevInstruction);
         
+        DECLSPEC_XFGVIRT(IInstruction, GetInstructionGeneration)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionGeneration )( 
             __RPC__in IInstruction * This,
             /* [out] */ __RPC__out enum InstructionGeneration *pInstructionGeneration);
@@ -2027,37 +2116,46 @@ EXTERN_C const IID IID_IExceptionSection;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IExceptionSection * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IExceptionSection * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IExceptionSection * This);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, GetMethodInfo)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfo )( 
             __RPC__in IExceptionSection * This,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, GetExceptionClauses)
         HRESULT ( STDMETHODCALLTYPE *GetExceptionClauses )( 
             __RPC__in IExceptionSection * This,
             /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppEnumExceptionClauses);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, AddExceptionClause)
         HRESULT ( STDMETHODCALLTYPE *AddExceptionClause )( 
             __RPC__in IExceptionSection * This,
             /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, RemoveExceptionClause)
         HRESULT ( STDMETHODCALLTYPE *RemoveExceptionClause )( 
             __RPC__in IExceptionSection * This,
             /* [in] */ __RPC__in_opt IExceptionClause *pExceptionClause);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, RemoveAllExceptionClauses)
         HRESULT ( STDMETHODCALLTYPE *RemoveAllExceptionClauses )( 
             __RPC__in IExceptionSection * This);
         
+        DECLSPEC_XFGVIRT(IExceptionSection, AddNewExceptionClause)
         HRESULT ( STDMETHODCALLTYPE *AddNewExceptionClause )( 
             __RPC__in IExceptionSection * This,
             /* [in] */ DWORD flags,
@@ -2187,70 +2285,87 @@ EXTERN_C const IID IID_IExceptionClause;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IExceptionClause * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IExceptionClause * This);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetFlags)
         HRESULT ( STDMETHODCALLTYPE *GetFlags )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__out DWORD *pFlags);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetTryFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetTryFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetTryLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetTryLastInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetHandlerFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetHandlerFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetHandlerLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetHandlerLastInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetFilterFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetFilterFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, GetExceptionHandlerType)
         HRESULT ( STDMETHODCALLTYPE *GetExceptionHandlerType )( 
             __RPC__in IExceptionClause * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetFlags)
         HRESULT ( STDMETHODCALLTYPE *SetFlags )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ DWORD flags);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetTryFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *SetTryFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetTryLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *SetTryLastInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetHandlerFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *SetHandlerFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetHandlerLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *SetHandlerLastInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetFilterFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *SetFilterFirstInstruction )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstruction);
         
+        DECLSPEC_XFGVIRT(IExceptionClause, SetExceptionHandlerType)
         HRESULT ( STDMETHODCALLTYPE *SetExceptionHandlerType )( 
             __RPC__in IExceptionClause * This,
             /* [in] */ mdToken token);
@@ -2371,35 +2486,43 @@ EXTERN_C const IID IID_IEnumExceptionClauses;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumExceptionClauses * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumExceptionClauses * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumExceptionClauses * This);
         
+        DECLSPEC_XFGVIRT(IEnumExceptionClauses, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumExceptionClauses * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IExceptionClause **rgelt,
             /* [in] */ __RPC__in ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumExceptionClauses, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumExceptionClauses * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumExceptionClauses, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumExceptionClauses * This);
         
+        DECLSPEC_XFGVIRT(IEnumExceptionClauses, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumExceptionClauses * This,
             /* [out] */ __RPC__deref_out_opt IEnumExceptionClauses **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumExceptionClauses, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumExceptionClauses * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -2488,27 +2611,33 @@ EXTERN_C const IID IID_IOperandInstruction;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IOperandInstruction * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IOperandInstruction * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IOperandInstruction * This);
         
+        DECLSPEC_XFGVIRT(IOperandInstruction, GetOperandType)
         HRESULT ( STDMETHODCALLTYPE *GetOperandType )( 
             __RPC__in IOperandInstruction * This,
             /* [out] */ __RPC__out enum ILOperandType *pType);
         
+        DECLSPEC_XFGVIRT(IOperandInstruction, GetOperandValue)
         HRESULT ( STDMETHODCALLTYPE *GetOperandValue )( 
             __RPC__in IOperandInstruction * This,
             /* [in] */ DWORD dwSize,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(dwSize, dwSize) BYTE *pBytes);
         
+        DECLSPEC_XFGVIRT(IOperandInstruction, SetOperandValue)
         HRESULT ( STDMETHODCALLTYPE *SetOperandValue )( 
             __RPC__in IOperandInstruction * This,
             /* [in] */ DWORD dwSize,
@@ -2595,33 +2724,41 @@ EXTERN_C const IID IID_IBranchInstruction;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IBranchInstruction * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IBranchInstruction * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IBranchInstruction * This);
         
+        DECLSPEC_XFGVIRT(IBranchInstruction, IsShortBranch)
         HRESULT ( STDMETHODCALLTYPE *IsShortBranch )( 
             __RPC__in IBranchInstruction * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IBranchInstruction, ExpandBranch)
         HRESULT ( STDMETHODCALLTYPE *ExpandBranch )( 
             __RPC__in IBranchInstruction * This);
         
+        DECLSPEC_XFGVIRT(IBranchInstruction, GetBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *GetBranchTarget )( 
             __RPC__in IBranchInstruction * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget);
         
+        DECLSPEC_XFGVIRT(IBranchInstruction, GetTargetOffset)
         HRESULT ( STDMETHODCALLTYPE *GetTargetOffset )( 
             __RPC__in IBranchInstruction * This,
             /* [out] */ __RPC__out DWORD *pOffset);
         
+        DECLSPEC_XFGVIRT(IBranchInstruction, SetBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *SetBranchTarget )( 
             __RPC__in IBranchInstruction * This,
             /* [in] */ __RPC__in_opt IInstruction *pTarget);
@@ -2724,45 +2861,55 @@ EXTERN_C const IID IID_ISwitchInstruction;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ISwitchInstruction * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ISwitchInstruction * This);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, GetBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *GetBranchTarget )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ DWORD index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppTarget);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, SetBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *SetBranchTarget )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ DWORD index,
             /* [in] */ __RPC__in_opt IInstruction *pTarget);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, RemoveBranchTargetAt)
         HRESULT ( STDMETHODCALLTYPE *RemoveBranchTargetAt )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ DWORD index);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, RemoveBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *RemoveBranchTarget )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ __RPC__in_opt IInstruction *pTarget);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, ReplaceBranchTarget)
         HRESULT ( STDMETHODCALLTYPE *ReplaceBranchTarget )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ __RPC__in_opt IInstruction *pOriginal,
             /* [in] */ __RPC__in_opt IInstruction *pNew);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, GetBranchCount)
         HRESULT ( STDMETHODCALLTYPE *GetBranchCount )( 
             __RPC__in ISwitchInstruction * This,
             /* [out] */ __RPC__out DWORD *pBranchCount);
         
+        DECLSPEC_XFGVIRT(ISwitchInstruction, GetBranchOffset)
         HRESULT ( STDMETHODCALLTYPE *GetBranchOffset )( 
             __RPC__in ISwitchInstruction * This,
             /* [in] */ DWORD index,
@@ -2914,88 +3061,108 @@ EXTERN_C const IID IID_IInstructionGraph;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstructionGraph * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstructionGraph * This);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetMethodInfo)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfo )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetFirstInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetLastInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetOriginalFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalFirstInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetOriginalLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalLastInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetUninstrumentedFirstInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetUninstrumentedFirstInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetUninstrumentedLastInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetUninstrumentedLastInstruction )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetInstructionAtOffset)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtOffset )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ DWORD offset,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetInstructionAtOriginalOffset)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtOriginalOffset )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ DWORD offset,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, GetInstructionAtUninstrumentedOffset)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionAtUninstrumentedOffset )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ DWORD dwOffset,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, InsertBefore)
         HRESULT ( STDMETHODCALLTYPE *InsertBefore )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, InsertAfter)
         HRESULT ( STDMETHODCALLTYPE *InsertAfter )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, InsertBeforeAndRetargetOffsets)
         HRESULT ( STDMETHODCALLTYPE *InsertBeforeAndRetargetOffsets )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, Replace)
         HRESULT ( STDMETHODCALLTYPE *Replace )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionNew);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, Remove)
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in_opt IInstruction *pInstructionOrig);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, RemoveAll)
         HRESULT ( STDMETHODCALLTYPE *RemoveAll )( 
             __RPC__in IInstructionGraph * This);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, CreateBaseline)
         HRESULT ( STDMETHODCALLTYPE *CreateBaseline )( 
             __RPC__in IInstructionGraph * This,
             /* [in] */ __RPC__in LPCBYTE pCodeBase,
@@ -3005,10 +3172,12 @@ EXTERN_C const IID IID_IInstructionGraph;
             /* [in] */ DWORD baselineSequencePointSize,
             /* [size_is][in] */ __RPC__in_ecount_full(baselineSequencePointSize) DWORD baselineSequencePointList[  ]);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, HasBaselineBeenSet)
         HRESULT ( STDMETHODCALLTYPE *HasBaselineBeenSet )( 
             __RPC__in IInstructionGraph * This,
             /* [out] */ __RPC__out BOOL *pHasBaselineBeenSet);
         
+        DECLSPEC_XFGVIRT(IInstructionGraph, ExpandBranches)
         HRESULT ( STDMETHODCALLTYPE *ExpandBranches )( 
             __RPC__in IInstructionGraph * This);
         
@@ -3228,148 +3397,184 @@ EXTERN_C const IID IID_IMethodInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodInfo * This);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetModuleInfo)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetFullName)
         HRESULT ( STDMETHODCALLTYPE *GetFullName )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullName);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetInstructions)
         HRESULT ( STDMETHODCALLTYPE *GetInstructions )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetLocalVariables)
         HRESULT ( STDMETHODCALLTYPE *GetLocalVariables )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetClassId)
         HRESULT ( STDMETHODCALLTYPE *GetClassId )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out ClassID *pClassId);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetFunctionId)
         HRESULT ( STDMETHODCALLTYPE *GetFunctionId )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out FunctionID *pFunctionID);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetMethodToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetGenericParameterCount)
         HRESULT ( STDMETHODCALLTYPE *GetGenericParameterCount )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pCount);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsStatic)
         HRESULT ( STDMETHODCALLTYPE *GetIsStatic )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPublic)
         HRESULT ( STDMETHODCALLTYPE *GetIsPublic )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPrivate)
         HRESULT ( STDMETHODCALLTYPE *GetIsPrivate )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPropertyGetter)
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertyGetter )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPropertySetter)
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertySetter )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsFinalizer)
         HRESULT ( STDMETHODCALLTYPE *GetIsFinalizer )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsConstructor)
         HRESULT ( STDMETHODCALLTYPE *GetIsConstructor )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsStaticConstructor)
         HRESULT ( STDMETHODCALLTYPE *GetIsStaticConstructor )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetParameters)
         HRESULT ( STDMETHODCALLTYPE *GetParameters )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **pMethodArgs);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetDeclaringType)
         HRESULT ( STDMETHODCALLTYPE *GetDeclaringType )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetReturnType)
         HRESULT ( STDMETHODCALLTYPE *GetReturnType )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetCorSignature)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
             __RPC__in IMethodInfo * This,
             /* [in] */ DWORD cbBuffer,
             /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
             /* [out] */ __RPC__out DWORD *pcbSignature);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetLocalVarSigToken)
         HRESULT ( STDMETHODCALLTYPE *GetLocalVarSigToken )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, SetLocalVarSigToken)
         HRESULT ( STDMETHODCALLTYPE *SetLocalVarSigToken )( 
             __RPC__in IMethodInfo * This,
             /* [in] */ mdToken token);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetAttributes)
         HRESULT ( STDMETHODCALLTYPE *GetAttributes )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pCorMethodAttr);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetRejitCodeGenFlags)
         HRESULT ( STDMETHODCALLTYPE *GetRejitCodeGenFlags )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pRefitFlags);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetCodeRva)
         HRESULT ( STDMETHODCALLTYPE *GetCodeRva )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pRva);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, MethodImplFlags)
         HRESULT ( STDMETHODCALLTYPE *MethodImplFlags )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out UINT *pCorMethodImpl);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, SetRejitCodeGenFlags)
         HRESULT ( STDMETHODCALLTYPE *SetRejitCodeGenFlags )( 
             __RPC__in IMethodInfo * This,
             /* [in] */ DWORD dwFlags);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetExceptionSection)
         HRESULT ( STDMETHODCALLTYPE *GetExceptionSection )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IExceptionSection **ppExceptionSection);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetInstructionFactory)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionFactory )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IInstructionFactory **ppInstructionFactory);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetRejitCount)
         HRESULT ( STDMETHODCALLTYPE *GetRejitCount )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pdwRejitCount);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetMaxStack)
         HRESULT ( STDMETHODCALLTYPE *GetMaxStack )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pMaxStack);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetSingleRetDefaultInstrumentation)
         HRESULT ( STDMETHODCALLTYPE *GetSingleRetDefaultInstrumentation )( 
             __RPC__in IMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
@@ -3534,152 +3739,189 @@ EXTERN_C const IID IID_IMethodInfo2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodInfo2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetModuleInfo)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetFullName)
         HRESULT ( STDMETHODCALLTYPE *GetFullName )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullName);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetInstructions)
         HRESULT ( STDMETHODCALLTYPE *GetInstructions )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IInstructionGraph **ppInstructionGraph);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetLocalVariables)
         HRESULT ( STDMETHODCALLTYPE *GetLocalVariables )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetClassId)
         HRESULT ( STDMETHODCALLTYPE *GetClassId )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out ClassID *pClassId);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetFunctionId)
         HRESULT ( STDMETHODCALLTYPE *GetFunctionId )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out FunctionID *pFunctionID);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetMethodToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetGenericParameterCount)
         HRESULT ( STDMETHODCALLTYPE *GetGenericParameterCount )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pCount);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsStatic)
         HRESULT ( STDMETHODCALLTYPE *GetIsStatic )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPublic)
         HRESULT ( STDMETHODCALLTYPE *GetIsPublic )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPrivate)
         HRESULT ( STDMETHODCALLTYPE *GetIsPrivate )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPropertyGetter)
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertyGetter )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsPropertySetter)
         HRESULT ( STDMETHODCALLTYPE *GetIsPropertySetter )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsFinalizer)
         HRESULT ( STDMETHODCALLTYPE *GetIsFinalizer )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsConstructor)
         HRESULT ( STDMETHODCALLTYPE *GetIsConstructor )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetIsStaticConstructor)
         HRESULT ( STDMETHODCALLTYPE *GetIsStaticConstructor )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetParameters)
         HRESULT ( STDMETHODCALLTYPE *GetParameters )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **pMethodArgs);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetDeclaringType)
         HRESULT ( STDMETHODCALLTYPE *GetDeclaringType )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetReturnType)
         HRESULT ( STDMETHODCALLTYPE *GetReturnType )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetCorSignature)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
             __RPC__in IMethodInfo2 * This,
             /* [in] */ DWORD cbBuffer,
             /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
             /* [out] */ __RPC__out DWORD *pcbSignature);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetLocalVarSigToken)
         HRESULT ( STDMETHODCALLTYPE *GetLocalVarSigToken )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, SetLocalVarSigToken)
         HRESULT ( STDMETHODCALLTYPE *SetLocalVarSigToken )( 
             __RPC__in IMethodInfo2 * This,
             /* [in] */ mdToken token);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetAttributes)
         HRESULT ( STDMETHODCALLTYPE *GetAttributes )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pCorMethodAttr);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetRejitCodeGenFlags)
         HRESULT ( STDMETHODCALLTYPE *GetRejitCodeGenFlags )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pRefitFlags);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetCodeRva)
         HRESULT ( STDMETHODCALLTYPE *GetCodeRva )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pRva);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, MethodImplFlags)
         HRESULT ( STDMETHODCALLTYPE *MethodImplFlags )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out UINT *pCorMethodImpl);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, SetRejitCodeGenFlags)
         HRESULT ( STDMETHODCALLTYPE *SetRejitCodeGenFlags )( 
             __RPC__in IMethodInfo2 * This,
             /* [in] */ DWORD dwFlags);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetExceptionSection)
         HRESULT ( STDMETHODCALLTYPE *GetExceptionSection )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IExceptionSection **ppExceptionSection);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetInstructionFactory)
         HRESULT ( STDMETHODCALLTYPE *GetInstructionFactory )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IInstructionFactory **ppInstructionFactory);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetRejitCount)
         HRESULT ( STDMETHODCALLTYPE *GetRejitCount )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pdwRejitCount);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetMaxStack)
         HRESULT ( STDMETHODCALLTYPE *GetMaxStack )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__out DWORD *pMaxStack);
         
+        DECLSPEC_XFGVIRT(IMethodInfo, GetSingleRetDefaultInstrumentation)
         HRESULT ( STDMETHODCALLTYPE *GetSingleRetDefaultInstrumentation )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt ISingleRetDefaultInstrumentation **ppSingleRetDefaultInstrumentation);
         
+        DECLSPEC_XFGVIRT(IMethodInfo2, GetOriginalLocalVariables)
         HRESULT ( STDMETHODCALLTYPE *GetOriginalLocalVariables )( 
             __RPC__in IMethodInfo2 * This,
             /* [out] */ __RPC__deref_out_opt ILocalVariableCollection **ppLocalVariables);
@@ -3898,82 +4140,100 @@ EXTERN_C const IID IID_IAssemblyInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IAssemblyInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IAssemblyInfo * This);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetAppDomainInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModuleCount)
         HRESULT ( STDMETHODCALLTYPE *GetModuleCount )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__out ULONG *pcModuleInfos);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModules)
         HRESULT ( STDMETHODCALLTYPE *GetModules )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ ULONG cModuleInfos,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **pModuleInfos);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModuleById)
         HRESULT ( STDMETHODCALLTYPE *GetModuleById )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ ModuleID moduleId,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModuleByMvid)
         HRESULT ( STDMETHODCALLTYPE *GetModuleByMvid )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ __RPC__in GUID *pMvid,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModulesByName)
         HRESULT ( STDMETHODCALLTYPE *GetModulesByName )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ __RPC__in BSTR pszModuleName,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModuleForMethod)
         HRESULT ( STDMETHODCALLTYPE *GetModuleForMethod )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ mdToken token,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetModuleForType)
         HRESULT ( STDMETHODCALLTYPE *GetModuleForType )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ __RPC__in BSTR pszTypeName,
             /* [in] */ mdToken tkResolutionScope,
             /* [out] */ __RPC__out mdToken *pTkTypeDef);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetManifestModule)
         HRESULT ( STDMETHODCALLTYPE *GetManifestModule )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetPublicKey)
         HRESULT ( STDMETHODCALLTYPE *GetPublicKey )( 
             __RPC__in IAssemblyInfo * This,
             /* [in] */ ULONG cbBytes,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbBytes, cbBytes) BYTE *pbBytes);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetPublicKeySize)
         HRESULT ( STDMETHODCALLTYPE *GetPublicKeySize )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__out ULONG *pcbBytes);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetPublicKeyToken)
         HRESULT ( STDMETHODCALLTYPE *GetPublicKeyToken )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrPublicKeyToken);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetID)
         HRESULT ( STDMETHODCALLTYPE *GetID )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__out AssemblyID *pAssemblyId);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IAssemblyInfo, GetMetaDataToken)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataToken )( 
             __RPC__in IAssemblyInfo * This,
             /* [out] */ __RPC__out DWORD *pdwToken);
@@ -4097,35 +4357,43 @@ EXTERN_C const IID IID_IEnumAssemblyInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumAssemblyInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumAssemblyInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumAssemblyInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAssemblyInfo, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumAssemblyInfo * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAssemblyInfo **rgelt,
             /* [out] */ __RPC__out ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumAssemblyInfo, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumAssemblyInfo * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumAssemblyInfo, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumAssemblyInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAssemblyInfo, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumAssemblyInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumAssemblyInfo, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumAssemblyInfo * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -4283,118 +4551,146 @@ EXTERN_C const IID IID_IModuleInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IModuleInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IModuleInfo * This);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleName)
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetFullPath)
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAssemblyInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAppDomainInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleID)
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out ModuleID *pModuleId);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMVID)
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out GUID *pguidMvid);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsILOnly)
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsMscorlib)
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsDynamic)
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsNgen)
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsWinRT)
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIs64bit)
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetImageBase)
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetCorHeader)
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetEntrypointToken)
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleVersion)
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, RequestRejit)
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ mdToken methodToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, CreateTypeFactory)
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
             __RPC__in IModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ FunctionID functionID,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoByToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ mdToken token,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, ImportModule)
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
             __RPC__in IModuleInfo * This,
             /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
@@ -4540,127 +4836,157 @@ EXTERN_C const IID IID_IModuleInfo2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IModuleInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IModuleInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleName)
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetFullPath)
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAssemblyInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAppDomainInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleID)
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out ModuleID *pModuleId);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMVID)
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out GUID *pguidMvid);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsILOnly)
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsMscorlib)
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsDynamic)
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsNgen)
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsWinRT)
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIs64bit)
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetImageBase)
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetCorHeader)
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetEntrypointToken)
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleVersion)
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, RequestRejit)
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ mdToken methodToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, CreateTypeFactory)
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ FunctionID functionID,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoByToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ mdToken token,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, ImportModule)
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
             /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage);
         
+        DECLSPEC_XFGVIRT(IModuleInfo2, GetIsFlatLayout)
         HRESULT ( STDMETHODCALLTYPE *GetIsFlatLayout )( 
             __RPC__in IModuleInfo2 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo2, ResolveRva)
         HRESULT ( STDMETHODCALLTYPE *ResolveRva )( 
             __RPC__in IModuleInfo2 * This,
             /* [in] */ DWORD rva,
@@ -4809,132 +5135,163 @@ EXTERN_C const IID IID_IModuleInfo3;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IModuleInfo3 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IModuleInfo3 * This);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleName)
         HRESULT ( STDMETHODCALLTYPE *GetModuleName )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrModuleName);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetFullPath)
         HRESULT ( STDMETHODCALLTYPE *GetFullPath )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrFullPath);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAssemblyInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfo )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetAppDomainInfo)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainInfo )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataImport )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyImport)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyImport )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyImport);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataEmit )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMetaDataAssemblyEmit)
         HRESULT ( STDMETHODCALLTYPE *GetMetaDataAssemblyEmit )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt IUnknown **ppMetaDataAssemblyEmit);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleID)
         HRESULT ( STDMETHODCALLTYPE *GetModuleID )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out ModuleID *pModuleId);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMVID)
         HRESULT ( STDMETHODCALLTYPE *GetMVID )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out GUID *pguidMvid);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsILOnly)
         HRESULT ( STDMETHODCALLTYPE *GetIsILOnly )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsMscorlib)
         HRESULT ( STDMETHODCALLTYPE *GetIsMscorlib )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsDynamic)
         HRESULT ( STDMETHODCALLTYPE *GetIsDynamic )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsNgen)
         HRESULT ( STDMETHODCALLTYPE *GetIsNgen )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIsWinRT)
         HRESULT ( STDMETHODCALLTYPE *GetIsWinRT )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetIs64bit)
         HRESULT ( STDMETHODCALLTYPE *GetIs64bit )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetImageBase)
         HRESULT ( STDMETHODCALLTYPE *GetImageBase )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt LPCBYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetCorHeader)
         HRESULT ( STDMETHODCALLTYPE *GetCorHeader )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetEntrypointToken)
         HRESULT ( STDMETHODCALLTYPE *GetEntrypointToken )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out DWORD *pdwEntrypointToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetModuleVersion)
         HRESULT ( STDMETHODCALLTYPE *GetModuleVersion )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ DWORD cbValue,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cbValue, cbValue) BYTE *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, RequestRejit)
         HRESULT ( STDMETHODCALLTYPE *RequestRejit )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ mdToken methodToken);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, CreateTypeFactory)
         HRESULT ( STDMETHODCALLTYPE *CreateTypeFactory )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__deref_out_opt ITypeCreator **ppTypeFactory);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ FunctionID functionID,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, GetMethodInfoByToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoByToken )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ mdToken token,
             /* [out] */ __RPC__deref_out_opt IMethodInfo **ppMethodInfo);
         
+        DECLSPEC_XFGVIRT(IModuleInfo, ImportModule)
         HRESULT ( STDMETHODCALLTYPE *ImportModule )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ __RPC__in_opt IUnknown *pSourceModuleMetadataImport,
             /* [in] */ __RPC__deref_in_opt LPCBYTE *pSourceImage);
         
+        DECLSPEC_XFGVIRT(IModuleInfo2, GetIsFlatLayout)
         HRESULT ( STDMETHODCALLTYPE *GetIsFlatLayout )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IModuleInfo2, ResolveRva)
         HRESULT ( STDMETHODCALLTYPE *ResolveRva )( 
             __RPC__in IModuleInfo3 * This,
             /* [in] */ DWORD rva,
             /* [out] */ __RPC__deref_out_opt LPCBYTE *ppbResolvedAddress);
         
+        DECLSPEC_XFGVIRT(IModuleInfo3, GetIsLoadedFromDisk)
         HRESULT ( STDMETHODCALLTYPE *GetIsLoadedFromDisk )( 
             __RPC__in IModuleInfo3 * This,
             /* [out] */ __RPC__out BOOL *pbValue);
@@ -5099,35 +5456,43 @@ EXTERN_C const IID IID_IEnumModuleInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumModuleInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumModuleInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumModuleInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumModuleInfo, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumModuleInfo * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IModuleInfo **rgelt,
             /* [in] */ __RPC__in ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumModuleInfo, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumModuleInfo * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumModuleInfo, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumModuleInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumModuleInfo, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumModuleInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumModuleInfo, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumModuleInfo * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -5249,70 +5614,86 @@ EXTERN_C const IID IID_IAppDomainInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IAppDomainInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IAppDomainInfo * This);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetAppDomainId)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainId )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__out AppDomainID *pAppDomainId);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetIsSystemDomain)
         HRESULT ( STDMETHODCALLTYPE *GetIsSystemDomain )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetIsSharedDomain)
         HRESULT ( STDMETHODCALLTYPE *GetIsSharedDomain )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetIsDefaultDomain)
         HRESULT ( STDMETHODCALLTYPE *GetIsDefaultDomain )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__out BOOL *pbValue);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetAssemblies)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblies )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetModules)
         HRESULT ( STDMETHODCALLTYPE *GetModules )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfos);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetAssemblyInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfoById )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ AssemblyID assemblyID,
             /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetAssemblyInfosByName)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfosByName )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ __RPC__in BSTR pszAssemblyName,
             /* [out] */ __RPC__deref_out_opt IEnumAssemblyInfo **ppAssemblyInfos);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetModuleCount)
         HRESULT ( STDMETHODCALLTYPE *GetModuleCount )( 
             __RPC__in IAppDomainInfo * This,
             /* [out] */ __RPC__out ULONG *pcModuleInfos);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetModuleInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfoById )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ ModuleID moduleId,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetModuleInfosByMvid)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByMvid )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ GUID mvid,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainInfo, GetModuleInfosByName)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByName )( 
             __RPC__in IAppDomainInfo * This,
             /* [in] */ __RPC__in BSTR pszModuleName,
@@ -5431,35 +5812,43 @@ EXTERN_C const IID IID_IEnumAppDomainInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumAppDomainInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumAppDomainInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumAppDomainInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAppDomainInfo, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumAppDomainInfo * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IAppDomainInfo **rgelt,
             /* [in] */ __RPC__in ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumAppDomainInfo, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumAppDomainInfo * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumAppDomainInfo, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumAppDomainInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAppDomainInfo, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumAppDomainInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumAppDomainInfo, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumAppDomainInfo * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -5555,39 +5944,48 @@ EXTERN_C const IID IID_ILocalVariableCollection;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ILocalVariableCollection * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ILocalVariableCollection * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ILocalVariableCollection * This);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in ILocalVariableCollection * This);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, GetCorSignature)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
             __RPC__in ILocalVariableCollection * This,
             /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignature);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in ILocalVariableCollection * This,
             /* [out] */ __RPC__out DWORD *pdwCount);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, AddLocal)
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
             __RPC__in ILocalVariableCollection * This,
             /* [in] */ __RPC__in_opt IType *pType,
             /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pIndex);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, ReplaceSignature)
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
             __RPC__in ILocalVariableCollection * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ DWORD dwSigSize);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, CommitSignature)
         HRESULT ( STDMETHODCALLTYPE *CommitSignature )( 
             __RPC__in ILocalVariableCollection * This);
         
@@ -5685,38 +6083,47 @@ EXTERN_C const IID IID_IType;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IType * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IType * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IType * This);
         
+        DECLSPEC_XFGVIRT(IType, AddToSignature)
         HRESULT ( STDMETHODCALLTYPE *AddToSignature )( 
             __RPC__in IType * This,
             /* [in] */ __RPC__in_opt ISignatureBuilder *pSignatureBuilder);
         
+        DECLSPEC_XFGVIRT(IType, GetCorElementType)
         HRESULT ( STDMETHODCALLTYPE *GetCorElementType )( 
             __RPC__in IType * This,
             /* [out] */ __RPC__out CorElementType *pCorType);
         
+        DECLSPEC_XFGVIRT(IType, IsPrimitive)
         HRESULT ( STDMETHODCALLTYPE *IsPrimitive )( 
             __RPC__in IType * This,
             /* [out] */ __RPC__out BOOL *pIsPrimitive);
         
+        DECLSPEC_XFGVIRT(IType, IsArray)
         HRESULT ( STDMETHODCALLTYPE *IsArray )( 
             __RPC__in IType * This,
             /* [out] */ __RPC__out BOOL *pIsArray);
         
+        DECLSPEC_XFGVIRT(IType, IsClass)
         HRESULT ( STDMETHODCALLTYPE *IsClass )( 
             __RPC__in IType * This,
             /* [out] */ __RPC__out BOOL *pIsClass);
         
+        DECLSPEC_XFGVIRT(IType, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IType * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
@@ -5828,52 +6235,63 @@ EXTERN_C const IID IID_IAppDomainCollection;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IAppDomainCollection * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IAppDomainCollection * This);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetAppDomainCount)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainCount )( 
             __RPC__in IAppDomainCollection * This,
             /* [out] */ __RPC__out DWORD *pdwCount);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetAppDomainById)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainById )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ AppDomainID appDomainId,
             /* [out] */ __RPC__deref_out_opt IAppDomainInfo **ppAppDomainInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetAppDomainIDs)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomainIDs )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ DWORD cAppDomains,
             /* [out] */ __RPC__out DWORD *pcActual,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(cAppDomains, cAppDomains) AppDomainID *AppDomainIDs);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetAppDomains)
         HRESULT ( STDMETHODCALLTYPE *GetAppDomains )( 
             __RPC__in IAppDomainCollection * This,
             /* [out] */ __RPC__deref_out_opt IEnumAppDomainInfo **ppEnumAppDomains);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetAssemblyInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetAssemblyInfoById )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ AssemblyID assemblyID,
             /* [out] */ __RPC__deref_out_opt IAssemblyInfo **ppAssemblyInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetModuleInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfoById )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ ModuleID moduleID,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetModuleInfosByMvid)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfosByMvid )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ GUID mvid,
             /* [out] */ __RPC__deref_out_opt IEnumModuleInfo **ppEnum);
         
+        DECLSPEC_XFGVIRT(IAppDomainCollection, GetMethodInfoById)
         HRESULT ( STDMETHODCALLTYPE *GetMethodInfoById )( 
             __RPC__in IAppDomainCollection * This,
             /* [in] */ FunctionID functionID,
@@ -5993,56 +6411,69 @@ EXTERN_C const IID IID_ISignatureBuilder;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ISignatureBuilder * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ISignatureBuilder * This);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, Add)
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ DWORD value);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, AddSignedInt)
         HRESULT ( STDMETHODCALLTYPE *AddSignedInt )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ LONG value);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, AddToken)
         HRESULT ( STDMETHODCALLTYPE *AddToken )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ mdToken token);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, AddElementType)
         HRESULT ( STDMETHODCALLTYPE *AddElementType )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ CorElementType type);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, AddData)
         HRESULT ( STDMETHODCALLTYPE *AddData )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ __RPC__in const BYTE *pData,
             /* [in] */ DWORD cbSize);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, AddSignature)
         HRESULT ( STDMETHODCALLTYPE *AddSignature )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ __RPC__in_opt ISignatureBuilder *pSignature);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, Clear)
         HRESULT ( STDMETHODCALLTYPE *Clear )( 
             __RPC__in ISignatureBuilder * This);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, GetSize)
         HRESULT ( STDMETHODCALLTYPE *GetSize )( 
             __RPC__in ISignatureBuilder * This,
             /* [out] */ __RPC__out DWORD *pcbSize);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, GetCorSignature)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
             __RPC__in ISignatureBuilder * This,
             /* [in] */ DWORD cbBuffer,
             /* [size_is][length_is][out] */ __RPC__out_ecount_part(cbBuffer, cbBuffer) BYTE *pCorSignature,
             /* [out] */ __RPC__out DWORD *pcbSignature);
         
+        DECLSPEC_XFGVIRT(ISignatureBuilder, GetCorSignaturePtr)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignaturePtr )( 
             __RPC__in ISignatureBuilder * This,
             /* [out] */ __RPC__deref_out_opt const BYTE **ppSignature);
@@ -6150,18 +6581,22 @@ EXTERN_C const IID IID_ITypeCreator;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ITypeCreator * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ITypeCreator * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ITypeCreator * This);
         
+        DECLSPEC_XFGVIRT(ITypeCreator, FromSignature)
         HRESULT ( STDMETHODCALLTYPE *FromSignature )( 
             __RPC__in ITypeCreator * This,
             /* [in] */ DWORD cbBuffer,
@@ -6169,11 +6604,13 @@ EXTERN_C const IID IID_ITypeCreator;
             /* [out] */ __RPC__deref_out_opt IType **ppType,
             /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pdwSigSize);
         
+        DECLSPEC_XFGVIRT(ITypeCreator, FromCorElement)
         HRESULT ( STDMETHODCALLTYPE *FromCorElement )( 
             __RPC__in ITypeCreator * This,
             /* [in] */ CorElementType type,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
         
+        DECLSPEC_XFGVIRT(ITypeCreator, FromToken)
         HRESULT ( STDMETHODCALLTYPE *FromToken )( 
             __RPC__in ITypeCreator * This,
             /* [in] */ CorElementType type,
@@ -6250,18 +6687,22 @@ EXTERN_C const IID IID_IMethodLocal;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodLocal * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodLocal * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodLocal * This);
         
+        DECLSPEC_XFGVIRT(IMethodLocal, GetType)
         HRESULT ( STDMETHODCALLTYPE *GetType )( 
             __RPC__in IMethodLocal * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
@@ -6330,18 +6771,22 @@ EXTERN_C const IID IID_IMethodParameter;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodParameter * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodParameter * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodParameter * This);
         
+        DECLSPEC_XFGVIRT(IMethodParameter, GetType)
         HRESULT ( STDMETHODCALLTYPE *GetType )( 
             __RPC__in IMethodParameter * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
@@ -6423,35 +6868,43 @@ EXTERN_C const IID IID_IEnumMethodLocals;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumMethodLocals * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumMethodLocals * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumMethodLocals * This);
         
+        DECLSPEC_XFGVIRT(IEnumMethodLocals, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumMethodLocals * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodLocal **rgelt,
             /* [out] */ __RPC__out ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumMethodLocals, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumMethodLocals * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumMethodLocals, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumMethodLocals * This);
         
+        DECLSPEC_XFGVIRT(IEnumMethodLocals, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumMethodLocals * This,
             /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumMethodLocals, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumMethodLocals * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -6545,35 +6998,43 @@ EXTERN_C const IID IID_IEnumMethodParameters;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumMethodParameters * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumMethodParameters * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumMethodParameters * This);
         
+        DECLSPEC_XFGVIRT(IEnumMethodParameters, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumMethodParameters * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IMethodParameter **rgelt,
             /* [out] */ __RPC__out ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumMethodParameters, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumMethodParameters * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumMethodParameters, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumMethodParameters * This);
         
+        DECLSPEC_XFGVIRT(IEnumMethodParameters, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumMethodParameters * This,
             /* [out] */ __RPC__deref_out_opt IEnumMethodParameters **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumMethodParameters, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumMethodParameters * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -6656,22 +7117,27 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ISingleRetDefaultInstrumentation * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ISingleRetDefaultInstrumentation * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ISingleRetDefaultInstrumentation * This);
         
+        DECLSPEC_XFGVIRT(ISingleRetDefaultInstrumentation, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in ISingleRetDefaultInstrumentation * This,
             /* [in] */ __RPC__in_opt IInstructionGraph *pInstructionGraph);
         
+        DECLSPEC_XFGVIRT(ISingleRetDefaultInstrumentation, ApplySingleRetDefaultInstrumentation)
         HRESULT ( STDMETHODCALLTYPE *ApplySingleRetDefaultInstrumentation )( 
             __RPC__in ISingleRetDefaultInstrumentation * This);
         
@@ -6744,21 +7210,26 @@ EXTERN_C const IID IID_IProfilerManager2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManager2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManager2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManager2 * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager2, DisableProfiling)
         HRESULT ( STDMETHODCALLTYPE *DisableProfiling )( 
             __RPC__in IProfilerManager2 * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager2, ApplyMetadata)
         HRESULT ( STDMETHODCALLTYPE *ApplyMetadata )( 
             __RPC__in IProfilerManager2 * This,
             /* [in] */ __RPC__in_opt IModuleInfo *pMethodInfo);
@@ -6830,18 +7301,22 @@ EXTERN_C const IID IID_IProfilerManager3;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManager3 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManager3 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManager3 * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager3, GetApiVersion)
         HRESULT ( STDMETHODCALLTYPE *GetApiVersion )( 
             __RPC__in IProfilerManager3 * This,
             /* [out] */ __RPC__out DWORD *pApiVer);
@@ -6910,18 +7385,22 @@ EXTERN_C const IID IID_IProfilerManager4;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManager4 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManager4 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManager4 * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager4, GetGlobalLoggingInstance)
         HRESULT ( STDMETHODCALLTYPE *GetGlobalLoggingInstance )( 
             __RPC__in IProfilerManager4 * This,
             /* [out] */ __RPC__deref_out_opt IProfilerManagerLogging **ppLogging);
@@ -6991,18 +7470,22 @@ EXTERN_C const IID IID_IProfilerManager5;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerManager5 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerManager5 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerManager5 * This);
         
+        DECLSPEC_XFGVIRT(IProfilerManager5, IsInstrumentationMethodRegistered)
         HRESULT ( STDMETHODCALLTYPE *IsInstrumentationMethodRegistered )( 
             __RPC__in IProfilerManager5 * This,
             /* [in] */ __RPC__in REFGUID cslid,
@@ -7072,18 +7555,22 @@ EXTERN_C const IID IID_IProfilerStringManager;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IProfilerStringManager * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IProfilerStringManager * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IProfilerStringManager * This);
         
+        DECLSPEC_XFGVIRT(IProfilerStringManager, FreeString)
         HRESULT ( STDMETHODCALLTYPE *FreeString )( 
             __RPC__in IProfilerStringManager * This,
             /* [optional][in] */ __RPC__in BSTR bstr);
@@ -7181,59 +7668,74 @@ EXTERN_C const IID IID_IInstrumentationMethodExceptionEvents;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionCatcherEnter)
         HRESULT ( STDMETHODCALLTYPE *ExceptionCatcherEnter )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo,
             /* [in] */ UINT_PTR objectId);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionCatcherLeave)
         HRESULT ( STDMETHODCALLTYPE *ExceptionCatcherLeave )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionSearchCatcherFound)
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchCatcherFound )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionSearchFilterEnter)
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFilterEnter )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionSearchFilterLeave)
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFilterLeave )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionSearchFunctionEnter)
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFunctionEnter )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionSearchFunctionLeave)
         HRESULT ( STDMETHODCALLTYPE *ExceptionSearchFunctionLeave )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionThrown)
         HRESULT ( STDMETHODCALLTYPE *ExceptionThrown )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ UINT_PTR thrownObjectId);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionUnwindFinallyEnter)
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFinallyEnter )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionUnwindFinallyLeave)
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFinallyLeave )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionUnwindFunctionEnter)
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFunctionEnter )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This,
             /* [in] */ __RPC__in_opt IMethodInfo *pMethodInfo);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodExceptionEvents, ExceptionUnwindFunctionLeave)
         HRESULT ( STDMETHODCALLTYPE *ExceptionUnwindFunctionLeave )( 
             __RPC__in IInstrumentationMethodExceptionEvents * This);
         
@@ -7347,35 +7849,43 @@ EXTERN_C const IID IID_IEnumInstructions;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumInstructions * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumInstructions * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumInstructions * This);
         
+        DECLSPEC_XFGVIRT(IEnumInstructions, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumInstructions * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstruction **rgelt,
             /* [in] */ __RPC__in ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumInstructions, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumInstructions * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumInstructions, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumInstructions * This);
         
+        DECLSPEC_XFGVIRT(IEnumInstructions, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumInstructions * This,
             /* [out] */ __RPC__deref_out_opt IEnumInstructions **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumInstructions, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumInstructions * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -7532,71 +8042,84 @@ EXTERN_C const IID IID_IInstructionFactory;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstructionFactory * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstructionFactory * This);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateByteOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateByteOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ BYTE operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateUShortOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateUShortOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ USHORT operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateIntOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateIntOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT32 operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLongOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLongOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ INT64 operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateFloatOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateFloatOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ float operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateDoubleOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateDoubleOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ double operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateTokenOperandInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateTokenOperandInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ mdToken operand,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateBranchInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateBranchInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
             /* [in] */ __RPC__in_opt IInstruction *pBranchTarget,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateSwitchInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateSwitchInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ enum ILOrdinalOpcode opcode,
@@ -7604,36 +8127,43 @@ EXTERN_C const IID IID_IInstructionFactory;
             /* [length_is][size_is][in] */ __RPC__in_ecount_part(cBranchTargets, cBranchTargets) IInstruction **ppBranchTargets,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLoadConstInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLoadConstInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ int value,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLoadLocalInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLoadLocalInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ USHORT index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLoadLocalAddressInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLoadLocalAddressInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ USHORT index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateStoreLocalInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateStoreLocalInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ USHORT index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLoadArgInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLoadArgInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ USHORT index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, CreateLoadArgAddressInstruction)
         HRESULT ( STDMETHODCALLTYPE *CreateLoadArgAddressInstruction )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ USHORT index,
             /* [out] */ __RPC__deref_out_opt IInstruction **ppInstruction);
         
+        DECLSPEC_XFGVIRT(IInstructionFactory, DecodeInstructionByteStream)
         HRESULT ( STDMETHODCALLTYPE *DecodeInstructionByteStream )( 
             __RPC__in IInstructionFactory * This,
             /* [in] */ DWORD cbMethod,
@@ -7765,35 +8295,43 @@ EXTERN_C const IID IID_IEnumAppMethodInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumAppMethodInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumAppMethodInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumAppMethodInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAppMethodInfo, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumAppMethodInfo * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IEnumAppMethodInfo **rgelt,
             /* [in] */ __RPC__in ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumAppMethodInfo, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumAppMethodInfo * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumAppMethodInfo, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumAppMethodInfo * This);
         
+        DECLSPEC_XFGVIRT(IEnumAppMethodInfo, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumAppMethodInfo * This,
             /* [out] */ __RPC__deref_out_opt IEnumAppMethodInfo **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumAppMethodInfo, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumAppMethodInfo * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -7874,42 +8412,52 @@ EXTERN_C const IID IID_ILocalVariableCollection2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ILocalVariableCollection2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ILocalVariableCollection2 * This);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in ILocalVariableCollection2 * This);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, GetCorSignature)
         HRESULT ( STDMETHODCALLTYPE *GetCorSignature )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [out] */ __RPC__deref_out_opt ISignatureBuilder **ppSignature);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [out] */ __RPC__out DWORD *pdwCount);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, AddLocal)
         HRESULT ( STDMETHODCALLTYPE *AddLocal )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [in] */ __RPC__in_opt IType *pType,
             /* [optional][full][out][in] */ __RPC__inout_opt DWORD *pIndex);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, ReplaceSignature)
         HRESULT ( STDMETHODCALLTYPE *ReplaceSignature )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
             /* [in] */ DWORD dwSigSize);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection, CommitSignature)
         HRESULT ( STDMETHODCALLTYPE *CommitSignature )( 
             __RPC__in ILocalVariableCollection2 * This);
         
+        DECLSPEC_XFGVIRT(ILocalVariableCollection2, GetEnum)
         HRESULT ( STDMETHODCALLTYPE *GetEnum )( 
             __RPC__in ILocalVariableCollection2 * This,
             /* [out] */ __RPC__deref_out_opt IEnumMethodLocals **ppEnumMethodLocals);
@@ -8010,35 +8558,43 @@ EXTERN_C const IID IID_IEnumTypes;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumTypes * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumTypes * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumTypes * This);
         
+        DECLSPEC_XFGVIRT(IEnumTypes, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumTypes * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IType **rgelt,
             /* [out] */ __RPC__out ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumTypes, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumTypes * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumTypes, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumTypes * This);
         
+        DECLSPEC_XFGVIRT(IEnumTypes, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumTypes * This,
             /* [out] */ __RPC__deref_out_opt IEnumTypes **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumTypes, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumTypes * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -8139,18 +8695,22 @@ EXTERN_C const IID IID_ISignatureParser;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ISignatureParser * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ISignatureParser * This);
         
+        DECLSPEC_XFGVIRT(ISignatureParser, ParseMethodSignature)
         HRESULT ( STDMETHODCALLTYPE *ParseMethodSignature )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
@@ -8161,6 +8721,7 @@ EXTERN_C const IID IID_ISignatureParser;
             /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcGenericTypeParameters,
             /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead);
         
+        DECLSPEC_XFGVIRT(ISignatureParser, ParseLocalVarSignature)
         HRESULT ( STDMETHODCALLTYPE *ParseLocalVarSignature )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pSignature,
@@ -8169,6 +8730,7 @@ EXTERN_C const IID IID_ISignatureParser;
             /* [optional][full][out][in] */ __RPC__deref_opt_inout_opt IEnumTypes **ppEnumTypes,
             /* [optional][full][out][in] */ __RPC__inout_opt ULONG *pcbRead);
         
+        DECLSPEC_XFGVIRT(ISignatureParser, ParseTypeSequence)
         HRESULT ( STDMETHODCALLTYPE *ParseTypeSequence )( 
             __RPC__in ISignatureParser * This,
             /* [in] */ __RPC__in const BYTE *pBuffer,
@@ -8250,22 +8812,27 @@ EXTERN_C const IID IID_ITokenType;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ITokenType * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ITokenType * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ITokenType * This);
         
+        DECLSPEC_XFGVIRT(ITokenType, GetToken)
         HRESULT ( STDMETHODCALLTYPE *GetToken )( 
             __RPC__in ITokenType * This,
             /* [out] */ __RPC__out mdToken *pToken);
         
+        DECLSPEC_XFGVIRT(ITokenType, GetOwningModule)
         HRESULT ( STDMETHODCALLTYPE *GetOwningModule )( 
             __RPC__in ITokenType * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
@@ -8337,18 +8904,22 @@ EXTERN_C const IID IID_ICompositeType;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ICompositeType * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ICompositeType * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ICompositeType * This);
         
+        DECLSPEC_XFGVIRT(ICompositeType, GetRelatedType)
         HRESULT ( STDMETHODCALLTYPE *GetRelatedType )( 
             __RPC__in ICompositeType * This,
             /* [out] */ __RPC__deref_out_opt IType **ppType);
@@ -8417,18 +8988,22 @@ EXTERN_C const IID IID_IGenericParameterType;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IGenericParameterType * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IGenericParameterType * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IGenericParameterType * This);
         
+        DECLSPEC_XFGVIRT(IGenericParameterType, GetPosition)
         HRESULT ( STDMETHODCALLTYPE *GetPosition )( 
             __RPC__in IGenericParameterType * This,
             /* [out] */ __RPC__out ULONG *pPosition);
@@ -8497,25 +9072,31 @@ EXTERN_C const IID IID_ISingleRetDefaultInstrumentation2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This);
         
+        DECLSPEC_XFGVIRT(ISingleRetDefaultInstrumentation, Initialize)
         HRESULT ( STDMETHODCALLTYPE *Initialize )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This,
             /* [in] */ __RPC__in_opt IInstructionGraph *pInstructionGraph);
         
+        DECLSPEC_XFGVIRT(ISingleRetDefaultInstrumentation, ApplySingleRetDefaultInstrumentation)
         HRESULT ( STDMETHODCALLTYPE *ApplySingleRetDefaultInstrumentation )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This);
         
+        DECLSPEC_XFGVIRT(ISingleRetDefaultInstrumentation2, GetBranchTargetInstruction)
         HRESULT ( STDMETHODCALLTYPE *GetBranchTargetInstruction )( 
             __RPC__in ISingleRetDefaultInstrumentation2 * This,
             /* [out] */ __RPC__deref_out_opt IInstruction **pInstruction);
@@ -8597,23 +9178,28 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodJitEvents * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodJitEvents * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodJitEvents * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodJitEvents, JitStarted)
         HRESULT ( STDMETHODCALLTYPE *JitStarted )( 
             __RPC__in IInstrumentationMethodJitEvents * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodJitEvents, JitComplete)
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
             __RPC__in IInstrumentationMethodJitEvents * This,
             /* [in] */ FunctionID functionID,
@@ -8702,38 +9288,47 @@ EXTERN_C const IID IID_IMethodJitInfo;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodJitInfo * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodJitInfo * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodJitInfo * This);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetFunctionID)
         HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__out FunctionID *pFunctionId);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetIsRejit)
         HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__out BOOL *pIsRejit);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetRejitId)
         HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__out ReJITID *pRejitId);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetJitHR)
         HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__out HRESULT *pHResult);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetILTransformationStatus)
         HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__out BOOL *pIsTranformed);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetModuleInfo)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
             __RPC__in IMethodJitInfo * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
@@ -8830,58 +9425,71 @@ EXTERN_C const IID IID_IMethodJitInfo2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IMethodJitInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IMethodJitInfo2 * This);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetFunctionID)
         HRESULT ( STDMETHODCALLTYPE *GetFunctionID )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out FunctionID *pFunctionId);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetIsRejit)
         HRESULT ( STDMETHODCALLTYPE *GetIsRejit )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out BOOL *pIsRejit);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetRejitId)
         HRESULT ( STDMETHODCALLTYPE *GetRejitId )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out ReJITID *pRejitId);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetJitHR)
         HRESULT ( STDMETHODCALLTYPE *GetJitHR )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out HRESULT *pHResult);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetILTransformationStatus)
         HRESULT ( STDMETHODCALLTYPE *GetILTransformationStatus )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out BOOL *pIsTranformed);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo, GetModuleInfo)
         HRESULT ( STDMETHODCALLTYPE *GetModuleInfo )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__deref_out_opt IModuleInfo **ppModuleInfo);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo2, GetILNativeMapping)
         HRESULT ( STDMETHODCALLTYPE *GetILNativeMapping )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
             /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_DEBUG_IL_TO_NATIVE_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo2, GetILInstrumentationMap)
         HRESULT ( STDMETHODCALLTYPE *GetILInstrumentationMap )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [in] */ ULONG32 cMaps,
             /* [size_is][out][in] */ __RPC__inout_ecount_full(cMaps) COR_IL_MAP pMap[  ],
             /* [out] */ __RPC__out ULONG32 *pcNeeded);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo2, GetMethodToken)
         HRESULT ( STDMETHODCALLTYPE *GetMethodToken )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out mdMethodDef *pToken);
         
+        DECLSPEC_XFGVIRT(IMethodJitInfo2, GetNativeCodeAddress)
         HRESULT ( STDMETHODCALLTYPE *GetNativeCodeAddress )( 
             __RPC__in IMethodJitInfo2 * This,
             /* [out] */ __RPC__out UINT_PTR *pCodeAddress);
@@ -8978,29 +9586,35 @@ EXTERN_C const IID IID_IInstrumentationMethodJitEvents2;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodJitEvents, JitStarted)
         HRESULT ( STDMETHODCALLTYPE *JitStarted )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodJitEvents, JitComplete)
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This,
             /* [in] */ FunctionID functionID,
             /* [in] */ BOOL isRejit,
             /* [in] */ HRESULT jitResult);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodJitEvents2, JitComplete)
         HRESULT ( STDMETHODCALLTYPE *JitComplete )( 
             __RPC__in IInstrumentationMethodJitEvents2 * This,
             /* [in] */ __RPC__in_opt IMethodJitInfo *pJitInfo);
@@ -9079,22 +9693,27 @@ EXTERN_C const IID IID_IInstrumentationMethodSetting;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodSetting * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodSetting * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodSetting * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodSetting, GetName)
         HRESULT ( STDMETHODCALLTYPE *GetName )( 
             __RPC__in IInstrumentationMethodSetting * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodSetting, GetValue)
         HRESULT ( STDMETHODCALLTYPE *GetValue )( 
             __RPC__in IInstrumentationMethodSetting * This,
             /* [out] */ __RPC__deref_out_opt BSTR *pbstrValue);
@@ -9179,35 +9798,43 @@ EXTERN_C const IID IID_IEnumInstrumentationMethodSettings;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IEnumInstrumentationMethodSettings * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IEnumInstrumentationMethodSettings * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IEnumInstrumentationMethodSettings * This);
         
+        DECLSPEC_XFGVIRT(IEnumInstrumentationMethodSettings, Next)
         HRESULT ( STDMETHODCALLTYPE *Next )( 
             __RPC__in IEnumInstrumentationMethodSettings * This,
             /* [in] */ ULONG celt,
             /* [length_is][size_is][out] */ __RPC__out_ecount_part(celt, celt) IInstrumentationMethodSetting **rgelt,
             /* [out] */ __RPC__out ULONG *pceltFetched);
         
+        DECLSPEC_XFGVIRT(IEnumInstrumentationMethodSettings, Skip)
         HRESULT ( STDMETHODCALLTYPE *Skip )( 
             __RPC__in IEnumInstrumentationMethodSettings * This,
             /* [in] */ ULONG celt);
         
+        DECLSPEC_XFGVIRT(IEnumInstrumentationMethodSettings, Reset)
         HRESULT ( STDMETHODCALLTYPE *Reset )( 
             __RPC__in IEnumInstrumentationMethodSettings * This);
         
+        DECLSPEC_XFGVIRT(IEnumInstrumentationMethodSettings, Clone)
         HRESULT ( STDMETHODCALLTYPE *Clone )( 
             __RPC__in IEnumInstrumentationMethodSettings * This,
             /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppenum);
         
+        DECLSPEC_XFGVIRT(IEnumInstrumentationMethodSettings, GetCount)
         HRESULT ( STDMETHODCALLTYPE *GetCount )( 
             __RPC__in IEnumInstrumentationMethodSettings * This,
             /* [out] */ __RPC__out DWORD *pLength);
@@ -9288,18 +9915,22 @@ EXTERN_C const IID IID_IInstrumentationMethodAttachContext;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodAttachContext * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodAttachContext * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodAttachContext * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodAttachContext, EnumSettings)
         HRESULT ( STDMETHODCALLTYPE *EnumSettings )( 
             __RPC__in IInstrumentationMethodAttachContext * This,
             /* [out] */ __RPC__deref_out_opt IEnumInstrumentationMethodSettings **ppEnum);
@@ -9371,23 +10002,28 @@ EXTERN_C const IID IID_IInstrumentationMethodAttach;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             __RPC__in IInstrumentationMethodAttach * This,
             /* [in] */ __RPC__in REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             __RPC__in IInstrumentationMethodAttach * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             __RPC__in IInstrumentationMethodAttach * This);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodAttach, InitializeForAttach)
         HRESULT ( STDMETHODCALLTYPE *InitializeForAttach )( 
             __RPC__in IInstrumentationMethodAttach * This,
             /* [in] */ __RPC__in_opt IProfilerManager *pProfilerManager,
             /* [in] */ __RPC__in_opt IInstrumentationMethodAttachContext *pContext);
         
+        DECLSPEC_XFGVIRT(IInstrumentationMethodAttach, AttachComplete)
         HRESULT ( STDMETHODCALLTYPE *AttachComplete )( 
             __RPC__in IInstrumentationMethodAttach * This);
         
