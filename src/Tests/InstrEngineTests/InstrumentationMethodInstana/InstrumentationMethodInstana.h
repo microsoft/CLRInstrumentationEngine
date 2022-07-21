@@ -3,9 +3,7 @@
 
 #pragma once
 
-#include "NaglerInstrumentMethodEntry.h"
 #include "stdafx.h"
-#include "ModuleInfo.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :
@@ -21,14 +19,8 @@ private:
 
     unordered_map<std::wstring, CorElementType> m_typeMap;
 
-    vector<shared_ptr<CInstrumentMethodEntry>> m_instrumentMethodEntries;
-
-    unordered_map<IMethodInfo*, shared_ptr<CInstrumentMethodEntry>> m_methodInfoToEntryMap;
-
     bool m_bExceptionTrackingEnabled;
     bool m_bTestInstrumentationMethodLogging;
-
-    shared_ptr<CInjectAssembly> m_spInjectAssembly;
 
     std::wstring m_strBinaryDir;
 
@@ -75,8 +67,7 @@ public:
         { L"System.Object", ELEMENT_TYPE_OBJECT },
     }),
     m_bExceptionTrackingEnabled(false),
-    m_bTestInstrumentationMethodLogging(false),
-    m_spInjectAssembly(nullptr)
+    m_bTestInstrumentationMethodLogging(false)
     {
     }
 
@@ -170,18 +161,8 @@ public:
 private:
     HRESULT LoadTestScript();
     HRESULT ProcessInstrumentMethodNode(CXmlNode* pNode);
-    HRESULT ProcessInstructionNodes(CXmlNode* pNode, vector<shared_ptr<CInstrumentInstruction>>& instructions, bool isBaseline);
-    HRESULT ProcessLocals(CXmlNode* pNode, vector<CLocalType>& locals);
-    HRESULT ProcessPointTo(CXmlNode* pNode, CInstrumentMethodPointTo& pointTo);
-    HRESULT ProcessInjectAssembly(CXmlNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly);
-
-    HRESULT InstrumentLocals(IMethodInfo* pMethodInfo, shared_ptr<CInstrumentMethodEntry> pMethodEntry);
-    HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType &localType, IType** pType);
-
-    HRESULT ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
-    bool AddMemberRefs(IMetaDataAssemblyImport* pAssemblyImport, IMetaDataAssemblyEmit* pAssemblyEmit, IMetaDataEmit* pEmit, ModuleInfo* pModuleInfo, bool explicitlyInstrumented);
 
     static DWORD WINAPI InstrumentationMethodThreadProc(
         _In_  LPVOID lpParameter

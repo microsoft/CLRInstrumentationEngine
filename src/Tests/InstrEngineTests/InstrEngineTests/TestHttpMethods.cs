@@ -41,5 +41,27 @@ namespace InstrEngineTests
                 "HttpMethodTests_Debug.exe",
                 "HttpMethodTests_Debug.xml");
         }
+
+        static int error = 0;
+        static void Instru_InsertAfterTest()
+        {
+            error++;
+
+            int a = 5;
+            switch (a)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    error++;
+                    break;
+                case 4:
+                    error += 2;
+                    break;
+                default:
+                    error--;
+                    break;
+            }
+        }
     }
 }

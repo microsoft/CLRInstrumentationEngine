@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <InstrumentationTestScript>
   <InstrumentMethod>
-    <ModuleName>System.dll</ModuleName>
-    <MethodName>GetResponseAsync</MethodName>
+    <ModuleName>MongoDb210Test.exe</ModuleName>
+    <MethodName>Test2</MethodName>
+	<PointTo>
+      <AssemblyName>Instana.ManagedTracing.Base</AssemblyName>
+      <TypeName>Instana.ManagedTracing.Base.Tracer</TypeName>
+      <MethodName>OnEnter</MethodName>
+    </PointTo>
   </InstrumentMethod>
 </InstrumentationTestScript>

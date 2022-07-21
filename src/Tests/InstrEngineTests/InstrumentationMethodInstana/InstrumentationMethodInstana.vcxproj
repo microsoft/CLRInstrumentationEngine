@@ -30,9 +30,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{939151FA-8324-4197-B5B4-EAE927BD2AEE}</ProjectGuid>
+    <ProjectGuid>{AA6749DB-F970-4CD8-8D90-750F69102DD5}</ProjectGuid>
     <Keyword>AtlProj</Keyword>
-    <ProjectName>NaglerInstrumentationMethod</ProjectName>
+    <ProjectName>InstrumentationMethodInstana</ProjectName>
     <!-- set the expected ATL state -->
     <CDefines>$(CDefines);_ATL_FREE_THREADED;_ATL_NO_AUTOMATIC_NAMESPACE;_ATL_CSTRING_EXPLICIT_CONSTRUCTORS;ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW</CDefines>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <TargetName>NaglerInstrumentationMethod_x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)'=='x64'">
-    <TargetName>NaglerInstrumentationMethod_x64</TargetName>
+    <TargetName>InstrumentationMethodInstana_x64</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
@@ -121,16 +121,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InstrumentationEngineApi.cpp" />
+    <ClCompile Include="InstrumentationMethodInstana.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="NaglerInstrumentationMethod.cpp" />
     <ClInclude Include="InstrStr.h" />
     <ClInclude Include="InstrumentationEngineString.h" />
     <ClInclude Include="InstrumentationEngineApi.h" />
-    <ClInclude Include="ModuleInfo.h" />
-    <ClInclude Include="NaglerInstrumentationMethod.h" />
+    <ClInclude Include="InstrumentationMethodInstana.h" />
     <ClInclude Include="NaglerInstrumentMethodEntry.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved.
+     Licensed under the MIT License. -->
+<InstrumentationEngineConfiguration>
+  <InstrumentationMethod>
+    <Name>Instrumentation Method Test Harness</Name>
+    <Description>Enable testing instrumentation in the instrumentation engine</Description>
+    <Module>NaglerInstrumentationMethod_x86.dll</Module>
+    <ClassGuid>{D2959618-F9B6-4CB6-80CF-F3B0E3263888}</ClassGuid>
+    <Priority>50</Priority>
+  </InstrumentationMethod>
+</InstrumentationEngineConfiguration>

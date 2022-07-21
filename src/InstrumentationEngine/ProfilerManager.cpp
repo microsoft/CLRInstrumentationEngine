@@ -3832,9 +3832,12 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
                 }
             }
 
+            CLogging::LogMessage(_T("Test log"));
+
             hr = pCurrInstrumentationMethod->InstrumentMethod(pMethodInfo, isRejit);
 
             CLogging::LogMessage(_T("Instrumentation Method finished instrumenting. Result hr is:. hr=%04x"), hr);
+            CLogging::LogMessage(_T("Instrumentation Method finished instrumenting."));
 
             // If any instrumentation method fails to instrument, stop instrumenting. This will cause the unchanged il to be used.
             IfFailRet(hr);
@@ -3843,9 +3846,12 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
         // After the instrumentation methods have done their instrumentation, render the result IL, etc...
         // This is done before the raw callbacks get a shot at instrumentation. The cor profiler wrapper
         // will give these results to callers when queried.
+        CLogging::LogMessage(_T("Call ApplyIntermediateMethodInstrumentation"));
         IfFailRet(((CMethodInfo*)pMethodInfo)->ApplyIntermediateMethodInstrumentation());
+        CLogging::LogMessage(_T("ApplyIntermediateMethodInstrumentation finished."));
     }
 
+    CLogging::LogMessage(_T("Instrumentation Method finished. Return OK."));
     return S_OK;
 }
 
