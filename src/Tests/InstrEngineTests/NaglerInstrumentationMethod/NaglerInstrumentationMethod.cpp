@@ -813,6 +813,12 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
             return S_OK;
         }
 
+        LPCWSTR libName = L"TestClassLibrary";
+        if (_wcsicmp(assemblyName, libName) != 0)
+        {
+            spLogger->LogMessage(_T("this is not TestClassLibrary..."));
+            return S_OK;
+        }
 
         bool instrumentationLoaded = false;
         // make sure we have the advices loaded from the config-file
@@ -1017,11 +1023,6 @@ BOOL FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyR
         size_t cchContainer = wcslen(wszContainer);
         size_t cchEnding = wcslen(wszProspectiveEnding);
 
-        if (cchContainer < cchEnding)
-            return FALSE;
-
-        if (cchEnding == 0)
-            return FALSE;
 
         if (_wcsicmp(
             wszProspectiveEnding,
@@ -1031,16 +1032,8 @@ BOOL FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyR
             return TRUE;
         }
 
-        wszContainer = wszName;
         wszProspectiveEnding = L"netstandard";
-        cchContainer = wcslen(wszContainer);
         cchEnding = wcslen(wszProspectiveEnding);
-
-        if (cchContainer < cchEnding)
-            return FALSE;
-
-        if (cchEnding == 0)
-            return FALSE;
 
         if (_wcsicmp(
             wszProspectiveEnding,
@@ -1050,16 +1043,8 @@ BOOL FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyR
             return TRUE;
         }
 
-        wszContainer = wszName;
         wszProspectiveEnding = L"System.Runtime";
-        cchContainer = wcslen(wszContainer);
         cchEnding = wcslen(wszProspectiveEnding);
-
-        if (cchContainer < cchEnding)
-            return FALSE;
-
-        if (cchEnding == 0)
-            return FALSE;
 
         if (_wcsicmp(
             wszProspectiveEnding,
@@ -1574,6 +1559,8 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         PerformSingleReturnInstrumentation(pMethodInfo, pInstructionGraph);
     }
 
+
+    CComPtr<IInstruction> sptrCurrent;
     if (pMethodEntry->GetPointTo() != nullptr)
     {
         spLogger->LogMessage(_T("point to"));
@@ -1583,7 +1570,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         pMethodInfo->GetCorSignature(_countof(pSignature), pSignature, &cbSignature);
 
 
-        mdToken tkMethodToken = mdTokenNil;
+       /* mdToken tkMethodToken = mdTokenNil;
 
         CComPtr<IModuleInfo> spModuleInfo;
         IfFailRet(pMethodInfo->GetModuleInfo(&spModuleInfo));
@@ -1642,13 +1629,13 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
         CComPtr<IMetaDataImport> spIMetaDataImport;
         IfFailRet(spModuleInfo->GetMetaDataImport(
-            reinterpret_cast<IUnknown**>(&spIMetaDataImport)));
+            reinterpret_cast<IUnknown**>(&spIMetaDataImport)));*/
 
-        mdToken tkTypeToken;
+        //mdToken tkTypeToken;
 
-        HRESULT hrFound = spIMetaDataImport->FindTypeRef(tkMscorlibRef, spPointTo->m_typeName.c_str(), &tkTypeToken);
+        //HRESULT hrFound = spIMetaDataImport->FindTypeRef(tkMscorlibRef, spPointTo->m_typeName.c_str(), &tkTypeToken);
 
-        if (hrFound == CLDB_E_RECORD_NOTFOUND)
+        /*if (hrFound == CLDB_E_RECORD_NOTFOUND)
         {
             CComPtr<IMetaDataEmit> spIMetaDataEmit;
             IfFailRet(spModuleInfo->GetMetaDataEmit(
@@ -1659,11 +1646,11 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         else if (FAILED(hrFound))
         {
             IfFailRet(hrFound);
-        }
+        }*/
 
-        hrFound = spIMetaDataImport->FindMemberRef(tkTypeToken, spPointTo->m_methodName.c_str(), pSignature, cbSignature, &tkMethodToken);
+        //hrFound = spIMetaDataImport->FindMemberRef(tkTypeToken, spPointTo->m_methodName.c_str(), pSignature, cbSignature, &tkMethodToken);
 
-        if (hrFound == CLDB_E_RECORD_NOTFOUND)
+        /*if (hrFound == CLDB_E_RECORD_NOTFOUND)
         {
             CComPtr<IMetaDataEmit> spIMetaDataEmit;
             IfFailRet(spModuleInfo->GetMetaDataEmit(
@@ -1674,7 +1661,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         else if (FAILED(hrFound))
         {
             IfFailRet(hrFound);
-        }
+        }*/
 
 
         // Get arguments count
@@ -1685,11 +1672,13 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         CComPtr<IInstructionFactory> sptrInstructionFactory;
         IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
 
+        sptrInstructionFactory->local
+
         CComPtr<IInstructionGraph> sptrInstructionGraph;
         IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
         sptrInstructionGraph->RemoveAll();
 
-        CComPtr<IInstruction> sptrCurrent;
+        
         IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
 
         for (USHORT i = 0; i < argsCount; i++)
@@ -1704,7 +1693,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
         CComPtr<IInstruction> sptrCallMethod;
 
-        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, tkMethodToken, &sptrCallMethod));
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &sptrCallMethod));
         IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrCallMethod));
         sptrCurrent = sptrCallMethod;
 
@@ -1713,6 +1702,28 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
         IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
         sptrCurrent = sptrReturn;
+
+       /* for (USHORT i = 0; i < argsCount; i++)
+        {
+            CComPtr<IInstruction> sptrLoadArg2;
+
+            IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg2));
+            IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg2));
+
+            sptrCurrent = sptrLoadArg2;
+        }*/
+
+        /*CComPtr<IInstruction> sptrCallMethod2;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &sptrCallMethod2));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrCallMethod));
+        sptrCurrent = sptrCallMethod2;
+
+
+        CComPtr<IInstruction> sptrReturn2;
+
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn2));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn2));
+        sptrCurrent = sptrReturn2;*/
 
     }
     else if (!pMethodEntry->IsReplacement())
@@ -1844,20 +1855,22 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         }
     }
 
+    spLogger->LogMessage(_T("Start %04x", moduleInfo.m_mdEnterProbeRef));
+
     /*vector<CLocalType> locals;
     locals.push_back(CLocalType(_T("System.Object")));
     locals.push_back(CLocalType(_T("System.Object")));
-    locals.push_back(CLocalType(_T("System.Object")));
-    locals.push_back(CLocalType(_T("System.Object")));
-    pMethodEntry->AddLocals(locals);*/
+    locals.push_back(CLocalType(_T("System.String")));
+    locals.push_back(CLocalType(_T("System.String")));
+    pMethodEntry->AddLocals(locals);
+
+    IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));*/
 
     //CComPtr<IProfilerManagerLogging> spLogger;
     //CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
     //pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
 
-    spLogger->LogMessage(_T("Start"));
 
-    //IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
 
     //CComPtr<IInstructionFactory> sptrInstructionFactory;
     //IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
@@ -1868,7 +1881,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
     //////LdNull
     //CComPtr<IInstruction> ldNull;
     //sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull);
-    //pInstructionGraph->InsertBefore(firstInstruction, ldNull);
+    //pInstructionGraph->InsertAfter(sptrCurrent, ldNull);
 
     ////StLoc
     //CComPtr<IInstruction> stLoc;
@@ -1883,7 +1896,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
     //call Tracer.Enter
     /*CComPtr<IInstruction> callTracerEnterInst;
     sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &callTracerEnterInst);
-    pInstructionGraph->InsertBefore(firstInstruction, callTracerEnterInst);*/
+    pInstructionGraph->InsertBefore(sptrCurrent, callTracerEnterInst);*/
 
     spLogger->LogMessage(_T("Finish"));
     
