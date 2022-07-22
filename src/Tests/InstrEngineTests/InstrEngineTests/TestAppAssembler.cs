@@ -59,11 +59,6 @@ namespace InstrEngineTests
             psi.RedirectStandardOutput = true;
             psi.UseShellExecute = false;
             string debugSwitch = isDebug ? "/DEBUG=OPT" : string.Empty;
-            string bitSwitch = is64Bit ? "/X64" : "/32BITPREFERRED";
-            if (TestUtils.IsArmProcess)
-            {
-                bitSwitch = is64Bit ? "/ARM64" : "/ARM";
-            }
             string outputType = isExe ? "/EXE" : "/DLL";
             string extension = isExe ? "exe" : "dll";
             string outputFile = Path.Combine(directoryPath, FormattableString.Invariant($"{assemblyName}.{extension}"));
@@ -71,7 +66,7 @@ namespace InstrEngineTests
             string[] embeddedResourceFilePaths = embeddedResources.Select(x => x.FilePath).ToArray();
             string ilFileNames = string.Join("\" \"", embeddedResourceFilePaths);
 
-            psi.Arguments = FormattableString.Invariant($"{debugSwitch} {bitSwitch} {outputType} /OUTPUT=\"{outputFile}\" \"{ilFileNames}\"");
+            psi.Arguments = FormattableString.Invariant($"{debugSwitch} {outputType} /OUTPUT=\"{outputFile}\" \"{ilFileNames}\"");
             Process p = Process.Start(psi);
             p.WaitForExit(5000);
             string stdOut = p.StandardOutput.ReadToEnd();

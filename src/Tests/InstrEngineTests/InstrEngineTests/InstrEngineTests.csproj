@@ -7,7 +7,7 @@
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp3.1;net50;net60</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net50;net60;net70</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>InstrEngineTests</RootNamespace>
   </PropertyGroup>
@@ -21,6 +21,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="EmbeddedResources\InvalidCSharp\readme.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <Compile Remove="RefStructsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
@@ -183,6 +186,34 @@
     </Content>
     <Content Include="..\Baselines\Instru_ReplaceTest2.xml">
       <Link>Baselines\Instru_ReplaceTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Casting_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefStructField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>Baselines\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Inlining_Behavior.xml">
+      <Link>Baselines\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>Baselines\RefStructsTest_RefStructWithRefField_Load.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\RoundTrip_ForTest.xml">
@@ -417,6 +448,34 @@
     </Content>
     <Content Include="..\TestScripts\Instru_ReplaceTest2.xml">
       <Link>TestScripts\Instru_ReplaceTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Casting_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefStructField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Inlining_Behavior.xml">
+      <Link>TestScripts\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>TestScripts\RefStructsTest_RefStructWithRefField_Load.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\TestScripts\RoundTrip_ForTest.xml">
