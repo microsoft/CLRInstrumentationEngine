@@ -35,6 +35,8 @@ private:
     CComPtr<IProfilerManager> m_pProfilerManager;
     CComPtr<IProfilerStringManager> m_pStringManager;
 
+    vector<int> indexes;
+
     // CModuleRefCount
 public:
     DEFINE_DELEGATED_REFCOUNT_ADDREF(CInstrumentationMethod);

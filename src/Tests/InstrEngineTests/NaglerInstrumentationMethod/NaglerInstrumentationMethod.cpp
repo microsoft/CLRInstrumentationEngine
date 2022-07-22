@@ -1543,16 +1543,47 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
     pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
     spLogger->LogMessage(_T("InstrumentMethod start"));
 
+    CComPtr<IModuleInfo> spModuleInfo;
+    IfFailRet(pMethodInfo->GetModuleInfo(&spModuleInfo));
+
+    ModuleID moduleID;
+    spModuleInfo->GetModuleID(&moduleID);
+
+    CComPtr<ICorProfilerInfo> pCorProfilerInfo;
+    m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo);
+
+    CComPtr<IMetaDataEmit> pEmit;
+    {
+        CComPtr<IUnknown> pUnk;
+
+        HRESULT hr = pCorProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataEmit, &pUnk);
+        hr = pUnk->QueryInterface(IID_IMetaDataEmit, (LPVOID*)&pEmit);
+    }
+
+    
+    WCHAR* methodName = L"Test4";
+    ULONG methodNameLength = sizeof(methodName);
+    WCHAR* typeName = L"TestClassLibrary.TestClass";
+    ULONG typeLength = sizeof(typeName);
+
+    mdString methodNameStringToken = mdStringNil;
+    mdString typeNameStringToken = mdStringNil;
+    pEmit->DefineUserString(methodName, 5, &methodNameStringToken);
+    pEmit->DefineUserString(typeName, 26, &typeNameStringToken);
+
+    /*CComPtr<IUnknown> pUnk;
+    HRESULT hr = pCorProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataEmit, &pUnk);
+    hr = pUnk->QueryInterface(IID_IMetaDataEmit, (LPVOID*)&pEmit);*/
 
     vector<shared_ptr<CInstrumentInstruction>> instructions = pMethodEntry->GetInstructions();
 
     CComPtr<IInstructionGraph> pInstructionGraph;
     IfFailRet(pMethodInfo->GetInstructions(&pInstructionGraph));
-    BSTR methodName = L"";
-    pMethodInfo->GetFullName(&methodName);
-
+    
+    BSTR methodName2 = L"";
+    pMethodInfo->GetFullName(&methodName2);
     spLogger->LogMessage(_T("InstrumentMethod"));
-    spLogger->LogMessage(methodName);
+    spLogger->LogMessage(methodName2);
 
     if (pMethodEntry->IsSingleRetFirst())
     {
@@ -1669,19 +1700,94 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
             return S_FALSE;
         USHORT argsCount = pSignature[1];
 
+        vector<CLocalType> locals;
+        locals.push_back(CLocalType(_T("System.Object")));
+        locals.push_back(CLocalType(_T("System.Object")));
+        pMethodEntry->AddLocals(locals);
+
+        IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
+
+        spLogger->LogMessage(_T("index[0] %d", indexes[0]));
+        spLogger->LogMessage(_T("index[1] %d", indexes[1]));
+
         CComPtr<IInstructionFactory> sptrInstructionFactory;
         IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
-
-        sptrInstructionFactory->local
 
         CComPtr<IInstructionGraph> sptrInstructionGraph;
         IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
         sptrInstructionGraph->RemoveAll();
 
-        
         IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
 
-        for (USHORT i = 0; i < argsCount; i++)
+        // store NULL in SpanContext
+        //ldNull
+        CComPtr<IInstruction> ldNull;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull));
+        sptrCurrent = ldNull;
+        //StLoc
+        CComPtr<IInstruction> stLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(0, &stLoc));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stLoc));
+        sptrCurrent = stLoc;
+
+        // initialize array
+        CComPtr<IInstruction> ldcI4;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldc_I4_2, &ldcI4));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldcI4));
+        sptrCurrent = ldcI4;
+        CComPtr<IInstruction> newArr;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Newarr, moduleInfo.m_objectTypeRef, &newArr));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, newArr));
+        sptrCurrent = newArr;
+
+        CComPtr<IInstruction> stArrLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(1, &stArrLoc));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stArrLoc));
+        sptrCurrent = stArrLoc;
+
+        /*CComPtr<IInstruction> ldNull3;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull3));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull3));
+        sptrCurrent = ldNull3;
+
+        CComPtr<IInstruction> stArrLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(1, &stArrLoc));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stArrLoc));
+        sptrCurrent = stArrLoc;*/
+
+        //load called object
+        CComPtr<IInstruction> sptrLoadArg;
+        IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(0, &sptrLoadArg));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
+        sptrCurrent = sptrLoadArg;
+
+        /*CComPtr<IInstruction> ldLoc1;
+        IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(0, &ldLoc1));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldLoc1));
+        sptrCurrent = ldLoc1;*/
+
+        CComPtr<IInstruction> ldLoc2;
+        IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(1, &ldLoc2));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldLoc2));
+        sptrCurrent = ldLoc2;
+
+        /*CComPtr<IInstruction> ldNull2;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull2));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull2));
+        sptrCurrent = ldNull2;*/
+
+        CComPtr<IInstruction> ldTypeName;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, typeNameStringToken, &ldTypeName));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldTypeName));
+        sptrCurrent = ldTypeName;
+
+        CComPtr<IInstruction> ldMethodName;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, methodNameStringToken, &ldMethodName));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldMethodName));
+        sptrCurrent = ldMethodName;
+
+        /*for (USHORT i = 0; i < argsCount; i++)
         {
             CComPtr<IInstruction> sptrLoadArg;
 
@@ -1689,7 +1795,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
             IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
 
             sptrCurrent = sptrLoadArg;
-        }
+        }*/
 
         CComPtr<IInstruction> sptrCallMethod;
 
@@ -1857,20 +1963,18 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
     spLogger->LogMessage(_T("Start %04x", moduleInfo.m_mdEnterProbeRef));
 
-    /*vector<CLocalType> locals;
-    locals.push_back(CLocalType(_T("System.Object")));
-    locals.push_back(CLocalType(_T("System.Object")));
-    locals.push_back(CLocalType(_T("System.String")));
-    locals.push_back(CLocalType(_T("System.String")));
-    pMethodEntry->AddLocals(locals);
+    //vector<CLocalType> locals;
+    //locals.push_back(CLocalType(_T("System.Object")));
+    //locals.push_back(CLocalType(_T("System.Object")));
+    //locals.push_back(CLocalType(_T("System.Object")));
+    //locals.push_back(CLocalType(_T("System.Object")));
+    //pMethodEntry->AddLocals(locals);
 
-    IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));*/
+    //IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
 
     //CComPtr<IProfilerManagerLogging> spLogger;
     //CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
     //pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
-
-
 
     //CComPtr<IInstructionFactory> sptrInstructionFactory;
     //IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
@@ -2104,11 +2208,16 @@ HRESULT CInstrumentationMethod::InstrumentLocals(IMethodInfo* pMethodInfo, share
 
         CComPtr<ILocalVariableCollection> pLocals;
         IfFailRet(pMethodInfo->GetLocalVariables(&pLocals));
+        DWORD locIndex;
+            pLocals->GetCount(&locIndex);
         for (const CLocalType& local : locals)
         {
+            DWORD indexPtr;
             CComPtr<IType> pType;
             IfFailRet(GetType(pModuleInfo, local, &pType));
-            IfFailRet(pLocals->AddLocal(pType, nullptr));
+            IfFailRet(pLocals->AddLocal(pType, &indexPtr));
+            locIndex++;
+            indexes.push_back(locIndex);
         }
     }
 
