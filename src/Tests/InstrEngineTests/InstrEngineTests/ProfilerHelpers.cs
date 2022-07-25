@@ -76,8 +76,9 @@ namespace InstrEngineTests
             if (!BinaryRecompiled)
             {
                 BinaryRecompiled = true;
+                EmbeddedResourceUtils.CleanTestResourceFiles();
                 TargetAppCompiler.DeleteExistingBinary(PathUtils.GetAssetsPath());
-                TargetAppCompiler.ComplileCSharpTestCode(PathUtils.GetAssetsPath());
+                TargetAppCompiler.CompileTestCode(PathUtils.GetAssetsPath());
             }
 
             DeleteOutputFileIfExist(output);
