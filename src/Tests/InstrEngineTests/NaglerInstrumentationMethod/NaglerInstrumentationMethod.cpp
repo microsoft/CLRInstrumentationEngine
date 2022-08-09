@@ -1715,7 +1715,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
         CComPtr<IInstructionGraph> sptrInstructionGraph;
         IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
-        sptrInstructionGraph->RemoveAll();
+        //sptrInstructionGraph->RemoveAll();
 
         IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
 
@@ -1723,28 +1723,28 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         //ldNull
         CComPtr<IInstruction> ldNull;
         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull));
-        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull));
-        sptrCurrent = ldNull;
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, ldNull));
+        //sptrCurrent = ldNull;
         //StLoc
         CComPtr<IInstruction> stLoc;
         IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(0, &stLoc));
-        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stLoc));
-        sptrCurrent = stLoc;
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stLoc));
+        //sptrCurrent = stLoc;
 
         // initialize array
         CComPtr<IInstruction> ldcI4;
         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldc_I4_2, &ldcI4));
-        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldcI4));
-        sptrCurrent = ldcI4;
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, ldcI4));
+        //sptrCurrent = ldcI4;
         CComPtr<IInstruction> newArr;
         IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Newarr, moduleInfo.m_objectTypeRef, &newArr));
-        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, newArr));
-        sptrCurrent = newArr;
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, newArr));
+        //sptrCurrent = newArr;
 
         CComPtr<IInstruction> stArrLoc;
         IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(1, &stArrLoc));
-        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stArrLoc));
-        sptrCurrent = stArrLoc;
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stArrLoc));
+        //sptrCurrent = stArrLoc;
 
         /*CComPtr<IInstruction> ldNull3;
         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull3));
@@ -1759,8 +1759,8 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         //load called object
         CComPtr<IInstruction> sptrLoadArg;
         IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(0, &sptrLoadArg));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
-        sptrCurrent = sptrLoadArg;
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrLoadArg));
+        //sptrCurrent = sptrLoadArg;
 
         /*CComPtr<IInstruction> ldLoc1;
         IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(0, &ldLoc1));
@@ -1769,8 +1769,8 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
         CComPtr<IInstruction> ldLoc2;
         IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(1, &ldLoc2));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldLoc2));
-        sptrCurrent = ldLoc2;
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldLoc2));
+        //sptrCurrent = ldLoc2;
 
         /*CComPtr<IInstruction> ldNull2;
         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull2));
@@ -1779,13 +1779,13 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
         CComPtr<IInstruction> ldTypeName;
         IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, typeNameStringToken, &ldTypeName));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldTypeName));
-        sptrCurrent = ldTypeName;
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldTypeName));
+        //sptrCurrent = ldTypeName;
 
         CComPtr<IInstruction> ldMethodName;
         IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, methodNameStringToken, &ldMethodName));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldMethodName));
-        sptrCurrent = ldMethodName;
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldMethodName));
+        //sptrCurrent = ldMethodName;
 
         /*for (USHORT i = 0; i < argsCount; i++)
         {
@@ -1800,14 +1800,18 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         CComPtr<IInstruction> sptrCallMethod;
 
         IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &sptrCallMethod));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrCallMethod));
-        sptrCurrent = sptrCallMethod;
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrCallMethod));
+        //sptrCurrent = sptrCallMethod;
 
-        CComPtr<IInstruction> sptrReturn;
+        //CComPtr<IInstruction> sptrReturn;
 
-        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
-        sptrCurrent = sptrReturn;
+        //IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
+        //IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrReturn));
+        //sptrCurrent = sptrReturn;
+
+        CComPtr<IInstruction> stLoc2;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(0, &stLoc2));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stLoc2));
 
        /* for (USHORT i = 0; i < argsCount; i++)
         {
