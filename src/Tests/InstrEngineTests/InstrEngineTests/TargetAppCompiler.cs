@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-#pragma warning disable CA1506
+#pragma warning disable CA1506 // Avoid excessive class coupling
+#pragma warning disable CA1305 // Specify IFormatProvider
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -259,3 +260,6 @@ namespace InstrEngineTests
         }
     }
 }
+
+#pragma warning restore CA1506 // Avoid excessive class coupling
+#pragma warning restore CA1305 // Specify IFormatProvider
