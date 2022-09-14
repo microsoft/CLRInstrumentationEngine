@@ -13,6 +13,7 @@ using System.Xml;
 
 namespace InstrEngineTests
 {
+#pragma warning disable CA1508 // Avoid dead conditional code
     // Mirror the LoggingFlags in InstrumentationEngine.idl
     internal enum LogLevel
     {
@@ -484,4 +485,5 @@ namespace InstrEngineTests
             _ = NativeMethods.SetComPlusPackageInstallStatus(flag);
         }
     }
+#pragma warning restore CA1508 // Avoid dead conditional code
 }

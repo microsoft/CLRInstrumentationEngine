@@ -44,7 +44,7 @@ namespace RemoteUnitTestExecutor
             }
 
 
-            using (var debugee = new Process { StartInfo = startInfo })
+            using (Process debugee = new Process { StartInfo = startInfo })
             {
                 OnBeforeStarted(debugee);
 
