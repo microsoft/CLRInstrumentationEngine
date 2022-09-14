@@ -10,7 +10,7 @@ steps:
     continueOnError: true
     rulesetName: Custom
     msBuildArchitecture: amd64
-    customRuleset: DevDivRoslynRequired.ruleset
+    customRuleset: $(Build.SourcesDirectory)\build\yaml\steps\codeanalysis\DevDivRoslynRequired.ruleset
     msBuildCommandline: >-
       dotnet
       build

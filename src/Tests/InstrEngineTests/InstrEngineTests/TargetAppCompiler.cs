@@ -110,7 +110,7 @@ namespace InstrEngineTests
                 // we cannot have distinct assemblies for DebugChoice and Is64BitChoice. This requires the IL
                 // file with our assembly's name to be the first ilPrefix; otherwise, the names won't match.
                 string assemblyName = ilPrefixes[0];
-                string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, true, false);
+                string ilAssemblyPath = TestAppAssembler.AssembleFiles(embeddedResources, directoryPath, assemblyName, true);
                 Assert.IsNotNull(ilAssemblyPath);
 
                 foreach (bool isDebug in DebugChoice)

@@ -55,7 +55,7 @@ namespace Microsoft.InstrumentationEngine
         #endregion
 
         #region Methods
-        private static int Attach(int processId,
+        private static int AttachProfiler(int processId,
             FileInfo[] configs,
             LoggingFlags logLevel,
             LoggingFlags logFileLevel,
@@ -468,7 +468,7 @@ namespace Microsoft.InstrumentationEngine
                 EngineLogFilePathOption()
             };
 
-            command.Handler = System.CommandLine.Invocation.CommandHandler.Create((AttachDelegate)Attach);
+            command.Handler = System.CommandLine.Invocation.CommandHandler.Create((AttachDelegate)AttachProfiler);
             return command;
         }
 
