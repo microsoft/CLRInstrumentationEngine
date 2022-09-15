@@ -3,6 +3,7 @@
 
 namespace RawProfilerHook.Tests
 {
+#pragma warning disable CA1508 // Avoid dead conditional code
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -225,4 +226,5 @@ namespace RawProfilerHook.Tests
             }
         }
     }
+#pragma warning restore CA1508 // Avoid dead conditional code
 }
