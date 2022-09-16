@@ -45,4 +45,28 @@
             <ResourceCompile Include="$(CommonBuildPropsLocation)\bldver.rc" />
         </ItemGroup>
     </Target>
+
+    <Target Name="GenerateVersionFile" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <VersionFile Condition="'$(VersionFile)'==''">version.txt</VersionFile>
+            <VersionFilePath>$(BinConfiguration)\$(VersionFile)</VersionFilePath>
+        </PropertyGroup>
+        
+        <!-- Read existing version file from output file, if it exists. -->
+        <ReadLinesFromFile File="$(VersionFilePath)" Condition="Exists('$(VersionFilePath)')">
+            <Output TaskParameter="Lines" PropertyName="WrittenVersion" />
+        </ReadLinesFromFile>
+
+        <!-- Write new version to intermediate file if the version is different. -->
+        <MakeDir Directories="$(BinConfiguration)" />
+        <WriteLinesToFile File="$(VersionFilePath)"
+          Lines="$(ReleaseVersion)"
+          Overwrite="true"
+          Condition=" '$(WrittenVersion)' != '$(ReleaseVersion)' " />
+        <Message Importance="high" Condition=" '$(WrittenVersion)' != '$(ReleaseVersion)' " Text="Writing '$(VersionFilePath)' with version '$(ReleaseVersion)'" />
+        <ItemGroup>
+            <FileWrites Include="$(VersionFilePath)" Condition=" '$(WrittenPackageVersion)' != '$(ReleaseVersion)' " />
+        </ItemGroup>
+    </Target>
+
 </Project>

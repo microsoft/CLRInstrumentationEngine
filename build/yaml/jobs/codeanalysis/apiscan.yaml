@@ -36,6 +36,9 @@ jobs:
       artifactName: binaries-windows-Release
       downloadPath: $(Build.ArtifactStagingDirectory)
 
+  # Grab the release version from text file and set to variable.
+  - powershell: Write-Host "##vso[task.setvariable variable=softwareVersion;]$(Get-Content '$(Build.ArtifactStagingDirectory)\binaries-windows-Release\version.txt')"
+
   - task: NodeTool@0
     displayName: 'Use Node 14.x'
     inputs:
@@ -55,6 +58,7 @@ jobs:
         !**\Tools\**
         !**\*Nagler*
         !**\*Test*
+        !**\*.txt
       TargetFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
 
   # Run API Scan
@@ -63,7 +67,7 @@ jobs:
     inputs:
       softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
       softwareName: ClrInstrumentationEngine
-      softwareVersionNum: '$(Build.BuildNumber)'
+      softwareVersionNum: '$(softwareVersion)'
       symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/ApiScan'
       isLargeApp: false
     continueOnError: true
