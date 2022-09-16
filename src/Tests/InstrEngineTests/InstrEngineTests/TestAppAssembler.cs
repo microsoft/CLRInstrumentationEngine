@@ -44,7 +44,7 @@ namespace InstrEngineTests
             return p.ExitCode == 0;
         }
 
-        internal static string AssembleFiles(List<IEmbeddedResourceFile> embeddedResources, string directoryPath, string assemblyName, bool isDebug, bool is64Bit, bool isExe = false)
+        internal static string AssembleFiles(List<IEmbeddedResourceFile> embeddedResources, string directoryPath, string assemblyName, bool isDebug, bool isExe = false)
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             IEmbeddedResourceFile ilasm = EmbeddedResourceUtils.GetTestResourceFile("ilasm.exe");

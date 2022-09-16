@@ -36,6 +36,9 @@ jobs:
       artifactName: binaries-windows-Release
       downloadPath: $(Build.ArtifactStagingDirectory)
 
+  # Grab the release version from text file and set to variable.
+  - powershell: Write-Host "##vso[task.setvariable variable=softwareVersion;]$(Get-Content '$(Build.ArtifactStagingDirectory)\binaries-windows-Release\version.txt')"
+
   - task: NodeTool@0
     displayName: 'Use Node 14.x'
     inputs:
@@ -55,6 +58,7 @@ jobs:
         !**\Tools\**
         !**\*Nagler*
         !**\*Test*
+        !**\*.txt
       TargetFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
 
   # Run API Scan
@@ -63,12 +67,18 @@ jobs:
     inputs:
       softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
       softwareName: ClrInstrumentationEngine
-      softwareVersionNum: '$(Build.BuildNumber)'
+      softwareVersionNum: '$(softwareVersion)'
+      softwareBuildNum: '$(Build.BuildNumber)'
       symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/ApiScan'
       isLargeApp: false
     continueOnError: true
     env:
       AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientId);TenantId=$(TenantId);AppKey=$(AppKey)
+
+  - task: TSAUpload@2
+    inputs:
+      GdnPublishTsaOnboard: true
+      GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\build\yaml\jobs\codeanalysis\apiscanconfig.gdntsa'
 
   # Publish SecurityAnalysis Logs
   - template: ../../steps/codeanalysis/publishreports.yaml

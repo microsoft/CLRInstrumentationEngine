@@ -45,4 +45,20 @@
             <ResourceCompile Include="$(CommonBuildPropsLocation)\bldver.rc" />
         </ItemGroup>
     </Target>
+
+    <Target Name="GenerateVersionFile" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <VersionFile Condition="'$(VersionFile)'==''">version.txt</VersionFile>
+            <VersionFilePath>$(BinConfiguration)\$(VersionFile)</VersionFilePath>
+        </PropertyGroup>
+
+        <!-- Write new version to intermediate file if the version is different. -->
+        <MakeDir Directories="$(BinConfiguration)" />
+        <WriteLinesToFile File="$(VersionFilePath)"
+          Lines="$(ReleaseVersion)"
+          Overwrite="true"
+          WriteOnlyWhenDifferent="true"/>
+        <Message Importance="high" Text="Writing '$(VersionFilePath)' with version '$(ReleaseVersion)'" />
+    </Target>
+
 </Project>
