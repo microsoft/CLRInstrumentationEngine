@@ -68,6 +68,7 @@ jobs:
       softwareFolder: '$(Build.ArtifactStagingDirectory)\ApiScan'
       softwareName: ClrInstrumentationEngine
       softwareVersionNum: '$(softwareVersion)'
+      softwareBuildNum: '$(Build.BuildNumber)'
       symbolsFolder: 'SRV*http://symweb;$(Build.ArtifactStagingDirectory)/ApiScan'
       isLargeApp: false
     continueOnError: true
