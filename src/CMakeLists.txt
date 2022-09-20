@@ -231,8 +231,8 @@ macro (fetch_google_test)
     include(FetchContent)
     FetchContent_Declare(
         googletest
-        GIT_REPOSITORY ${GOOGLE_TEST_URL}.git
-        GIT_TAG ${GOOGLE_TEST_TAG}
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.8.0
     )
     FetchContent_MakeAvailable(googletest)
 endmacro(fetch_google_test)
