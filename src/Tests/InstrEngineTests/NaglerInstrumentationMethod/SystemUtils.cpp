@@ -2,10 +2,9 @@
 // Licensed under the MIT License.
 
 // Utilites for accessing OS info
-
+#include "stdafx.h"
 #include "SystemUtils.h"
 #include <mutex>
-#include <memory>
 
 HRESULT NaglerSystemUtils::GetEnvVar(_In_z_ const WCHAR* wszVar, _Inout_ tstring& value)
 {

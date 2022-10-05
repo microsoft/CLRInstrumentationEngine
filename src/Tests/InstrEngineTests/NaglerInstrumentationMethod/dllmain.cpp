@@ -81,3 +81,10 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
 
     return E_NOINTERFACE;
 }
+
+// Implemenation of Assert functions found in Macros.h
+void AssertLogFailure(_In_ const WCHAR* wszError, ...)
+{
+    LoggingFlags flag;
+    // todo: Get the current logger and log there.
+}
