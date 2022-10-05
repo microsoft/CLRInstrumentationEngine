@@ -5,6 +5,7 @@
 
 #include "SystemUtils.h"
 #include <mutex>
+#include <memory>
 
 HRESULT NaglerSystemUtils::GetEnvVar(_In_z_ const WCHAR* wszVar, _Inout_ tstring& value)
 {
@@ -34,17 +35,15 @@ HRESULT NaglerSystemUtils::GetEnvVar(_In_z_ const WCHAR* wszVar, _Inout_ tstring
 
         return SystemString::Convert(buff.get(), value);
     }
-    #else
-        auto buff = std::make_uniqe<char[]>(buffSize);
-        DWORD size = GetEnvironmentVariableW(wszVar, buff.get(), buffSize);
-        if ((size == 0) || ((size_t)size) >= buffSize) 
-        {
-            return E_FAIL;
-        }
-        value = buff.get();
-        return S_OK;
-    #endif
-
     return E_FAIL;
-
+    #else
+    auto buff = std::make_unique<WCHAR[]>(buffSize);
+    DWORD size = GetEnvironmentVariableW(wszVar, buff.get(), buffSize);
+    if ((size == 0) || ((size_t)size) >= buffSize) 
+    {
+        return E_FAIL;
+    }
+    value = buff.get();
+    return S_OK;
+    #endif
 } 
