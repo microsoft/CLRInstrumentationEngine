@@ -13,6 +13,18 @@
     do { errno_t ifFailRetErrno_result = EXPR; IfFailRet_Proxy(MAKE_HRESULT_FROM_ERRNO(ifFailRetErrno_result)); } while (false)
 #endif
 
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+
+
+#ifdef PLATFORM_UNIX
+#error "Only Windows is supported for the profiler proxy"
+#else 
+#include <windows.h>
+#include <atlbase.h>
+#include <atlcom.h>
+#endif
+
+
 #include "../Common.Headers/tstring.h"
 #include "../Common.Headers/CriticalSectionHolder.h"
 #include "../Common.Headers/InitOnce.h"
@@ -20,5 +32,5 @@
 #include "../Common.Headers/SafeFindFileHandle.h"
 #include "../Common.Headers/banned.h"
 
-#include "../Common.Lib/Macros.h"
+#include "../Common.Headers/Macros.h"
 #include "../Common.Lib/EventLoggingBase.h"

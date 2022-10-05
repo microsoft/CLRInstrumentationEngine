@@ -123,6 +123,7 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="NaglerInstrumentationMethod.cpp" />
+    <ClCompile Include="SystemUtils.cpp" />
     <ClInclude Include="InstrStr.h" />
     <ClInclude Include="InstrumentationEngineString.h" />
     <ClInclude Include="InstrumentationEngineApi.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="NaglerInstrumentMethodEntry.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SystemUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
@@ -140,6 +142,11 @@
     <Content Include="NaglerInstrumentationMethod_x86.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common.Lib\Common.Lib.vcxproj">
+      <Project>{a0585fab-548f-44b3-bcbe-9242cbc26a19}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Common.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -75,7 +75,7 @@ $BaseImage = "";
 
 if ($BuildDockerImage) {
 
-    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage -Wsl:`$$Wsl -WslDistro:`$$WslDistro"
+    $Command = "$PSScriptRoot\DockerLocalImage.ps1 -EnlistmentRoot '$EnlistmentRoot' -CLib $CLib -Rebuild:`$$RebuildImage -Wsl:`$$Wsl -WslDistro:'$WslDistro'"
     $BaseImage = Invoke-Expression $Command
     if (-not $?) {
         write-error "Error creating docker image"

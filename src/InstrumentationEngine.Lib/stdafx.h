@@ -112,7 +112,7 @@ using namespace ATL;
 #include "SharedArray.h"
 
 #include "../Common.Headers/tstring.h"
-#include "../Common.Lib/Macros.h"
+#include "../Common.Headers/Macros.h"
 #include "../Common.Headers/CriticalSectionHolder.h"
 #include "../Common.Headers/InitOnce.h"
 #include "../Common.Headers/Singleton.h"
