@@ -9,6 +9,8 @@ namespace RemoteUnitTestExecutor
     {
         IList<MethodInvocationInfo> InvokedMethods { get; }
 
+        IList<string> ProfilerTraces { get; }
+
         bool Succeeded { get; set; }
 
         string ExceptionString { get; set; }
@@ -16,8 +18,6 @@ namespace RemoteUnitTestExecutor
         void Serialize(string filename);
 
         void AddProfilerTraces(IEnumerable<string> tracesIterator);
-
-        IList<string> GetProfilerTraces();
 
         string InvokedMethodsSequence { get; }
     }

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
 namespace RemoteUnitTestExecutor
 {
     using System;

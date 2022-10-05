@@ -25,20 +25,16 @@ The CLR Instrumentation Engine is a profiler implementation and is enabled and c
 
 Please read [Contributing](CONTRIBUTING.md) for details on the Contributor License Agreement (CLA) and the process for submitting pull requests to us.
 
-This repo builds using Visual Studio 2019 and requires the following components:
+This repo builds using Visual Studio 2022 and requires the following components:
 
 |Component Id|Component Friendly Name|
 |:--|:--
 Microsoft.Component.MSBuild|MSBuild
 Microsoft.VisualStudio.Workload.NativeDesktop|Desktop development with C++ (Workload)
-Microsoft.VisualStudio.Component.VC.14.29.16.11.ATL.Spectre|C++ v14.29 (16.11) ATL for v142 build tools with Spectre Mitigations (x86 & x64)
-Microsoft.VisualStudio.Component.VC.14.29.16.11.x86.x64.Spectre|MSVC v142 - VS 2019 C++ x64/x86 Spectre-mitigated libs (v14.29-16.11)	
+Microsoft.VisualStudio.Component.VC.ATL.Spectre|C++ ATL for latest v143 build tools with Spectre Mitigations (x86 & x64)
+Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre|MSVC v143 - VS 2022 C++ x64/x86 Spectre-mitigated libs (Latest)
 
-The following component IDs work for VS 2019 but not VS 2022 because they implicitly upversion to the latest (ie. v143 and v14.3x)
-* Microsoft.VisualStudio.Component.VC.ATL.Spectre 
-* Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre
-
-Optionally, in order to develop Wixproj files in Visual Studio, you will need to install the [Wix Toolset Visual 2019 Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2019Extension), also known as the "Votive" extension.
+Optionally, in order to develop Wixproj files in Visual Studio, you will need to install the [Wix Toolset Visual 2022 Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2022Extension), also known as the "Votive" extension.
 
 * [Design Notes](DESIGN-NOTES.md) - the overall design for CLR Instrumentation Engine.
 * [Build](docs/build.md) - how to run local builds.
@@ -64,3 +60,7 @@ Usage governance of the Instrumentation Engine is detailed in the [License](LICE
 ## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact opencode@microsoft.com with any additional questions or comments.
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft’s Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.

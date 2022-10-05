@@ -15,6 +15,8 @@ namespace TestAppRunner
     /// </summary>
     class Program
     {
+        private static string _resolutionBasePath = null;
+
         static int Main(string[] args)
         {
             if (args.Length == 0)
@@ -23,12 +25,10 @@ namespace TestAppRunner
             }
 
             string assemblyPath = args[0];
+            _resolutionBasePath = Path.GetDirectoryName(assemblyPath);
 
-            using FileStream assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
-            using BinaryReader assemblyReader = new BinaryReader(assemblyStream);
-            byte[] assemblyData = assemblyReader.ReadBytes((int)assemblyStream.Length);
-
-            Assembly assembly = AppDomain.CurrentDomain.Load(assemblyData);
+            Assembly assembly = LoadAssemblyFromDisk(assemblyPath);
+            AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
 
             if (null == assembly.EntryPoint)
             {
@@ -60,7 +60,30 @@ namespace TestAppRunner
 
                 return entryPointDelegate(entryPointArgs);
             }
-            
+        }
+
+        private static Assembly LoadAssemblyFromDisk(string assemblyPath)
+        {
+            FileStream assemblyStream;
+            BinaryReader assemblyReader;
+
+            assemblyStream = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
+            using (assemblyReader = new BinaryReader(assemblyStream))
+            {
+                byte[] assemblyData = assemblyReader.ReadBytes((int)assemblyStream.Length);
+                return AppDomain.CurrentDomain.Load(assemblyData);
+            }
+        }
+
+        // Prior to adding this, the RefStructsTestsImpl assembly referenced by RefStructsTests
+        // was not being loaded, despite being located in the same directory. This is called
+        // when a referenced assembly isn't found automatically, and the missing assembly
+        // is loaded retroactively.
+        private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            AssemblyName assemblyName = new AssemblyName(args.Name);
+            string fileName = Path.Combine(_resolutionBasePath, $"{assemblyName.Name}.dll");
+            return LoadAssemblyFromDisk(fileName);
         }
     }
 }

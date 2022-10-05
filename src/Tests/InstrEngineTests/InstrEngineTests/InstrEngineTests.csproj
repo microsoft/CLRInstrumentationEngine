@@ -7,13 +7,23 @@
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'EnlistmentRoot.marker'))\build\Managed.props" />
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1;net50;net60</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net50;net60;net70</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>InstrEngineTests</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NetCoreVersion>7.0.0-preview.4.22229.4</NetCoreVersion>
+    <IlAsmLocation>$(NuGetPackageRoot)\microsoft.netcore.ilasm\$(NetCoreVersion)\runtimes\native\ilasm.exe</IlAsmLocation>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="EmbeddedResources\**" />
     <EmbeddedResource Include="EmbeddedResources\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="EmbeddedResources\InvalidCSharp\readme.txt" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <Compile Remove="RefStructsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
@@ -21,6 +31,9 @@
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
     <PackageReference Include="coverlet.collector" Version="3.0.2" />
+    <PackageReference Include="Microsoft.NET.Sdk.IL" Version="$(NetCoreVersion)" />
+    <PackageReference Include="Microsoft.NETCore.ILAsm" Version="$(NetCoreVersion)" />
+    <PackageReference Include="Microsoft.NETCore.ILDAsm" Version="$(NetCoreVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Baselines\AddBranchTargets_ArrayForeachTest.xml">
@@ -173,6 +186,34 @@
     </Content>
     <Content Include="..\Baselines\Instru_ReplaceTest2.xml">
       <Link>Baselines\Instru_ReplaceTest2.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Casting_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_RefStructField.xml">
+      <Link>Baselines\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>Baselines\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_Inlining_Behavior.xml">
+      <Link>Baselines\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>Baselines\RefStructsTest_RefStructWithRefField_Load.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>Baselines\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Baselines\RoundTrip_ForTest.xml">
@@ -409,6 +450,34 @@
       <Link>TestScripts\Instru_ReplaceTest2.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Casting_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_Casting_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_RefStructField.xml">
+      <Link>TestScripts\RefStructsTest_Create_RefStructField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml">
+      <Link>TestScripts\RefStructsTest_Create_TypedReferenceRefField.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_Inlining_Behavior.xml">
+      <Link>TestScripts\RefStructsTest_Inlining_Behavior.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml">
+      <Link>TestScripts\RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestScripts\RefStructsTest_RefStructWithRefField_Load.xml">
+      <Link>TestScripts\RefStructsTest_RefStructWithRefField_Load.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\TestScripts\RoundTrip_ForTest.xml">
       <Link>TestScripts\RoundTrip_ForTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -493,6 +562,11 @@
       <Link>TestScripts\MultiReturn_SwitchTest.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(ILAsmLocation)')">
+    <EmbeddedResource Include="$(ILAsmLocation)">
+      <Link>EmbeddedResources\ilasm.exe</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
 </Project>

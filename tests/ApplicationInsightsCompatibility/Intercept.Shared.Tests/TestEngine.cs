@@ -49,7 +49,7 @@ namespace ApplicationInsightsCompatibility
             vars.Add("MicrosoftInstrumentationEngine_FileLog",  "Dumps|Errors");
             //vars.Add("MicrosoftInstrumentationEngine_FileLogPath", ""); //can be overridden if needed
 
-#if ALLOWNOTSIGNED
+#if ALLOWNOTSIGNED || DEBUG
             vars.Add("MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "1");
 #endif
         }

@@ -20,7 +20,7 @@ namespace CommonLib
     /// or wide-character (Windows) strings. Useful for converting strings between
     /// Linux and Windows.
     /// </summary>
-    class SystemString 
+    class SystemString
     {
     public:
         /// <summary>
@@ -28,7 +28,7 @@ namespace CommonLib
         /// </summary>
         /// <param name="converted">The converted string</param>
         /// <returns>S_OK for success. Error code otherwise.</returns>
-        static HRESULT Convert(_In_ const WCHAR*, _Inout_ std::string& converted);
+        static HRESULT Convert(_In_z_ const WCHAR*, _Inout_ std::string& converted);
 
         /// <summary>
         /// Utility function to convert a UTF8 (Linux) string to a UTF16LE (Windows) string.
@@ -36,7 +36,7 @@ namespace CommonLib
         /// <param name="lpzStr">The input string.</param>
         /// <param name="result">The output string.</param>
         /// <returns>S_OK for success, error otherwise.</returns>
-        static HRESULT Convert(_In_ const CHAR* lpzStr, _Inout_ tstring& result);
+        static HRESULT Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result); // lgtm[cpp/inconsistentsal] SAL annotations match definition in cpp file
     };
 
 }

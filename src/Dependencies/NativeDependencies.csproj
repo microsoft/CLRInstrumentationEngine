@@ -32,7 +32,7 @@
     </When>
     <Otherwise>
       <PropertyGroup>
-        <TargetFramework>net461</TargetFramework>
+        <TargetFramework>net462</TargetFramework>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(ApplicationInsightsAgentInterceptVersion)">
