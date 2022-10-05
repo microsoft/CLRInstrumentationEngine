@@ -20,7 +20,7 @@ HRESULT NaglerSystemUtils::GetEnvVar(_In_z_ const WCHAR* wszVar, _Inout_ tstring
     std::lock_guard<mutex> lock(cs);
     string utfVar;
     IfFailRet(SystemString::Convert(wszVar, utfVar));
-    char* val = secure_getenv(utfVar.c_str());
+    char* val = getenv(utfVar.c_str());
     if (val != nullptr)
     {
 
