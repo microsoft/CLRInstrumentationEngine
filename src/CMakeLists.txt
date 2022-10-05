@@ -185,7 +185,7 @@ endmacro(add_lib lib_name type use_redefines hide_symbols sources)
 
 # Adds an executable and optionally adds dependency on generated file pal_redefines.h for
 # projects that depend on the PAL.
-macro(add_exe exe_name no_pal use_redefines)
+macro(add_exe exe_name use_pal use_redefines)
     add_executable(${exe_name}
         ${ARGN})
 
