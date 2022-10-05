@@ -6,7 +6,6 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "NaglerInstrumentationMethod.h"
-#include "../Common.Lib/systemstring.h"
 
 class CCrossPlatClassFactory : public IClassFactory, public CModuleRefCount
 {
