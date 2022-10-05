@@ -123,7 +123,7 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="NaglerInstrumentationMethod.cpp" />
-    <ClCompile Include="SystemUtils.cpp"
+    <ClCompile Include="SystemUtils.cpp" />
     <ClInclude Include="InstrStr.h" />
     <ClInclude Include="InstrumentationEngineString.h" />
     <ClInclude Include="InstrumentationEngineApi.h" />
