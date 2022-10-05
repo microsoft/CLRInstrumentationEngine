@@ -82,19 +82,3 @@ STDAPI DLLEXPORT(DllGetClassObject, 12)(_In_ REFCLSID rclsid, _In_ REFIID riid, 
 
     return E_NOINTERFACE;
 }
-
-void AssertLogFailure(_In_ const WCHAR* wszError, ...)
-{
-    // Attempting to interpet the var args is very difficult
-    // cross-plat without a PAL. We should see about removing
-    // the dependency on this in the Common.Lib
-    string str;
-    HRESULT hr = SystemString::Convert(wszError, str);
-    if (!SUCCEEDED(hr))
-    {
-        str = "Unable to convert wchar string to char string";
-    }
-
-    AssertFailed(str.c_str());
-
-}

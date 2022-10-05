@@ -20,6 +20,28 @@ const WCHAR CInstrumentationMethod::TestScriptFolder[] = _T("TestScripts");
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = _T("Nagler_IsRejit");
 
 
+void AssertLogFailure(_In_ const WCHAR* wszError, ...)
+{
+#ifdef PLATFORM_UNIX
+    // Attempting to interpret the var args is very difficult
+    // cross-plat without a PAL. We should see about removing
+    // the dependency on this in the Common.Lib
+    string str;
+    HRESULT hr = SystemString::Convert(wszError, str);
+    if (!SUCCEEDED(hr))
+    {
+        str = "Unable to convert wchar string to char string";
+    }
+    AssertFailed(str.c_str());
+#else
+    // Since this is a test libary, we will print to standard error and fail
+    va_list argptr;
+    va_start(argptr, wszError);
+    vfwprintf(stderr, wszError, argptr);
+#endif
+    throw "Assert failed";
+}
+
 
 // Convenience macro for defining strings.
 #define InstrStr(_V) CInstrumentationEngineString _V(m_pStringManager)

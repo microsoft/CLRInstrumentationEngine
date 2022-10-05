@@ -13,9 +13,10 @@
 
 #ifdef PLATFORM_UNIX
 // NOTE: Avoid depending on the Core CLR pal in
-// this library. We would like to be able to use
-// it in our test dlls, without needing to
-// link to and initialize the PAL.
+// this library. We would like it to be close to
+// a reference implementation on how to build a
+// cross-plat instrumentation method.
+
 #include "no_sal.h"
 #include "mincom/mincom.h"
 #include "mincom/ccomptrs.h"
@@ -60,17 +61,7 @@ using namespace std;
 #include "../../../src/Common.Lib/refcount.h"
 #include "../../../src/Common.Lib/ImplQueryInterface.h"
 #include "../../../src/Common.Lib/XmlDocWrapper.h"
+#include "../../../src/Common.Headers/Macros.h"
 #include "assertions.h"
 
 using namespace CommonLib;
-
-// for exporting __stdcall/__fastcall methods to a known name. ARGSIZE is in bytes.
-#ifndef PLATFORM_UNIX
-#ifdef _WIN64
-#define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD ",PRIVATE")) METHOD
-#else
-#define DLLEXPORT(METHOD, ARGSIZE) __pragma(comment(linker, "/EXPORT:" #METHOD "=_" #METHOD "@" #ARGSIZE ",PRIVATE")) METHOD
-#endif
-#else
-#define DLLEXPORT(METHOD, ARGSIZE) __attribute__((visibility("default"))) METHOD
-#endif
