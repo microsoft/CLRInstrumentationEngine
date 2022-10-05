@@ -32,5 +32,5 @@
 #include "../Common.Headers/SafeFindFileHandle.h"
 #include "../Common.Headers/banned.h"
 
-#include "../Common.Lib/Macros.h"
+#include "../Common.Headers/Macros.h"
 #include "../Common.Lib/EventLoggingBase.h"

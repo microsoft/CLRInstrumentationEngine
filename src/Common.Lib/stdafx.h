@@ -36,7 +36,7 @@
 #include <msxml6.h>
 #endif
 
-#include "Macros.h"
+#include "../Common.Headers/Macros.h"
 #include "refcount.h"
 
 #include "../Common.Headers/banned.h"
