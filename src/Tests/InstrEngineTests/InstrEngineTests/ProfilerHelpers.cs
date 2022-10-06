@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -44,6 +45,7 @@ namespace InstrEngineTests
         private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
         private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
         private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
+        private const string LinuxDotnetEnvVarName = "DOTNET_EXE";
 #else
         private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "COR_PROFILER";
@@ -90,8 +92,11 @@ namespace InstrEngineTests
             bool is32bitTest = Is32bitTest(testScript);
             string bitnessSuffix = is32bitTest ? "x86" : "x64";
 
-            // TODO: call this only for 64bit OS
-            SetBitness(is32bitTest);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // TODO: call this only for 64bit OS
+                SetBitness(is32bitTest);
+            }
 
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
@@ -190,11 +195,13 @@ namespace InstrEngineTests
             string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
 
 #if NETCOREAPP
-            string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
+            string dotnetExeEnvVarName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+                is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName
+                : LinuxDotnetEnvVarName;
+
             string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
             if (string.IsNullOrEmpty(hostPath))
             {
-                
                 string programFilesFolder = is32bitTest ?
                     Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%") :
                     Environment.ExpandEnvironmentVariables("%ProgramW6432%");

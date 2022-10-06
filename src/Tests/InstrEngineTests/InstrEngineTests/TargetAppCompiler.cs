@@ -73,7 +73,7 @@ namespace InstrEngineTests
         internal static void CompileTestCode(string directoryPath)
         {
 #if NET7_0_OR_GREATER
-            AssembleILTestCode(directoryPath);
+            //AssembleILTestCode(directoryPath);
 #endif
             CompileCSharpTestCode(directoryPath);
         }
