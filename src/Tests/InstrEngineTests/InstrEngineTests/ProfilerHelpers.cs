@@ -54,7 +54,7 @@ namespace InstrEngineTests
 
         #endregion
 
-        public const int TestAppTimeoutMs = 25000;
+        public const int TestAppTimeoutMs = 25000; // int.MaxValue
 
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
@@ -125,7 +125,7 @@ namespace InstrEngineTests
             }
 
             // Uncomment this line to debug tests
-            //psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
+            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
 
             if (ThrowMessageBoxAtStartup)
             {
