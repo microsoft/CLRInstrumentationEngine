@@ -74,6 +74,7 @@ namespace InstrEngineTests
             ProfilerHelpers.DiffResultToBaseline(parameters.TestContext, fileName, fileName, regexCompare);
         }
 
+#pragma warning disable CA1502
         public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
@@ -102,7 +103,15 @@ namespace InstrEngineTests
             psi.UseShellExecute = false;
             psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
             psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            }
+            else
+            {
+                psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), "libInstrumentationEngine.so"));
+            }
+
             psi.RedirectStandardError = true;
 
             if (EnableRefRecording)
@@ -179,9 +188,19 @@ namespace InstrEngineTests
             }
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
-            psi.EnvironmentVariables.Add(
-                is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
-                Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                psi.EnvironmentVariables.Add(
+                    is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                    Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+            }
+            else // Linux
+            {
+                psi.EnvironmentVariables.Add(
+                    HostConfig64PathEnvName,
+                    Path.Combine(PathUtils.GetAssetsPath(), "LinuxNaglerInstrumentationMethod.xml"));
+            }
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -244,8 +263,9 @@ namespace InstrEngineTests
                 Console.WriteLine($"stderr: {stderr}");
             }
             Assert.IsTrue(testCompleted, "Test process timed out during execution.");
-            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}");
+            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}'");
         }
+#pragma warning restore CA1502
 
         public static string[] SplitXmlDocuments(string content)
         {

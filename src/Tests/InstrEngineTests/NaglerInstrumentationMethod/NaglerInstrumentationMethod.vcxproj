@@ -144,6 +144,9 @@
     <Content Include="NaglerInstrumentationMethod_x86.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LinuxNaglerInstrumentationMethod.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common.Lib\Common.Lib.vcxproj">

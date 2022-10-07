@@ -61,7 +61,7 @@ ILOpcodeInfo ilOpcodeInfo[] =
 
 struct ComInitializer
 {
-    #ifndef PLATFORM_UNIX
+#ifndef PLATFORM_UNIX
     HRESULT _hr;
     ComInitializer(DWORD mode = COINIT_APARTMENTTHREADED)
     {
@@ -74,7 +74,7 @@ struct ComInitializer
             CoUninitialize();
         }
     }
-    #endif
+#endif
 };
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
@@ -84,7 +84,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
 
 #ifdef PLATFORM_UNIX
-    DWORD retVal = LoadInstrumentationMethodXml(nullptr);
+    DWORD retVal = LoadInstrumentationMethodXml(this);
 #else
     // On Windows, xml reading is done in a single-threaded apartment using 
     // COM, so we need to spin up a new thread for it.

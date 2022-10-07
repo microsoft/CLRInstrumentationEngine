@@ -15,6 +15,9 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
+    [DeploymentItem(PathUtils.LinuxInstrumentationEngineX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationConfigX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationMethodX64BinPath)]
     public class TestInjectToMscorlib
     {
         private static TestContext Context;
