@@ -10,14 +10,17 @@
 #include <dlfcn.h>
 
 #if (defined(_M_X64) || defined(_M_ARM64) || defined(_M_AMD64))
-const char InstrumentationEngineModule[] = "MicrosoftInstrumentationEngine_x64.so";
+const char InstrumentationEngineModule[] = "libInstrumentationEngine.so";
 #else
 #error "Platform Not Supported"
 #endif
 
 #define MOD_TYPE void*
-#define MOD_LOAD(_N) (dlopen(_N, RTLD_NOLOAD))
+#define MOD_LOAD(_N) (dlopen(_N, RTLD_NOLOAD | RTLD_LAZY))
 #define SYM_LOAD(_M, _S) (dlsym(_M, _S))
+#define GET_LAST_ERROR() \
+    AssertFailed(dlerror()); \
+    AssertFailed("\n");
 
 #else // !PLATFORM_UNIX
 #include <Windows.h>
@@ -33,7 +36,11 @@ const WCHAR InstrumentationEngineModule[] = _T("MicrosoftInstrumentationEngine_x
 #define MOD_TYPE HMODULE
 #define MOD_LOAD(_N) (GetModuleHandle(_N))
 #define SYM_LOAD(_M, _S) (GetProcAddress(_M, _S))
-
+#define GET_LAST_ERROR() \
+    wchar_t err[256]; \
+    memset(err, 0, 256); \
+    FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), err, 255, NULL); \
+    AssertLogFailure(err);
 #endif
 
 using namespace std;
@@ -52,12 +59,14 @@ namespace InstrumentationEngineApi
             MOD_TYPE mod = MOD_LOAD(InstrumentationEngineModule);
             if (mod == nullptr)
             {
+                GET_LAST_ERROR();
                 return E_NOTIMPL;
             }
 
             _InstrumentationEngineFreeString = (TFreeString)SYM_LOAD(mod, "InstrumentationEngineFreeString");
             if (_InstrumentationEngineFreeString == nullptr)
             {
+                GET_LAST_ERROR();
                 return E_NOTIMPL;
             }
 

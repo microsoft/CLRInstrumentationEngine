@@ -125,7 +125,7 @@ namespace InstrEngineTests
             }
 
             // Uncomment this line to debug tests
-            psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
+            //psi.EnvironmentVariables.Add("MicrosoftInstrumentationEngine_DebugWait", "1");
 
             if (ThrowMessageBoxAtStartup)
             {
