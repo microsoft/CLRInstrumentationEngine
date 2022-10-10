@@ -11,7 +11,7 @@ inline void AssertFailed(_In_ const char* message)
     fprintf(stderr, "%s", message);
 #else
     tstring wmessage;
-    SystemString::Convert(message, wmessage);
+    CommonLib::SystemString::Convert(message, wmessage);
     _ASSERT_EXPR(0, wmessage.c_str());
 #endif
 
