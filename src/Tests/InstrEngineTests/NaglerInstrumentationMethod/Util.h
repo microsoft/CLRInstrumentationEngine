@@ -2,13 +2,14 @@
 // Licensed under the MIT License.
 
 #pragma once
+#include "stdafx.h"
 
 namespace MicrosoftInstrumentationEngine
 {
     template<class T> class CMetadataEnumCloser final
     {
     private:
-        ATL::CComPtr<T> m_pMetadataImport;
+        CComPtr<T> m_pMetadataImport;
         HCORENUM m_hEnum;
 
     public:
@@ -18,7 +19,7 @@ namespace MicrosoftInstrumentationEngine
         {
             if (m_pMetadataImport == nullptr)
             {
-                ATLASSERT(!L"m_pMetadataImport is null. Potential memory leak");
+                AssertFailed("m_pMetadataImport is null. Potential memory leak");
             }
         }
 

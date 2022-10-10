@@ -3,7 +3,7 @@
 #include "pch.h"
 #include <fstream>
 
-#include "Common.Lib/Macros.h"
+#include "Common.Headers/Macros.h"
 #include "Common.Lib/systemstring.h"
 #include "Common.Lib/XmlNode.h"
 #include "Common.Lib/XmlDocWrapper.h"

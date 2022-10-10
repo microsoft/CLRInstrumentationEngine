@@ -146,7 +146,7 @@ public:
 
     T* operator=(T* lp)
     {
-        return static_cast<T*>(_MinComPtrAssign(&this->p, lp.p));
+        return static_cast<T*>(_MinComPtrAssign(&this->p, lp));
     }
 
     T* operator=(const CComPtr<T>& lp)
