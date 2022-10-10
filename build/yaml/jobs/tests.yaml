@@ -36,5 +36,5 @@ jobs:
           Platform: 'AnyCPU'
           RunSettingsFile: 'x64.runsettings'
 
-# Linux Binaries (TBD)
-#- template: linux/tests.yaml
+# Test Linux Binaries
+- template: linux/tests.yaml

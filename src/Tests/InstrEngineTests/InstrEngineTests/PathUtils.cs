@@ -13,7 +13,7 @@ namespace InstrEngineTests
         private const string TestScriptsFolder = "TestScripts";
         private const string ResourcesFolder = "ExtractedResources";
 
-        // All paths are relative to the AnyCPU binaries directory e.g. bin\Debug\AnyCPU
+        // All paths are relative to the AnyCPU binaries directory e.g. bin/Debug/AnyCPU/(framework)
         // Use forward slashes '/' to maintain compatibility between Windows and Linux
         public const string BaselinesBinPath = @"./" + BaselinesFolder;
         public const string TestScriptsBinPath = @"./" + TestScriptsFolder;

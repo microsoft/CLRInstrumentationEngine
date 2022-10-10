@@ -20,6 +20,7 @@ RUN apt-get install -y --no-install-recommends apt-transport-https \
     && apt-get update \
     && apt-get install -y --no-install-recommends dotnet-sdk-2.1
 
+# Install .NET 7 SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -c 7.0
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache
@@ -46,3 +47,7 @@ RUN apt-get update \
         libxml2-dev \
         make \
         jq
+
+# Git now checks for repository ownership
+RUN git config --global --add safe.directory /root/ClrInstrumentationEngine/out/Linux/Intermediate/x64.Debug/_deps/googletest-src
+RUN git config --global --add safe.directory /root/ClrInstrumentationEngine
