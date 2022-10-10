@@ -42,7 +42,11 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20104.2" />
   </ItemGroup>
   <Import Project="$(EnlistmentRoot)\build\Managed.targets" />
-  <Target Name="XsdGeneration" AfterTargets="PrepareForBuild" Inputs="@(XsdSchemaFile)" Outputs="@(XsdSchemaFile.OutputFile)" Condition="'@(XsdSchemaFile)' != ''">
+  <Target Name="XsdGeneration" 
+          AfterTargets="PrepareForBuild" 
+          Inputs="@(XsdSchemaFile)" 
+          Outputs="@(XsdSchemaFile.OutputFile)" 
+          Condition="$([MSBuild]::IsOSPlatform('Windows')) AND '@(XsdSchemaFile)' != ''">
     <Error Condition="'%(XsdSchemaFile.Namespace)' == ''" Text="Missing Namespace attribute for XsdSchemaFile %(XsdSchemaFile.FullPath)" />
     <PropertyGroup>
       <XsdToolPath Condition="!Exists('$(XsdToolPath)')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\xsd.exe</XsdToolPath>

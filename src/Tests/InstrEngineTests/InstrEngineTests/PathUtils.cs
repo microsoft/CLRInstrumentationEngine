@@ -24,7 +24,7 @@ namespace InstrEngineTests
         public const string NaglerInstrumentationMethodX64BinPath = @"../../x64/NaglerInstrumentationMethod_x64.dll";
         public const string NaglerInstrumentationMethodX86BinPath = @"../../x86/NaglerInstrumentationMethod_x86.dll";
         public const string LinuxInstrumentationEngineX64BinPath = @"../../../../out/Linux/bin/x64.Debug/ClrInstrumentationEngine/libInstrumentationEngine.so";
-        public const string LinuxNaglerInstrumentationConfigX64BinPath = @"../../x64/LinuxNaglerInstrumentationMethod.xml";
+        public const string LinuxNaglerInstrumentationConfigX64BinPath = @"../../../../out/Linux/bin/x64.Debug/ClrInstrumentationEngine/NaglerInstrumentationMethod/LinuxNaglerInstrumentationMethod.xml";
         public const string LinuxNaglerInstrumentationMethodX64BinPath = @"../../../../out/Linux/bin/x64.Debug/ClrInstrumentationEngine/libNaglerInstrumentationEngine.so";
 
         public static string GetAssetsPath()

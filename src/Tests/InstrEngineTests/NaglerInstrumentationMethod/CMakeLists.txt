@@ -60,3 +60,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         "-framework Security"
     )
 endif()
+
+configure_file(
+    ${REPOSITORY_ROOT}/src/Tests/InstrEngineTests/NaglerInstrumentationMethod/LinuxNaglerInstrumentationMethod.xml 
+    ${CMAKE_INSTALL_PREFIX}/LinuxNaglerInstrumentationMethod.xml
+    COPYONLY)
