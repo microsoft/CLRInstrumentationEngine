@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -21,6 +22,9 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
+    [DeploymentItem(PathUtils.LinuxInstrumentationEngineX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationConfigX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationMethodX64BinPath)]
     public class TestAddInstruction
     {
         private static TestContext Context;
@@ -35,6 +39,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_IfTest_Debug()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Assert.Inconclusive("x86 tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "BasicManagedTests_Debug_x86",
@@ -75,6 +84,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ForTest_Debug()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Assert.Inconclusive("x86 tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "BasicManagedTests_Debug_x86",

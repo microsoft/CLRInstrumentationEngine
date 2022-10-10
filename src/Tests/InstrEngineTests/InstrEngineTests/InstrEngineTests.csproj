@@ -20,6 +20,7 @@
     <EmbeddedResource Include="EmbeddedResources\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="RefStructsTests.cs" />
     <None Remove="EmbeddedResources\InvalidCSharp\readme.txt" />
   </ItemGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">

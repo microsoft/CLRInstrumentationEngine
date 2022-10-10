@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+// This file is only compiled for net70
 namespace InstrEngineTests
 {
     [TestClass]
@@ -31,6 +33,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RefStructWithRefField_Load()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -41,6 +48,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefField()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -51,6 +63,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefStructField()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -61,6 +78,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_TypedReferenceRefField()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -71,6 +93,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Casting_Scenarios()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -81,6 +108,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RecognizedOpCodeSequences_Scenarios()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
@@ -91,6 +123,11 @@ namespace InstrEngineTests
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Inlining_Behavior()
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                Assert.Inconclusive("RefStructs tests are only available on Windows");
+            }
+
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",

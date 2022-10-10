@@ -24,9 +24,15 @@ CProfilerManagerForInstrumentationMethod::CProfilerManagerForInstrumentationMeth
         // 1 offset = trim start bracket
         // 36 length = keep only Guid portion
         m_wszInstrumentationMethodGuid = tstring(wszCurrentMethodGuid).substr(1, 36);
+        for (int i = 0; i < 36; i++)
+        {
+            m_wszInstrumentationMethodGuid[i] = std::toupper(m_wszInstrumentationMethodGuid[i]);
+        }
+
         m_instrumentationMethodGuid = instrumentationMethodGuid;
 
         // Get InstrumentationMethod-specific LogLevel Environment Variable
+        // Environment variables are case-insensitive on Windows and case-sensitive on Linux/Mac.
         tstring wszInstrumentationMethodLogLevelEnvVar = _T("MicrosoftInstrumentationEngine_LogLevel_") + m_wszInstrumentationMethodGuid;
         WCHAR wszEnvVar[MAX_PATH];
         if (GetEnvironmentVariable(wszInstrumentationMethodLogLevelEnvVar.c_str(), wszEnvVar, MAX_PATH) > 0)

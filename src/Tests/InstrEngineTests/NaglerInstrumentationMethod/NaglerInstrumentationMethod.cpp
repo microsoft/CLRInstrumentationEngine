@@ -84,7 +84,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
 
 #ifdef PLATFORM_UNIX
-    DWORD retVal = LoadInstrumentationMethodXml(nullptr);
+    DWORD retVal = LoadInstrumentationMethodXml(this);
 #else
     // On Windows, xml reading is done in a single-threaded apartment using 
     // COM, so we need to spin up a new thread for it.
@@ -163,7 +163,7 @@ HRESULT CInstrumentationMethod::LoadTestScript()
     if (hr != S_OK)
     {
         AssertFailed("Failed to load test configuration");
-        return -1;
+        return E_FAIL;
     }
 
     CComPtr<CXmlNode> pDocumentNode;
@@ -174,7 +174,7 @@ HRESULT CInstrumentationMethod::LoadTestScript()
 
     if (wcscmp(strDocumentNodeName.c_str(), _T("InstrumentationTestScript")) != 0)
     {
-        return -1;
+        return E_FAIL;
     }
 
 
@@ -214,8 +214,11 @@ HRESULT CInstrumentationMethod::LoadTestScript()
         }
         else
         {
+            std::string utf8NodeName;
+            SystemString::Convert(strCurrNodeName.c_str(), utf8NodeName);
             AssertFailed("Invalid configuration. Element should be InstrumentationMethod");
-            return -1;
+            AssertFailed(utf8NodeName.c_str());
+            return E_FAIL;
         }
 
         pChildNode = pChildNode->Next();
@@ -348,7 +351,10 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
         }
         else
         {
+            std::string utf8NodeName;
+            SystemString::Convert(strCurrNodeName.c_str(), utf8NodeName);
             AssertFailed("Invalid configuration. Unknown Element");
+            AssertFailed(utf8NodeName.c_str());
             return E_FAIL;
         }
 

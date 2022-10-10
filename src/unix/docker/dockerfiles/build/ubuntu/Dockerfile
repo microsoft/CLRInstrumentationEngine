@@ -20,8 +20,14 @@ RUN apt-get install -y --no-install-recommends apt-transport-https \
     && apt-get update \
     && apt-get install -y --no-install-recommends dotnet-sdk-2.1
 
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -c 7.0
+
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
+
+RUN echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc
+RUN echo 'export DOTNET_EXE=$DOTNET_ROOT/dotnet' >> ~/.bashrc
+RUN echo 'export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH' >> ~/.bashrc
 
 # get the signing key for the kitware (cmake) repository
 RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null

@@ -82,7 +82,15 @@ namespace CommonLib
         name = pName.m_str;
 
     #else
-        IfFailRet(SystemString::Convert((const char*)m_pNode->name, name));
+        // LibXML2 will return an empty string for comment node names so we mark it as '#comment'.
+        if (m_pNode->type == XML_COMMENT_NODE)
+        {
+            name = _T("#comment");
+        }
+        else
+        {
+            IfFailRet(SystemString::Convert((const char*)m_pNode->name, name));
+        }
     #endif
 
         return S_OK;
