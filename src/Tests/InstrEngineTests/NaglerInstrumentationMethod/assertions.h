@@ -3,11 +3,17 @@
 
 // Note, we use const char* because it is easier for cross-plat
 inline void AssertFailed(_In_ const char* message)
-{{
-    #ifdef PLATFORM_UNIX
+{
+#ifdef DEBUG
+
+#ifdef PLATFORM_UNIX
     // Just write to standard error
     fprintf(stderr, "%s", message);
-    #else
-        _ASSERT_EXPR(0, message);
-    #endif
-}}
+#else
+    tstring wmessage;
+    SystemString::Convert(message, wmessage);
+    _ASSERT_EXPR(0, wmessage.c_str());
+#endif
+
+#endif // DEBUG
+}

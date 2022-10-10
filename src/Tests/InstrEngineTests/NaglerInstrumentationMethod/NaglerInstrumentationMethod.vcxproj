@@ -124,6 +124,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="NaglerInstrumentationMethod.cpp" />
     <ClCompile Include="SystemUtils.cpp" />
+    <ClInclude Include="assertions.h" />
     <ClInclude Include="InstrStr.h" />
     <ClInclude Include="InstrumentationEngineString.h" />
     <ClInclude Include="InstrumentationEngineApi.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="SystemUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="wcrt.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NaglerInstrumentationMethod_x64.xml">

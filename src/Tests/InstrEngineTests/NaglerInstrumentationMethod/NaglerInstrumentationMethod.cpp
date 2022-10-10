@@ -86,7 +86,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 #ifdef PLATFORM_UNIX
     DWORD retVal = LoadInstrumentationMethodXml(nullptr);
 #else
-    // On Windows, xml reading is done in a single-threaded appartment using 
+    // On Windows, xml reading is done in a single-threaded apartment using 
     // COM, so we need to spin up a new thread for it.
     CHandle hConfigThread;
     hConfigThread.Attach(CreateThread(NULL, 0, LoadInstrumentationMethodXml, this, 0, NULL));
