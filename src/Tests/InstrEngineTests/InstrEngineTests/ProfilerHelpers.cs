@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -44,6 +45,7 @@ namespace InstrEngineTests
         private const string ProfilerPathEnvVarName = "CORECLR_PROFILER_PATH";
         private const string DotnetExeX64EnvVarName = "DOTNET_EXE_X64";
         private const string DotnetExeX86EnvVarName = "DOTNET_EXE_X86";
+        private const string LinuxDotnetEnvVarName = "DOTNET_EXE";
 #else
         private const string EnableProfilingEnvVarName = "COR_ENABLE_PROFILING";
         private const string ProfilerEnvVarName = "COR_PROFILER";
@@ -52,7 +54,7 @@ namespace InstrEngineTests
 
         #endregion
 
-        public const int TestAppTimeoutMs = 25000;
+        public const int TestAppTimeoutMs = 25000; // int.MaxValue
 
         // In order to debug the host process, set this to true and a messagebox will be thrown early in the profiler
         // startup to allow attaching a debugger.
@@ -72,6 +74,7 @@ namespace InstrEngineTests
             ProfilerHelpers.DiffResultToBaseline(parameters.TestContext, fileName, fileName, regexCompare);
         }
 
+#pragma warning disable CA1502
         public static void LaunchAppUnderProfiler(TestParameters parameters, string testApp, string testScript, string output, bool isRejit = true, string args = null, int timeoutMs = TestAppTimeoutMs)
         {
             if (!BinaryRecompiled)
@@ -90,14 +93,25 @@ namespace InstrEngineTests
             bool is32bitTest = Is32bitTest(testScript);
             string bitnessSuffix = is32bitTest ? "x86" : "x64";
 
-            // TODO: call this only for 64bit OS
-            SetBitness(is32bitTest);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // TODO: call this only for 64bit OS
+                SetBitness(is32bitTest);
+            }
 
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
             psi.UseShellExecute = false;
             psi.EnvironmentVariables.Add(EnableProfilingEnvVarName, "1");
             psi.EnvironmentVariables.Add(ProfilerEnvVarName, ProfilerGuid.ToString("B", CultureInfo.InvariantCulture));
-            psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "MicrosoftInstrumentationEngine_{0}.dll", bitnessSuffix)));
+            }
+            else
+            {
+                psi.EnvironmentVariables.Add(ProfilerPathEnvVarName, Path.Combine(PathUtils.GetAssetsPath(), "libInstrumentationEngine.so"));
+            }
+
             psi.RedirectStandardError = true;
 
             if (EnableRefRecording)
@@ -174,9 +188,25 @@ namespace InstrEngineTests
             }
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
-            psi.EnvironmentVariables.Add(
-                is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
-                Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                psi.EnvironmentVariables.Add(
+                    is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
+                    Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
+            }
+#if NETCOREAPP
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            {
+                Console.Error.WriteLine($"{OSPlatform.FreeBSD:G} is not supported.");
+            }
+#endif
+            else
+            {
+                psi.EnvironmentVariables.Add(
+                    HostConfig64PathEnvName,
+                    Path.Combine(PathUtils.GetAssetsPath(), "LinuxNaglerInstrumentationMethod.xml"));
+            }
 
             string scriptPath = Path.Combine(PathUtils.GetTestScriptsPath(), testScript);
 
@@ -190,11 +220,13 @@ namespace InstrEngineTests
             string appPathWithoutExtension = Path.Combine(PathUtils.GetAssetsPath(), testApp);
 
 #if NETCOREAPP
-            string dotnetExeEnvVarName = is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName;
+            string dotnetExeEnvVarName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+                is32bitTest ? DotnetExeX86EnvVarName : DotnetExeX64EnvVarName
+                : LinuxDotnetEnvVarName;
+
             string hostPath = Environment.GetEnvironmentVariable(dotnetExeEnvVarName);
             if (string.IsNullOrEmpty(hostPath))
             {
-                
                 string programFilesFolder = is32bitTest ?
                     Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%") :
                     Environment.ExpandEnvironmentVariables("%ProgramW6432%");
@@ -237,8 +269,9 @@ namespace InstrEngineTests
                 Console.WriteLine($"stderr: {stderr}");
             }
             Assert.IsTrue(testCompleted, "Test process timed out during execution.");
-            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}");
+            Assert.AreEqual(0, testProcess.ExitCode, $"Test application failed. Error '0x{testProcess.ExitCode:X}'");
         }
+#pragma warning restore CA1502
 
         public static string[] SplitXmlDocuments(string content)
         {

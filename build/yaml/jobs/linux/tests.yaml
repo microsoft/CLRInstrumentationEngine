@@ -1,0 +1,65 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Test Linux Binaries
+
+parameters:
+  MatrixStrategy: {}
+
+jobs:
+- job: Test_Linux_Binaries
+  displayName: Linux Tests
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
+
+  pool:
+    ${{ if eq(variables['System.TeamProject'], 'devdiv') }}:
+      name: AzurePipelines-EO
+      demands: ImageOverride -equals AzurePipelinesUbuntu20.04compliant
+    ${{ else }}:
+      vmImage: ubuntu-latest
+
+  workspace:
+    clean: outputs
+
+  variables:
+    configuration: Debug
+
+  steps:
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-windows-$(Configuration)
+
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+    parameters:
+      ArtifactName: binaries-linux-ubuntu-$(Configuration)
+
+  # Simulate DeploymentItem by copying the Linux binaries
+  - task: CopyFiles@2
+    displayName: Setup Linux binaries for tests
+    inputs:
+      sourceFolder: $(Build.StagingDirectory)/binaries-linux-ubuntu-$(Configuration)/ClrInstrumentationEngine/
+      targetFolder: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/$(TargetFrameworkFolder)/
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET sdk'
+    inputs:
+      version: $(NetSdkVersion)
+      includePreviewVersions: true
+      installationPath: $(Agent.TempDirectory)/dotnet
+
+  # Environment variable used by tests
+  - bash: |
+      echo "##vso[task.setvariable variable=DOTNET_EXE]$(Agent.TempDirectory)/dotnet/dotnet"
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Tests: InstrEngineTests.dll'
+    inputs:
+      command: test
+      workingDirectory: $(Agent.TempDirectory)/dotnet
+      arguments: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/$(TargetFrameworkFolder)/InstrEngineTests.dll
+      testRunTitle: Linux Nagler Tests
+      publishTestResults: true
+    condition: succeededOrFailed()

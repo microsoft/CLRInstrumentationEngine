@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+// This file is only compiled for net70
 namespace InstrEngineTests
 {
     [TestClass]
@@ -27,7 +29,7 @@ namespace InstrEngineTests
             Context = context;
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RefStructWithRefField_Load()
         {
@@ -37,7 +39,7 @@ namespace InstrEngineTests
                 "RefStructsTest_RefStructWithRefField_Load.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefField()
         {
@@ -47,7 +49,7 @@ namespace InstrEngineTests
                 "RefStructsTest_Create_RefField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefStructField()
         {
@@ -57,7 +59,7 @@ namespace InstrEngineTests
                 "RefStructsTest_Create_RefStructField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_TypedReferenceRefField()
         {
@@ -67,7 +69,7 @@ namespace InstrEngineTests
                 "RefStructsTest_Create_TypedReferenceRefField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Casting_Scenarios()
         {
@@ -77,7 +79,7 @@ namespace InstrEngineTests
                 "RefStructsTest_Casting_Scenarios.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RecognizedOpCodeSequences_Scenarios()
         {
@@ -87,7 +89,7 @@ namespace InstrEngineTests
                 "RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Inlining_Behavior()
         {

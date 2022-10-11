@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Runtime.InteropServices;
 
 namespace InstrEngineTests
 {
@@ -21,6 +22,9 @@ namespace InstrEngineTests
     [DeploymentItem(PathUtils.NaglerInstrumentationConfigX86BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX64BinPath)]
     [DeploymentItem(PathUtils.NaglerInstrumentationMethodX86BinPath)]
+    [DeploymentItem(PathUtils.LinuxInstrumentationEngineX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationConfigX64BinPath)]
+    [DeploymentItem(PathUtils.LinuxNaglerInstrumentationMethodX64BinPath)]
     public class TestAddInstruction
     {
         private static TestContext Context;
@@ -31,7 +35,7 @@ namespace InstrEngineTests
             Context = context;
         }
 
-        [TestMethod]
+        [WindowsTestMethod] // because of x86
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_IfTest_Debug()
         {
@@ -71,7 +75,7 @@ namespace InstrEngineTests
                 "AddBranchTargets_SwitchTest.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod] // because of x86
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ForTest_Debug()
         {

@@ -22,7 +22,7 @@ set(src_files
 )
 
 add_lib(${PROJECT_NAME}
-    STATIC
+    SHARED
     false # use_pal
     false # use_redefines
     true # hide_symbols
@@ -49,7 +49,6 @@ target_link_libraries(
     stdc++
     ${LIBXML2_LIBRARIES}
     Common.Lib
-    LibXml2
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -61,3 +60,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
         "-framework Security"
     )
 endif()
+
+configure_file(
+    ${REPOSITORY_ROOT}/src/Tests/InstrEngineTests/NaglerInstrumentationMethod/LinuxNaglerInstrumentationMethod.xml 
+    ${CMAKE_INSTALL_PREFIX}/LinuxNaglerInstrumentationMethod.xml
+    COPYONLY)
