@@ -189,13 +189,19 @@ namespace InstrEngineTests
 
             psi.EnvironmentVariables.Add(TestOutputEnvName, PathUtils.GetAssetsPath());
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 psi.EnvironmentVariables.Add(
                     is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
                     Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
             }
-            else // Linux
+#if NETCOREAPP
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.Error.WriteLine($"{OSPlatform.FreeBSD:G} is not supported.");
+            }
+#endif
+            else
             {
                 psi.EnvironmentVariables.Add(
                     HostConfig64PathEnvName,
