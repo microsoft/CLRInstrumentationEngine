@@ -44,7 +44,7 @@ jobs:
       targetFolder: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/$(TargetFrameworkFolder)/
 
   - task: UseDotNet@2
-    displayName: 'Use .NET ${{ variables.NetSdkVersion }} sdk'
+    displayName: 'Use .NET $(NetSdkVersion) sdk'
     inputs:
       version: $(NetSdkVersion)
       includePreviewVersions: true
