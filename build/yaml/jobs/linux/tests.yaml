@@ -3,9 +3,16 @@
 
 # Job Template: Test Linux Binaries
 
+parameters:
+  MatrixStrategy: {}
+
 jobs:
 - job: Test_Linux_Binaries
   displayName: Linux Tests
+
+  strategy:
+    matrix:
+      ${{ insert }}: ${{ parameters.MatrixStrategy }}
 
   pool:
     ${{ if eq(variables['System.TeamProject'], 'devdiv') }}:
@@ -21,11 +28,6 @@ jobs:
     configuration: Debug
 
   steps:
-#  - download: current
-#    patterns: |
-#      binaries-windows-$(Configuration)/AnyCPU/**
-#      binaries-linux-ubuntu-$(Configuration)/ClrInstrumentationEngine/**
-
   - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
@@ -36,15 +38,15 @@ jobs:
 
   # Simulate DeploymentItem by copying the Linux binaries
   - task: CopyFiles@2
-    displayName: Setup Linux binaries for tests 
+    displayName: Setup Linux binaries for tests
     inputs:
       sourceFolder: $(Build.StagingDirectory)/binaries-linux-ubuntu-$(Configuration)/ClrInstrumentationEngine/
-      targetFolder: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/net70/
+      targetFolder: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/$(TargetFrameworkFolder)/
 
   - task: UseDotNet@2
-    displayName: 'Use .NET 7 sdk'
+    displayName: 'Use .NET ${{ variables.NetSdkVersion }} sdk'
     inputs:
-      version: 7.0.x
+      version: $(NetSdkVersion)
       includePreviewVersions: true
       installationPath: $(Agent.TempDirectory)/dotnet
 
@@ -56,10 +58,8 @@ jobs:
     displayName: 'Run Tests: InstrEngineTests.dll'
     inputs:
       command: test
-      workingDirectory: $(Agent.TempDirectory)/dotnet 
-      arguments: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/net70/InstrEngineTests.dll
+      workingDirectory: $(Agent.TempDirectory)/dotnet
+      arguments: $(Build.StagingDirectory)/binaries-windows-$(Configuration)/AnyCPU/$(TargetFrameworkFolder)/InstrEngineTests.dll
       testRunTitle: Linux Nagler Tests
       publishTestResults: true
     condition: succeededOrFailed()
-
-  #- script: $(Agent.TempDirectory)/dotnet $(Pipeline.Workspace)/binaries-windows-Debug/AnyCPU/net70/InstrEngineTests.dll

@@ -29,105 +29,70 @@ namespace InstrEngineTests
             Context = context;
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RefStructWithRefField_Load()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_RefStructWithRefField_Load.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefField()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_Create_RefField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_RefStructField()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_Create_RefStructField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Create_TypedReferenceRefField()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_Create_TypedReferenceRefField.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Casting_Scenarios()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_Casting_Scenarios.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_RecognizedOpCodeSequences_Scenarios()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
                 "RefStructsTest_RecognizedOpCodeSequences_Scenarios.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod]
         [Timeout(TestConstants.TestTimeout)]
         public void TestRefStructs_Validate_Inlining_Behavior()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                Assert.Inconclusive("RefStructs tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "RefStructsTests_Release_x64",
