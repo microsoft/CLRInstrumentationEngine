@@ -35,15 +35,10 @@ namespace InstrEngineTests
             Context = context;
         }
 
-        [TestMethod]
+        [WindowsTestMethod] // because of x86
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_IfTest_Debug()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Assert.Inconclusive("x86 tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "BasicManagedTests_Debug_x86",
@@ -80,15 +75,10 @@ namespace InstrEngineTests
                 "AddBranchTargets_SwitchTest.xml");
         }
 
-        [TestMethod]
+        [WindowsTestMethod] // because of x86
         [Timeout(TestConstants.TestTimeout)]
         public void AddNop_ForTest_Debug()
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Assert.Inconclusive("x86 tests are only available on Windows");
-            }
-
             ProfilerHelpers.LaunchAppAndCompareResult(
                 TestParameters.FromContext(Context),
                 "BasicManagedTests_Debug_x86",

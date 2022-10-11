@@ -195,7 +195,13 @@ namespace InstrEngineTests
                     is32bitTest ? HostConfig32PathEnvName : HostConfig64PathEnvName,
                     Path.Combine(PathUtils.GetAssetsPath(), string.Format(CultureInfo.InvariantCulture, "NaglerInstrumentationMethod_{0}.xml", bitnessSuffix)));
             }
-            else // Linux
+#if NETCOREAPP
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+            {
+                Console.Error.WriteLine($"{OSPlatform.FreeBSD:G} is not supported.");
+            }
+#endif
+            else
             {
                 psi.EnvironmentVariables.Add(
                     HostConfig64PathEnvName,
