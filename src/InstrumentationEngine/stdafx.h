@@ -67,8 +67,8 @@ using namespace ATL;
 #include "../Common.Headers/tstring.h"
 #include "../Common.Headers/CriticalSectionHolder.h"
 #include "../Common.Headers/banned.h"
+#include "../Common.Headers/Macros.h"
 
-#include "../Common.Lib/Macros.h"
 #include "../Common.Lib/refcount.h"
 #include "../Common.Lib/ImplQueryInterface.h"
 #include "../Common.Lib/XmlNode.h"

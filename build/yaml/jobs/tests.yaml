@@ -36,5 +36,13 @@ jobs:
           Platform: 'AnyCPU'
           RunSettingsFile: 'x64.runsettings'
 
-# Linux Binaries (TBD)
-#- template: linux/tests.yaml
+# Test Linux Binaries
+- template: linux/tests.yaml
+  parameters:
+    MatrixStrategy:
+      NET_Next:
+        TargetFrameworkFolder: net70
+        NetSdkVersion: 7.x
+      NET_LTS:
+        TargetFrameworkFolder: net60
+        NetSdkVersion: 6.x

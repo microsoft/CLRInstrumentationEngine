@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "NaglerInstrumentMethodEntry.h"
 #include "stdafx.h"
+#include "NaglerInstrumentMethodEntry.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :
@@ -18,7 +18,7 @@ private:
     static const WCHAR TestScriptFolder[];
     static const WCHAR IsRejitEnvName[];
 
-    unordered_map<std::wstring, CorElementType> m_typeMap;
+    unordered_map<tstring, CorElementType> m_typeMap;
 
     vector<shared_ptr<CInstrumentMethodEntry>> m_instrumentMethodEntries;
 
@@ -29,7 +29,7 @@ private:
 
     shared_ptr<CInjectAssembly> m_spInjectAssembly;
 
-    std::wstring m_strBinaryDir;
+    tstring m_strBinaryDir;
 
     CComPtr<IProfilerManager> m_pProfilerManager;
     CComPtr<IProfilerStringManager> m_pStringManager;
@@ -51,27 +51,27 @@ public:
 public:
     CInstrumentationMethod() : m_typeMap
     ({
-        { L"System.Boolean", ELEMENT_TYPE_BOOLEAN },
-        { L"System.Char", ELEMENT_TYPE_CHAR },
+        { _T("System.Boolean"), ELEMENT_TYPE_BOOLEAN },
+        { _T("System.Char"), ELEMENT_TYPE_CHAR },
 
-        { L"System.SByte", ELEMENT_TYPE_I1 },
-        { L"System.Int16", ELEMENT_TYPE_I2 },
-        { L"System.Int32", ELEMENT_TYPE_I4 },
-        { L"System.Int64", ELEMENT_TYPE_I8 },
+        { _T("System.SByte"), ELEMENT_TYPE_I1 },
+        { _T("System.Int16"), ELEMENT_TYPE_I2 },
+        { _T("System.Int32"), ELEMENT_TYPE_I4 },
+        { _T("System.Int64"), ELEMENT_TYPE_I8 },
 
-        { L"System.Byte", ELEMENT_TYPE_U1 },
-        { L"System.UInt16", ELEMENT_TYPE_U2 },
-        { L"System.Unt32", ELEMENT_TYPE_U4 },
-        { L"System.Unt64", ELEMENT_TYPE_U8 },
+        { _T("System.Byte"), ELEMENT_TYPE_U1 },
+        { _T("System.UInt16"), ELEMENT_TYPE_U2 },
+        { _T("System.Unt32"), ELEMENT_TYPE_U4 },
+        { _T("System.Unt64"), ELEMENT_TYPE_U8 },
 
-        { L"System.IntPtr", ELEMENT_TYPE_I },
-        { L"System.UIntPtr", ELEMENT_TYPE_U },
+        { _T("System.IntPtr"), ELEMENT_TYPE_I },
+        { _T("System.UIntPtr"), ELEMENT_TYPE_U },
 
-        { L"System.Single", ELEMENT_TYPE_R4 },
-        { L"System.Double", ELEMENT_TYPE_R8 },
+        { _T("System.Single"), ELEMENT_TYPE_R4 },
+        { _T("System.Double"), ELEMENT_TYPE_R8 },
 
-        { L"System.String", ELEMENT_TYPE_STRING },
-        { L"System.Object", ELEMENT_TYPE_OBJECT },
+        { _T("System.String"), ELEMENT_TYPE_STRING },
+        { _T("System.Object"), ELEMENT_TYPE_OBJECT },
     }),
     m_bExceptionTrackingEnabled(false),
     m_bTestInstrumentationMethodLogging(false),
@@ -100,71 +100,71 @@ public:
 
     // IInstrumentationMethod
 public:
-    virtual HRESULT STDMETHODCALLTYPE Initialize(_In_ IProfilerManager* pProfilerManager);
+    virtual HRESULT STDMETHODCALLTYPE Initialize(_In_ IProfilerManager* pProfilerManager) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnAppDomainCreated(
-        _In_ IAppDomainInfo *pAppDomainInfo);
+        _In_ IAppDomainInfo *pAppDomainInfo) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnAppDomainShutdown(
-        _In_ IAppDomainInfo *pAppDomainInfo);
+        _In_ IAppDomainInfo *pAppDomainInfo) override;
 
-    virtual HRESULT STDMETHODCALLTYPE OnAssemblyLoaded(_In_ IAssemblyInfo* pAssemblyInfo);
-    virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded(_In_ IAssemblyInfo* pAssemblyInfo);
+    virtual HRESULT STDMETHODCALLTYPE OnAssemblyLoaded(_In_ IAssemblyInfo* pAssemblyInfo) override;
+    virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded(_In_ IAssemblyInfo* pAssemblyInfo) override;
 
-    virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded(_In_ IModuleInfo* pModuleInfo);
-    virtual HRESULT STDMETHODCALLTYPE OnModuleUnloaded(_In_ IModuleInfo* pModuleInfo);
+    virtual HRESULT STDMETHODCALLTYPE OnModuleLoaded(_In_ IModuleInfo* pModuleInfo) override;
+    virtual HRESULT STDMETHODCALLTYPE OnModuleUnloaded(_In_ IModuleInfo* pModuleInfo) override;
 
-    virtual HRESULT STDMETHODCALLTYPE OnShutdown();
+    virtual HRESULT STDMETHODCALLTYPE OnShutdown() override;
 
-    virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument);
+    virtual HRESULT STDMETHODCALLTYPE ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument) override;
 
-    virtual HRESULT STDMETHODCALLTYPE BeforeInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+    virtual HRESULT STDMETHODCALLTYPE BeforeInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit) override;
 
-    virtual HRESULT STDMETHODCALLTYPE InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+    virtual HRESULT STDMETHODCALLTYPE InstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit) override;
 
-    virtual HRESULT STDMETHODCALLTYPE OnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit) { return S_OK; }
+    virtual HRESULT STDMETHODCALLTYPE OnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit) override { return S_OK; }
 
-    virtual HRESULT STDMETHODCALLTYPE AllowInlineSite(_In_ IMethodInfo* pMethodInfoInlinee, _In_ IMethodInfo* pMethodInfoCaller, _Out_ BOOL* pbAllowInline);
+    virtual HRESULT STDMETHODCALLTYPE AllowInlineSite(_In_ IMethodInfo* pMethodInfoInlinee, _In_ IMethodInfo* pMethodInfoCaller, _Out_ BOOL* pbAllowInline) override;
 
 public:
     virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherEnter(
         _In_ IMethodInfo* pMethodInfo,
         _In_ UINT_PTR   objectId
-        );
+        ) override;
 
-    virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherLeave();
+    virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchCatcherFound(
         _In_ IMethodInfo* pMethodInfo
-        );
+        ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterEnter(
         _In_ IMethodInfo* pMethodInfo
-        );
+        ) override;
 
-    virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterLeave();
+    virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionEnter(
         _In_ IMethodInfo* pMethodInfo
-        );
+        ) override;
 
-    virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionLeave();
+    virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionThrown(
         _In_ UINT_PTR thrownObjectId
-        );
+        ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyEnter(
         _In_ IMethodInfo* pMethodInfo
-        );
+        ) override;
 
-    virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyLeave();
+    virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionEnter(
         _In_ IMethodInfo* pMethodInfo
-        );
+        ) override;
 
-    virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionLeave();
+    virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionLeave() override;
 
 private:
     HRESULT LoadTestScript();
@@ -181,7 +181,7 @@ private:
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
 
-    static DWORD WINAPI InstrumentationMethodThreadProc(
+    static DWORD WINAPI LoadInstrumentationMethodXml(
         _In_  LPVOID lpParameter
         );
 

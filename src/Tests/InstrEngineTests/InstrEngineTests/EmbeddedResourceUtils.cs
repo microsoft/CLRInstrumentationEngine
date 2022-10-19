@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace InstrEngineTests
 {
-
+#pragma warning disable CA1508 // Avoid dead conditional code
     /// <summary>
     /// A temporary file that was extracted from an embedded resource. The file will
     /// be placed in a folder under the test's profile directory.
@@ -96,6 +96,7 @@ namespace InstrEngineTests
                 {
                     return null;
                 }
+
                 using (stream)
                 {
                     DirectoryInfo resourceDirectory = new DirectoryInfo(PathUtils.GetResourcesFolder());
@@ -147,7 +148,7 @@ namespace InstrEngineTests
 
             var fullPath = FormattableString.Invariant($"{resourcesPath}.{fileName}");
 
-            var stream = typeof(EmbeddedResourceUtils).Assembly.GetManifestResourceStream(fullPath);
+            Stream stream = typeof(EmbeddedResourceUtils).Assembly.GetManifestResourceStream(fullPath);
 
             if (required)
             {
@@ -157,4 +158,5 @@ namespace InstrEngineTests
             return stream;
         }
     }
+#pragma warning restore CA1508 // Avoid dead conditional code
 }

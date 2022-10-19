@@ -94,8 +94,6 @@ macro (build_init build_language build_type)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/empty)
     include_directories(${REPOSITORY_ROOT}/src/unix/inc/winsdk)
     include_directories(${REPOSITORY_ROOT}/src/InstrumentationEngine.Api)
-    include_directories(${CORECLR_PAL_ROOT}/inc)
-    include_directories(${CORECLR_PAL_ROOT}/inc/rt)
     include_directories(${GENERATED_INCLUDE_DIR})
     include_directories(${REPOSITORY_ROOT}/inc/clr/extra)
 
@@ -166,14 +164,18 @@ endmacro (build_init)
 
 
 # projects that depend on the PAL.
-macro(add_lib lib_name type use_redefines hide_symbols)
+macro(add_lib lib_name type use_pal use_redefines hide_symbols)
     add_library(${lib_name}
         ${type}
         ${ARGN})
 
-    if (${use_redefines})
-        add_dependencies(${lib_name} pal_redefines_header)
-    endif (${use_redefines})
+    if (${use_pal})
+        target_include_directories(${lib_name} PUBLIC ${CORECLR_PAL_ROOT}/inc)
+        target_include_directories(${lib_name} PUBLIC ${CORECLR_PAL_ROOT}/inc/rt)
+        if (${use_redefines})
+            add_dependencies(${lib_name} pal_redefines_header)
+        endif (${use_redefines})
+    endif (${use_pal})
 
     if (${hide_symbols})
         set_property(TARGET ${lib_name} APPEND_STRING PROPERTY COMPILE_FLAGS "-fvisibility=hidden")
@@ -182,13 +184,17 @@ endmacro(add_lib lib_name type use_redefines hide_symbols sources)
 
 # Adds an executable and optionally adds dependency on generated file pal_redefines.h for
 # projects that depend on the PAL.
-macro(add_exe exe_name use_redefines)
+macro(add_exe exe_name use_pal use_redefines)
     add_executable(${exe_name}
         ${ARGN})
 
-    if (${use_redefines})
-        add_dependencies(${exe_name} pal_redefines_header)
-    endif (${use_redefines})
+    if (${use_pal})
+        target_include_directories(${exe_name} PUBLIC ${CORECLR_PAL_ROOT}/inc)
+        target_include_directories(${exe_name} PUBLIC ${CORECLR_PAL_ROOT}/inc/rt)
+        if (${use_redefines})
+            add_dependencies(${exe_name} pal_redefines_header)
+        endif (${use_redefines})
+    endif (${use_pal})
 endmacro(add_exe exe_name use_redefines sources)
 
 # Adds install target
@@ -366,6 +372,7 @@ add_subdirectory(InstrumentationEngine.Api)
 add_subdirectory(InstrumentationEngine.Lib)
 add_subdirectory(InstrumentationEngine.Method)
 add_subdirectory(InstrumentationEngine)
+add_subdirectory(Tests/InstrEngineTests/NaglerInstrumentationMethod)
 
 # enable_testing()
 # add_subdirectory(Tests/CommonLibTests)

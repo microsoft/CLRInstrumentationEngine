@@ -25,6 +25,7 @@ set(src_files
 
 add_exe(
     ${PROJECT_NAME}
+    true # use_pal: the PAL is used anyway because we link to InstrumentationEngine.Lib
     true # use_redefines
     ${src_files}
     )

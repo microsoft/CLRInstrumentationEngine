@@ -6,6 +6,7 @@
 parameters:
   ArtifactName: ''
   ItemPattern: '**'
+  DownloadPath: $(Build.ArtifactStagingDirectory)
 
 steps:
 # download Artifacts
@@ -14,5 +15,5 @@ steps:
   inputs:
     downloadType: single
     artifactName: ${{ parameters.ArtifactName }}
-    downloadPath: $(Build.ArtifactStagingDirectory)
+    downloadPath: ${{ parameters.DownloadPath }}
     itemPattern: ${{ parameters.ItemPattern }}

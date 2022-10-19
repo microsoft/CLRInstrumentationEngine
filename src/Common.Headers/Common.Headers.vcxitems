@@ -16,6 +16,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Macros.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)banned.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CriticalSectionHolder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)InitOnce.h" />

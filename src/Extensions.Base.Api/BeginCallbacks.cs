@@ -45,7 +45,7 @@ namespace Microsoft.Diagnostics.Instrumentation.Extensions.Base
 
 }
 
-//Underscore _System assembly will be treated as regular System namespace by ImportModule function of Intstrumentation Engine.
+//Underscore _System assembly will be treated as regular System namespace by ImportModule function of Instrumentation Engine.
 //This is done to avoid conflicts during compilation
 namespace _System.Diagnostics
 {

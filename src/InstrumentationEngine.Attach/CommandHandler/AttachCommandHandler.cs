@@ -17,6 +17,7 @@ using static System.FormattableString;
 
 namespace Microsoft.InstrumentationEngine
 {
+#pragma warning disable CA1508 // Avoid dead conditional code
     /// <summary>
     /// Intermediate class used to track ConfigurationSources when generating an EngineConfiguration.
     /// </summary>
@@ -55,7 +56,8 @@ namespace Microsoft.InstrumentationEngine
         #endregion
 
         #region Methods
-        private static int Attach(int processId,
+#pragma warning disable CA1506 // Avoid excessive class coupling
+        private static int AttachInstrumentationEngine(int processId,
             FileInfo[] configs,
             LoggingFlags logLevel,
             LoggingFlags logFileLevel,
@@ -100,7 +102,14 @@ namespace Microsoft.InstrumentationEngine
                 #region Parse Configuration Sources
 
                 // Read schema file
-                using (Stream? schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(schemaResourceName))
+                Stream? schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(schemaResourceName);
+                if (schemaStream == null)
+                {
+                    WriteError(Invariant($"Unable to open manifest resource '{schemaResourceName}'."));
+                    return ExitCodeFailure;
+                }
+
+                using (schemaStream)
                 using (XmlReader schemaReader = XmlReader.Create(schemaStream, new XmlReaderSettings() { XmlResolver = null, DtdProcessing = DtdProcessing.Prohibit }))
                 {
                     // Create reader settings that conducts validation
@@ -110,7 +119,7 @@ namespace Microsoft.InstrumentationEngine
 
                     // Read configuration source file
                     // XmlReader handles filepaths as URI and escapes widechars so we convert it to a stream first.
-                    using (var stream = new StreamReader(sourceInfo.ConfigSourceFilePath))
+                    using (StreamReader stream = new StreamReader(sourceInfo.ConfigSourceFilePath))
                     using (XmlReader reader = XmlReader.Create(stream, readerSettings))
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(InstrumentationConfigurationSources));
@@ -236,7 +245,7 @@ namespace Microsoft.InstrumentationEngine
 
             XmlSerializer engineConfigSerializer = new XmlSerializer(typeof(InstrumentationEngineConfiguration));
             byte[] bytes;
-            using (var memStream = new MemoryStream())
+            using (MemoryStream memStream = new MemoryStream())
             {
                 engineConfigSerializer.Serialize(memStream, configuration);
                 bytes = memStream.ToArray();
@@ -289,6 +298,7 @@ namespace Microsoft.InstrumentationEngine
             WriteMessage($"Successfully attached the engine.");
             return ExitCodeSuccess;
         }
+#pragma warning restore CA1506 // Avoid excessive class coupling
 
         private static void WriteError(string message)
         {
@@ -468,7 +478,7 @@ namespace Microsoft.InstrumentationEngine
                 EngineLogFilePathOption()
             };
 
-            command.Handler = System.CommandLine.Invocation.CommandHandler.Create((AttachDelegate)Attach);
+            command.Handler = System.CommandLine.Invocation.CommandHandler.Create((AttachDelegate)AttachInstrumentationEngine);
             return command;
         }
 
@@ -536,4 +546,5 @@ namespace Microsoft.InstrumentationEngine
             };
         #endregion
     }
+#pragma warning restore CA1508 // Avoid dead conditional code
 }

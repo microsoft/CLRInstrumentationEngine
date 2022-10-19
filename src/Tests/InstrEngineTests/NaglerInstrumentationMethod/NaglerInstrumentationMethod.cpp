@@ -10,35 +10,58 @@
 #include "Util.h"
 #include "InstrumentationEngineString.h"
 #include "InstrStr.h"
+#include "SystemUtils.h"
 
-const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = L"Nagler_TestOutputPath";
-const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = L"Nagler_TestScript";
-const WCHAR CInstrumentationMethod::TestScriptFolder[] = L"TestScripts";
-const WCHAR CInstrumentationMethod::IsRejitEnvName[] = L"Nagler_IsRejit";
+#include <type_traits>
+
+const WCHAR CInstrumentationMethod::TestOutputPathEnvName[] = _T("Nagler_TestOutputPath");
+const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = _T("Nagler_TestScript");
+const WCHAR CInstrumentationMethod::TestScriptFolder[] = _T("TestScripts");
+const WCHAR CInstrumentationMethod::IsRejitEnvName[] = _T("Nagler_IsRejit");
+
+
+void AssertLogFailure(_In_ const WCHAR* wszError, ...)
+{
+#ifdef PLATFORM_UNIX
+    // Attempting to interpret the var args is very difficult
+    // cross-plat without a PAL. We should see about removing
+    // the dependency on this in the Common.Lib
+    string str;
+    HRESULT hr = SystemString::Convert(wszError, str);
+    if (!SUCCEEDED(hr))
+    {
+        str = "Unable to convert wchar string to char string";
+    }
+    AssertFailed(str.c_str());
+#else
+    // Since this is a test libary, we will print to standard error and fail
+    va_list argptr;
+    va_start(argptr, wszError);
+    vfwprintf(stderr, wszError, argptr);
+#endif
+    throw "Assert failed";
+}
 
 
 // Convenience macro for defining strings.
 #define InstrStr(_V) CInstrumentationEngineString _V(m_pStringManager)
 
-void AssertLogFailure(_In_ const WCHAR* wszError, ...)
-{
-    // Since this is a test libary, we will print to standard error and fail
-    va_list argptr;
-    va_start(argptr, wszError);
-    vfwprintf(stderr, wszError, argptr);
-    throw "Assert failed";
-}
-
 ILOpcodeInfo ilOpcodeInfo[] =
 {
+#ifdef PLATFORM_UNIX
+#define OPDEF(ord, code, name,  opcodeLen, operandLen, type, alt, flags, pop, push) \
+    { name, (DWORD)opcodeLen, (DWORD)operandLen, type, alt, flags, (DWORD)pop, (DWORD)push},
+#else
 #define OPDEF(ord, code, name,  opcodeLen, operandLen, type, alt, flags, pop, push) \
     { name, (DWORD)opcodeLen, (DWORD)operandLen, ##type, alt, flags, (DWORD)pop, (DWORD)push},
+#endif
 #include "ILOpcodes.h"
 #undef OPDEF
 };
 
 struct ComInitializer
 {
+    #ifndef PLATFORM_UNIX
     HRESULT _hr;
     ComInitializer(DWORD mode = COINIT_APARTMENTTHREADED)
     {
@@ -51,6 +74,7 @@ struct ComInitializer
             CoUninitialize();
         }
     }
+    #endif
 };
 
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
@@ -59,15 +83,21 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     m_pProfilerManager = pProfilerManager;
     IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
 
+#ifdef PLATFORM_UNIX
+    DWORD retVal = LoadInstrumentationMethodXml(this);
+#else
+    // On Windows, xml reading is done in a single-threaded apartment using 
+    // COM, so we need to spin up a new thread for it.
     CHandle hConfigThread;
-    hConfigThread.Attach(CreateThread(NULL, 0, InstrumentationMethodThreadProc, this, 0, NULL));
-
+    hConfigThread.Attach(CreateThread(NULL, 0, LoadInstrumentationMethodXml, this, 0, NULL));
     DWORD retVal = WaitForSingleObject(hConfigThread, 15000);
+#endif
 
     if (m_bTestInstrumentationMethodLogging)
     {
         CComPtr<IProfilerManagerLogging> spGlobalLogger;
-        CComQIPtr<IProfilerManager4> pProfilerManager4 = pProfilerManager;
+        CComPtr<IProfilerManager4> pProfilerManager4;
+        IfFailRet(pProfilerManager->QueryInterface(&pProfilerManager4));
         pProfilerManager4->GetGlobalLoggingInstance(&spGlobalLogger);
         spGlobalLogger->LogDumpMessage(_T("<InstrumentationMethodLog>"));
 
@@ -102,7 +132,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
 // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
 // as that would screw up the com state for the application's thread. Spin up a new thread to allow the instrumentation
 // method to co create a free threaded version of msxml on a thread that it owns to avoid this.
-DWORD WINAPI CInstrumentationMethod::InstrumentationMethodThreadProc(
+DWORD WINAPI CInstrumentationMethod::LoadInstrumentationMethodXml(
     _In_  LPVOID lpParameter
 )
 {
@@ -121,30 +151,19 @@ HRESULT CInstrumentationMethod::LoadTestScript()
 {
     HRESULT hr = S_OK;
 
-    WCHAR testScript[MAX_PATH] = { 0 };
-    DWORD dwRes = GetEnvironmentVariableW(TestScriptFileEnvName, testScript, MAX_PATH);
-    if (dwRes == 0)
-    {
-        ATLASSERT(!L"Failed to get testScript file name");
-        return E_FAIL;
-    }
+    tstring testScript;
+    IfFailRet(NaglerSystemUtils::GetEnvVar(TestScriptFileEnvName, testScript));
+   
+    IfFailRet(NaglerSystemUtils::GetEnvVar(TestOutputPathEnvName, m_strBinaryDir));
 
-    WCHAR testOutputPath[MAX_PATH] = { 0 };
-    dwRes = GetEnvironmentVariableW(TestOutputPathEnvName, testOutputPath, MAX_PATH);
-    if (dwRes == 0)
-    {
-        ATLASSERT(!L"Failed to get test path");
-        return E_FAIL;
-    }
-    m_strBinaryDir = testOutputPath;
     CComPtr<CXmlDocWrapper> pDocument;
     pDocument.Attach(new CXmlDocWrapper());
 
-    hr = pDocument->LoadFile(testScript);
+    hr = pDocument->LoadFile(testScript.c_str());
     if (hr != S_OK)
     {
-        ATLASSERT(!L"Failed to load test configuration");
-        return -1;
+        AssertFailed("Failed to load test configuration");
+        return E_FAIL;
     }
 
     CComPtr<CXmlNode> pDocumentNode;
@@ -153,9 +172,9 @@ HRESULT CInstrumentationMethod::LoadTestScript()
     tstring strDocumentNodeName;
     IfFailRet(pDocumentNode->GetName(strDocumentNodeName));
 
-    if (wcscmp(strDocumentNodeName.c_str(), L"InstrumentationTestScript") != 0)
+    if (wcscmp(strDocumentNodeName.c_str(), _T("InstrumentationTestScript")) != 0)
     {
-        return -1;
+        return E_FAIL;
     }
 
 
@@ -167,32 +186,39 @@ HRESULT CInstrumentationMethod::LoadTestScript()
         tstring strCurrNodeName;
         IfFailRet(pChildNode->GetName(strCurrNodeName));
 
-        if (wcscmp(strCurrNodeName.c_str(), L"InstrumentMethod") == 0)
+        if (wcscmp(strCurrNodeName.c_str(), _T("InstrumentMethod")) == 0)
         {
             IfFailRet(ProcessInstrumentMethodNode(pChildNode));
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"ExceptionTracking") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("ExceptionTracking")) == 0)
         {
             m_bExceptionTrackingEnabled = true;
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"InjectAssembly") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("InjectAssembly")) == 0)
         {
-            shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
-            ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
-            m_spInjectAssembly = spNewInjectAssembly;
+            #ifndef PLATFORM_UNIX
+                shared_ptr<CInjectAssembly> spNewInjectAssembly(new CInjectAssembly());
+                ProcessInjectAssembly(pChildNode, spNewInjectAssembly);
+                m_spInjectAssembly = spNewInjectAssembly;
+            #else
+                AssertFailed("Inject Assembly tests are currently only supported on Windows platforms.");
+            #endif
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"MethodLogging") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("MethodLogging")) == 0)
         {
             m_bTestInstrumentationMethodLogging = true;
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"#comment") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("#comment")) == 0)
         {
             // do nothing
         }
         else
         {
-            ATLASSERT(!L"Invalid configuration. Element should be InstrumentationMethod");
-            return -1;
+            std::string utf8NodeName;
+            SystemString::Convert(strCurrNodeName.c_str(), utf8NodeName);
+            AssertFailed("Invalid configuration. Element should be InstrumentationMethod");
+            AssertFailed(utf8NodeName.c_str());
+            return E_FAIL;
         }
 
         pChildNode = pChildNode->Next();
@@ -205,15 +231,9 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
 {
     HRESULT hr = S_OK;
 
-    WCHAR isRejitEnvValue[MAX_PATH];
-    DWORD dwRes = GetEnvironmentVariableW(IsRejitEnvName, isRejitEnvValue, MAX_PATH);
-    if (dwRes == 0)
-    {
-        ATLASSERT(!L"Failed to get isrejit variable");
-        return E_FAIL;
-    }
-
-    bool rejitAllInstruMethods = (wcscmp(isRejitEnvValue, L"True") == 0);
+    tstring isRejitEnvValue;
+    IfFailRet(NaglerSystemUtils::GetEnvVar(IsRejitEnvName, isRejitEnvValue));
+    bool rejitAllInstruMethods = (wcscmp(isRejitEnvValue.c_str(), _T("True")) == 0);
 
     tstring moduleName;
     tstring methodName;
@@ -235,45 +255,45 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
         tstring strCurrNodeName;
         IfFailRet(pChildNode->GetName(strCurrNodeName));
 
-        if (wcscmp(strCurrNodeName.c_str(), L"ModuleName") == 0)
+        if (wcscmp(strCurrNodeName.c_str(), _T("ModuleName")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
             IfFailRet(pChildValue->GetStringValue(moduleName));
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"MethodName") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("MethodName")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
             IfFailRet(pChildValue->GetStringValue(methodName));
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"Instructions") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("Instructions")) == 0)
         {
             tstring baselineAttr;
-            pChildNode->GetAttribute(L"Baseline", baselineAttr);
+            pChildNode->GetAttribute(_T("Baseline"), baselineAttr);
             isReplacement = !baselineAttr.empty();
 
             ProcessInstructionNodes(pChildNode, instructions, isReplacement != 0);
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"IsRejit") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("IsRejit")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             tstring nodeValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
             IfFailRet(pChildValue->GetStringValue(nodeValue));
-            bIsRejit = (wcscmp(nodeValue.c_str(), L"True") == 0);
+            bIsRejit = (wcscmp(nodeValue.c_str(), _T("True")) == 0);
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"AddExceptionHandler") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("AddExceptionHandler")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
             tstring nodeValue;
             IfFailRet(pChildValue->GetStringValue(nodeValue));
-            isAddExceptionHandler = (wcscmp(nodeValue.c_str(), L"True") == 0);
+            isAddExceptionHandler = (wcscmp(nodeValue.c_str(), _T("True")) == 0);
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"CorIlMap") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("CorIlMap")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
@@ -281,7 +301,15 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
             tstring varNodeValue;
             IfFailRet(pChildValue->GetStringValue(varNodeValue));
 
-            wstringstream corIlMapString(varNodeValue);
+            // This isn't a great way to do things because it is pretty slow, but there doesn't
+            // seem to be a good cross-platform way of converting strings to integers
+            // that matches the patterns that we are currently using.
+            // We may want to update the xml reader to support using whatever encoding
+            // is used on the system.
+            std::string utf8NodeValue;
+            SystemString::Convert(varNodeValue.c_str(), utf8NodeValue);
+
+            stringstream corIlMapString(utf8NodeValue);
             DWORD oldOffset = 0;
             DWORD newOffset = 0;
 
@@ -294,17 +322,17 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
                 corIlMap.push_back(map);
             }
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"Locals") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("Locals")) == 0)
         {
             ProcessLocals(pChildNode, locals);
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"PointTo") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("PointTo")) == 0)
         {
             std::shared_ptr<CInstrumentMethodPointTo> spPointer(new CInstrumentMethodPointTo());
             spPointTo = spPointer;
             ProcessPointTo(pChildNode, *spPointTo);
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"MakeSingleRet") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("MakeSingleRet")) == 0)
         {
             // Allow the single return instrumentation to execute
             // both before and after the instruction instrumentation.
@@ -317,13 +345,16 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
                 isSingleRetLast = true;
             }
         }
-        else if (wcscmp(strCurrNodeName.c_str(), L"#comment") == 0)
+        else if (wcscmp(strCurrNodeName.c_str(), _T("#comment")) == 0)
         {
             // do nothing. Get next node.
         }
         else
         {
-            ATLASSERT(!L"Invalid configuration. Unknown Element");
+            std::string utf8NodeName;
+            SystemString::Convert(strCurrNodeName.c_str(), utf8NodeName);
+            AssertFailed("Invalid configuration. Unknown Element");
+            AssertFailed(utf8NodeName.c_str());
             return E_FAIL;
         }
 
@@ -333,7 +364,7 @@ HRESULT CInstrumentationMethod::ProcessInstrumentMethodNode(CXmlNode* pNode)
     if ((moduleName.empty()) ||
         (methodName.empty()))
     {
-        ATLASSERT(!L"Invalid configuration. Missing child element");
+        AssertFailed("Invalid configuration. Missing child element");
         return E_FAIL;
     }
 
@@ -375,11 +406,11 @@ HRESULT CInstrumentationMethod::ProcessPointTo(CXmlNode* pNode, CInstrumentMetho
         //<MethodName>MethodToCallInstead</MethodName>
         tstring nodeName;
         IfFailRet(pChildNode->GetName(nodeName));
-        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
+        if (wcscmp(nodeName.c_str(), _T("#comment")) == 0)
         {
             // do nothing, get next node.
         }
-        else if (wcscmp(nodeName.c_str(), L"AssemblyName") == 0)
+        else if (wcscmp(nodeName.c_str(), _T("AssemblyName")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
@@ -387,7 +418,7 @@ HRESULT CInstrumentationMethod::ProcessPointTo(CXmlNode* pNode, CInstrumentMetho
             tstring varNodeValue;
             IfFailRet(pChildValue->GetStringValue(pointTo.m_assemblyName));
         }
-        else if (wcscmp(nodeName.c_str(), L"TypeName") == 0)
+        else if (wcscmp(nodeName.c_str(), _T("TypeName")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
@@ -395,7 +426,7 @@ HRESULT CInstrumentationMethod::ProcessPointTo(CXmlNode* pNode, CInstrumentMetho
             tstring varNodeValue;
             IfFailRet(pChildValue->GetStringValue(pointTo.m_typeName));
         }
-        else if (wcscmp(nodeName.c_str(), L"MethodName") == 0)
+        else if (wcscmp(nodeName.c_str(), _T("MethodName")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
@@ -422,18 +453,18 @@ HRESULT CInstrumentationMethod::ProcessInjectAssembly(CXmlNode* pNode, shared_pt
         //<Target>mscorlib</Target>
         tstring nodeName;
         IfFailRet(pChildNode->GetName(nodeName));
-        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
+        if (wcscmp(nodeName.c_str(), _T("#comment")) == 0)
         {
             // do nothing. Get next node.
         }
-        else if (wcscmp(nodeName.c_str(), L"Target") == 0)
+        else if (wcscmp(nodeName.c_str(), _T("Target")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
 
             IfFailRet(pChildValue->GetStringValue(injectAssembly->m_targetAssemblyName));
         }
-        else if (wcscmp(nodeName.c_str(), L"Source") == 0)
+        else if (wcscmp(nodeName.c_str(), _T("Source")) == 0)
         {
             CComPtr<CXmlNode> pChildValue;
             IfFailRet(pChildNode->GetChildNode(&pChildValue));
@@ -458,20 +489,20 @@ HRESULT CInstrumentationMethod::ProcessLocals(CXmlNode* pNode, vector<CLocalType
     {
         tstring nodeName;
         IfFailRet(pChildNode->GetName(nodeName));
-        if (wcscmp(nodeName.c_str(), L"#comment") == 0)
+        if (wcscmp(nodeName.c_str(), _T("#comment")) == 0)
         {
            // do nothing.
         }
         else
         {
-            if (wcscmp(nodeName.c_str(), L"Local") != 0)
+            if (wcscmp(nodeName.c_str(), _T("Local")) != 0)
             {
-                ATLASSERT(!L"Invalid element");
+                AssertFailed("Invalid element");
                 return E_UNEXPECTED;
             }
 
             tstring typeName;
-            IfFailRet(pChildNode->GetAttribute(L"Type", typeName));
+            IfFailRet(pChildNode->GetAttribute(_T("Type"), typeName));
 
             locals.push_back(CLocalType(typeName));
         }
@@ -493,11 +524,11 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
         tstring currNodeName;
         IfFailRet(pChildNode->GetName(currNodeName));
 
-        if (wcscmp(currNodeName.c_str(), L"#comment") == 0)
+        if (wcscmp(currNodeName.c_str(), _T("#comment")) == 0)
         {
             // do nothing
         }
-        else if (wcscmp(currNodeName.c_str(), L"Instruction") == 0)
+        else if (wcscmp(currNodeName.c_str(), _T("Instruction")) == 0)
         {
             CComPtr<CXmlNode> pInstructionChildNode;
             IfFailRet(pChildNode->GetChildNode(&pInstructionChildNode));
@@ -517,7 +548,7 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                 tstring currInstructionNodeName;
                 IfFailRet(pInstructionChildNode->GetName(currInstructionNodeName));
 
-                if (wcscmp(currInstructionNodeName.c_str(), L"Opcode") == 0)
+                if (wcscmp(currInstructionNodeName.c_str(), _T("Opcode")) == 0)
                 {
                     CComPtr<CXmlNode> pChildValue;
                     IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
@@ -528,7 +559,7 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                     IfFailRet(ConvertOpcode(strOpcode.c_str(), &opcode, &opcodeInfo));
                     bOpcodeSet = true;
                 }
-                else if (wcscmp(currInstructionNodeName.c_str(), L"Offset") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), _T("Offset")) == 0)
                 {
                     CComPtr<CXmlNode> pChildValue;
                     IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
@@ -538,11 +569,11 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                     dwOffset = _wtoi(strOffset.c_str());
                     bOffsetSet = true;
                 }
-                else if (wcscmp(currInstructionNodeName.c_str(), L"Operand") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), _T("Operand")) == 0)
                 {
                     if (opcodeInfo.m_operandLength == 0)
                     {
-                        ATLASSERT(!L"Invalid configuration. Opcode should not have an operand");
+                        AssertFailed("Invalid configuration. Opcode should not have an operand");
                     }
                     CComPtr<CXmlNode> pChildValue;
                     IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
@@ -552,17 +583,20 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                     operand = _wtoi64(strOperand.c_str());
 
                     // For now, only support integer operands
-                    ATLASSERT(opcodeInfo.m_type == ILOperandType_None ||
+                    if (!(opcodeInfo.m_type == ILOperandType_None ||
                         opcodeInfo.m_type == ILOperandType_Byte ||
                         opcodeInfo.m_type == ILOperandType_Int ||
                         opcodeInfo.m_type == ILOperandType_UShort ||
                         opcodeInfo.m_type == ILOperandType_Long ||
                         opcodeInfo.m_type == ILOperandType_Token
-                        );
+                        ))
+                        {
+                            AssertFailed("Unrecognized opcode");
+                        }
 
 
                 }
-                else if (wcscmp(currInstructionNodeName.c_str(), L"InstrumentationType") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), _T("InstrumentationType")) == 0)
                 {
                     CComPtr<CXmlNode> pChildValue;
                     IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
@@ -570,28 +604,28 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                     tstring strInstrType;
                     IfFailRet(pChildValue->GetStringValue(strInstrType));
 
-                    if (wcscmp(strInstrType.c_str(), L"InsertBefore") == 0)
+                    if (wcscmp(strInstrType.c_str(), _T("InsertBefore")) == 0)
                     {
                         instrType = InsertBefore;
                     }
-                    else if (wcscmp(strInstrType.c_str(), L"InsertAfter") == 0)
+                    else if (wcscmp(strInstrType.c_str(), _T("InsertAfter")) == 0)
                     {
                         instrType = InsertAfter;
                     }
-                    else if (wcscmp(strInstrType.c_str(), L"Replace") == 0)
+                    else if (wcscmp(strInstrType.c_str(), _T("Replace")) == 0)
                     {
                         instrType = Replace;
                     }
-                    else if (wcscmp(strInstrType.c_str(), L"Remove") == 0)
+                    else if (wcscmp(strInstrType.c_str(), _T("Remove")) == 0)
                     {
                         instrType = Remove;
                     }
-                    else if (wcscmp(strInstrType.c_str(), L"RemoveAll") == 0)
+                    else if (wcscmp(strInstrType.c_str(), _T("RemoveAll")) == 0)
                     {
                         instrType = RemoveAll;
                     }
                 }
-                else if (wcscmp(currInstructionNodeName.c_str(), L"RepeatCount") == 0)
+                else if (wcscmp(currInstructionNodeName.c_str(), _T("RepeatCount")) == 0)
                 {
                     CComPtr<CXmlNode> pChildValue;
                     IfFailRet(pInstructionChildNode->GetChildNode(&pChildValue));
@@ -603,7 +637,7 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
                 }
                 else
                 {
-                    ATLASSERT(!L"Invalid configuration. Unknown Element");
+                    AssertFailed("Invalid configuration. Unknown Element");
                     return E_FAIL;
                 }
 
@@ -612,13 +646,13 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
 
             if ( (!isBaseline) && (instrType != Remove) && (instrType != RemoveAll) && (!bOpcodeSet || !bOffsetSet))
             {
-                ATLASSERT(!L"Invalid configuration. Instruction must have an offset");
+                AssertFailed("Invalid configuration. Instruction must have an offset");
                 return E_FAIL;
             }
 
             if (((instrType == Replace) || (instrType == Remove) || (instrType == RemoveAll)) && (dwRepeatCount != 1))
             {
-                ATLASSERT(!L"Invalid configuration. Incorrect repeat count");
+                AssertFailed("Invalid configuration. Incorrect repeat count");
                 return E_FAIL;
             }
 
@@ -627,7 +661,7 @@ HRESULT CInstrumentationMethod::ProcessInstructionNodes(CXmlNode* pNode, vector<
         }
         else
         {
-            ATLASSERT(!L"Invalid configuration. Unknown Element");
+            AssertFailed("Invalid configuration. Unknown Element");
             return E_FAIL;
         }
 
@@ -683,6 +717,8 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
     InstrStr(clrieStrModuleName);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
+// Skip importing modules on non-Windows platforms for now.
+#ifndef PLATFORM_UNIX
     if ((m_spInjectAssembly != nullptr) && (wcscmp(clrieStrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
     {
         CComPtr<IMetaDataDispenserEx> pDisp;
@@ -691,7 +727,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
             IID_IMetaDataDispenserEx, (void **)&pDisp));
 
         CComPtr<IMetaDataImport2> pSourceImport;
-        std::wstring path(m_strBinaryDir + L"\\" + m_spInjectAssembly->m_sourceAssemblyName);
+        tstring path(m_strBinaryDir + _T("\\") + m_spInjectAssembly->m_sourceAssemblyName);
         IfFailRet(pDisp->OpenScope(path.c_str(), 0, IID_IMetaDataImport2, (IUnknown **)&pSourceImport));
 
         // Loads the image with section alignment, but doesn't do any of the other steps to ready an image to run
@@ -707,7 +743,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
 
         IfFailRet(pModuleInfo->ImportModule(pSourceImport, pSourceImage));
     }
-
+#endif
 
     // get the moduleId and method token for instrument method entry
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
@@ -737,7 +773,7 @@ HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
                     MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
                     mdToken methodDefs[16];
                     ULONG cMethod = 0;
-                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, _countof(methodDefs), &cMethod);
+                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, extent<decltype(methodDefs)>::value, &cMethod);
 
                     if (cMethod > 0)
                     {
@@ -759,6 +795,7 @@ HRESULT CInstrumentationMethod::OnModuleUnloaded(_In_ IModuleInfo* pModuleInfo)
 
 HRESULT CInstrumentationMethod::OnShutdown()
 {
+    HRESULT hr = S_OK;
     if (m_bExceptionTrackingEnabled)
     {
         CComPtr<IProfilerManagerLogging> spLogger;
@@ -768,12 +805,13 @@ HRESULT CInstrumentationMethod::OnShutdown()
     else if (m_bTestInstrumentationMethodLogging)
     {
         CComPtr<IProfilerManagerLogging> spLogger;
-        CComQIPtr<IProfilerManager4> pProfilerManager4 = m_pProfilerManager;
+        CComPtr<IProfilerManager4> pProfilerManager4;
+        IfFailRet(m_pProfilerManager->QueryInterface(&pProfilerManager4));
         pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
         spLogger->LogDumpMessage(_T("</InstrumentationMethodLog>"));
     }
 
-    return S_OK;
+    return hr;
 }
 
 HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Out_ BOOL* pbInstrument)
@@ -786,7 +824,7 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
     InstrStr(clrieStrModule);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModule.m_bstr));
 
-    tstring moduleName = clrieStrModule;
+    tstring moduleName = clrieStrModule.BStr();
 
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
@@ -823,7 +861,7 @@ HRESULT CInstrumentationMethod::BeforeInstrumentMethod(_In_ IMethodInfo* pMethod
 
     if (!pMethodEntry)
     {
-        ATLASSERT(!L"CInstrumentationMethod::InstrumentMethod - why no method entry? It should have been set in ShouldInstrumentMethod");
+        AssertFailed("CInstrumentationMethod::InstrumentMethod - why no method entry? It should have been set in ShouldInstrumentMethod");
         return E_FAIL;
     }
 
@@ -869,7 +907,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
     if (!pMethodEntry)
     {
-        ATLASSERT(!L"CInstrumentationMethod::InstrumentMethod - why no method entry? It should have been set in ShouldInstrumentMethod");
+        AssertFailed("CInstrumentationMethod::InstrumentMethod - why no method entry? It should have been set in ShouldInstrumentMethod");
         return E_FAIL;
     }
 
@@ -894,7 +932,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         std::shared_ptr<CInstrumentMethodPointTo> spPointTo = pMethodEntry->GetPointTo();
         BYTE pSignature[256] = {};
         DWORD cbSignature = 0;
-        pMethodInfo->GetCorSignature(_countof(pSignature), pSignature, &cbSignature);
+        pMethodInfo->GetCorSignature(extent<decltype(pSignature)>::value, pSignature, &cbSignature);
 
 
         mdToken tkMethodToken = mdTokenNil;
@@ -927,7 +965,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
             ULONG        cbHashValue = 0;
             ULONG        chName = 0;
 
-            std::wstring strName(MAX_PATH, WCHAR());
+            tstring strName(MAX_PATH, WCHAR());
             DWORD dwAsemblyRefFlags = 0;
             ASSEMBLYMETADATA asmMetadata = { 0 };
 
@@ -1073,7 +1111,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
                     }
                     else if (opcodeInfo.m_type == ILOperandType_Switch)
                     {
-                        ATLASSERT(!L"Switch not implemented yet in profiler host");
+                        AssertFailed("Switch not implemented yet in profiler host");
                         return E_FAIL;
                     }
                     else
@@ -1092,7 +1130,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
                             else
                             {
                                 // Unexpected branch operand length
-                                ATLASSERT(!L"Switch not implemented yet");
+                                AssertFailed("Switch not implemented yet");
                                 return E_FAIL;
                             }
                         }
@@ -1121,17 +1159,17 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
                             }
                             else if (opcodeInfo.m_type == ILOperandType_Single)
                             {
-                                ATLASSERT(!L"Single not implemented yet");
+                                AssertFailed("Single not implemented yet");
                                 return E_FAIL;
                             }
                             else if (opcodeInfo.m_type == ILOperandType_Double)
                             {
-                                ATLASSERT(!L"Double not implemented yet");
+                                AssertFailed("Double not implemented yet");
                                 return E_FAIL;
                             }
                             else
                             {
-                                ATLASSERT(!L"Unexpected operand length");
+                                AssertFailed("Unexpected operand length");
                                 return E_FAIL;
                             }
                         }
@@ -1217,13 +1255,13 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
 
     if (tailcallCount > 0)
     {
-        ATLASSERT(L"Trying to add exception handler to method with tailcall");
+        AssertFailed("Trying to add exception handler to method with tailcall");
         return E_FAIL;
     }
 
     if (returnCount > 1) // note it would be valid to have method with zero returns, as we could end in a throw
     {
-        ATLASSERT(L"Trying to add exception handler to method with more than one return");
+        AssertFailed("Trying to add exception handler to method with more than one return");
         return E_FAIL;
     }
 
@@ -1254,10 +1292,10 @@ HRESULT CInstrumentationMethod::AddExceptionHandler(IMethodInfo* pMethodInfo, II
     mdAssembly resolutionScope;
     pIMetaDataAssemblyImport->GetAssemblyFromScope(&resolutionScope);
 
-    std::wstring strExceptionTypeName(_T("System.Exception"));
+    tstring strExceptionTypeName(_T("System.Exception"));
 
     ULONG chName = MAX_PATH;
-    std::wstring strName(chName, wchar_t());
+    tstring strName(chName, wchar_t());
     DWORD cTokens;
     mdTypeRef currentTypeRef;
     mdTypeRef targetTypeRef = mdTypeRefNil;
@@ -1377,7 +1415,7 @@ HRESULT CInstrumentationMethod::InstrumentLocals(IMethodInfo* pMethodInfo, share
 HRESULT CInstrumentationMethod::GetType(IModuleInfo* pModuleInfo, const CLocalType& localType, IType** pType)
 {
     HRESULT hr = S_OK;
-    const wstring& typeName = localType.GetTypeName();
+    const tstring& typeName = localType.GetTypeName();
 
     CComPtr<ITypeCreator> pTypeFactory;
     IfFailRet(pModuleInfo->CreateTypeFactory(&pTypeFactory));
@@ -1525,7 +1563,7 @@ HRESULT CInstrumentationMethod::ExceptionThrown(
     IfFailRet(m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo));
 
     CComPtr<ICorProfilerInfo2> pCorProfilerInfo2;
-    pCorProfilerInfo->QueryInterface(__uuidof(ICorProfilerInfo2), (void**)&pCorProfilerInfo2);
+    pCorProfilerInfo->QueryInterface(&pCorProfilerInfo2);
 
     IfFailRet(pCorProfilerInfo2->DoStackSnapshot(
         NULL,

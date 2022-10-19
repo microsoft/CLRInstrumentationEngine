@@ -1,0 +1,25 @@
+{
+    "codebaseName": "ClrInstrumentationEngine2",
+    "repositoryName": "ClrInstrumentationEngine",
+    "notificationAliases": [
+        "vsproddiag@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "REDMOND\\delmyers",
+        "REDMOND\\willxie",
+        "REDMOND\\wiperry",
+        "REDMOND\\wiktork",
+        "REDMOND\\gophoon",
+        "REDMOND\\janders",
+        "REDMOND\\clguiman",
+        "REDMOND\\kkierstead",
+        "REDMOND\\joschmit"
+    ],
+    "instanceUrl": "https://devdiv.visualstudio.com",
+    "projectName": "DevDiv",
+    "areaPath": "DevDiv\\VS Diagnostics\\Production Diagnostics\\CLR Instrumentation Engine",
+    "iterationPath": "DevDiv",
+    "tools": [
+        "APIScan"
+    ]
+}
