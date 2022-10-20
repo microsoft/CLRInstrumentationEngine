@@ -84,7 +84,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteUnitTestExecutor.Host", "src\Tests\RemoteUnitTestExecutor.Host\RemoteUnitTestExecutor.Host.csproj", "{F356AF58-F432-415D-BE13-44228F265CEF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationMethod", "src\Tests\InstrEngineTests\InstrumentationMethod\InstrumentationMethod\InstrumentationMethod.vcxproj", "{BAB09F9D-0553-4B7B-A315-163D11CD87D6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstrumentationEngine.Method", "src\InstrumentationEngine.Method\InstrumentationEngine.Method.vcxproj", "{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Common.Headers\Common.Headers.vcxitems*{0d4a6caa-80d9-4e41-859f-c14205fd45c4}*SharedItemsImports = 9
+		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{c1aaa703-5e32-45c0-a69d-f46d1c659ae4}*SharedItemsImports = 13
+		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{e4d25b2c-e362-4660-a2fd-ada2b7c1fd77}*SharedItemsImports = 5
+		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{ead25b2c-e362-4660-a2fd-ad82b7c1fd77}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysis.Managed|Any CPU = CodeAnalysis.Managed|Any CPU
 		CodeAnalysis.Managed|ARM64 = CodeAnalysis.Managed|ARM64
@@ -754,6 +764,70 @@ Global
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Release|x64.Build.0 = Release|x86
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Release|x86.ActiveCfg = Release|x86
 		{F356AF58-F432-415D-BE13-44228F265CEF}.Release|x86.Build.0 = Release|x86
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|Any CPU.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|ARM64.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|ARM64.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|x64.ActiveCfg = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|x64.Build.0 = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|x86.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Managed|x86.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|Any CPU.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|Any CPU.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|ARM64.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|ARM64.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|x64.ActiveCfg = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|x64.Build.0 = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|x86.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.CodeAnalysis.Native|x86.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|Any CPU.Build.0 = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|ARM64.ActiveCfg = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|ARM64.Build.0 = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|x64.ActiveCfg = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|x64.Build.0 = Debug|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|x86.ActiveCfg = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Debug|x86.Build.0 = Debug|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|Any CPU.ActiveCfg = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|Any CPU.Build.0 = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|ARM64.ActiveCfg = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|ARM64.Build.0 = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|x64.ActiveCfg = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|x64.Build.0 = Release|x64
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|x86.ActiveCfg = Release|Win32
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6}.Release|x86.Build.0 = Release|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|Any CPU.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|Any CPU.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|ARM64.ActiveCfg = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|ARM64.Build.0 = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|x64.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|x64.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|x86.ActiveCfg = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Managed|x86.Build.0 = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|Any CPU.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|Any CPU.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|ARM64.ActiveCfg = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|ARM64.Build.0 = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|x64.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|x64.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|x86.ActiveCfg = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.CodeAnalysis.Native|x86.Build.0 = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|Any CPU.Build.0 = Debug|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|ARM64.Build.0 = Debug|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|x64.ActiveCfg = Debug|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|x64.Build.0 = Debug|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Debug|x86.Build.0 = Debug|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|Any CPU.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|Any CPU.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|ARM64.ActiveCfg = Release|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|ARM64.Build.0 = Release|ARM64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|x64.ActiveCfg = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|x64.Build.0 = Release|x64
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|x86.ActiveCfg = Release|Win32
+		{4FA2D171-9D97-4344-9010-F1D9DA14A3A9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -775,14 +849,9 @@ Global
 		{9F97B063-5ACF-409A-8DCC-4BD9FF817D1D} = {CD7D46B4-FF0A-464D-A4D5-5B7E729DEB58}
 		{182D00C1-705F-4FF6-8620-8EEF29936C7A} = {D78E4349-0436-4C90-B2F3-70F19451EC16}
 		{F356AF58-F432-415D-BE13-44228F265CEF} = {D78E4349-0436-4C90-B2F3-70F19451EC16}
+		{BAB09F9D-0553-4B7B-A315-163D11CD87D6} = {B4ADF020-7ACF-4A2B-B3FE-731006C1F30F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16628EC2-6C46-4DEF-B260-8848FC916254}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\Common.Headers\Common.Headers.vcxitems*{0d4a6caa-80d9-4e41-859f-c14205fd45c4}*SharedItemsImports = 9
-		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{c1aaa703-5e32-45c0-a69d-f46d1c659ae4}*SharedItemsImports = 13
-		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{e4d25b2c-e362-4660-a2fd-ada2b7c1fd77}*SharedItemsImports = 5
-		tests\ApplicationInsightsCompatibility\Intercept.Shared.Tests\Shared.projitems*{ead25b2c-e362-4660-a2fd-ad82b7c1fd77}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
