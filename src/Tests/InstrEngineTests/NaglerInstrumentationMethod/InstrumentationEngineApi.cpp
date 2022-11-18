@@ -52,10 +52,11 @@ namespace InstrumentationEngineApi
 #else
             // Aid in finding the line of code associated with the error message:
             // stderr: The specified module could not be found.
-            wchar_t err[256];
+            WCHAR err[256];
             memset(err, 0, 256);
             FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), err, 255, NULL);
-            AssertLogFailure(err);
+            LPCWSTR errMsg = err;
+            AssertLogFailure(errMsg);
 #endif
         }
 

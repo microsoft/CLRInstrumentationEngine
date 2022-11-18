@@ -1,0 +1,42 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Job Template: Run PS Script Code Analysis
+# Invokes PS Script analysis
+
+jobs:
+- job: CodeAnaysis_PSScriptAnalyzer
+  displayName: Code Analysis - PSScriptAnalyzer
+
+  pool:
+    name: VSEngSS-MicroBuild2022-1ES
+
+  workspace:
+    clean: all
+
+  steps:
+  - checkout: self
+    clean: true
+
+  # Run PSScriptAnalyzer
+  - task: PSScriptAnalyzer@1
+    displayName: 'Run PSScriptAnalyzer'
+    inputs:
+      Path: '$(Build.SourcesDirectory)'
+      Settings: required
+      IgnorePattern: .gdn
+      Recurse: true
+    continueOnError: true
+
+  # Publish SecurityAnalysis Logs
+  - template: ../../steps/codeanalysis/publishreports.yaml
+    parameters:
+      ArtifactName: PSScriptAnalyzer
+
+  - template: ../../steps/codeanalysis/filebugs.yaml
+    parameters:
+      BuildName: PSScriptAnalyzer
+      Tags: CLRIEPSScriptAnalyzer
+
+  # Microbuild Cleanup
+  - template: ../../steps/microbuild/cleanup.yaml

@@ -39,6 +39,7 @@ stages:
 
   jobs:
   - template: ../jobs/codeanalysis/policheck.yaml
+  - template: ../jobs/codeanalysis/psscriptanalyzer.yaml
 
 - stage: Analyze_PostBuild
   displayName: Code Analysis (After Build)
@@ -47,6 +48,7 @@ stages:
   jobs:
   - template: ../jobs/codeanalysis/apiscan.yaml
   - template: ../jobs/codeanalysis/binskim.yaml
+  - template: ../jobs/codeanalysis/antimalware.yaml
 
 - stage: Run_CS_Analyzers
   displayName: Code Analysis (Build Time Managed)

@@ -1023,7 +1023,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
             IfFailRet(spIMetaDataEmit->DefineMemberRef(tkTypeToken, spPointTo->m_methodName.c_str(), pSignature, cbSignature, &tkMethodToken));
         }
-        else if (FAILED(hrFound))
+        else
         {
             IfFailRet(hrFound);
         }
