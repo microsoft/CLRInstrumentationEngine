@@ -106,6 +106,7 @@
     <ClInclude Include="ConfigurationLocator.h" />
     <ClInclude Include="ConfigurationSource.h" />
     <ClInclude Include="DataContainer.h" />
+    <ClInclude Include="dlfcn.h" />
     <ClInclude Include="EnumeratorImpl.h" />
     <ClInclude Include="InstrumentationMethodAttachContext.h" />
     <ClInclude Include="InstrumentationMethodSetting.h" />

@@ -49,7 +49,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AttachComplete();
 
         HRESULT GetRawInstrumentationMethod(_Out_ IInstrumentationMethod** ppInstrumentationMethod);
-
+        HRESULT GetLastErrorAsString();
         REFGUID GetClassId();
 
         DWORD GetPriority();

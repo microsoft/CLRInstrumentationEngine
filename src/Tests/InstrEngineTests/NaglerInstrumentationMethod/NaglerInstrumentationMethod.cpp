@@ -19,6 +19,58 @@ const WCHAR CInstrumentationMethod::TestScriptFileEnvName[] = _T("Nagler_TestScr
 const WCHAR CInstrumentationMethod::TestScriptFolder[] = _T("TestScripts");
 const WCHAR CInstrumentationMethod::IsRejitEnvName[] = _T("Nagler_IsRejit");
 
+//const WCHAR k_wszEnteredFunctionProbeName[] = _T("OnEnter");
+//const WCHAR k_wszExitedFunctionProbeName[] = _T("OnExit");
+
+// When pumping managed helpers into mscorlib, stick them into this pre-existing mscorlib type
+const WCHAR k_wszHelpersContainerType[] = _T("System.CannotUnloadAppDomainException");
+
+const WCHAR ManagedTracingApiAssemblyNameClassic[] = _T("Instana.ManagedTracing.Api");
+const WCHAR ManagedTracingAssemblyNameClassic[] = _T("Instana.ManagedTracing.Base");
+const WCHAR ManagedTracingTracerClassNameClassic[] = _T("Instana.ManagedTracing.Base.Tracer");
+
+const WCHAR ManagedTracingAssemblyNameCore[] = _T("Instana.Tracing.Core");
+const WCHAR ManagedTracingAssemblyNameCoreCommon[] = _T("Instana.Tracing.Core.Common");
+const WCHAR ManagedTracingAssemblyNameCoreTransport[] = _T("Instana.Tracing.Core.Transport");
+const WCHAR ManagedTracingAssemblyNameApi[] = _T("Instana.Tracing.Api");
+const WCHAR ManagedTracingTracerClassNameCore[] = _T("Instana.Tracing.Tracer");
+
+#ifdef _WINDOWS
+std::wstring k_wszEnteredFunctionProbeName(L"OnEnter");
+std::wstring k_wszExitedFunctionProbeName(L"OnExit");
+
+std::wstring ManagedTracingAssemblyName(L"Instana.Tracing.Core");
+std::wstring ManagedTracingTracerClassName(L"Instana.Tracing.Tracer");
+#else
+std::u16string k_wszEnteredFunctionProbeName(u"OnEnter");
+std::u16string k_wszExitedFunctionProbeName(u"OnExit");
+
+std::u16string ManagedTracingAssemblyName(u"Instana.Tracing.Core");
+std::u16string ManagedTracingTracerClassName(u"Instana.Tracing.Tracer");
+#endif
+
+COR_SIGNATURE sigFunctionEnterProbe[] = {
+    IMAGE_CEE_CS_CALLCONV_DEFAULT,      // default calling convention
+    0x05,                               // number of arguments == 2
+    ELEMENT_TYPE_OBJECT,                  // return type == object
+    ELEMENT_TYPE_OBJECT,
+    ELEMENT_TYPE_SZARRAY, ELEMENT_TYPE_OBJECT,
+    ELEMENT_TYPE_STRING,				// type name
+    ELEMENT_TYPE_STRING,					// method name
+    ELEMENT_TYPE_STRING					// custom attribute name
+};
+
+COR_SIGNATURE sigFunctionExitProbe[] = {
+    IMAGE_CEE_CS_CALLCONV_DEFAULT,      // default calling convention
+    0x06,                               // number of arguments == 3
+    ELEMENT_TYPE_VOID,                  // return type == void
+    ELEMENT_TYPE_OBJECT,				// instrumented object
+    ELEMENT_TYPE_OBJECT,				// context obtained by entering
+    ELEMENT_TYPE_SZARRAY, ELEMENT_TYPE_OBJECT, // parameters
+    ELEMENT_TYPE_STRING,				// type name
+    ELEMENT_TYPE_STRING,					// method name
+    ELEMENT_TYPE_STRING					// custom attribute name
+};
 
 void AssertLogFailure(_In_ const WCHAR* wszError, ...)
 {
@@ -56,6 +108,7 @@ ILOpcodeInfo ilOpcodeInfo[] =
     { name, (DWORD)opcodeLen, (DWORD)operandLen, ##type, alt, flags, (DWORD)pop, (DWORD)push},
 #endif
 #include "ILOpcodes.h"
+#include "ModuleInfo.h"
 #undef OPDEF
 };
 
@@ -80,8 +133,17 @@ struct ComInitializer
 HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManager)
 {
     HRESULT hr;
+    CComPtr<IProfilerManagerLogging> spGlobalLogger;
+    CComPtr<IProfilerManager4> pProfilerManager4;
+    IfFailRet(pProfilerManager->QueryInterface(&pProfilerManager4));
+    pProfilerManager4->GetGlobalLoggingInstance(&spGlobalLogger);
+
+    spGlobalLogger->LogDumpMessage(_T("Test module initialize"));
+
+    
     m_pProfilerManager = pProfilerManager;
     IfFailRet(m_pProfilerManager->QueryInterface(&m_pStringManager));
+    spGlobalLogger->LogDumpMessage(_T("Test module QueryInterface"));
 
 #ifdef PLATFORM_UNIX
     DWORD retVal = LoadInstrumentationMethodXml(this);
@@ -92,6 +154,7 @@ HRESULT CInstrumentationMethod::Initialize(_In_ IProfilerManager* pProfilerManag
     hConfigThread.Attach(CreateThread(NULL, 0, LoadInstrumentationMethodXml, this, 0, NULL));
     DWORD retVal = WaitForSingleObject(hConfigThread, 15000);
 #endif
+    spGlobalLogger->LogDumpMessage(_T("Test module Thread is done"));
 
     if (m_bTestInstrumentationMethodLogging)
     {
@@ -710,81 +773,638 @@ HRESULT CInstrumentationMethod::OnAssemblyUnloaded(_In_ IAssemblyInfo* pAssembly
     return S_OK;
 }
 
+
+ModuleInfo moduleInfo;
 HRESULT CInstrumentationMethod::OnModuleLoaded(_In_ IModuleInfo* pModuleInfo)
 {
     HRESULT hr = S_OK;
 
-    InstrStr(clrieStrModuleName);
-    IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
-
-// Skip importing modules on non-Windows platforms for now.
-#ifndef PLATFORM_UNIX
-    if ((m_spInjectAssembly != nullptr) && (wcscmp(clrieStrModuleName, m_spInjectAssembly->m_targetAssemblyName.c_str()) == 0))
+    CComPtr<IProfilerManagerLogging> spLogger;
+    CComPtr<IProfilerManager4> pProfilerManager4;
+    IfFailRet(m_pProfilerManager->QueryInterface(&pProfilerManager4));
+    pProfilerManager4->GetGlobalLoggingInstance(&spLogger);
+    try
     {
-        CComPtr<IMetaDataDispenserEx> pDisp;
-        ComInitializer coInit(COINIT_MULTITHREADED);
-        IfFailRet(CoCreateInstance(CLSID_CorMetaDataDispenser, NULL, CLSCTX_INPROC_SERVER,
-            IID_IMetaDataDispenserEx, (void **)&pDisp));
+        ModuleID moduleID;
+        pModuleInfo->GetModuleID(&moduleID);
 
-        CComPtr<IMetaDataImport2> pSourceImport;
-        tstring path(m_strBinaryDir + _T("\\") + m_spInjectAssembly->m_sourceAssemblyName);
-        IfFailRet(pDisp->OpenScope(path.c_str(), 0, IID_IMetaDataImport2, (IUnknown **)&pSourceImport));
+        LPCBYTE pbBaseLoadAddr;
+        WCHAR wszName[512];
+        ULONG cchNameIn = 512;
+        ULONG cchNameOut;
+        AssemblyID assemblyID;
+        DWORD dwModuleFlags;
 
-        // Loads the image with section alignment, but doesn't do any of the other steps to ready an image to run
-        // This is sufficient to read IL code from the image without doing RVA -> file offset mapping
-        std::shared_ptr<HINSTANCE__> spSourceImage(LoadLibraryEx(path.c_str(), NULL, LOAD_LIBRARY_AS_IMAGE_RESOURCE), FreeLibrary);
-        if (spSourceImage == nullptr)
+        spLogger->LogMessage(_T("Krecemoooo!!!!"));
+        ICorProfilerInfo4* m_pProfilerInfo;
+        try
         {
-            return HRESULT_FROM_WIN32(::GetLastError());
-        }
-        //Not sure if there is a better way to get the base address of a module loaded via LoadLibrary?
-        //We are cheating a bit knowing that module handles are actually base addresses with a few bits OR'ed in
-        LPCBYTE* pSourceImage = reinterpret_cast<LPCBYTE*>((ULONGLONG)spSourceImage.get() & (~2));
 
-        IfFailRet(pModuleInfo->ImportModule(pSourceImport, pSourceImage));
+            hr = m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&m_pProfilerInfo);
+            spLogger->LogMessage(_T("Prosao poziv GetCorProfilerInfo"));
+            if (FAILED(hr))
+            {
+                spLogger->LogMessage(_T("Failed!!!!"));
+                return hr;
+            }
+            spLogger->LogMessage(_T("Krece poziv GetModuleInfo2"));
+            hr = m_pProfilerInfo->GetModuleInfo2(
+                moduleID,
+                &pbBaseLoadAddr,
+                cchNameIn,
+                &cchNameOut,
+                wszName,
+                &assemblyID,
+                &dwModuleFlags);
+            spLogger->LogMessage(_T("Prosao poziv GetModuleInfo2"));
+        }
+        catch (...)
+        {
+            spLogger->LogMessage(_T("Error getting ModuleInfo"));
+            return S_OK;
+        }
+
+        if (hr != S_OK)
+        {
+            spLogger->LogMessage(_T("Could not get Module info!"));
+        }
+
+        if (FAILED(hr))
+        {
+            spLogger->LogMessage(_T("GetModuleInfo failed for module"));
+            return S_OK;
+        }
+
+        // adjust the buffer's size, call again
+        if (cchNameIn <= cchNameOut)
+        {
+            spLogger->LogMessage(_T("The reserved buffer for the module's name was not large enough. Skipping."));
+            return S_OK;
+        }
+
+        /*std::string logMessage2("Module loaded:  ");
+        std::wstring lm2 = std::wstring(logMessage2.begin(), logMessage2.end());
+        lm2 = lm2 + wszName;
+        spLogger->LogMessage(lm2.c_str());*/
+
+        //if ((dwModuleFlags & COR_PRF_MODULE_WINDOWS_RUNTIME) != 0)
+        //{
+        //    // Ignore any Windows Runtime modules.  We cannot obtain writeable metadata
+        //    // interfaces on them or instrument their IL
+        //    spLogger->LogMessage(_T("This is a runtime windows module, skipping"));
+        //    return S_OK;
+        //}
+
+        AppDomainID appDomainID;
+        ModuleID modIDDummy;
+        ULONG assemblyNameLength = 0;
+        WCHAR assemblyName[255];
+
+        spLogger->LogMessage(_T("Krece poziv InstrStr"));
+        //InstrStr(assemblyName);
+        spLogger->LogMessage(_T("Prosao poziv InstrStr"));
+
+        spLogger->LogMessage(_T("Krece poziv GetAssemblyInfo"));
+        hr = m_pProfilerInfo->GetAssemblyInfo(
+            assemblyID,
+            255,
+            &assemblyNameLength,
+            assemblyName,
+            &appDomainID,
+            &modIDDummy);
+        spLogger->LogMessage(_T("Prosao poziv GetAssemblyInfo"));
+
+        if (FAILED(hr))
+        {
+            spLogger->LogMessage(_T("GetAssemblyInfo failed for module"));
+            return S_OK;
+        }
+
+        spLogger->LogMessage(assemblyName);
+
+        WCHAR libName[] = _T("AspNetCore3Test");
+        if (wcscmp(assemblyName, libName) != 0)
+        {
+            spLogger->LogMessage(_T("this is not AspNetCore3Test..."));
+            return S_OK;
+        }
+
+        spLogger->LogMessage(_T("Krece poziv wcscmp"));
+        WCHAR mscorlibName[] = _T("mscorlib");
+        if (wcscmp(assemblyName, mscorlibName) == 0)
+        {
+            spLogger->LogMessage(_T("this is mscorlib, noone does anything here..."));
+            return S_OK;
+        }
+        spLogger->LogMessage(_T("Prosao poziv wcscmp"));
+
+        ////bool instrumentationLoaded = false;
+        ////// make sure we have the advices loaded from the config-file
+        ////if (!instrumentationLoaded)
+        ////{
+        ////    instrumentationLoaded = true;
+        ////}
+
+        ////std::string logMessage("Will instrument "); // initialized elsewhere
+        ////std::wstring lm = std::wstring(logMessage.begin(), logMessage.end());
+        ////lm = lm + assemblyName;
+        ////spLogger->LogMessage(lm.c_str());
+
+        //CComPtr<IMetaDataEmit> pEmit;
+        //{
+        //    CComPtr<IUnknown> pUnk;
+        //    hr = m_pProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataEmit, &pUnk);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("GetModuleMetaData failed for module"));
+        //        return S_OK;
+        //    }
+
+        //    hr = pUnk->QueryInterface(IID_IMetaDataEmit, (LPVOID*)&pEmit);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("QueryInterface IID_IMetaDataEmit failed for module"));
+        //        return S_OK;
+        //    }
+        //}
+
+        //CComPtr<IMetaDataImport> pImport;
+        //{
+        //    CComPtr<IUnknown> pUnk;
+
+        //    hr = m_pProfilerInfo->GetModuleMetaData(moduleID, ofRead, IID_IMetaDataImport, &pUnk);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("GetModuleMetaData failed for module"));
+        //        return S_OK;
+        //    }
+
+        //    hr = pUnk->QueryInterface(IID_IMetaDataImport, (LPVOID*)&pImport);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("QueryInterface IID_IMetaDataImport failed for module"));
+        //        return S_OK;
+        //    }
+        //}
+
+        //moduleInfo = { 0 };
+        //moduleInfo.m_pImport = pImport;
+        //moduleInfo.m_pImport->AddRef();
+        //////moduleInfo.m_pMethodDefToLatestVersionMap = new MethodDefToLatestVersionMap();
+
+        ////if (wcscpy_s(moduleInfo.m_wszModulePath, _countof(moduleInfo.m_wszModulePath), wszName) != 0)
+        ////{
+        ////    spLogger->LogMessage(_T("Failed to store module path", wszName));
+        ////    return S_OK;
+        ////}
+
+        ////if (wcscpy_s(moduleInfo.m_assemblyName, _countof(moduleInfo.m_assemblyName), assemblyName) != 0)
+        ////{
+        ////    spLogger->LogMessage(_T("Failed to store assemblyName {}", assemblyName));
+        ////    return S_OK;
+        ////}
+
+        //// Add the references to our helper methods.
+        //CComPtr<IMetaDataAssemblyEmit> pAssemblyEmit;
+        //{
+        //    CComPtr<IUnknown> pUnk;
+
+        //    hr = m_pProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataAssemblyEmit, &pUnk);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("GetModuleMetaData IID_IMetaDataAssemblyEmit failed for module"));
+        //        return S_OK;
+        //    }
+
+
+        //    hr = pUnk->QueryInterface(IID_IMetaDataAssemblyEmit, (LPVOID*)&pAssemblyEmit);
+        //    if (FAILED(hr))
+        //    {
+        //        //g_logger->error("IID_IMetaDataEmit: QueryInterface failed for ModuleID {}", moduleID);			LogInfo(L"QueryInterface IID_IMetaDataImport failed for module {}", moduleID);
+        //        spLogger->LogMessage(_T("QueryInterface IID_IMetaDataAssemblyEmit failed for module"));
+        //        return S_OK;
+        //    }
+        //}
+
+        //CComPtr<IMetaDataAssemblyImport> pAssemblyImport;
+        //{
+        //    CComPtr<IUnknown> pUnk;
+
+        //    hr = m_pProfilerInfo->GetModuleMetaData(moduleID, ofRead, IID_IMetaDataAssemblyImport, &pUnk);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("GetModuleMetaData IID_IMetaDataAssemblyImport failed for module"));
+        //        return S_OK;
+        //    }
+
+        //    hr = pUnk->QueryInterface(IID_IMetaDataAssemblyImport, (LPVOID*)&pAssemblyImport);
+        //    if (FAILED(hr))
+        //    {
+        //        spLogger->LogMessage(_T("QueryInterface IID_IMetaDataAssemblyImport failed for module"));
+        //        return S_OK;
+        //    }
+
+        //}
+        //bool instrumentThisModule = true;
+
+        //moduleInfo.m_pAssemblyImport = pAssemblyImport;
+        //moduleInfo.m_pAssemblyImport->AddRef();
+        ////bool relevant = AddMemberRefs(pAssemblyImport, pAssemblyEmit, pEmit, &moduleInfo, instrumentThisModule);
+        ////if (relevant)
+        ////{
+        ////    spLogger->LogMessage(_T("Add member refs is done"));
+        ////    //LogInfo(L"Applying instrumentations to {}", moduleInfo.m_assemblyName);
+        ////    //m_moduleIDToInfoMap.Update(moduleID, moduleInfo);
+        ////    //_instrumentationCoordinator.registerModule(moduleID, moduleInfo);
+        ////    //****************ApplyInstrumentations(moduleID, moduleInfo, instrumentThisModule);
+
+
+        ////    // Append to the list!
+
+        ////    // If we already rejitted functions in other modules with a matching path, then
+        ////    // pre-rejit those functions in this module as well.  This takes care of the case
+        ////    // where we rejitted functions in a module loaded in one domain, and we just now
+        ////    // loaded the same module (unshared) into another domain.  We must explicitly ask to
+        ////    // rejit those functions in this domain's copy of the module, since it's identified
+        ////    // by a different ModuleID.
+
+        ////    std::vector<ModuleID> rgModuleIDs;
+        ////    std::vector<mdToken> rgMethodDefs;
+
+
+        ////}
+    tstring assemblyNameString = tstring(assemblyName);
+    spLogger->LogMessage(_T("[PROFILER]\tLoaded module"));
+
+	//// how can we get a path to a file on non-windows OSes (no registry we could hijack... ENV_VARS?)
+	/*std::string profilerPath = std::getenv("CORECLR_PROFILER_PATH");
+	std::string profilerLibName = "CoreProfiler.so";
+	std::string configFileName = "instrumentation.json";*/
+
+	/*std::string cleanPath = profilerPath.substr(0, profilerPath.length() - profilerLibName.length());
+	std::string fullPath = cleanPath.append(configFileName);*/
+
+    spLogger->LogMessage(_T("Krece poziv ModuleFlagsAllowInstrumentation"));
+	if (ModuleFlagsAllowInstrumentation(dwModuleFlags) != S_OK)
+	{
+		return S_OK;
+	}
+    spLogger->LogMessage(_T("Prosao poziv ModuleFlagsAllowInstrumentation"));
+	if (IsSystemLib(assemblyNameString))
+	{
+		return S_OK;
+	}
+    spLogger->LogMessage(_T("Prosao poziv IsSystemLib"));
+
+    spLogger->LogMessage(_T("Krece poziv GetModuleMetaData"));
+	CComPtr<IMetaDataAssemblyImport> metadataAssemblyImport;
+	CComPtr<IMetaDataAssemblyEmit> metadataAssemblyEmit;
+    m_pProfilerInfo->GetModuleMetaData(moduleID, ofRead | ofWrite, IID_IMetaDataAssemblyImport, reinterpret_cast<IUnknown**>(&metadataAssemblyImport));
+    spLogger->LogMessage(_T("Prosao poziv GetModuleMetaData"));
+
+    /*spLogger->LogMessage(_T("Krece poziv GetModuleMetaData"));
+    m_pProfilerInfo->GetModuleMetaData(moduleID, ofRead | ofWrite, IID_IMetaDataAssemblyImport, reinterpret_cast<IUnknown**>(&metadataAssemblyImport));
+    spLogger->LogMessage(_T("Prosao poziv GetModuleMetaData"));*/
+
+    spLogger->LogMessage(_T("Krece poziv GetModuleMetaData"));
+    m_pProfilerInfo->GetModuleMetaData(moduleID, ofRead | ofWrite, IID_IMetaDataAssemblyEmit, reinterpret_cast<IUnknown**>(&metadataAssemblyEmit));
+    spLogger->LogMessage(_T("Prosao poziv GetModuleMetaData"));
+	
+	CComPtr<IMetaDataEmit> metadataEmit;
+	CComPtr<IMetaDataImport> metadataImport;
+    spLogger->LogMessage(_T("Krece poziv QueryInterface"));
+	if FAILED(metadataAssemblyImport->QueryInterface(IID_IMetaDataEmit, reinterpret_cast<void**>(&metadataEmit)))
+	{
+		return E_FAIL;
+	}
+    spLogger->LogMessage(_T("Prosao poziv QueryInterface"));
+
+    spLogger->LogMessage(_T("Krece poziv QueryInterface"));
+	if FAILED(metadataAssemblyImport->QueryInterface(IID_IMetaDataImport, reinterpret_cast<void**>(&metadataImport)))
+	{
+		return E_FAIL;
+	}
+    spLogger->LogMessage(_T("Prosao poziv QueryInterface"));
+
+	moduleInfo = { 0 };
+	moduleInfo.m_pImport = metadataImport;
+	moduleInfo.m_pAssemblyImport = metadataAssemblyImport;
+
+    spLogger->LogMessage(_T("Krece poziv copyWideChars"));
+	    copyWideChars(moduleInfo.m_assemblyName, assemblyName);
+        spLogger->LogMessage(_T("Prosao poziv copyWideChars"));
+
+        spLogger->LogMessage(_T("Krece poziv AddTracingReferencesToModule"));
+	    AddTracingReferencesToModule(metadataAssemblyImport, metadataAssemblyEmit, metadataEmit, &moduleInfo);
+        spLogger->LogMessage(_T("Prosao poziv AddTracingReferencesToModule"));
     }
+    catch (std::exception& e)
+    {
+        spLogger->LogMessage(_T("Exception on loading module: {}"));
+    }
+
+    return S_OK;
+}
+
+WCHAR* CInstrumentationMethod::copyWideChars(WCHAR* dest, const WCHAR* src)
+{
+    unsigned i;
+    for (i = 0; src[i] != '\0'; ++i)
+    {
+        dest[i] = src[i];
+    }
+    dest[i] = '\0';
+    return dest;
+}
+
+bool CInstrumentationMethod::IsSystemLib(tstring assemblyName)
+{
+    if (assemblyName.compare(_T("Instana.Tracing.Api")) == 0 ||
+        assemblyName.compare(_T("Instana.Tracing.Core")) == 0 ||
+        assemblyName.compare(_T("Instana.Tracing.Core.Instrumentation")) == 0 ||
+        assemblyName.compare(_T("Anonymously Hosted DynamicMethods Assembly")) == 0 ||
+        assemblyName.compare(_T("System.Buffers")) == 0 ||
+        assemblyName.compare(_T("System.Collections")) == 0 ||
+        assemblyName.compare(_T("System.Collections.Concurrent")) == 0 ||
+        assemblyName.compare(_T("System.Collections.NonGeneric")) == 0 ||
+        assemblyName.compare(_T("System.Collections.Specialized")) == 0 ||
+        assemblyName.compare(_T("System.ComponentModel")) == 0 ||
+        assemblyName.compare(_T("System.ComponentModel.Annotations")) == 0 ||
+        assemblyName.compare(_T("System.ComponentModel.EventBasedAsync")) == 0 ||
+        assemblyName.compare(_T("System.ComponentModel.TypeConverter")) == 0 ||
+        assemblyName.compare(_T("System.Configuration.ConfigurationManager")) == 0 ||
+        assemblyName.compare(_T("System.Diagnostics.Debug")) == 0 ||
+        assemblyName.compare(_T("System.Diagnostics.Process")) == 0 ||
+        assemblyName.compare(_T("System.Diagnostics.StackTrace")) == 0 ||
+        assemblyName.compare(_T("System.Diagnostics.TraceSource")) == 0 ||
+        assemblyName.compare(_T("System.Drawing.Primitives")) == 0 ||
+        assemblyName.compare(_T("System.IO")) == 0 ||
+        assemblyName.compare(_T("System.IO.FileSystem")) == 0 ||
+        assemblyName.compare(_T("System.IO.FileSystem.Watcher")) == 0 ||
+        assemblyName.compare(_T("System.IO.Pipelines")) == 0 ||
+        assemblyName.compare(_T("System.Linq")) == 0 ||
+        assemblyName.compare(_T("System.Linq.Expressions")) == 0 ||
+        assemblyName.compare(_T("System.Memory")) == 0 ||
+        assemblyName.compare(_T("System.ObjectModel")) == 0 ||
+        assemblyName.compare(_T("System.Private.Uri")) == 0 ||
+        assemblyName.compare(_T("System.Runtime.Numerics")) == 0 ||
+        assemblyName.compare(_T("System.Numerics.Vectors")) == 0 ||
+        assemblyName.compare(_T("System.Resources.ResourceManager")) == 0 ||
+        assemblyName.compare(_T("System.Runtime")) == 0 ||
+        assemblyName.compare(_T("System.Runtime.CompilerServices.Unsafe")) == 0 ||
+        assemblyName.compare(_T("System.Runtime.InteropServices")) == 0 ||
+        assemblyName.compare(_T("System.Runtime.InteropServices.RuntimeInformation")) == 0 ||
+        assemblyName.compare(_T("System.Security.Cryptography.Algorithms")) == 0 ||
+        assemblyName.compare(_T("System.Security.Cryptography.Encoding")) == 0 ||
+        assemblyName.compare(_T("System.Security.Cryptography.OpenSsl")) == 0 ||
+        assemblyName.compare(_T("System.Security.Cryptography.Primitives")) == 0 ||
+        assemblyName.compare(_T("System.Security.Cryptography.X509Certificates")) == 0 ||
+        assemblyName.compare(_T("System.Security.Principal")) == 0 ||
+        assemblyName.compare(_T("System.Text.Json")) == 0 ||
+        assemblyName.compare(_T("System.Text.Encoding.Extensions")) == 0 ||
+        assemblyName.compare(_T("System.Text.Encodings.Web")) == 0 ||
+        assemblyName.compare(_T("System.Text.RegularExpressions")) == 0 ||
+        assemblyName.compare(_T("System.Threading")) == 0 ||
+        assemblyName.compare(_T("System.Threading.Tasks")) == 0 ||
+        assemblyName.compare(_T("System.Threading.Thread")) == 0 ||
+        assemblyName.compare(_T("System.Threading.Timer")) == 0 ||
+        assemblyName.compare(_T("netstandard")) == 0 ||
+        assemblyName.compare(_T("Microsoft.Extensions.Configuration.CommandLine")) == 0 ||
+        assemblyName.compare(_T("Microsoft.Extensions.FileSystemGlobbing")) == 0 ||
+        assemblyName.compare(_T("Microsoft.Extensions.ObjectPool")) == 0 ||
+        assemblyName.compare(_T("Microsoft.AspNetCore.Metadata")) == 0 ||
+        assemblyName.compare(_T("Microsoft.AspNetCore.Mvc.ViewFeatures")) == 0 ||
+        assemblyName.compare(_T("System.Private.Xml")) == 0)
+        return true;
+
+    return false;
+}
+
+BOOL CInstrumentationMethod::FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyRef* rgAssemblyRefs, ULONG cAssemblyRefs, mdAssemblyRef* parMscorlib)
+{
+    HRESULT hr;
+
+    CComPtr<IProfilerManagerLogging> spLogger;
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
+    spLogger->LogMessage(_T("Start FindMscorlibReference"));
+
+    for (ULONG i = 0; i < cAssemblyRefs; i++)
+    {
+        const void* pvPublicKeyOrToken;
+        ULONG cbPublicKeyOrToken;
+        WCHAR wszName[512];
+        ULONG cchNameReturned;
+        ASSEMBLYMETADATA asmMetaData;
+        memset(&asmMetaData, 0, sizeof(asmMetaData));
+        const void* pbHashValue;
+        ULONG cbHashValue;
+        DWORD asmRefFlags;
+
+        spLogger->LogMessage(_T("Start GetAssemblyRefProps"));
+        hr = pAssemblyImport->GetAssemblyRefProps(
+            rgAssemblyRefs[i],
+            &pvPublicKeyOrToken,
+            &cbPublicKeyOrToken,
+            wszName,
+            512,
+            &cchNameReturned,
+            &asmMetaData,
+            &pbHashValue,
+            &cbHashValue,
+            &asmRefFlags);
+        spLogger->LogMessage(_T("End GetAssemblyRefProps"));
+
+        if (FAILED(hr))
+        {
+            return FALSE;
+        }
+        tstring dependencyName = tstring(wszName);
+        if (dependencyName.compare(_T("mscorlib")) == 0 ||
+            dependencyName.compare(_T("netstandard")) == 0 ||
+            dependencyName.compare(_T("System.Runtime")) == 0)
+        {
+            *parMscorlib = rgAssemblyRefs[i];
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    spLogger->LogMessage(_T("End FindMscorlibReference"));
+
+    return FALSE;
+}
+
+HRESULT STDMETHODCALLTYPE CInstrumentationMethod::AddTracingReferencesToModule(IMetaDataAssemblyImport* pAssemblyImport, IMetaDataAssemblyEmit* pAssemblyEmit, IMetaDataEmit* pEmit, ModuleInfo* pModuleInfo)
+{
+    mdAssemblyRef rgMSCAssemblyRefs[20];
+    ULONG cMSCAssemblyRefsReturned;
+    mdAssemblyRef msCorLibRef = mdAssemblyRefNil;
+    HRESULT hr;
+
+     CComPtr<IProfilerManagerLogging> spLogger;
+     m_pProfilerManager->GetLoggingInstance(&spLogger);
+     spLogger->LogMessage(_T("Start AddTracingReferencesToModule"));
+
+    HCORENUM hmscEnum = NULL;
+    do
+    {
+        spLogger->LogMessage(_T("Start EnumAssemblyRefs"));
+        hr = pAssemblyImport->EnumAssemblyRefs(
+            &hmscEnum,
+            rgMSCAssemblyRefs,
+            20,
+            &cMSCAssemblyRefsReturned);
+        spLogger->LogMessage(_T("End EnumAssemblyRefs"));
+
+        if (FAILED(hr))
+        {
+            return false;
+        }
+
+        if (cMSCAssemblyRefsReturned == 0)
+        {
+            return false;
+        }
+
+        printf("%d\n", cMSCAssemblyRefsReturned);
+        
+    } while (!FindMscorlibReference(
+        pAssemblyImport,
+        rgMSCAssemblyRefs,
+        cMSCAssemblyRefsReturned,
+        &msCorLibRef));
+    pAssemblyImport->CloseEnum(hmscEnum);
+    hmscEnum = NULL;
+#ifdef _WINDOWS
+    std::wstring systemObject(L"System.Object");
+    std::wstring systemException(L"System.Exception");
+    std::wstring systemInt16(L"System.Int16");
+    std::wstring systemInt32(L"System.Int32");
+    std::wstring systemInt64(L"System.Int64");
+    std::wstring systemFloat32(L"System.Single");
+    std::wstring systemFloat64(L"System.Double");
+    std::wstring systemUInt16(L"System.UInt16");
+    std::wstring systemUInt32(L"System.UInt32");
+    std::wstring systemUInt64(L"System.UInt64");
+    std::wstring systemByte(L"System.Byte");
+    std::wstring systemSByte(L"System.SByte");
+    std::wstring systemBoolean(L"System.Boolean");
+#else
+    std::u16string systemObject(u"System.Object");
+    std::u16string systemException(u"System.Exception");
+    std::u16string systemInt16(u"System.Int16");
+    std::u16string systemInt32(u"System.Int32");
+    std::u16string systemInt64(u"System.Int64");
+    std::u16string systemFloat32(u"System.Single");
+    std::u16string systemFloat64(u"System.Double");
+    std::u16string systemUInt16(u"System.UInt16");
+    std::u16string systemUInt32(u"System.UInt32");
+    std::u16string systemUInt64(u"System.UInt64");
+    std::u16string systemByte(u"System.Byte");
+    std::u16string systemSByte(u"System.SByte");
+    std::u16string systemBoolean(u"System.Boolean");
+
+#endif
+    hr = GetTypeRef(systemObject.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_objectTypeRef));
+    hr = GetTypeRef(systemException.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_exceptionTypeRef));
+    hr = GetTypeRef(systemInt16.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_int16TypeRef));
+    hr = GetTypeRef(systemInt32.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_int32TypeRef));
+    hr = GetTypeRef(systemInt64.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_int64TypeRef));
+    hr = GetTypeRef(systemFloat32.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_float32TypeRef));
+    hr = GetTypeRef(systemFloat64.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_float64TypeRef));
+    hr = GetTypeRef(systemUInt16.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_uint16TypeRef));
+    hr = GetTypeRef(systemUInt32.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_uint32TypeRef));
+    hr = GetTypeRef(systemUInt64.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_uint64TypeRef));
+    hr = GetTypeRef(systemByte.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_byteTypeRef));
+    hr = GetTypeRef(systemSByte.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_signedByteTypeRef));
+    hr = GetTypeRef(systemBoolean.c_str(), msCorLibRef, pEmit, &(pModuleInfo->m_boolTypeRef));
+
+    mdAssemblyRef assemblyRef = mdTokenNil;
+    mdTypeRef typeRef = mdTokenNil;
+
+    // Generate assemblyRef for our managed-tracing assembly
+    BYTE rgbPublicKeyToken[] = { 0xa1, 0x6e, 0x91, 0xe2, 0x62, 0x6a, 0xfe, 0x0a };
+    WCHAR wszLocale[1] = { L'\0' };
+
+    ASSEMBLYMETADATA assemblyMetaData;
+    memset(&assemblyMetaData, 0, sizeof(assemblyMetaData));
+    assemblyMetaData.usMajorVersion = 1;
+    assemblyMetaData.usMinorVersion = 0;
+    assemblyMetaData.usBuildNumber = 0;
+    assemblyMetaData.usRevisionNumber = 0;
+    assemblyMetaData.szLocale = wszLocale;
+#ifdef _WINDOWS
+    assemblyMetaData.cbLocale = _countof(wszLocale);
+#else
+    assemblyMetaData.cbLocale = sizeof(wszLocale);
 #endif
 
-    // get the moduleId and method token for instrument method entry
-    for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
+    spLogger->LogMessage(_T("Start DefineAssemblyRef"));
+    hr = pAssemblyEmit->DefineAssemblyRef(
+        (void*)rgbPublicKeyToken,
+        sizeof(rgbPublicKeyToken),
+        ManagedTracingAssemblyName.c_str(),
+        &assemblyMetaData,
+        0,                   // hash blob
+        0,                   // cb of hash blob
+        0,                      // flags
+        &assemblyRef);
+    // Generate typeRef to our managed tracer
+    spLogger->LogMessage(_T("End DefineAssemblyRef"));
+
+    spLogger->LogMessage(_T("Start DefineTypeRefByName"));
+    hr = pEmit->DefineTypeRefByName(
+        assemblyRef,
+        ManagedTracingTracerClassName.c_str(),
+        &typeRef);
+    spLogger->LogMessage(_T("End DefineTypeRefByName"));
+
+    spLogger->LogMessage(_T("Start DefineMemberRef"));
+    hr = pEmit->DefineMemberRef(
+        typeRef,
+        k_wszEnteredFunctionProbeName.c_str(),
+        sigFunctionEnterProbe,
+        sizeof(sigFunctionEnterProbe),
+        &(pModuleInfo->m_mdEnterProbeRef));
+    spLogger->LogMessage(_T("End DefineMemberRef"));
+
+    if (hr != S_OK)
     {
-        const tstring& instrModuleName = pInstrumentMethodEntry->GetModuleName();
-
-        if (wcscmp(clrieStrModuleName, instrModuleName.c_str()) == 0)
-        {
-            // search for method name inside all the types of the matching module
-            const tstring& methodName = pInstrumentMethodEntry->GetMethodName();
-
-            CComPtr<IMetaDataImport2> pMetadataImport;
-            IfFailRet(pModuleInfo->GetMetaDataImport((IUnknown**)&pMetadataImport));
-
-            BOOL bIsRejit = pInstrumentMethodEntry->GetIsRejit();
-
-            // Only request ReJIT if the method will modify code on ReJIT. On .NET Core, the runtime will
-            // only callback into the profiler for the ReJIT of the method if ReJIT is requested whereas the
-            // appropriate callbacks are made for both JIT and ReJIT on .NET Framework.
-            if (bIsRejit)
-            {
-                MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spTypeDefEnum(pMetadataImport, nullptr);
-                mdTypeDef typeDef = mdTypeDefNil;
-                ULONG cTokens = 0;
-                while (S_OK == (hr = pMetadataImport->EnumTypeDefs(spTypeDefEnum.Get(), &typeDef, 1, &cTokens)))
-                {
-                    MicrosoftInstrumentationEngine::CMetadataEnumCloser<IMetaDataImport2> spMethodEnum(pMetadataImport, nullptr);
-                    mdToken methodDefs[16];
-                    ULONG cMethod = 0;
-                    pMetadataImport->EnumMethodsWithName(spMethodEnum.Get(), typeDef, methodName.c_str(), methodDefs, extent<decltype(methodDefs)>::value, &cMethod);
-
-                    if (cMethod > 0)
-                    {
-                        pModuleInfo->RequestRejit(methodDefs[0]);
-                        break;
-                    }
-                }
-            }
-        }
+        spLogger->LogMessage(_T("m_mdEnterProbeRef problem"));
     }
 
+    if (pModuleInfo->m_mdEnterProbeRef == mdTokenNil)
+    {
+        spLogger->LogMessage(_T("m_mdEnterProbeRef is not found"));
+    }
+
+    spLogger->LogMessage(_T("Start DefineMemberRef"));
+    hr = pEmit->DefineMemberRef(
+        typeRef,
+        k_wszExitedFunctionProbeName.c_str(),
+        sigFunctionExitProbe,
+        sizeof(sigFunctionExitProbe),
+        &(pModuleInfo->m_mdExitProbeRef));
+    spLogger->LogMessage(_T("End DefineMemberRef"));
+
+    spLogger->LogMessage(_T("End AddTracingReferencesToModule"));
+    return S_OK;
+}
+
+HRESULT CInstrumentationMethod::GetTypeRef(LPCWSTR typeName, mdToken sourceLibraryReference, IMetaDataEmit* pEmit, mdTypeRef* ptr)
+{
+    HRESULT hr = pEmit->DefineTypeRefByName(sourceLibraryReference, typeName, ptr);
+    return hr;
+}
+
+HRESULT STDMETHODCALLTYPE CInstrumentationMethod::ModuleFlagsAllowInstrumentation(DWORD dwModuleFlags)
+{
+    if ((dwModuleFlags & COR_PRF_MODULE_WINDOWS_RUNTIME) != 0 ||
+        (dwModuleFlags & COR_PRF_MODULE_RESOURCE) != 0)
+    {
+        return E_FAIL;
+    }
     return S_OK;
 }
 
@@ -824,11 +1444,23 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
     InstrStr(clrieStrModule);
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModule.m_bstr));
 
+    CComPtr<IProfilerManagerLogging> spLogger;
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
+    spLogger->LogMessage(_T("ModuleName"));
+    spLogger->LogMessage(clrieStrModule);
+
+    InstrStr(clrieStrMethodName);
+    pMethodInfo->GetName(&clrieStrMethodName.m_bstr);
+    spLogger->LogMessage(_T("MethodName"));
+    spLogger->LogMessage(clrieStrMethodName.m_bstr);
+
     tstring moduleName = clrieStrModule.BStr();
 
     for (shared_ptr<CInstrumentMethodEntry> pInstrumentMethodEntry : m_instrumentMethodEntries)
     {
         const tstring& enteryModuleName = pInstrumentMethodEntry->GetModuleName();
+        spLogger->LogMessage(_T("enteryModuleName"));
+        spLogger->LogMessage(enteryModuleName.c_str());
 
         if (wcscmp(enteryModuleName.c_str(), clrieStrModule) == 0)
         {
@@ -837,6 +1469,8 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
             pMethodInfo->GetName(&clrieStrMethodName.m_bstr);
 
             const tstring& entryMethodName= pInstrumentMethodEntry->GetMethodName();
+            spLogger->LogMessage(_T("entryMethodName"));
+            spLogger->LogMessage(entryMethodName.c_str());
 
             if (wcscmp(entryMethodName.c_str(), clrieStrMethodName) == 0)
             {
@@ -844,7 +1478,8 @@ HRESULT CInstrumentationMethod::ShouldInstrumentMethod(_In_ IMethodInfo* pMethod
 
                 BOOL bRequireRejit = pInstrumentMethodEntry->GetIsRejit();
 
-                *pbInstrument = (bRequireRejit == isRejit);
+                *pbInstrument = true;
+                //*pbInstrument = (bRequireRejit == isRejit);
                 return S_OK;
             }
         }
@@ -888,7 +1523,7 @@ HRESULT CInstrumentationMethod::BeforeInstrumentMethod(_In_ IMethodInfo* pMethod
         // TODO: (wiktor) add sequence points to test
         vector<DWORD> baselineSequencePoints;
         baselineSequencePoints.resize(corIlMap.size());
-        for (size_t i = 0; i < baselineSequencePoints.size(); i++)
+        for (long i = 0; i < baselineSequencePoints.size(); i++)
         {
             baselineSequencePoints[i] = corIlMap[i].newOffset;
         }
@@ -911,16 +1546,63 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         return E_FAIL;
     }
 
-    BOOL bRequireRejit = pMethodEntry->GetIsRejit();
+    /*BOOL bRequireRejit = pMethodEntry->GetIsRejit();
     if (bRequireRejit != isRejit)
     {
         return E_FAIL;
+    }*/
+    CComPtr<IProfilerManagerLogging> spLogger;
+    m_pProfilerManager->GetLoggingInstance(&spLogger);
+
+    CComPtr<IModuleInfo> spModuleInfo;
+    IfFailRet(pMethodInfo->GetModuleInfo(&spModuleInfo));
+
+    ModuleID moduleID;
+    spModuleInfo->GetModuleID(&moduleID);
+
+    CComPtr<ICorProfilerInfo> pCorProfilerInfo;
+    m_pProfilerManager->GetCorProfilerInfo((IUnknown**)&pCorProfilerInfo);
+
+    CComPtr<IMetaDataEmit> pEmit;
+    {
+        CComPtr<IUnknown> pUnk;
+
+        HRESULT hr = pCorProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataEmit, &pUnk);
+        hr = pUnk->QueryInterface(IID_IMetaDataEmit, (LPVOID*)&pEmit);
     }
+
+
+    WCHAR methodName1[] = _T("RequestGet");
+    WCHAR* methodName = methodName1;
+    ULONG methodNameLength = sizeof(methodName);
+    WCHAR typeName1[] = _T("AspNetCore3Test.Program");
+    WCHAR* typeName = typeName1;
+    ULONG typeLength = sizeof(typeName);
+    WCHAR customAttribute1[] = _T("CustomAtt");
+    WCHAR* customAttribute = customAttribute1;
+    ULONG customAttributeLength = sizeof(customAttribute);
+
+    mdString methodNameStringToken = mdStringNil;
+    mdString typeNameStringToken = mdStringNil;
+    mdString customAttStringToken = mdStringNil;
+    pEmit->DefineUserString(methodName, 10, &methodNameStringToken);
+    pEmit->DefineUserString(typeName, 22, &typeNameStringToken);
+    pEmit->DefineUserString(customAttribute, 9, &customAttStringToken);
 
     vector<shared_ptr<CInstrumentInstruction>> instructions = pMethodEntry->GetInstructions();
 
     CComPtr<IInstructionGraph> pInstructionGraph;
     IfFailRet(pMethodInfo->GetInstructions(&pInstructionGraph));
+
+    /*CComPtr<IUnknown> pUnk;
+    HRESULT hr = pCorProfilerInfo->GetModuleMetaData(moduleID, ofWrite, IID_IMetaDataEmit, &pUnk);
+    hr = pUnk->QueryInterface(IID_IMetaDataEmit, (LPVOID*)&pEmit);*/
+
+    BSTR methodName2 = nullptr;
+    pMethodInfo->GetFullName(&methodName2);
+
+    spLogger->LogMessage(_T("InstrumentMethod"));
+    spLogger->LogMessage(methodName2);
 
     if (pMethodEntry->IsSingleRetFirst())
     {
@@ -929,15 +1611,16 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
 
     if (pMethodEntry->GetPointTo() != nullptr)
     {
+        spLogger->LogMessage(_T("point to"));
         std::shared_ptr<CInstrumentMethodPointTo> spPointTo = pMethodEntry->GetPointTo();
         BYTE pSignature[256] = {};
         DWORD cbSignature = 0;
         pMethodInfo->GetCorSignature(extent<decltype(pSignature)>::value, pSignature, &cbSignature);
 
-
+        /*
         mdToken tkMethodToken = mdTokenNil;
 
-        CComPtr<IModuleInfo> spModuleInfo;
+        //CComPtr<IModuleInfo> spModuleInfo;
         IfFailRet(pMethodInfo->GetModuleInfo(&spModuleInfo));
 
         mdToken tkMscorlibRef = mdTokenNil;
@@ -999,8 +1682,9 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         mdToken tkTypeToken;
 
         HRESULT hrFound = spIMetaDataImport->FindTypeRef(tkMscorlibRef, spPointTo->m_typeName.c_str(), &tkTypeToken);
+        */
 
-        if (hrFound == CLDB_E_RECORD_NOTFOUND)
+        /*if (hrFound == CLDB_E_RECORD_NOTFOUND)
         {
             CComPtr<IMetaDataEmit> spIMetaDataEmit;
             IfFailRet(spModuleInfo->GetMetaDataEmit(
@@ -1011,11 +1695,11 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         else if (FAILED(hrFound))
         {
             IfFailRet(hrFound);
-        }
+        }*/
 
-        hrFound = spIMetaDataImport->FindMemberRef(tkTypeToken, spPointTo->m_methodName.c_str(), pSignature, cbSignature, &tkMethodToken);
+        //hrFound = spIMetaDataImport->FindMemberRef(tkTypeToken, spPointTo->m_methodName.c_str(), pSignature, cbSignature, &tkMethodToken);
 
-        if (hrFound == CLDB_E_RECORD_NOTFOUND)
+        /*if (hrFound == CLDB_E_RECORD_NOTFOUND)
         {
             CComPtr<IMetaDataEmit> spIMetaDataEmit;
             IfFailRet(spModuleInfo->GetMetaDataEmit(
@@ -1026,7 +1710,7 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         else if (FAILED(hrFound))
         {
             IfFailRet(hrFound);
-        }
+        }*/
 
 
         // Get arguments count
@@ -1034,37 +1718,145 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
             return S_FALSE;
         USHORT argsCount = pSignature[1];
 
+        vector<CLocalType> locals;
+        locals.push_back(CLocalType(_T("System.Object")));
+        locals.push_back(CLocalType(_T("System.Object")));
+        pMethodEntry->AddLocals(locals);
+
+        IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
+
+        spLogger->LogMessage(_T("index[0]"));
+        printf("%d\n", indexes[0]);
+        spLogger->LogMessage(_T("index[1]"));
+        printf("%d\n", indexes[1]);
+
         CComPtr<IInstructionFactory> sptrInstructionFactory;
         IfFailRet(pMethodInfo->GetInstructionFactory(&sptrInstructionFactory));
 
         CComPtr<IInstructionGraph> sptrInstructionGraph;
         IfFailRet(pMethodInfo->GetInstructions(&sptrInstructionGraph));
-        sptrInstructionGraph->RemoveAll();
+        //sptrInstructionGraph->RemoveAll();
 
+        
         CComPtr<IInstruction> sptrCurrent;
         IfFailRet(sptrInstructionGraph->GetFirstInstruction(&sptrCurrent));
 
-        for (USHORT i = 0; i < argsCount; i++)
+        // store NULL in SpanContext
+        //ldNull
+        CComPtr<IInstruction> ldNull;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, ldNull));
+        //sptrCurrent = ldNull;
+        //StLoc
+        CComPtr<IInstruction> stLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(0, &stLoc));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stLoc));
+        //sptrCurrent = stLoc;
+
+        // initialize array
+        CComPtr<IInstruction> ldcI4;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldc_I4_2, &ldcI4));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, ldcI4));
+        //sptrCurrent = ldcI4;
+        CComPtr<IInstruction> newArr;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Newarr, moduleInfo.m_objectTypeRef, &newArr));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, newArr));
+        //sptrCurrent = newArr;
+
+        CComPtr<IInstruction> stArrLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(1, &stArrLoc));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stArrLoc));
+        //sptrCurrent = stArrLoc;
+
+        /*CComPtr<IInstruction> ldNull3;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull3));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull3));
+        sptrCurrent = ldNull3;
+        CComPtr<IInstruction> stArrLoc;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(1, &stArrLoc));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, stArrLoc));
+        sptrCurrent = stArrLoc;*/
+
+        //load called object
+        CComPtr<IInstruction> sptrLoadArg;
+        IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(0, &sptrLoadArg));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrLoadArg));
+        //sptrCurrent = sptrLoadArg;
+
+        /*CComPtr<IInstruction> ldLoc1;
+        IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(0, &ldLoc1));
+        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, ldLoc1));
+        sptrCurrent = ldLoc1;*/
+
+        CComPtr<IInstruction> ldLoc2;
+        IfFailRet(sptrInstructionFactory->CreateLoadLocalInstruction(1, &ldLoc2));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldLoc2));
+        //sptrCurrent = ldLoc2;
+
+        /*CComPtr<IInstruction> ldNull2;
+        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ldnull, &ldNull2));
+        IfFailRet(pInstructionGraph->InsertAfter(sptrCurrent, ldNull2));
+        sptrCurrent = ldNull2;*/
+
+        CComPtr<IInstruction> ldTypeName;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, typeNameStringToken, &ldTypeName));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldTypeName));
+        //sptrCurrent = ldTypeName;
+
+        CComPtr<IInstruction> ldMethodName;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, methodNameStringToken, &ldMethodName));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldMethodName));
+        //sptrCurrent = ldMethodName;
+
+        CComPtr<IInstruction> ldCustomAttName;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Ldstr, customAttStringToken, &ldCustomAttName));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, ldCustomAttName));
+
+        /*for (USHORT i = 0; i < argsCount; i++)
         {
             CComPtr<IInstruction> sptrLoadArg;
-
             IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg));
             IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg));
-
             sptrCurrent = sptrLoadArg;
+        }*/
+
+        if (moduleInfo.m_mdEnterProbeRef == mdTokenNil)
+        {
+            spLogger->LogMessage(_T("mdToken is nil"));
         }
 
         CComPtr<IInstruction> sptrCallMethod;
 
-        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, tkMethodToken, &sptrCallMethod));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrCallMethod));
-        sptrCurrent = sptrCallMethod;
+        IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &sptrCallMethod));
+        IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrCallMethod));
+        //sptrCurrent = sptrCallMethod;
 
-        CComPtr<IInstruction> sptrReturn;
+        //CComPtr<IInstruction> sptrReturn;
 
-        IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
-        IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn));
-        sptrCurrent = sptrReturn;
+        //IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn));
+        //IfFailRet(sptrInstructionGraph->InsertBefore(sptrCurrent, sptrReturn));
+        //sptrCurrent = sptrReturn;
+
+        CComPtr<IInstruction> stLoc2;
+        IfFailRet(sptrInstructionFactory->CreateStoreLocalInstruction(0, &stLoc2));
+        IfFailRet(pInstructionGraph->InsertBefore(sptrCurrent, stLoc2));
+
+        /* for (USHORT i = 0; i < argsCount; i++)
+         {
+             CComPtr<IInstruction> sptrLoadArg2;
+             IfFailRet(sptrInstructionFactory->CreateLoadArgInstruction(i, &sptrLoadArg2));
+             IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrLoadArg2));
+             sptrCurrent = sptrLoadArg2;
+         }*/
+
+         /*CComPtr<IInstruction> sptrCallMethod2;
+         IfFailRet(sptrInstructionFactory->CreateTokenOperandInstruction(Cee_Call, moduleInfo.m_mdEnterProbeRef, &sptrCallMethod2));
+         IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrCallMethod));
+         sptrCurrent = sptrCallMethod2;
+         CComPtr<IInstruction> sptrReturn2;
+         IfFailRet(sptrInstructionFactory->CreateInstruction(Cee_Ret, &sptrReturn2));
+         IfFailRet(sptrInstructionGraph->InsertAfter(sptrCurrent, sptrReturn2));
+         sptrCurrent = sptrReturn2;*/
 
     }
     else if (!pMethodEntry->IsReplacement())
@@ -1195,7 +1987,10 @@ HRESULT CInstrumentationMethod::InstrumentMethod(_In_ IMethodInfo* pMethodInfo, 
         }
     }
 
-    IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
+    spLogger->LogMessage(_T("Start"));
+    printf("%04x", moduleInfo.m_mdEnterProbeRef);
+    //IfFailRet(InstrumentLocals(pMethodInfo, pMethodEntry));
+    spLogger->LogMessage(_T("Finish"));
 
     if (pMethodEntry->IsSingleRetLast())
     {
@@ -1401,11 +2196,16 @@ HRESULT CInstrumentationMethod::InstrumentLocals(IMethodInfo* pMethodInfo, share
 
         CComPtr<ILocalVariableCollection> pLocals;
         IfFailRet(pMethodInfo->GetLocalVariables(&pLocals));
+        DWORD locIndex;
+        pLocals->GetCount(&locIndex);
         for (const CLocalType& local : locals)
         {
+            DWORD indexPtr;
             CComPtr<IType> pType;
             IfFailRet(GetType(pModuleInfo, local, &pType));
-            IfFailRet(pLocals->AddLocal(pType, nullptr));
+            IfFailRet(pLocals->AddLocal(pType, &indexPtr));
+            locIndex++;
+            indexes.push_back(locIndex);
         }
     }
 

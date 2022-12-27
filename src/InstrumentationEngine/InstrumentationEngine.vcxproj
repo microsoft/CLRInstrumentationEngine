@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CompositeType.cpp" />
     <ClCompile Include="MethodJitInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -134,7 +135,6 @@
     <ClCompile Include="AssemblyInjector.cpp" />
     <ClCompile Include="AtlModule.cpp" />
     <ClCompile Include="BranchTargetInfo.cpp" />
-    <ClCompile Include="CompositeType.cpp" />
     <ClCompile Include="CorHeaders.cpp" />
     <ClCompile Include="CorMethodMalloc.cpp" />
     <ClCompile Include="CorProfilerFunctionControlWrapper.cpp" />
@@ -165,6 +165,7 @@
     <ClCompile Include="TokenType.cpp" />
     <ClCompile Include="Type.cpp" />
     <ClCompile Include="TypeCreator.cpp" />
+    <ClInclude Include="CompositeType.h" />
     <ClInclude Include="ProfilerManagerForInstrumentationMethod.h" />
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "NaglerInstrumentMethodEntry.h"
+#include "ModuleInfo.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
 CInstrumentationMethod :
@@ -33,6 +34,7 @@ private:
 
     CComPtr<IProfilerManager> m_pProfilerManager;
     CComPtr<IProfilerStringManager> m_pStringManager;
+    vector<int> indexes;
 
     // CModuleRefCount
 public:
@@ -180,6 +182,12 @@ private:
     HRESULT ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
+    HRESULT STDMETHODCALLTYPE ModuleFlagsAllowInstrumentation(DWORD dwModuleFlags);
+    HRESULT GetTypeRef(LPCWSTR typeName, mdToken sourceLibraryReference, IMetaDataEmit* pEmit, mdTypeRef* ptr);
+    HRESULT STDMETHODCALLTYPE AddTracingReferencesToModule(IMetaDataAssemblyImport* pAssemblyImport, IMetaDataAssemblyEmit* pAssemblyEmit, IMetaDataEmit* pEmit, ModuleInfo* pModuleInfo);
+    BOOL FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyRef* rgAssemblyRefs, ULONG cAssemblyRefs, mdAssemblyRef* parMscorlib);
+    bool IsSystemLib(tstring assemblyName);
+    WCHAR* copyWideChars(WCHAR* dest, const WCHAR* src);
 
     static DWORD WINAPI LoadInstrumentationMethodXml(
         _In_  LPVOID lpParameter
