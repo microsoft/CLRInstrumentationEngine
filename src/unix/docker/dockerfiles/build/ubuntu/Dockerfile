@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 # This image is based on the public Ubuntu 18.04 LTS image
-FROM mcr.microsoft.com/mirror/docker/library/ubuntu:18.04
+FROM mcr.microsoft.com/mirror/docker/library/ubuntu:18.04@sha256:8aa9c2798215f99544d1ce7439ea9c3a6dfd82de607da1cec3a8a2fae005931b
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
