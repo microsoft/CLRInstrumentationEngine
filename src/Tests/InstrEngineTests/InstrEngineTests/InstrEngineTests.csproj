@@ -31,7 +31,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestTestAdapterVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestTestFrameworkVersion)" />
-    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.IL" Version="$(NetCoreVersion)" />
     <PackageReference Include="Microsoft.NETCore.ILAsm" Version="$(NetCoreVersion)" />
     <PackageReference Include="Microsoft.NETCore.ILDAsm" Version="$(NetCoreVersion)" />
