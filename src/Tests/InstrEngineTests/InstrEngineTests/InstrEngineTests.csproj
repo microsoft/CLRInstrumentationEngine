@@ -12,7 +12,7 @@
     <RootNamespace>InstrEngineTests</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
-    <NetCoreVersion>7.0.0-preview.4.22229.4</NetCoreVersion>
+    <NetCoreVersion>7.0.0</NetCoreVersion>
     <IlAsmLocation>$(NuGetPackageRoot)\microsoft.netcore.ilasm\$(NetCoreVersion)\runtimes\native\ilasm.exe</IlAsmLocation>
   </PropertyGroup>
   <ItemGroup>
