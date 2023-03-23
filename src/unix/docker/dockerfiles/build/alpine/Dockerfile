@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-FROM mcr.microsoft.com/dotnet-buildtools/prereqs:alpine-3.13-20211214164113-8a6f4f3
+FROM mcr.microsoft.com/dotnet-buildtools/prereqs:alpine-3.13-20211214164113-8a6f4f3@sha256:5ee23bef02e18237d1874a4f530e0b7d12ca803af87b2516717565f90540c25c
 
 WORKDIR /
 
