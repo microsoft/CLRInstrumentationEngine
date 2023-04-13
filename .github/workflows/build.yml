@@ -16,7 +16,7 @@ jobs:
         # Note OSX isn't officially supported yet, but might be in the future.
         # The build here will help ensure no changes are introduced that
         # would make it difficult.
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-18.04, macos-latest ]
 
     runs-on: ${{ matrix.os }}
 
