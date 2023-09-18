@@ -183,8 +183,8 @@ HRESULT CProfilerManager::InvokeThreadRoutine(_In_ LPTHREAD_START_ROUTINE thread
 }
 
 HRESULT CProfilerManager::AddRawProfilerHook(
-    _In_ IUnknown *pUnkProfilerCallback
-    )
+    _In_ IUnknown* pUnkProfilerCallback
+)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(pUnkProfilerCallback);
@@ -321,7 +321,7 @@ HRESULT CProfilerManager::AddRawProfilerHook(
 }
 
 HRESULT CProfilerManager::RemoveRawProfilerHook(
-    )
+)
 {
     // This doesn't causea a race condition since we are only setting null to the pointer, however this
     // will cause a memory leak as there's no lock-free guarantees to delete the object.
@@ -331,8 +331,8 @@ HRESULT CProfilerManager::RemoveRawProfilerHook(
 }
 
 HRESULT CProfilerManager::GetCorProfilerInfo(
-    _Outptr_ IUnknown **ppCorProfiler
-    )
+    _Outptr_ IUnknown** ppCorProfiler
+)
 {
     IfNullRetPointer(ppCorProfiler);
     IfNullRet(m_pWrappedProfilerInfo);
@@ -473,7 +473,7 @@ DWORD WINAPI CProfilerManager::InstrumentationMethodThreadProc(
 //static
 DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
     _In_ LPVOID lpParameter
-    )
+)
 {
     HRESULT hr = S_OK;
 
@@ -530,8 +530,8 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                     IfFailRet(ParseSettingsConfigurationNode(pSettingsNode, settingsMap));
 
                     for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
-                         it != settingsMap.end();
-                         ++it)
+                        it != settingsMap.end();
+                        ++it)
                     {
                         if (wcscmp(it->first.c_str(), _T("LogLevel")) == 0)
                         {
@@ -583,8 +583,8 @@ DWORD WINAPI CProfilerManager::ParseAttachConfigurationThreadProc(
                             IfFailRet(ParseSettingsConfigurationNode(pInstrumentationMethodChildNode, settingsMap));
 
                             for (unordered_map<tstring, tstring>::iterator it = settingsMap.begin();
-                                 it != settingsMap.end();
-                                 ++it)
+                                it != settingsMap.end();
+                                ++it)
                             {
                                 IfFailRet(pSource->AddSetting(it->first.c_str(), it->second.c_str()));
                             }
@@ -933,14 +933,14 @@ HRESULT CProfilerManager::IsInstrumentationMethodRegistered(_In_ REFGUID clsid, 
 
 // ICorProfilerCallback methods
 HRESULT CProfilerManager::Initialize(
-    _In_ IUnknown *pICorProfilerInfoUnk)
+    _In_ IUnknown* pICorProfilerInfoUnk)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // Try to get instrumentation methods from environment variables
-    IfFailRet(CConfigurationLocator::GetFromEnvironment(m_configSources));
+        // Try to get instrumentation methods from environment variables
+        IfFailRet(CConfigurationLocator::GetFromEnvironment(m_configSources));
 #ifndef PLATFORM_UNIX
     if (0 == m_configSources.size())
     {
@@ -989,7 +989,7 @@ HRESULT CProfilerManager::Initialize(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::DetermineClrVersion()
@@ -1095,7 +1095,7 @@ DWORD CProfilerManager::CalculateEventMask(DWORD dwAdditionalFlags)
 
 HRESULT CProfilerManager::InitializeCore(
     _In_ IUnknown* pCorProfilerInfoUnk
-    )
+)
 {
     IfNullRetPointer(pCorProfilerInfoUnk);
 
@@ -1150,7 +1150,7 @@ HRESULT CProfilerManager::SetupRawProfiler()
             guidRawProfilerClsid,
             pRawProfiler,
             m_hRawProfilerModule
-            ));
+        ));
 
         CLogging::LogMessage(_T("Raw profiler module loaded, component instance created."));
 
@@ -1185,7 +1185,7 @@ HRESULT CProfilerManager::SetEventMask(DWORD dwEventMask)
         m_dwEventMask |= dwEventMask;
     }
     else if ((dwEventMask & COR_PRF_MONITOR_IMMUTABLE) ==
-            (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
+        (m_dwEventMask & COR_PRF_MONITOR_IMMUTABLE))
     {
         // Only allow mutable flags to be set.
         m_dwEventMask |= dwEventMask;
@@ -1284,7 +1284,7 @@ HRESULT CProfilerManager::Shutdown()
 
     PROF_CALLBACK_BEGIN
 
-    CCriticalSectionHolder holder(&m_cs);
+        CCriticalSectionHolder holder(&m_cs);
 
     // Send the event to instrumentation methods.
     SendEventToInstrumentationMethods(&IInstrumentationMethod::OnShutdown);
@@ -1316,22 +1316,22 @@ HRESULT CProfilerManager::Shutdown()
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 
 HRESULT CProfilerManager::AppDomainCreationStarted(
     _In_ AppDomainID appDomainId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    // NOTE: In all likelyhood, the appdomain was already created as it is needed for assembly and module loads
-    CComPtr<IAppDomainInfo> pAppDomainInfo;
+        // NOTE: In all likelyhood, the appdomain was already created as it is needed for assembly and module loads
+        CComPtr<IAppDomainInfo> pAppDomainInfo;
     hr = m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo);
     if (FAILED(hr))
     {
@@ -1340,31 +1340,31 @@ HRESULT CProfilerManager::AppDomainCreationStarted(
 
     IGNORE_IN_NET20_END
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationStarted, appDomainId));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationStarted, appDomainId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::AppDomainCreationFinished(
     _In_ AppDomainID appDomainId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    //Return if the appdomain didn't load correctly
-    if (FAILED (hrStatus))
-    {
-        CLogging::LogMessage(_T("AppDomainCreationFinished bailing out, FAILED hrStatus given"));
-        return S_OK;
-    };
+        //Return if the appdomain didn't load correctly
+        if (FAILED(hrStatus))
+        {
+            CLogging::LogMessage(_T("AppDomainCreationFinished bailing out, FAILED hrStatus given"));
+            return S_OK;
+        };
 
     CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo));
@@ -1378,47 +1378,47 @@ HRESULT CProfilerManager::AppDomainCreationFinished(
 
     IGNORE_IN_NET20_END
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationFinished, appDomainId, hrStatus));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainCreationFinished, appDomainId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::AppDomainShutdownStarted(
     _In_ AppDomainID appDomainId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownStarted, appDomainId));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownStarted, appDomainId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 
 HRESULT CProfilerManager::AppDomainShutdownFinished(
     _In_ AppDomainID appDomainId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // Because the CLR does not guarentee the order of appdomain shutdown and assembly / module unloads.
-    // block those calls for the duration.
-    CCriticalSectionHolder holder(&m_csForAppDomains);
+        // Because the CLR does not guarentee the order of appdomain shutdown and assembly / module unloads.
+        // block those calls for the duration.
+        CCriticalSectionHolder holder(&m_csForAppDomains);
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IAppDomainInfo> pAppDomainInfo;
+        CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(m_pAppDomainCollection->GetAppDomainById(appDomainId, &pAppDomainInfo));
 
     CAppDomainInfo* pRawAppdomainInfo = (CAppDomainInfo*)pAppDomainInfo.p;
@@ -1440,12 +1440,12 @@ HRESULT CProfilerManager::AppDomainShutdownFinished(
     IfFailRet(m_pAppDomainCollection->RemoveAppDomainInfo(appDomainId));
     IGNORE_IN_NET20_END
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownFinished, appDomainId, hrStatus));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AppDomainShutdownFinished, appDomainId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::SendFabricatedModuleUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo)
@@ -1486,7 +1486,7 @@ HRESULT CProfilerManager::ModuleUnloadStartedImpl(_In_ ModuleID moduleId)
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IModuleInfo> pModuleInfo;
+        CComPtr<IModuleInfo> pModuleInfo;
     hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo);
     if (FAILED(hr))
     {
@@ -1496,7 +1496,7 @@ HRESULT CProfilerManager::ModuleUnloadStartedImpl(_In_ ModuleID moduleId)
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadStarted, moduleId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadStarted, moduleId));
 
     return hr;
 }
@@ -1511,7 +1511,7 @@ HRESULT CProfilerManager::ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ 
     CComPtr<IModuleInfo> pModuleInfo;
 
     IGNORE_IN_NET20_BEGIN
-    hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo);
+        hr = m_pAppDomainCollection->GetModuleInfoById(moduleId, &pModuleInfo);
     if (FAILED(hr))
     {
         // Module no longer exists as the appdomain shutdown event already handled cleanup.
@@ -1521,10 +1521,10 @@ HRESULT CProfilerManager::ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethod::OnModuleUnloaded, (IModuleInfo*)(pModuleInfo)));
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadFinished, moduleId, hrStatus));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleUnloadFinished, moduleId, hrStatus));
 
     IGNORE_IN_NET20_BEGIN
-    CComPtr<IAppDomainInfo> pAppDomainInfo;
+        CComPtr<IAppDomainInfo> pAppDomainInfo;
     IfFailRet(pModuleInfo->GetAppDomainInfo(&pAppDomainInfo));
 
     CComPtr<IAssemblyInfo> pAssemblyInfo;
@@ -1541,7 +1541,7 @@ HRESULT CProfilerManager::ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ 
     IfFailRet(pRawModuleInfo->Dispose());
     IGNORE_IN_NET20_END
 
-    return hr;
+        return hr;
 }
 
 HRESULT CProfilerManager::AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId)
@@ -1554,7 +1554,7 @@ HRESULT CProfilerManager::AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId)
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IAssemblyInfo> pAssemblyInfo;
+        CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
     if (FAILED(hr))
     {
@@ -1564,7 +1564,7 @@ HRESULT CProfilerManager::AssemblyUnloadStartedImpl(_In_ AssemblyID assemblyId)
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadStarted, assemblyId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadStarted, assemblyId));
 
     return hr;
 }
@@ -1579,7 +1579,7 @@ HRESULT CProfilerManager::AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId,
 
     IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IAssemblyInfo> pAssemblyInfo;
+        CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
     if (FAILED(hr))
     {
@@ -1600,40 +1600,40 @@ HRESULT CProfilerManager::AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId,
 
     IGNORE_IN_NET20_END
 
-    // Send the event to the raw callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadFinished, assemblyId, hrStatus));
+        // Send the event to the raw callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyUnloadFinished, assemblyId, hrStatus));
 
     return hr;
 }
 
 HRESULT CProfilerManager::AssemblyLoadStarted(
     _In_ AssemblyID assemblyId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyLoadStarted, assemblyId));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyLoadStarted, assemblyId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::AssemblyLoadFinished(
     _In_ AssemblyID assemblyId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IAssemblyInfo> pAssemblyInfo;
+        CComPtr<IAssemblyInfo> pAssemblyInfo;
     hr = m_pAppDomainCollection->GetAssemblyInfoById(assemblyId, &pAssemblyInfo);
     if (FAILED(hr))
     {
@@ -1647,120 +1647,120 @@ HRESULT CProfilerManager::AssemblyLoadFinished(
 
     IGNORE_IN_NET20_END
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyLoadFinished, assemblyId, hrStatus));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::AssemblyLoadFinished, assemblyId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::AssemblyUnloadStarted(
     _In_ AssemblyID assemblyId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(AssemblyUnloadStartedImpl(assemblyId));
+        IfFailRet(AssemblyUnloadStartedImpl(assemblyId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::AssemblyUnloadFinished(
     _In_ AssemblyID assemblyId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(AssemblyUnloadFinishedImpl(assemblyId, hrStatus));
+        IfFailRet(AssemblyUnloadFinishedImpl(assemblyId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ModuleLoadStarted(
     _In_ ModuleID moduleId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // send raw event to registered callbacks
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleLoadStarted, moduleId));
+        // send raw event to registered callbacks
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleLoadStarted, moduleId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ModuleLoadFinished(
     _In_ ModuleID moduleId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleLoadFinished, moduleId, hrStatus));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleLoadFinished, moduleId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ModuleUnloadStarted(
     _In_ ModuleID moduleId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(ModuleUnloadStartedImpl(moduleId));
+        IfFailRet(ModuleUnloadStartedImpl(moduleId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ModuleUnloadFinished(
     _In_ ModuleID moduleId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(ModuleUnloadFinishedImpl(moduleId, hrStatus));
+        IfFailRet(ModuleUnloadFinishedImpl(moduleId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ModuleAttachedToAssembly(
     _In_ ModuleID moduleId,
     _In_ AssemblyID AssemblyId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<IModuleInfo> pModuleInfo;
+        CComPtr<IModuleInfo> pModuleInfo;
     // NOTE: it is expected that ConstructModuleInfo will fail for resource only modules.
     hr = ConstructModuleInfo(moduleId, &pModuleInfo);
     if (SUCCEEDED(hr))
@@ -1771,11 +1771,11 @@ HRESULT CProfilerManager::ModuleAttachedToAssembly(
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleAttachedToAssembly, moduleId, AssemblyId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ModuleAttachedToAssembly, moduleId, AssemblyId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ClassLoadStarted(
@@ -1785,151 +1785,151 @@ HRESULT CProfilerManager::ClassLoadStarted(
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassLoadStarted, classId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassLoadStarted, classId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ClassLoadFinished(
     _In_ ClassID classId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassLoadFinished, classId, hrStatus));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassLoadFinished, classId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ClassUnloadStarted(
     _In_ ClassID classId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassUnloadStarted, classId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassUnloadStarted, classId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ClassUnloadFinished(
     _In_ ClassID classId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassUnloadFinished, classId, hrStatus));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ClassUnloadFinished, classId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::FunctionUnloadStarted(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::FunctionUnloadStarted, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::FunctionUnloadStarted, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::JITCompilationStarted(
     _In_ FunctionID functionId,
     _In_ BOOL fIsSafeToBlock
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    if (m_attachedClrVersion != ClrVersion_2)
-    {
-        CComPtr<CMethodInfo> pInformationalMethodInfo;
-
-        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
-
-        // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
-        // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
-        // copies. This ensures only a single instrumentation pass happens for each method info instance.
-        //
-        // NOTE: this critical section is used in this callback and in JITInline
-        // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
-        CCriticalSectionHolder holder(&m_csForJIT);
-
-        CComPtr<CMethodInfo> pMethodInfo;
-        hr = CreateMethodInfo(functionId, &pMethodInfo);
-        ClearILTransformationStatus(functionId);
-
-        // Class to call cleanup on the method info in the destructor.
-        CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
-
-        if (SUCCEEDED(hr))
+        if (m_attachedClrVersion != ClrVersion_2)
         {
-            CComPtr<IModuleInfo> pModuleInfo;
-            IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+            CComPtr<CMethodInfo> pInformationalMethodInfo;
 
-            BOOL isDynamic = false;
-            IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
+            IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, FALSE));
 
-            // We cannot instrument modules that have no image base
-            if (!isDynamic)
+            // Only allow a single method to be instrumented at a time. Note that the clr sometimes calls JITCompilationStarted
+            // multiple times with same function at the same time, and instrumenting simultainously could result in duplicate
+            // copies. This ensures only a single instrumentation pass happens for each method info instance.
+            //
+            // NOTE: this critical section is used in this callback and in JITInline
+            // m_cs will only be blocked for a short duration. So other callbacks will not be blocked for the time of JIT compiling of the method
+            CCriticalSectionHolder holder(&m_csForJIT);
+
+            CComPtr<CMethodInfo> pMethodInfo;
+            hr = CreateMethodInfo(functionId, &pMethodInfo);
+            ClearILTransformationStatus(functionId);
+
+            // Class to call cleanup on the method info in the destructor.
+            CCleanupMethodInfo cleanupMethodInfo(pMethodInfo);
+
+            if (SUCCEEDED(hr))
             {
-                // Query if the instrumentation methods want to instrument and then have them actually instrument.
-                vector<CComPtr<IInstrumentationMethod>> toInstrument;
-                IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
+                CComPtr<IModuleInfo> pModuleInfo;
+                IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
 
-                // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-                // method body
-                IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+                BOOL isDynamic = false;
+                IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
 
-                // Instrumentation methods to most of their instrumentation during InstrumentMethod
-                IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
-
-                // Send the event to the raw callbacks to give them a chance to instrument.
-                IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-
-                // If the method was instrumetned
-                if (pMethodInfo->IsInstrumented())
+                // We cannot instrument modules that have no image base
+                if (!isDynamic)
                 {
-                    // Give the final instrumentation to the clr.
-                    IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
+                    // Query if the instrumentation methods want to instrument and then have them actually instrument.
+                    vector<CComPtr<IInstrumentationMethod>> toInstrument;
+                    IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, &toInstrument));
 
-                    // Don't fail out with this call. It is too late to undo anything with a failure.
-                    CallOnInstrumentationComplete(pMethodInfo, false);
+                    // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+                    // method body
+                    IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+
+                    // Instrumentation methods to most of their instrumentation during InstrumentMethod
+                    IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, FALSE, toInstrument));
+
+                    // Send the event to the raw callbacks to give them a chance to instrument.
+                    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+
+                    // If the method was instrumetned
+                    if (pMethodInfo->IsInstrumented())
+                    {
+                        // Give the final instrumentation to the clr.
+                        IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
+
+                        // Don't fail out with this call. It is too late to undo anything with a failure.
+                        CallOnInstrumentationComplete(pMethodInfo, false);
+                    }
                 }
             }
         }
-    }
-    else
-    {
-        // Send the event to the raw callbacks to give them a chance to instrument.
-        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
-    }
+        else
+        {
+            // Send the event to the raw callbacks to give them a chance to instrument.
+            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationStarted, functionId, fIsSafeToBlock));
+        }
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 
@@ -1937,37 +1937,37 @@ HRESULT CProfilerManager::JITCompilationFinished(
     _In_ FunctionID functionId,
     _In_ HRESULT hrStatus,
     _In_ BOOL fIsSafeToBlock
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodJitInfo> pMethodJitInfo;
+        CComPtr<CMethodJitInfo> pMethodJitInfo;
     pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, false, 0, this));
     IfFailRet(ForEachInstrumentationMethod(Events::SendJitCompleteEvent, pMethodJitInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationFinished, functionId, hrStatus, fIsSafeToBlock));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCompilationFinished, functionId, hrStatus, fIsSafeToBlock));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::JITCachedFunctionSearchStarted(
     _In_ FunctionID functionId,
-    /* [out] */ BOOL *pbUseCachedFunction
-    )
+    /* [out] */ BOOL* pbUseCachedFunction
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCachedFunctionSearchStarted, functionId, pbUseCachedFunction));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCachedFunctionSearchStarted, functionId, pbUseCachedFunction));
 
     // TODO: I think if any callback says not to use the cached function, the cached
     // function should be disabled. For now, I'm just overriding what the callback say
@@ -1976,52 +1976,52 @@ HRESULT CProfilerManager::JITCachedFunctionSearchStarted(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::JITCachedFunctionSearchFinished(
     _In_ FunctionID functionId,
     _In_ COR_PRF_JIT_CACHE result
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCachedFunctionSearchFinished, functionId, result));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITCachedFunctionSearchFinished, functionId, result));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::JITFunctionPitched(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITFunctionPitched, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::JITFunctionPitched, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::JITInlining(
     _In_ FunctionID callerId,
     _In_ FunctionID calleeId,
-    /* [out] */ BOOL *pfShouldInline
-    )
+    /* [out] */ BOOL* pfShouldInline
+)
 {
     HRESULT hr = S_OK;
     *pfShouldInline = FALSE;
 
     PROF_CALLBACK_BEGIN
 
-    CCriticalSectionHolder holder(&m_csForJIT);
+        CCriticalSectionHolder holder(&m_csForJIT);
 
     if (m_attachedClrVersion != ClrVersion_2)
     {
@@ -2105,53 +2105,53 @@ HRESULT CProfilerManager::JITInlining(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ThreadCreated(
     _In_ ThreadID threadId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadCreated, threadId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadCreated, threadId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ThreadDestroyed(
     _In_ ThreadID threadId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadDestroyed, threadId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadDestroyed, threadId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ThreadAssignedToOSThread(
     _In_ ThreadID managedThreadId,
     _In_ DWORD osThreadId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadAssignedToOSThread, managedThreadId, osThreadId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ThreadAssignedToOSThread, managedThreadId, osThreadId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingClientInvocationStarted()
@@ -2160,43 +2160,43 @@ HRESULT CProfilerManager::RemotingClientInvocationStarted()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientInvocationStarted));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientInvocationStarted));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingClientSendingMessage(
-    _In_ GUID *pCookie,
+    _In_ GUID* pCookie,
     _In_ BOOL fIsAsync
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientSendingMessage, pCookie, fIsAsync));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientSendingMessage, pCookie, fIsAsync));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingClientReceivingReply(
-    _In_ GUID *pCookie,
+    _In_ GUID* pCookie,
     _In_ BOOL fIsAsync
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientReceivingReply, pCookie, fIsAsync));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientReceivingReply, pCookie, fIsAsync));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingClientInvocationFinished()
@@ -2205,27 +2205,27 @@ HRESULT CProfilerManager::RemotingClientInvocationFinished()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientInvocationFinished));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingClientInvocationFinished));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingServerReceivingMessage(
-    _In_ GUID *pCookie,
+    _In_ GUID* pCookie,
     _In_ BOOL fIsAsync
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerReceivingMessage, pCookie, fIsAsync));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerReceivingMessage, pCookie, fIsAsync));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingServerInvocationStarted()
@@ -2234,11 +2234,11 @@ HRESULT CProfilerManager::RemotingServerInvocationStarted()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerInvocationStarted));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerInvocationStarted));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingServerInvocationReturned()
@@ -2247,74 +2247,74 @@ HRESULT CProfilerManager::RemotingServerInvocationReturned()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerInvocationReturned));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerInvocationReturned));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RemotingServerSendingReply(
-    _In_ GUID *pCookie,
+    _In_ GUID* pCookie,
     _In_ BOOL fIsAsync
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerSendingReply, pCookie, fIsAsync));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RemotingServerSendingReply, pCookie, fIsAsync));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::UnmanagedToManagedTransition(
     _In_ FunctionID functionId,
     _In_ COR_PRF_TRANSITION_REASON reason
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::UnmanagedToManagedTransition, functionId, reason));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::UnmanagedToManagedTransition, functionId, reason));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ManagedToUnmanagedTransition(
     _In_ FunctionID functionId,
     _In_ COR_PRF_TRANSITION_REASON reason
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ManagedToUnmanagedTransition, functionId, reason));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ManagedToUnmanagedTransition, functionId, reason));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeSuspendStarted(
     _In_ COR_PRF_SUSPEND_REASON suspendReason
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendStarted, suspendReason));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendStarted, suspendReason));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeSuspendFinished()
@@ -2323,11 +2323,11 @@ HRESULT CProfilerManager::RuntimeSuspendFinished()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendFinished));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendFinished));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeSuspendAborted()
@@ -2336,11 +2336,11 @@ HRESULT CProfilerManager::RuntimeSuspendAborted()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendAborted));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeSuspendAborted));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeResumeStarted()
@@ -2349,11 +2349,11 @@ HRESULT CProfilerManager::RuntimeResumeStarted()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeResumeStarted));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeResumeStarted));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeResumeFinished()
@@ -2362,41 +2362,41 @@ HRESULT CProfilerManager::RuntimeResumeFinished()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeResumeFinished));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeResumeFinished));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeThreadSuspended(
     _In_ ThreadID threadId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeThreadSuspended, threadId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeThreadSuspended, threadId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RuntimeThreadResumed(
     _In_ ThreadID threadId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeThreadResumed, threadId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RuntimeThreadResumed, threadId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::MovedReferences(
@@ -2404,50 +2404,50 @@ HRESULT CProfilerManager::MovedReferences(
     _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
     _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
     _In_reads_(cMovedObjectIDRanges) ULONG cObjectIDRangeLength[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::MovedReferences, cMovedObjectIDRanges, oldObjectIDRangeStart, newObjectIDRangeStart, cObjectIDRangeLength));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::MovedReferences, cMovedObjectIDRanges, oldObjectIDRangeStart, newObjectIDRangeStart, cObjectIDRangeLength));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ObjectAllocated(
     _In_ ObjectID objectId,
     _In_ ClassID classId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectAllocated, objectId, classId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectAllocated, objectId, classId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ObjectsAllocatedByClass(
     _In_ ULONG cClassCount,
     _In_reads_(cClassCount) ClassID classIds[],
     _In_reads_(cClassCount) ULONG cObjects[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectsAllocatedByClass, cClassCount, classIds, cObjects));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectsAllocatedByClass, cClassCount, classIds, cObjects));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ObjectReferences(
@@ -2455,78 +2455,78 @@ HRESULT CProfilerManager::ObjectReferences(
     _In_ ClassID classId,
     _In_ ULONG cObjectRefs,
     _In_reads_(cObjectRefs) ObjectID objectRefIds[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectReferences, objectId, classId, cObjectRefs, objectRefIds));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ObjectReferences, objectId, classId, cObjectRefs, objectRefIds));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RootReferences(
     _In_ ULONG cRootRefs,
     _In_reads_(cRootRefs) ObjectID rootRefIds[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RootReferences, cRootRefs, rootRefIds));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::RootReferences, cRootRefs, rootRefIds));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionThrown(
     _In_ ObjectID thrownObjectId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionThrown, (UINT_PTR)thrownObjectId));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionThrown, (UINT_PTR)thrownObjectId));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionThrown, thrownObjectId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionThrown, thrownObjectId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionSearchFunctionEnter(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFunctionEnter, (IMethodInfo*)pMethodInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionEnter, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionEnter, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionSearchFunctionLeave()
@@ -2535,17 +2535,17 @@ HRESULT CProfilerManager::ExceptionSearchFunctionLeave()
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFunctionLeave));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFunctionLeave));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionLeave));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFunctionLeave));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionSearchFilterEnter(
@@ -2555,20 +2555,20 @@ HRESULT CProfilerManager::ExceptionSearchFilterEnter(
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFilterEnter, (IMethodInfo*)pMethodInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterEnter, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterEnter, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionSearchFilterLeave()
@@ -2577,95 +2577,95 @@ HRESULT CProfilerManager::ExceptionSearchFilterLeave()
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFilterLeave));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchFilterLeave));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterLeave));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchFilterLeave));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionSearchCatcherFound(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionSearchCatcherFound, (IMethodInfo*)pMethodInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchCatcherFound, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionSearchCatcherFound, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerEnter(
     _In_ UINT_PTR unused
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, unused));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerEnter, unused));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionOSHandlerLeave(
     _In_ UINT_PTR unused
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, unused));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionOSHandlerLeave, unused));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionUnwindFunctionEnter(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFunctionEnter, (IMethodInfo*)pMethodInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionEnter, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionEnter, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionUnwindFunctionLeave()
@@ -2674,41 +2674,41 @@ HRESULT CProfilerManager::ExceptionUnwindFunctionLeave()
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFunctionLeave));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFunctionLeave));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionLeave));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFunctionLeave));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionUnwindFinallyEnter(
     _In_ FunctionID functionId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFinallyEnter, (IMethodInfo*)pMethodInfo));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyEnter, functionId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyEnter, functionId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionUnwindFinallyLeave()
@@ -2717,42 +2717,42 @@ HRESULT CProfilerManager::ExceptionUnwindFinallyLeave()
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFinallyLeave));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionUnwindFinallyLeave));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyLeave));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionUnwindFinallyLeave));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionCatcherEnter(
     _In_ FunctionID functionId,
     _In_ ObjectID objectId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodInfo> pMethodInfo;
+        CComPtr<CMethodInfo> pMethodInfo;
     IfFailRet(CreateNewMethodInfo(functionId, &pMethodInfo));
 
     IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionCatcherEnter, (IMethodInfo*)pMethodInfo, objectId));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherEnter, functionId, (ObjectID)objectId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherEnter, functionId, (ObjectID)objectId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionCatcherLeave()
@@ -2761,33 +2761,33 @@ HRESULT CProfilerManager::ExceptionCatcherLeave()
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionCatcherLeave));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodExceptionEvents::ExceptionCatcherLeave));
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherLeave));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCatcherLeave));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::COMClassicVTableCreated(
     _In_ ClassID wrappedClassId,
     _In_ REFGUID implementedIID,
-    _In_ void *pVTable,
+    _In_ void* pVTable,
     _In_ ULONG cSlots
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
+        // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
 
-    CComPtr<ICorProfilerCallback> pCallback;
+        CComPtr<ICorProfilerCallback> pCallback;
 
     CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
@@ -2806,21 +2806,21 @@ HRESULT CProfilerManager::COMClassicVTableCreated(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::COMClassicVTableDestroyed(
     _In_ ClassID wrappedClassId,
     _In_ REFGUID implementedIID,
-    _In_ void *pVTable
-    )
+    _In_ void* pVTable
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
-    CComPtr<ICorProfilerCallback> pCallback;
+        // Compiler complains that these callbacks taking void* parameters are ambiguous. Can't use variadic templates on this call.
+        CComPtr<ICorProfilerCallback> pCallback;
 
     CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
         (volatile PVOID*)&m_profilerCallbackHolder,
@@ -2839,7 +2839,7 @@ HRESULT CProfilerManager::COMClassicVTableDestroyed(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionCLRCatcherFound()
@@ -2848,11 +2848,11 @@ HRESULT CProfilerManager::ExceptionCLRCatcherFound()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCLRCatcherFound));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCLRCatcherFound));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ExceptionCLRCatcherExecute()
@@ -2861,11 +2861,11 @@ HRESULT CProfilerManager::ExceptionCLRCatcherExecute()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCLRCatcherExecute));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback::ExceptionCLRCatcherExecute));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // ICorProfilerCallback2 methods
@@ -2873,51 +2873,51 @@ HRESULT CProfilerManager::ThreadNameChanged(
     _In_ ThreadID threadId,
     _In_ ULONG cchName,
     _In_reads_opt_(cchName) WCHAR name[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::ThreadNameChanged, threadId, cchName, name));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::ThreadNameChanged, threadId, cchName, name));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::GarbageCollectionStarted(
     _In_ int cGenerations,
     _In_reads_(cGenerations) BOOL generationCollected[],
     _In_ COR_PRF_GC_REASON reason
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::GarbageCollectionStarted, cGenerations, generationCollected, reason));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::GarbageCollectionStarted, cGenerations, generationCollected, reason));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::SurvivingReferences(
     _In_ ULONG cSurvivingObjectIDRanges,
     _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
     _In_reads_(cSurvivingObjectIDRanges) ULONG cObjectIDRangeLength[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::SurvivingReferences, cSurvivingObjectIDRanges, objectIDRangeStart, cObjectIDRangeLength));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::SurvivingReferences, cSurvivingObjectIDRanges, objectIDRangeStart, cObjectIDRangeLength));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::GarbageCollectionFinished()
@@ -2926,27 +2926,27 @@ HRESULT CProfilerManager::GarbageCollectionFinished()
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::GarbageCollectionFinished));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::GarbageCollectionFinished));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::FinalizeableObjectQueued(
     _In_ DWORD finalizerFlags,
     _In_ ObjectID objectID
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::FinalizeableObjectQueued, finalizerFlags, objectID));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::FinalizeableObjectQueued, finalizerFlags, objectID));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::RootReferences2(
@@ -2955,62 +2955,62 @@ HRESULT CProfilerManager::RootReferences2(
     _In_reads_(cRootRefs) COR_PRF_GC_ROOT_KIND rootKinds[],
     _In_reads_(cRootRefs) COR_PRF_GC_ROOT_FLAGS rootFlags[],
     _In_reads_(cRootRefs) UINT_PTR rootIds[]
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::RootReferences2, cRootRefs, rootRefIds, rootKinds, rootFlags, rootIds));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::RootReferences2, cRootRefs, rootRefIds, rootKinds, rootFlags, rootIds));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::HandleCreated(
     _In_ GCHandleID handleId,
     _In_ ObjectID initialObjectId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::HandleCreated, handleId, initialObjectId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::HandleCreated, handleId, initialObjectId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::HandleDestroyed(
     _In_ GCHandleID handleId
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::HandleDestroyed, handleId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback2::HandleDestroyed, handleId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // ICorProfilerCallback3 methods
 HRESULT CProfilerManager::InitializeForAttach(
-    _In_ IUnknown *pCorProfilerInfoUnk,
-    _In_ void *pvClientData,
+    _In_ IUnknown* pCorProfilerInfoUnk,
+    _In_ void* pvClientData,
     _In_ UINT cbClientData
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    m_bAttach = true;
+        m_bAttach = true;
 
     if (pvClientData == nullptr ||
         cbClientData == 0)
@@ -3030,7 +3030,7 @@ HRESULT CProfilerManager::InitializeForAttach(
             bufferSize,         // Destination buffer size in Bytes
             pvClientData,       // Source buffer
             (size_t)cbClientData        // Source buffer size in Bytes
-            ));
+        ));
     // Ensure that the data is null terminated.
     pszConfigXml[bufferSize - 1] = 0;
 
@@ -3055,7 +3055,7 @@ HRESULT CProfilerManager::InitializeForAttach(
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ProfilerAttachComplete(void)
@@ -3064,8 +3064,8 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
 
     PROF_CALLBACK_BEGIN
 
-    // Populate module, assembly, and app domain information.
-    CComQIPtr<ICorProfilerInfo3> pProfilerInfo3 = m_pRealProfilerInfo.p;
+        // Populate module, assembly, and app domain information.
+        CComQIPtr<ICorProfilerInfo3> pProfilerInfo3 = m_pRealProfilerInfo.p;
     IfNullRet(pProfilerInfo3);
 
     CComPtr<ICorProfilerModuleEnum> pModuleEnum;
@@ -3096,7 +3096,7 @@ HRESULT CProfilerManager::ProfilerAttachComplete(void)
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ProfilerDetachSucceeded(void)
@@ -3105,11 +3105,11 @@ HRESULT CProfilerManager::ProfilerDetachSucceeded(void)
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::ProfilerDetachSucceeded));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback3::ProfilerDetachSucceeded));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // ICorProfilerCallback4 methods
@@ -3117,19 +3117,19 @@ HRESULT CProfilerManager::ReJITCompilationStarted(
     _In_ FunctionID functionId,
     _In_ ReJITID rejitId,
     _In_ BOOL fIsSafeToBlock
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, TRUE));
+        IfFailRet(SendEventToInstrumentationMethods(&IInstrumentationMethodJitEvents::JitStarted, functionId, TRUE));
 
     IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::ReJITCompilationStarted, functionId, rejitId, fIsSafeToBlock));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // This is the primary function by which the rejit il is obtained. Give the instrumentation methods first crack and then
@@ -3138,101 +3138,101 @@ HRESULT CProfilerManager::GetReJITParameters(
     _In_ ModuleID moduleId,
     _In_ mdMethodDef methodToken,
     _In_ ICorProfilerFunctionControl* pFunctionControl
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    if (m_attachedClrVersion != ClrVersion_2)
-    {
-        // Only allow a single method to be instrumented at a time.
-        CCriticalSectionHolder holder(&m_csForJIT);
-
-        CComPtr<CMethodInfo> pMethodInfo;
-        IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
-        ClearILTransformationStatus(moduleId, methodToken);
-
-        // CreateMethodInfoForRejit adds the method info the token to method info map.
-        // This class is used to cleanup that reference after the rejit has finished
-        class CRemoveMethodInfoAfterRejit
+        if (m_attachedClrVersion != ClrVersion_2)
         {
-        private:
-            CComPtr<CModuleInfo> m_pModuleInfo;
-            mdToken m_methodToken;
+            // Only allow a single method to be instrumented at a time.
+            CCriticalSectionHolder holder(&m_csForJIT);
 
-        public:
-            CRemoveMethodInfoAfterRejit(_In_ CModuleInfo* pModuleInfo, _In_ mdToken methodToken) : m_pModuleInfo(pModuleInfo), m_methodToken(methodToken)
-            {
-            }
+            CComPtr<CMethodInfo> pMethodInfo;
+            IfFailRet(CreateMethodInfoForRejit(moduleId, methodToken, pFunctionControl, &pMethodInfo));
+            ClearILTransformationStatus(moduleId, methodToken);
 
-            ~CRemoveMethodInfoAfterRejit()
+            // CreateMethodInfoForRejit adds the method info the token to method info map.
+            // This class is used to cleanup that reference after the rejit has finished
+            class CRemoveMethodInfoAfterRejit
             {
-                if (m_pModuleInfo != nullptr)
+            private:
+                CComPtr<CModuleInfo> m_pModuleInfo;
+                mdToken m_methodToken;
+
+            public:
+                CRemoveMethodInfoAfterRejit(_In_ CModuleInfo* pModuleInfo, _In_ mdToken methodToken) : m_pModuleInfo(pModuleInfo), m_methodToken(methodToken)
                 {
-                    m_pModuleInfo->SetRejitMethodInfo(m_methodToken, nullptr);
-                    m_pModuleInfo.Release();
+                }
+
+                ~CRemoveMethodInfoAfterRejit()
+                {
+                    if (m_pModuleInfo != nullptr)
+                    {
+                        m_pModuleInfo->SetRejitMethodInfo(m_methodToken, nullptr);
+                        m_pModuleInfo.Release();
+                    }
+                }
+            };
+            CRemoveMethodInfoAfterRejit methodInfoRemover(pMethodInfo->GetModuleInfo(), methodToken);
+
+            CComPtr<IModuleInfo> pModuleInfo;
+            IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
+
+            BOOL isDynamic = false;
+            IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
+
+            // It is not possible to instrument methods that don't have an image base.
+            if (!isDynamic)
+            {
+
+                // Query if the instrumentation methods want to instrument and then have them actually instrument.
+                vector<CComPtr<IInstrumentationMethod>> toInstrument;
+                IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
+
+                // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
+                // method body
+                IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+
+                // Instrumentation methods to most of their instrumentation during InstrumentMethod
+                IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
+
+                CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
+                pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
+
+                if (!pWrappedCorProfilerFunctionControl)
+                {
+                    return E_OUTOFMEMORY;
+                }
+
+                // Send the event to the raw callbacks to give them a chance to instrument.
+                IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
+
+                // If the method was instrumetned
+                if (pMethodInfo->IsInstrumented())
+                {
+                    // Give the final instrumentation to the clr.
+                    IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
+
+                    // Don't fail out with this call. It is too late to undo anything with a failure.
+                    CallOnInstrumentationComplete(pMethodInfo, true);
                 }
             }
-        };
-        CRemoveMethodInfoAfterRejit methodInfoRemover(pMethodInfo->GetModuleInfo(), methodToken);
 
-        CComPtr<IModuleInfo> pModuleInfo;
-        IfFailRet(pMethodInfo->GetModuleInfo(&pModuleInfo));
-
-        BOOL isDynamic = false;
-        IfFailRet(pModuleInfo->GetIsDynamic(&isDynamic));
-
-        // It is not possible to instrument methods that don't have an image base.
-        if (!isDynamic)
-        {
-
-            // Query if the instrumentation methods want to instrument and then have them actually instrument.
-            vector<CComPtr<IInstrumentationMethod>> toInstrument;
-            IfFailRet(CallShouldInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, &toInstrument));
-
-            // Give the instrumentation methods a chance to do method body replacement. Only one can replace the
-            // method body
-            IfFailRet(CallBeforeInstrumentMethodOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
-
-            // Instrumentation methods to most of their instrumentation during InstrumentMethod
-            IfFailRet(CallInstrumentOnInstrumentationMethods(pMethodInfo, TRUE, toInstrument));
-
-            CComPtr<CCorProfilerFunctionInfoWrapper> pWrappedCorProfilerFunctionControl;
-            pWrappedCorProfilerFunctionControl.Attach(new CCorProfilerFunctionInfoWrapper(this, pMethodInfo));
-
-            if (!pWrappedCorProfilerFunctionControl)
-            {
-                return E_OUTOFMEMORY;
-            }
-
-            // Send the event to the raw callbacks to give them a chance to instrument.
-            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, (ICorProfilerFunctionControl*)(pWrappedCorProfilerFunctionControl.p)));
-
-            // If the method was instrumetned
-            if (pMethodInfo->IsInstrumented())
-            {
-                // Give the final instrumentation to the clr.
-                IfFailRet(pMethodInfo->ApplyFinalInstrumentation());
-
-                // Don't fail out with this call. It is too late to undo anything with a failure.
-                CallOnInstrumentationComplete(pMethodInfo, true);
-            }
+            // Don't call cleanup on method info for rejit as we don't have the function id and the methodinfo only needs to survive for the
+            // duration of this call
+            // IfFailRet(pMethodInfo->Cleanup());
         }
-
-        // Don't call cleanup on method info for rejit as we don't have the function id and the methodinfo only needs to survive for the
-        // duration of this call
-        // IfFailRet(pMethodInfo->Cleanup());
-    }
-    else
-    {
-        // Send the event to the raw callbacks to give them a chance to instrument.
-        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, pFunctionControl));
-    }
+        else
+        {
+            // Send the event to the raw callbacks to give them a chance to instrument.
+            IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::GetReJITParameters, moduleId, methodToken, pFunctionControl));
+        }
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ReJITCompilationFinished(
@@ -3240,15 +3240,15 @@ HRESULT CProfilerManager::ReJITCompilationFinished(
     _In_ ReJITID rejitId,
     _In_ HRESULT hrStatus,
     _In_ BOOL fIsSafeToBlock
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IGNORE_IN_NET20_BEGIN
+        IGNORE_IN_NET20_BEGIN
 
-    CComPtr<CMethodJitInfo> pMethodJitInfo;
+        CComPtr<CMethodJitInfo> pMethodJitInfo;
     pMethodJitInfo.Attach(new CMethodJitInfo(functionId, hrStatus, true, rejitId, this));
     ULONG32 cIlMap = 0;
 
@@ -3274,11 +3274,11 @@ HRESULT CProfilerManager::ReJITCompilationFinished(
 
     IGNORE_IN_NET20_END
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::ReJITCompilationFinished, functionId, rejitId, hrStatus, fIsSafeToBlock));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::ReJITCompilationFinished, functionId, rejitId, hrStatus, fIsSafeToBlock));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ReJITError(
@@ -3286,17 +3286,17 @@ HRESULT CProfilerManager::ReJITError(
     _In_ mdMethodDef methodId,
     _In_ FunctionID functionId,
     _In_ HRESULT hrStatus
-    )
+)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::ReJITError, moduleId, methodId, functionId, hrStatus));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::ReJITError, moduleId, methodId, functionId, hrStatus));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::MovedReferences2(
@@ -3310,11 +3310,11 @@ HRESULT CProfilerManager::MovedReferences2(
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::MovedReferences2, cMovedObjectIDRanges, oldObjectIDRangeStart, newObjectIDRangeStart, cObjectIDRangeLength));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::MovedReferences2, cMovedObjectIDRanges, oldObjectIDRangeStart, newObjectIDRangeStart, cObjectIDRangeLength));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::SurvivingReferences2(
@@ -3327,11 +3327,11 @@ HRESULT CProfilerManager::SurvivingReferences2(
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::SurvivingReferences2, cSurvivingObjectIDRanges, objectIDRangeStart, cObjectIDRangeLength));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback4::SurvivingReferences2, cSurvivingObjectIDRanges, objectIDRangeStart, cObjectIDRangeLength));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // ICorProfilerCallback5 methods
@@ -3346,27 +3346,27 @@ HRESULT CProfilerManager::ConditionalWeakTableElementReferences(
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback5::ConditionalWeakTableElementReferences, cRootRefs, keyRefIds, valueRefIds, rootIds));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback5::ConditionalWeakTableElementReferences, cRootRefs, keyRefIds, valueRefIds, rootIds));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 // ICorProfilerCallback6 methods
 HRESULT CProfilerManager::GetAssemblyReferences(
-    _In_ const WCHAR *wszAssemblyPath,
-    _In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider)
+    _In_ const WCHAR* wszAssemblyPath,
+    _In_ ICorProfilerAssemblyReferenceProvider* pAsmRefProvider)
 {
     HRESULT hr = S_OK;
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback6::GetAssemblyReferences, wszAssemblyPath, pAsmRefProvider));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback6::GetAssemblyReferences, wszAssemblyPath, pAsmRefProvider));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 //ICorProfilerCallback7 methods
@@ -3377,17 +3377,17 @@ HRESULT CProfilerManager::ModuleInMemorySymbolsUpdated(
 
     PROF_CALLBACK_BEGIN
 
-    IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback7::ModuleInMemorySymbolsUpdated, moduleId));
+        IfFailRet(SendEventToRawProfilerCallback(&ICorProfilerCallback7::ModuleInMemorySymbolsUpdated, moduleId));
 
     PROF_CALLBACK_END
 
-    return S_OK;
+        return S_OK;
 }
 
 HRESULT CProfilerManager::ConstructAppDomainInfo(
     _In_ AppDomainID appDomainId,
     _Out_ IAppDomainInfo** ppAppDomainInfo
-    )
+)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(ppAppDomainInfo);
@@ -3448,7 +3448,7 @@ HRESULT CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out
         wszAssemblyName.m_p,
         pAppDomainInfo,
         manifestModuleID
-        ));
+    ));
 
     CAppDomainInfo* pRawAppDomainInfo = static_cast<CAppDomainInfo*>(pAppDomainInfo.p);
     IfFailRet(pRawAppDomainInfo->AddAssemblyInfo(pAssemblyInfo));
@@ -3461,7 +3461,7 @@ HRESULT CProfilerManager::ConstructAssemblyInfo(_In_ AssemblyID assemblyId, _Out
 HRESULT CProfilerManager::ConstructModuleInfo(
     _In_ ModuleID moduleId,
     _Out_ IModuleInfo** ppModuleInfo
-    )
+)
 {
     HRESULT hr = S_OK;
     IfNullRetPointer(ppModuleInfo);
@@ -3503,8 +3503,8 @@ HRESULT CProfilerManager::ConstructModuleInfo(
     // NOTE: these calls will fail for winmd. This is okay
     CComPtr<IMetaDataEmit2> pMetaDataEmit2;
     CComPtr<IMetaDataAssemblyEmit> pMetaDataAssemblyEmit;
-    m_pRealProfilerInfo->GetModuleMetaData (moduleId, ofRead | ofWrite, IID_IMetaDataEmit2, (IUnknown**)&pMetaDataEmit2);
-    m_pRealProfilerInfo->GetModuleMetaData (moduleId, ofRead | ofWrite, IID_IMetaDataAssemblyEmit, (IUnknown**)&pMetaDataAssemblyEmit);
+    m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead | ofWrite, IID_IMetaDataEmit2, (IUnknown**)&pMetaDataEmit2);
+    m_pRealProfilerInfo->GetModuleMetaData(moduleId, ofRead | ofWrite, IID_IMetaDataAssemblyEmit, (IUnknown**)&pMetaDataAssemblyEmit);
 
     CComPtr<CModuleInfo> pModuleInfo;
     pModuleInfo.Attach(new CModuleInfo(this));
@@ -3543,7 +3543,7 @@ HRESULT CProfilerManager::ConstructModuleInfo(
         pMetadataAssemblyImport,
         pMetaDataEmit2,
         pMetaDataAssemblyEmit
-        ));
+    ));
 
     IfFailRet(static_cast<CAppDomainInfo*>(pAppDomainInfo.p)->AddModuleInfo(pModuleInfo));
     IfFailRet(static_cast<CAssemblyInfo*>(pAssemblyInfo.p)->AddModuleInfo(pModuleInfo));
@@ -3692,7 +3692,7 @@ HRESULT CProfilerManager::CreateMethodInfoForRejit(
     _In_ mdMethodDef methodToken,
     _In_ ICorProfilerFunctionControl* pFunctionControl,
     _Out_ CMethodInfo** ppMethodInfo
-    )
+)
 {
     HRESULT hr = S_OK;
 
@@ -3832,9 +3832,12 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
                 }
             }
 
+            CLogging::LogMessage(_T("Test log"));
+
             hr = pCurrInstrumentationMethod->InstrumentMethod(pMethodInfo, isRejit);
 
             CLogging::LogMessage(_T("Instrumentation Method finished instrumenting. Result hr is:. hr=%04x"), hr);
+            CLogging::LogMessage(_T("Instrumentation Method finished instrumenting."));
 
             // If any instrumentation method fails to instrument, stop instrumenting. This will cause the unchanged il to be used.
             IfFailRet(hr);
@@ -3843,13 +3846,16 @@ HRESULT CProfilerManager::CallInstrumentOnInstrumentationMethods(
         // After the instrumentation methods have done their instrumentation, render the result IL, etc...
         // This is done before the raw callbacks get a shot at instrumentation. The cor profiler wrapper
         // will give these results to callers when queried.
+        CLogging::LogMessage(_T("Call ApplyIntermediateMethodInstrumentation"));
         IfFailRet(((CMethodInfo*)pMethodInfo)->ApplyIntermediateMethodInstrumentation());
+        CLogging::LogMessage(_T("ApplyIntermediateMethodInstrumentation finished."));
     }
 
+    CLogging::LogMessage(_T("Instrumentation Method finished. Return OK."));
     return S_OK;
 }
 
-HRESULT CProfilerManager::CreateSignatureBuilder(_Out_ ISignatureBuilder ** ppSignatureBuilder)
+HRESULT CProfilerManager::CreateSignatureBuilder(_Out_ ISignatureBuilder** ppSignatureBuilder)
 {
     IfNullRetPointer(ppSignatureBuilder);
     *ppSignatureBuilder = nullptr;
@@ -3897,7 +3903,7 @@ HRESULT CProfilerManager::CallShouldInstrumentOnInstrumentationMethods(
     _In_ IMethodInfo* pMethodInfo,
     _In_ BOOL isRejit,
     _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument
-    )
+)
 {
     HRESULT hr = S_OK;
 
@@ -3975,7 +3981,7 @@ HRESULT CProfilerManager::CallAllowInlineOnInstrumentationMethods(
     _In_ IMethodInfo* pInlineeMethodInfo,
     _In_ IMethodInfo* pInlineSiteMethodInfo,
     _Out_ BOOL* pbShouldInline
-    )
+)
 {
     HRESULT hr = S_OK;
 

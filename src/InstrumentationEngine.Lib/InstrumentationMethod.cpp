@@ -9,6 +9,10 @@
 #include "SignatureValidator.h"
 #endif
 #include "../Common.Headers/StringUtils.h"
+//extern "C"
+//{
+//#include "dlfcn.h"
+//}
 
 
 MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
@@ -18,7 +22,7 @@ MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
     _In_ LPCWSTR zwModule,
     _In_ GUID& guidClassId,
     _In_ DWORD dwPriority
-    ) : m_hmod(NULL), m_bstrName(zwName), m_bstrModuleFolder(zwModuleFolder), m_bstrModule(zwModule), m_bstrDescription(zwDescription), m_guidClassId(guidClassId), m_dwPriority(dwPriority)
+) : m_hmod(NULL), m_bstrName(zwName), m_bstrModuleFolder(zwModuleFolder), m_bstrModule(zwModule), m_bstrDescription(zwDescription), m_guidClassId(guidClassId), m_dwPriority(dwPriority)
 {
 
 }
@@ -26,7 +30,7 @@ MicrosoftInstrumentationEngine::CInstrumentationMethod::CInstrumentationMethod(
 HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::Initialize(
     _In_ IProfilerManager* pProfilerManager,
     _In_ bool validateCodeSignature
-    )
+)
 {
     HRESULT hr = S_OK;
 
@@ -48,7 +52,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeForAtt
     _In_ IProfilerManager* pProfilerManager,
     _In_ IEnumInstrumentationMethodSettings* pSettingsEnum,
     _In_ bool validateCodeSignature
-    )
+)
 {
     HRESULT hr = S_OK;
 
@@ -68,8 +72,11 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeForAtt
 
 HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     _In_ bool validateCodeSignature
-    )
+)
 {
+    CLogging::LogMessage(_T("CInstrumentationMethod::InitializeCore - validateCodeSignature, PID: %d"), validateCodeSignature);
+    CLogging::LogError(_T("CInstrumentationMethod::InitializeCore - validateCodeSignature, PID: %d"), validateCodeSignature);
+
     HRESULT hr = S_OK;
 
     if ((m_bstrName.Length() == 0) ||
@@ -100,6 +107,27 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return hr;
     }
 
+    // open the library
+    /*CLogging::LogError(
+        _T("Opening libInstrumentationEngine.Method.so"));
+    void* handle = dlopen("/home/azureuser/AspNetCore3Test/base/libInstrumentationEngine.Method.so", RTLD_GLOBAL);
+
+    char* error;
+    error = dlerror();
+    if (!error)
+    {
+        CLogging::LogError(
+            _T("ERROR\tNo error from dlopen for non-library file\n"));
+    }
+    else
+        printf("SUCCESS\tCould not open file with too long file name: %s\n", error);
+
+    if (!handle) {
+        CLogging::LogError(
+            _T("Cannot open library... "));
+        return 1;
+    }*/
+
     m_hmod = ::LoadLibrary(wszModuleFullPath);
 
     if (m_hmod == NULL)
@@ -112,7 +140,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
         return HRESULT_FROM_WIN32(error);
     }
 
-    #ifndef PLATFORM_UNIX
+#ifndef PLATFORM_UNIX
     if (validateCodeSignature)
     {
         CSignatureValidator validator;
@@ -125,7 +153,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
             return E_FAIL;
         }
     }
-    #endif
+#endif
 
     typedef HRESULT(__stdcall* DLLGETCLASSOBJECT)(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ void** ppvObject);
 
@@ -162,6 +190,7 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::InitializeCore(
     return S_OK;
 }
 
+
 HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::AttachComplete()
 {
     HRESULT hr = S_OK;
@@ -183,6 +212,36 @@ HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::GetRawInstrument
 
     return hr;
 }
+
+//HRESULT MicrosoftInstrumentationEngine::CInstrumentationMethod::GetLastErrorAsString()
+//{
+//    HRESULT hr = S_OK;
+//    //Get the error message ID, if any.
+//    DWORD errorMessageID = ::GetLastError();
+//    if (errorMessageID == 0) {
+//        return ((HRESULT)1L); //No error message has been recorded
+//    }
+//
+//    LPSTR messageBuffer = nullptr;
+//
+//    //Ask Win32 to give us the string version of that message ID.
+//    //The parameters we pass in, tell Win32 to create the buffer that holds the message for us (because we don't yet know how long the message string will be).
+//    size_t size = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+//        NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+//
+//    ////Copy the error message into a std::string.
+//    //std::wstring message(messageBuffer, size);
+//
+//
+//    CLogging::LogError(
+//        _T("CInstrumentationMethod::GetLastErrorAsString - LastError: %s"),
+//        messageBuffer);
+//
+//    //Free the Win32's string's buffer.
+//    LocalFree(messageBuffer);
+//
+//    return hr;
+//}
 
 REFGUID MicrosoftInstrumentationEngine::CInstrumentationMethod::GetClassId()
 {

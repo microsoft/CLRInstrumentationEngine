@@ -33,23 +33,23 @@ namespace MicrosoftInstrumentationEngine
             _In_ LPCWSTR zwModule,
             _In_ GUID& guidClassId,
             _In_ DWORD dwPriority
-            );
+        );
 
         HRESULT Initialize(
             _In_ IProfilerManager* pProfilerManager,
             _In_ bool validateCodeSignature
-            );
+        );
 
         HRESULT InitializeForAttach(
             _In_ IProfilerManager* pProfilerManager,
             _In_ IEnumInstrumentationMethodSettings* pSettingsEnum,
             _In_ bool validateCodeSignature
-            );
+        );
 
         HRESULT AttachComplete();
 
         HRESULT GetRawInstrumentationMethod(_Out_ IInstrumentationMethod** ppInstrumentationMethod);
-
+        HRESULT GetLastErrorAsString();
         REFGUID GetClassId();
 
         DWORD GetPriority();
@@ -57,6 +57,6 @@ namespace MicrosoftInstrumentationEngine
     private:
         HRESULT InitializeCore(
             _In_ bool validateCodeSignature
-            );
+        );
     };
 }

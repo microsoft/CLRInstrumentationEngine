@@ -117,6 +117,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConversionUtil.cpp" />
     <ClCompile Include="InstrumentationEngineApi.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -125,9 +126,11 @@
     <ClCompile Include="NaglerInstrumentationMethod.cpp" />
     <ClCompile Include="SystemUtils.cpp" />
     <ClInclude Include="assertions.h" />
+    <ClInclude Include="ConversionUtil.h" />
     <ClInclude Include="InstrStr.h" />
     <ClInclude Include="InstrumentationEngineString.h" />
     <ClInclude Include="InstrumentationEngineApi.h" />
+    <ClInclude Include="ModuleInfo.h" />
     <ClInclude Include="NaglerInstrumentationMethod.h" />
     <ClInclude Include="NaglerInstrumentMethodEntry.h" />
     <ClInclude Include="resource.h" />
