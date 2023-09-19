@@ -13,7 +13,7 @@ variables:
 - name: TeamName
   value: ClrInstrumentationEngine
   readonly: true
-- name: CodeQL.Enabled
+- name: Codeql.Enabled
   value: true
   readonly: true
 
