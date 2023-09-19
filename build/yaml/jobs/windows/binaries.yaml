@@ -39,7 +39,7 @@ jobs:
   
   - task: CodeQL3000Init@0
     inputs:
-      Enabled: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev/willxie/static2')]
+      Enabled: true
 
   - template: ../../steps/azuredevops/usedotnet.yaml
 
