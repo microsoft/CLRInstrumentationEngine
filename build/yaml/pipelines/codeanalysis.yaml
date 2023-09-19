@@ -9,13 +9,12 @@
 name: $(date:yyyyMMdd)$(rev:rr)
 
 variables:
+- Codeql.Enabled: true
 - group: CLRIE-ApiScan
 - name: TeamName
   value: ClrInstrumentationEngine
   readonly: true
-- name: Codeql.Enabled
-  value: true
-  readonly: true
+- Codeql.Enabled: true
 
 stages:
 
