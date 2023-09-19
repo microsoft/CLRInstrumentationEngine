@@ -37,6 +37,10 @@ jobs:
   - checkout: self
     clean: true
   
+  - task: CodeQL3000Init@0
+    inputs:
+      Enabled: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev/willxie/static2')]
+
   - template: ../../steps/azuredevops/usedotnet.yaml
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
@@ -47,6 +51,9 @@ jobs:
   - template: ../../steps/windows/binaries.yaml
     parameters:
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+
+  - task: CodeQL3000Finalize@0
+    condition: always()
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/codesignverify.yaml
