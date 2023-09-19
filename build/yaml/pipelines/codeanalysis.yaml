@@ -13,6 +13,9 @@ variables:
 - name: TeamName
   value: ClrInstrumentationEngine
   readonly: true
+- name: CodeQL.Enabled
+  value: true
+  readonly: true
 
 stages:
 
