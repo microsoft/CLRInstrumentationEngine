@@ -63,21 +63,6 @@ stages:
       Platform: AnyCPU
       Analyzer: csharp
 
-- stage: Run_Semmle_Analyzers
-  displayName: Code Analysis (Build Time C++ CodeQL)
-  dependsOn: []
-
-  jobs:
-  - template: ../jobs/codeanalysis/buildanalyzer.yaml
-    parameters:
-      Platform: x64
-      Analyzer: cpp
-
-  - template: ../jobs/codeanalysis/buildanalyzer.yaml
-    parameters:
-      Platform: x86
-      Analyzer: cpp
-
 - stage: Run_PreFast_Analyzers
   displayName: Code Analysis (Build Time C++ PreFast)
   dependsOn: []
