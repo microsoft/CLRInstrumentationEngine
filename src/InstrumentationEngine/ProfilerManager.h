@@ -19,32 +19,29 @@ namespace MicrosoftInstrumentationEngine
 {
     typedef vector<pair<shared_ptr<CInstrumentationMethod>, DWORD>> TInstrumentationMethodsCollection;
 
-    const GUID CLSID_CProfilerManager = { 0x324F817A, 0x7420, 0x4E6D,{ 0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55 } };
+    const GUID CLSID_CProfilerManager = {0x324F817A, 0x7420, 0x4E6D, {0xB3, 0xC1, 0x14, 0x3f, 0xBE, 0xD6, 0xD8, 0x55}};
 
     // This abstract class should be updated with new IProfilerManager interfaces.
     // Both CProfilerManager and CProfilerManagerForInstrumentationMethod inherit this class.
-    class IProfilerManagerContract :
-        public IProfilerManager,
-        public IProfilerManager2,
-        public IProfilerManager3,
-        public IProfilerManager4,
-        public IProfilerManager5,
-        public IProfilerStringManager,
-        public IProfilerManagerLogging
+    class IProfilerManagerContract : public IProfilerManager,
+                                     public IProfilerManager2,
+                                     public IProfilerManager3,
+                                     public IProfilerManager4,
+                                     public IProfilerManager5,
+                                     public IProfilerStringManager,
+                                     public IProfilerManagerLogging
     {
-
     };
 
     class __declspec(uuid("324F817A-7420-4E6D-B3C1-143FBED6D855"))
-    CProfilerManager :
-                     public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
+        CProfilerManager : public ATL::CComObjectRootEx<ATL::CComMultiThreadModel>,
 #ifndef PLATFORM_UNIX
-                     public ATL::CComCoClass<CProfilerManager, &__uuidof(CProfilerManager)>,
+                           public ATL::CComCoClass<CProfilerManager, &__uuidof(CProfilerManager)>,
 #else
-                     public ATL::CComCoClass<CProfilerManager, &CLSID_CProfilerManager>,
+                           public ATL::CComCoClass<CProfilerManager, &CLSID_CProfilerManager>,
 #endif
-                     public IProfilerManagerContract,
-                     public ICorProfilerCallback7
+                           public IProfilerManagerContract,
+                           public ICorProfilerCallback7
     {
     private:
         // Instrumentation methods can disabling profiling on this process before it starts by calling this during initialize.
@@ -140,7 +137,7 @@ namespace MicrosoftInstrumentationEngine
             CComPtr<ICorProfilerCallback7> m_CorProfilerCallback7;
 
         public:
-            IUnknown* GetMemberForInterface(REFGUID guidInterface)
+            IUnknown *GetMemberForInterface(REFGUID guidInterface)
             {
                 if (guidInterface == __uuidof(ICorProfilerCallback))
                 {
@@ -185,7 +182,7 @@ namespace MicrosoftInstrumentationEngine
         // that cause thread context switching. This implementation uses InterlockedExchange functions
         // to read/write the pointer and will produce an expected memory leak since there are no
         // lock-free guarantees to delete the object.
-        CProfilerCallbackHolder* m_profilerCallbackHolder;
+        CProfilerCallbackHolder *m_profilerCallbackHolder;
 
         CComPtr<CAppDomainCollection> m_pAppDomainCollection;
 
@@ -218,45 +215,44 @@ namespace MicrosoftInstrumentationEngine
         void SetInitializingInstrumentationMethodFlags(_In_ DWORD dwFlags);
         DWORD GetInitializingInstrumentationMethodFlags() const;
 
-        HRESULT GetEventMask(_Out_ DWORD* dwEventMask);
+        HRESULT GetEventMask(_Out_ DWORD *dwEventMask);
         HRESULT SetEventMask(DWORD dwEventMask);
-        HRESULT GetEventMask2(_Out_ DWORD* dwEventMaskLow, _Out_ DWORD* dwEventMaskHigh);
+        HRESULT GetEventMask2(_Out_ DWORD *dwEventMaskLow, _Out_ DWORD *dwEventMaskHigh);
         HRESULT SetEventMask2(_In_ DWORD dwEventMaskLow, _In_ DWORD dwEventMaskHigh);
 
         ClrVersion GetAttachedClrVersion() const;
 
         // Returns the raw unwrapped profiler info instance.
-        HRESULT GetRealCorProfilerInfo(ICorProfilerInfo** ppRealProfilerInfo);
+        HRESULT GetRealCorProfilerInfo(ICorProfilerInfo **ppRealProfilerInfo);
 
         HRESULT CreateMethodInfo(
             _In_ FunctionID functionId,
-            _Out_ CMethodInfo** ppMethodInfo
-        );
+            _Out_ CMethodInfo **ppMethodInfo);
 
-        HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
+        HRESULT CreateNewMethodInfo(_In_ FunctionID functionId, _Out_ CMethodInfo **ppMethodInfo);
 
-        HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo* pMethodInfo);
+        HRESULT AddMethodInfoToMap(_In_ FunctionID functionId, _In_ CMethodInfo *pMethodInfo);
         HRESULT RemoveMethodInfoFromMap(_In_ FunctionID functionId);
-        HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo** ppMethodInfo);
+        HRESULT GetMethodInfoById(_In_ FunctionID functionId, _Out_ CMethodInfo **ppMethodInfo);
         // IUnknown
     public:
         BEGIN_COM_MAP(CProfilerManager)
-            COM_INTERFACE_ENTRY(IProfilerManager)
-            COM_INTERFACE_ENTRY(IProfilerManager2)
-            COM_INTERFACE_ENTRY(IProfilerManager3)
-            COM_INTERFACE_ENTRY(IProfilerManager4)
-            COM_INTERFACE_ENTRY(IProfilerManager5)
-            COM_INTERFACE_ENTRY(IProfilerStringManager)
-            COM_INTERFACE_ENTRY(IProfilerManagerLogging)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback2)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback3)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback4)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback5)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback6)
-            COM_INTERFACE_ENTRY(ICorProfilerCallback7)
+        COM_INTERFACE_ENTRY(IProfilerManager)
+        COM_INTERFACE_ENTRY(IProfilerManager2)
+        COM_INTERFACE_ENTRY(IProfilerManager3)
+        COM_INTERFACE_ENTRY(IProfilerManager4)
+        COM_INTERFACE_ENTRY(IProfilerManager5)
+        COM_INTERFACE_ENTRY(IProfilerStringManager)
+        COM_INTERFACE_ENTRY(IProfilerManagerLogging)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback2)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback3)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback4)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback5)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback6)
+        COM_INTERFACE_ENTRY(ICorProfilerCallback7)
 #ifndef PLATFORM_UNIX
-            COM_INTERFACE_ENTRY_AGGREGATE(IID_IMarshal, m_pFTM.p)
+        COM_INTERFACE_ENTRY_AGGREGATE(IID_IMarshal, m_pFTM.p)
 #endif
         END_COM_MAP()
 
@@ -265,8 +261,7 @@ namespace MicrosoftInstrumentationEngine
         DWORD CalculateEventMask(DWORD dwAdditionalFlags);
 
         HRESULT InitializeCore(
-            _In_ IUnknown* pCorProfilerInfoUnk
-            );
+            _In_ IUnknown *pCorProfilerInfoUnk);
 
         // The CLR doesn't initialize com before calling the profiler, and the profiler manager cannot do so itself
         // as that would screw up the com state for the application thread. This thread allows the profiler manager
@@ -275,14 +270,12 @@ namespace MicrosoftInstrumentationEngine
         // lpParameter points to the this pointer so m_configSources can be accessed. This is safe because the thread proc
         // blocks until this is complete.
         static DWORD WINAPI InstrumentationMethodThreadProc(
-            _In_  LPVOID lpParameter
-            );
+            _In_ LPVOID lpParameter);
 
         // lpParameter points to the this pointer so m_wszConfigXml can be accessed. This is safe because the thread proc
         // blocks until this is complete.
         static DWORD WINAPI ParseAttachConfigurationThreadProc(
-            _In_ LPVOID lpParameter
-            );
+            _In_ LPVOID lpParameter);
 
         /* Parses the following XML block of <Setting /> nodes into map of key-value pairs.
          * Name and Value attributes for <Setting /> nodes are required.
@@ -295,31 +288,31 @@ namespace MicrosoftInstrumentationEngine
          *  </Settings>
          */
         static HRESULT ParseSettingsConfigurationNode(
-            _In_ const CComPtr<CXmlNode>& parentNode,
-            _Inout_ unordered_map<tstring, tstring>& settings);
+            _In_ const CComPtr<CXmlNode> &parentNode,
+            _Inout_ unordered_map<tstring, tstring> &settings);
 
-        HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource* pConfigurationSource);
+        HRESULT LoadInstrumentationMethods(_In_ CConfigurationSource *pConfigurationSource);
 
         HRESULT DetermineClrVersion();
 
         // Set the default event mask. This is union'd with the event mask from instrumentation methods and the host.
         static DWORD GetDefaultEventMask();
 
-        //Template method to either QI or simple copy the InstrumentionMethod ComPtr. These methods support CopyInstrumentationMethods.
-        template<typename TInterfaceType>
-        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod>& pRawInstrumentationMethod, TInterfaceType** pInterface)
+        // Template method to either QI or simple copy the InstrumentionMethod ComPtr. These methods support CopyInstrumentationMethods.
+        template <typename TInterfaceType>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> &pRawInstrumentationMethod, TInterfaceType **pInterface)
         {
-            return pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (void**)pInterface);
+            return pRawInstrumentationMethod->QueryInterface(__uuidof(TInterfaceType), (void **)pInterface);
         }
 
-        template<>
-        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod>& pRawInstrumentationMethod, IInstrumentationMethod** pInterface)
+        template <>
+        HRESULT GetInterfaceType(CComPtr<IInstrumentationMethod> &pRawInstrumentationMethod, IInstrumentationMethod **pInterface)
         {
             return pRawInstrumentationMethod.CopyTo(pInterface);
         }
 
-        template<typename TInterfaceType>
-        HRESULT CopyInstrumentationMethods(std::vector<CComPtr<TInterfaceType>>& callbackVector)
+        template <typename TInterfaceType>
+        HRESULT CopyInstrumentationMethods(std::vector<CComPtr<TInterfaceType>> &callbackVector)
         {
             CCriticalSectionHolder lock(&m_cs);
             HRESULT hr;
@@ -340,8 +333,8 @@ namespace MicrosoftInstrumentationEngine
             return S_OK;
         }
 
-        template<typename TInterfaceType, typename TReturnType, typename... TParameters>
-        HRESULT SendEventToInstrumentationMethods(TReturnType(__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
+        template <typename TInterfaceType, typename TReturnType, typename... TParameters>
+        HRESULT SendEventToInstrumentationMethods(TReturnType (__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
         {
             HRESULT hr = S_OK;
 
@@ -359,8 +352,8 @@ namespace MicrosoftInstrumentationEngine
             return hr;
         }
 
-        template<typename TFunc, typename... TParameters>
-        HRESULT ForEachInstrumentationMethod(TFunc func, TParameters... parameters)
+        template <typename TFunc, typename... TParameters>
+        HRESULT ForEachInstrumentationMethod(TFunc func, TParameters&&... parameters)
         {
             HRESULT hr = S_OK;
             vector<CComPtr<IInstrumentationMethod>> callbackVector;
@@ -375,21 +368,21 @@ namespace MicrosoftInstrumentationEngine
             return hr;
         }
 
-        template<typename TInterfaceType, typename TReturnType, typename... TParameters>
-        HRESULT SendEventToRawProfilerCallback(TReturnType(__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
+        template <typename TInterfaceType, typename TReturnType, typename... TParameters>
+        HRESULT SendEventToRawProfilerCallback(TReturnType (__stdcall TInterfaceType::*method)(TParameters...), TParameters... parameters)
         {
             HRESULT hr = S_OK;
 
             CComPtr<TInterfaceType> pCallback;
 
-            CProfilerCallbackHolder* pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder*>(InterlockedCompareExchangePointer(
-                (volatile PVOID*)&m_profilerCallbackHolder,
+            CProfilerCallbackHolder *pProfilerCallbackHolder = static_cast<CProfilerCallbackHolder *>(InterlockedCompareExchangePointer(
+                (volatile PVOID *)&m_profilerCallbackHolder,
                 nullptr,
                 nullptr));
 
             if (pProfilerCallbackHolder != nullptr)
             {
-                pCallback = (TInterfaceType*)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
+                pCallback = (TInterfaceType *)(pProfilerCallbackHolder->GetMemberForInterface(__uuidof(TInterfaceType)));
             }
 
             if (pCallback != nullptr)
@@ -404,28 +397,24 @@ namespace MicrosoftInstrumentationEngine
 
         HRESULT ConstructAppDomainInfo(
             _In_ AppDomainID appDomainId,
-            _Out_ IAppDomainInfo** ppAppDomainInfo
-            );
+            _Out_ IAppDomainInfo **ppAppDomainInfo);
 
         HRESULT ConstructAssemblyInfo(
             _In_ AssemblyID assemblyId,
-            _Out_ IAssemblyInfo** ppAssemblInfo
-            );
+            _Out_ IAssemblyInfo **ppAssemblInfo);
 
         HRESULT ConstructModuleInfo(
             _In_ ModuleID moduleId,
-            _Out_ IModuleInfo** ppModuleInfo
-            );
+            _Out_ IModuleInfo **ppModuleInfo);
 
         HRESULT CreateMethodInfoForRejit(
             _In_ ModuleID moduleId,
             _In_ mdMethodDef methodToken,
-            _In_ ICorProfilerFunctionControl* pFunctionControl,
-            _Out_ CMethodInfo** ppMethodInfo
-            );
+            _In_ ICorProfilerFunctionControl *pFunctionControl,
+            _Out_ CMethodInfo **ppMethodInfo);
 
-        HRESULT SendFabricatedModuleUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo);
-        HRESULT SendFabricatedAssemblyUnloads(_In_ CAppDomainInfo* pRawAppdomainInfo);
+        HRESULT SendFabricatedModuleUnloads(_In_ CAppDomainInfo *pRawAppdomainInfo);
+        HRESULT SendFabricatedAssemblyUnloads(_In_ CAppDomainInfo *pRawAppdomainInfo);
 
         HRESULT ModuleUnloadStartedImpl(_In_ ModuleID moduleId);
         HRESULT ModuleUnloadFinishedImpl(_In_ ModuleID moduleId, _In_ HRESULT hrStatus);
@@ -434,8 +423,7 @@ namespace MicrosoftInstrumentationEngine
         HRESULT AssemblyUnloadFinishedImpl(_In_ AssemblyID assemblyId, _In_ HRESULT hrStatus);
 
         HRESULT InvokeThreadRoutine(
-            _In_ LPTHREAD_START_ROUTINE threadRoutine
-            );
+            _In_ LPTHREAD_START_ROUTINE threadRoutine);
 
 #ifndef PLATFORM_UNIX
         HRESULT SetupRawProfiler();
@@ -443,516 +431,567 @@ namespace MicrosoftInstrumentationEngine
 
         // IProfilerManager methods
     public:
-        STDMETHOD(SetupProfilingEnvironment)(_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths);
+        STDMETHOD(SetupProfilingEnvironment)
+        (_In_reads_(numConfigPaths) BSTR bstrConfigPaths[], _In_ UINT numConfigPaths);
 
-        STDMETHOD(AddRawProfilerHook)(
-            _In_ IUnknown *pUnkProfilerCallback
-            );
+        STDMETHOD(AddRawProfilerHook)
+        (
+            _In_ IUnknown *pUnkProfilerCallback);
 
-        STDMETHOD(RemoveRawProfilerHook)(
-            );
+        STDMETHOD(RemoveRawProfilerHook)
+        ();
 
-        STDMETHOD(GetCorProfilerInfo)(
-            _Outptr_ IUnknown **ppCorProfiler
-            );
+        STDMETHOD(GetCorProfilerInfo)
+        (
+            _Outptr_ IUnknown **ppCorProfiler);
 
-        STDMETHOD(GetRuntimeType)(_Out_ COR_PRF_RUNTIME_TYPE* pRuntimeType);
+        STDMETHOD(GetRuntimeType)
+        (_Out_ COR_PRF_RUNTIME_TYPE *pRuntimeType);
 
         // return the profiler host instance
-        STDMETHOD(GetProfilerHost)(_Out_ IProfilerManagerHost** ppProfilerManagerHost);
+        STDMETHOD(GetProfilerHost)
+        (_Out_ IProfilerManagerHost **ppProfilerManagerHost);
 
         // Returns an instance of IProfilerManagerLogging which instrumentation methods can use
         // to log to the profiler manager or optionally to the profiler host.
-        STDMETHOD(GetLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+        STDMETHOD(GetLoggingInstance)
+        (_Out_ IProfilerManagerLogging **ppLogging);
 
         // By default, logging messages are written to the debug output port. However,
         // hosts can optionally signup to receive them through an instance of IProfilerManagerLoggingHost
-        STDMETHOD(SetLoggingHost)(_In_opt_ IProfilerManagerLoggingHost* pLoggingHost);
+        STDMETHOD(SetLoggingHost)
+        (_In_opt_ IProfilerManagerLoggingHost *pLoggingHost);
 
-        STDMETHOD(GetAppDomainCollection)(_Out_ IAppDomainCollection** ppAppDomainCollection);
+        STDMETHOD(GetAppDomainCollection)
+        (_Out_ IAppDomainCollection **ppAppDomainCollection);
 
-        STDMETHOD(CreateSignatureBuilder)(_Out_ ISignatureBuilder ** ppSignatureBuilder);
+        STDMETHOD(CreateSignatureBuilder)
+        (_Out_ ISignatureBuilder **ppSignatureBuilder);
 
         // Query the profiler manager for a pointer to another instrumentation method.
         // Consumers can call QueryInterface to obtain an interface specific to that
         // instrumentation method
-        STDMETHOD(GetInstrumentationMethod)(_In_ REFGUID cslid, _Out_ IUnknown** ppUnknown);
+        STDMETHOD(GetInstrumentationMethod)
+        (_In_ REFGUID cslid, _Out_ IUnknown **ppUnknown);
 
-        STDMETHOD(RemoveInstrumentationMethod)(_In_opt_ IInstrumentationMethod* pInstrumentationMethod);
+        STDMETHOD(RemoveInstrumentationMethod)
+        (_In_opt_ IInstrumentationMethod *pInstrumentationMethod);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
-        STDMETHOD(AddInstrumentationMethod)(_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        STDMETHOD(AddInstrumentationMethod)
+        (_In_ BSTR bstrModulePath, _In_ BSTR bstrName, _In_ BSTR bstrDescription, _In_ BSTR bstrModule, _In_ BSTR bstrClassGuid, _In_ DWORD dwPriority, _Out_ IInstrumentationMethod **ppInstrumentationMethod);
 
-    // IProfilerManager2 Methods
+        // IProfilerManager2 Methods
     public:
-        STDMETHOD(DisableProfiling)();
+        STDMETHOD(DisableProfiling)
+        ();
 
-        STDMETHOD(ApplyMetadata)(_In_ IModuleInfo* pMethodInfo);
+        STDMETHOD(ApplyMetadata)
+        (_In_ IModuleInfo *pMethodInfo);
 
-    // IProfilerManager3 Methods
+        // IProfilerManager3 Methods
     public:
-        STDMETHOD(GetApiVersion)(_Out_ DWORD* pApiVer);
+        STDMETHOD(GetApiVersion)
+        (_Out_ DWORD *pApiVer);
 
-    // IProfilerManager4 Methods
+        // IProfilerManager4 Methods
     public:
-        STDMETHOD(GetGlobalLoggingInstance)(_Out_ IProfilerManagerLogging** ppLogging);
+        STDMETHOD(GetGlobalLoggingInstance)
+        (_Out_ IProfilerManagerLogging **ppLogging);
 
-    // IProfilerManager5 Methods
+        // IProfilerManager5 Methods
     public:
-        STDMETHOD(IsInstrumentationMethodRegistered)(_In_ REFGUID clsid, _Out_ BOOL* pfRegistered);
+        STDMETHOD(IsInstrumentationMethodRegistered)
+        (_In_ REFGUID clsid, _Out_ BOOL *pfRegistered);
 
-    // IProfilerManagerLogging Methods
+        // IProfilerManagerLogging Methods
     public:
         // If trace logging in enabled in the profiler manager, trace messages are sent to the
         // profiler manager through this function.
-        STDMETHOD(LogMessage)(_In_ const WCHAR* wszMessage);
+        STDMETHOD(LogMessage)
+        (_In_ const WCHAR *wszMessage);
 
         // Errors detected during profiling will be sent to the host through this method
-        STDMETHOD(LogError)(_In_ const WCHAR* wszError);
+        STDMETHOD(LogError)
+        (_In_ const WCHAR *wszError);
 
         // If instrumentation result tracing is enabled, the detailed results of each instrumented
         // method will be sent to the profiler manager host through this method.
-        STDMETHOD(LogDumpMessage)(_In_ const WCHAR* wszMessage);
+        STDMETHOD(LogDumpMessage)
+        (_In_ const WCHAR *wszMessage);
 
         // Called to cause logging to be written to the debug output port (via DebugOutputString) as well
         // as to the host.
-        STDMETHOD(EnableDiagnosticLogToDebugPort)(_In_ BOOL enable);
+        STDMETHOD(EnableDiagnosticLogToDebugPort)
+        (_In_ BOOL enable);
 
         // Allows instrumentation methods and hosts to ask for the current logging flags
-        STDMETHOD(GetLoggingFlags)(_Out_ LoggingFlags* pLoggingFlags);
+        STDMETHOD(GetLoggingFlags)
+        (_Out_ LoggingFlags *pLoggingFlags);
 
         // Allows instrumentation methods and hosts to modify the current logging flags
-        STDMETHOD(SetLoggingFlags)(_In_ LoggingFlags loggingFlags);
+        STDMETHOD(SetLoggingFlags)
+        (_In_ LoggingFlags loggingFlags);
 
-    // IProfilerStringManager Methods
+        // IProfilerStringManager Methods
     public:
-        STDMETHOD(FreeString)(_In_opt_ BSTR bstr)
+        STDMETHOD(FreeString)
+        (_In_opt_ BSTR bstr)
         {
             return InstrumentationEngineFreeString(bstr);
         }
 
         // ICorProfilerCallback methods
     public:
-        STDMETHOD(Initialize)(
+        STDMETHOD(Initialize)
+        (
             _In_ IUnknown *pICorProfilerInfoUnk);
 
-        STDMETHOD(Shutdown)();
+        STDMETHOD(Shutdown)
+        ();
 
-        STDMETHOD(AppDomainCreationStarted)(
-            _In_ AppDomainID appDomainId
-            );
+        STDMETHOD(AppDomainCreationStarted)
+        (
+            _In_ AppDomainID appDomainId);
 
-        STDMETHOD(AppDomainCreationFinished)(
+        STDMETHOD(AppDomainCreationFinished)
+        (
             _In_ AppDomainID appDomainId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(AppDomainShutdownStarted)(
-            _In_ AppDomainID appDomainId
-            );
+        STDMETHOD(AppDomainShutdownStarted)
+        (
+            _In_ AppDomainID appDomainId);
 
-        STDMETHOD(AppDomainShutdownFinished)(
+        STDMETHOD(AppDomainShutdownFinished)
+        (
             _In_ AppDomainID appDomainId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(AssemblyLoadStarted)(
-            _In_ AssemblyID assemblyId
-            );
+        STDMETHOD(AssemblyLoadStarted)
+        (
+            _In_ AssemblyID assemblyId);
 
-        STDMETHOD(AssemblyLoadFinished)(
+        STDMETHOD(AssemblyLoadFinished)
+        (
             _In_ AssemblyID assemblyId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(AssemblyUnloadStarted)(
-            _In_ AssemblyID assemblyId
-            );
+        STDMETHOD(AssemblyUnloadStarted)
+        (
+            _In_ AssemblyID assemblyId);
 
-        STDMETHOD(AssemblyUnloadFinished)(
+        STDMETHOD(AssemblyUnloadFinished)
+        (
             _In_ AssemblyID assemblyId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(ModuleLoadStarted)(
-            _In_ ModuleID moduleId
-            );
+        STDMETHOD(ModuleLoadStarted)
+        (
+            _In_ ModuleID moduleId);
 
-        STDMETHOD(ModuleLoadFinished)(
+        STDMETHOD(ModuleLoadFinished)
+        (
             _In_ ModuleID moduleId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(ModuleUnloadStarted)(
-            _In_ ModuleID moduleId
-            );
+        STDMETHOD(ModuleUnloadStarted)
+        (
+            _In_ ModuleID moduleId);
 
-        STDMETHOD(ModuleUnloadFinished)(
+        STDMETHOD(ModuleUnloadFinished)
+        (
             _In_ ModuleID moduleId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(ModuleAttachedToAssembly)(
+        STDMETHOD(ModuleAttachedToAssembly)
+        (
             _In_ ModuleID moduleId,
-            _In_ AssemblyID AssemblyId
-            );
+            _In_ AssemblyID AssemblyId);
 
-        STDMETHOD(ClassLoadStarted)(
+        STDMETHOD(ClassLoadStarted)
+        (
             _In_ ClassID classId);
 
-        STDMETHOD(ClassLoadFinished)(
+        STDMETHOD(ClassLoadFinished)
+        (
             _In_ ClassID classId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(ClassUnloadStarted)(
-            _In_ ClassID classId
-            );
+        STDMETHOD(ClassUnloadStarted)
+        (
+            _In_ ClassID classId);
 
-        STDMETHOD(ClassUnloadFinished)(
+        STDMETHOD(ClassUnloadFinished)
+        (
             _In_ ClassID classId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(FunctionUnloadStarted)(
-            _In_ FunctionID functionId
-            );
+        STDMETHOD(FunctionUnloadStarted)
+        (
+            _In_ FunctionID functionId);
 
-        STDMETHOD(JITCompilationStarted)(
+        STDMETHOD(JITCompilationStarted)
+        (
             _In_ FunctionID functionId,
-            _In_ BOOL fIsSafeToBlock
-            );
+            _In_ BOOL fIsSafeToBlock);
 
-        STDMETHOD(JITCompilationFinished)(
+        STDMETHOD(JITCompilationFinished)
+        (
             _In_ FunctionID functionId,
             _In_ HRESULT hrStatus,
-            _In_ BOOL fIsSafeToBlock
-            );
+            _In_ BOOL fIsSafeToBlock);
 
-        STDMETHOD(JITCachedFunctionSearchStarted)(
+        STDMETHOD(JITCachedFunctionSearchStarted)
+        (
             _In_ FunctionID functionId,
-            /* [out] */ BOOL *pbUseCachedFunction
-            );
+            /* [out] */ BOOL *pbUseCachedFunction);
 
-        STDMETHOD(JITCachedFunctionSearchFinished)(
+        STDMETHOD(JITCachedFunctionSearchFinished)
+        (
             _In_ FunctionID functionId,
-            _In_ COR_PRF_JIT_CACHE result
-            );
+            _In_ COR_PRF_JIT_CACHE result);
 
-        STDMETHOD(JITFunctionPitched)(
-            _In_ FunctionID functionId
-            );
+        STDMETHOD(JITFunctionPitched)
+        (
+            _In_ FunctionID functionId);
 
-        STDMETHOD(JITInlining)(
+        STDMETHOD(JITInlining)
+        (
             _In_ FunctionID callerId,
             _In_ FunctionID calleeId,
-            /* [out] */ BOOL *pfShouldInline
-            );
+            /* [out] */ BOOL *pfShouldInline);
 
-        STDMETHOD(ThreadCreated)(
-            _In_ ThreadID threadId
-            );
-
-        STDMETHOD(ThreadDestroyed)(
-            _In_ ThreadID threadId
-            );
-
-        STDMETHOD(ThreadAssignedToOSThread)(
-            _In_ ThreadID managedThreadId,
-            _In_ DWORD osThreadId
-            );
-
-        STDMETHOD(RemotingClientInvocationStarted)();
-
-        STDMETHOD(RemotingClientSendingMessage)(
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync);
-
-        STDMETHOD(RemotingClientReceivingReply)(
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync);
-
-        STDMETHOD(RemotingClientInvocationFinished)();
-
-        STDMETHOD(RemotingServerReceivingMessage)(
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync
-            );
-
-        STDMETHOD(RemotingServerInvocationStarted)();
-
-        STDMETHOD(RemotingServerInvocationReturned)();
-
-        STDMETHOD(RemotingServerSendingReply)(
-            _In_ GUID *pCookie,
-            _In_ BOOL fIsAsync
-            );
-
-        STDMETHOD(UnmanagedToManagedTransition)(
-            _In_ FunctionID functionId,
-            _In_ COR_PRF_TRANSITION_REASON reason
-            );
-
-        STDMETHOD(ManagedToUnmanagedTransition)(
-            _In_ FunctionID functionId,
-            _In_ COR_PRF_TRANSITION_REASON reason
-            );
-
-        STDMETHOD(RuntimeSuspendStarted)(
-            _In_ COR_PRF_SUSPEND_REASON suspendReason
-            );
-
-        STDMETHOD(RuntimeSuspendFinished)();
-
-        STDMETHOD(RuntimeSuspendAborted)();
-
-        STDMETHOD(RuntimeResumeStarted)();
-
-        STDMETHOD(RuntimeResumeFinished)();
-
-        STDMETHOD(RuntimeThreadSuspended)(
+        STDMETHOD(ThreadCreated)
+        (
             _In_ ThreadID threadId);
 
-        STDMETHOD(RuntimeThreadResumed)(
-            _In_ ThreadID threadId
-            );
+        STDMETHOD(ThreadDestroyed)
+        (
+            _In_ ThreadID threadId);
 
-        STDMETHOD(MovedReferences)(
+        STDMETHOD(ThreadAssignedToOSThread)
+        (
+            _In_ ThreadID managedThreadId,
+            _In_ DWORD osThreadId);
+
+        STDMETHOD(RemotingClientInvocationStarted)
+        ();
+
+        STDMETHOD(RemotingClientSendingMessage)
+        (
+            _In_ GUID *pCookie,
+            _In_ BOOL fIsAsync);
+
+        STDMETHOD(RemotingClientReceivingReply)
+        (
+            _In_ GUID *pCookie,
+            _In_ BOOL fIsAsync);
+
+        STDMETHOD(RemotingClientInvocationFinished)
+        ();
+
+        STDMETHOD(RemotingServerReceivingMessage)
+        (
+            _In_ GUID *pCookie,
+            _In_ BOOL fIsAsync);
+
+        STDMETHOD(RemotingServerInvocationStarted)
+        ();
+
+        STDMETHOD(RemotingServerInvocationReturned)
+        ();
+
+        STDMETHOD(RemotingServerSendingReply)
+        (
+            _In_ GUID *pCookie,
+            _In_ BOOL fIsAsync);
+
+        STDMETHOD(UnmanagedToManagedTransition)
+        (
+            _In_ FunctionID functionId,
+            _In_ COR_PRF_TRANSITION_REASON reason);
+
+        STDMETHOD(ManagedToUnmanagedTransition)
+        (
+            _In_ FunctionID functionId,
+            _In_ COR_PRF_TRANSITION_REASON reason);
+
+        STDMETHOD(RuntimeSuspendStarted)
+        (
+            _In_ COR_PRF_SUSPEND_REASON suspendReason);
+
+        STDMETHOD(RuntimeSuspendFinished)
+        ();
+
+        STDMETHOD(RuntimeSuspendAborted)
+        ();
+
+        STDMETHOD(RuntimeResumeStarted)
+        ();
+
+        STDMETHOD(RuntimeResumeFinished)
+        ();
+
+        STDMETHOD(RuntimeThreadSuspended)
+        (
+            _In_ ThreadID threadId);
+
+        STDMETHOD(RuntimeThreadResumed)
+        (
+            _In_ ThreadID threadId);
+
+        STDMETHOD(MovedReferences)
+        (
             _In_ ULONG cMovedObjectIDRanges,
             _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
             _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
-            _In_reads_(cMovedObjectIDRanges) ULONG cObjectIDRangeLength[]
-            );
+            _In_reads_(cMovedObjectIDRanges) ULONG cObjectIDRangeLength[]);
 
-        STDMETHOD(ObjectAllocated)(
+        STDMETHOD(ObjectAllocated)
+        (
             _In_ ObjectID objectId,
-            _In_ ClassID classId
-            );
+            _In_ ClassID classId);
 
-        STDMETHOD(ObjectsAllocatedByClass)(
+        STDMETHOD(ObjectsAllocatedByClass)
+        (
             _In_ ULONG cClassCount,
             _In_reads_(cClassCount) ClassID classIds[],
-            _In_reads_(cClassCount) ULONG cObjects[]
-            );
+            _In_reads_(cClassCount) ULONG cObjects[]);
 
-        STDMETHOD(ObjectReferences)(
+        STDMETHOD(ObjectReferences)
+        (
             _In_ ObjectID objectId,
             _In_ ClassID classId,
             _In_ ULONG cObjectRefs,
-            _In_reads_(cObjectRefs) ObjectID objectRefIds[]
-            );
+            _In_reads_(cObjectRefs) ObjectID objectRefIds[]);
 
-        STDMETHOD(RootReferences)(
+        STDMETHOD(RootReferences)
+        (
             _In_ ULONG cRootRefs,
-            _In_reads_(cRootRefs) ObjectID rootRefIds[]
-            );
+            _In_reads_(cRootRefs) ObjectID rootRefIds[]);
 
-        STDMETHOD(ExceptionThrown)(
-            _In_ ObjectID thrownObjectId
-            );
+        STDMETHOD(ExceptionThrown)
+        (
+            _In_ ObjectID thrownObjectId);
 
-        STDMETHOD(ExceptionSearchFunctionEnter)(
-            _In_ FunctionID functionId
-            );
-
-        STDMETHOD(ExceptionSearchFunctionLeave)();
-
-        STDMETHOD(ExceptionSearchFilterEnter)(
+        STDMETHOD(ExceptionSearchFunctionEnter)
+        (
             _In_ FunctionID functionId);
 
-        STDMETHOD(ExceptionSearchFilterLeave)();
+        STDMETHOD(ExceptionSearchFunctionLeave)
+        ();
 
-        STDMETHOD(ExceptionSearchCatcherFound)(
-            _In_ FunctionID functionId
-            );
+        STDMETHOD(ExceptionSearchFilterEnter)
+        (
+            _In_ FunctionID functionId);
 
-        STDMETHOD(ExceptionOSHandlerEnter)(
-            _In_ UINT_PTR __unused
-            );
+        STDMETHOD(ExceptionSearchFilterLeave)
+        ();
 
-        STDMETHOD(ExceptionOSHandlerLeave)(
-            _In_ UINT_PTR __unused
-            );
+        STDMETHOD(ExceptionSearchCatcherFound)
+        (
+            _In_ FunctionID functionId);
 
-        STDMETHOD(ExceptionUnwindFunctionEnter)(
-            _In_ FunctionID functionId
-            );
+        STDMETHOD(ExceptionOSHandlerEnter)
+        (
+            _In_ UINT_PTR __unused);
 
-        STDMETHOD(ExceptionUnwindFunctionLeave)();
+        STDMETHOD(ExceptionOSHandlerLeave)
+        (
+            _In_ UINT_PTR __unused);
 
-        STDMETHOD(ExceptionUnwindFinallyEnter)(
-            _In_ FunctionID functionId
-            );
+        STDMETHOD(ExceptionUnwindFunctionEnter)
+        (
+            _In_ FunctionID functionId);
 
-        STDMETHOD(ExceptionUnwindFinallyLeave)();
+        STDMETHOD(ExceptionUnwindFunctionLeave)
+        ();
 
-        STDMETHOD(ExceptionCatcherEnter)(
+        STDMETHOD(ExceptionUnwindFinallyEnter)
+        (
+            _In_ FunctionID functionId);
+
+        STDMETHOD(ExceptionUnwindFinallyLeave)
+        ();
+
+        STDMETHOD(ExceptionCatcherEnter)
+        (
             _In_ FunctionID functionId,
-            _In_ ObjectID objectId
-            );
+            _In_ ObjectID objectId);
 
-        STDMETHOD(ExceptionCatcherLeave)();
+        STDMETHOD(ExceptionCatcherLeave)
+        ();
 
-        STDMETHOD(COMClassicVTableCreated)(
+        STDMETHOD(COMClassicVTableCreated)
+        (
             _In_ ClassID wrappedClassId,
             _In_ REFGUID implementedIID,
             _In_ void *pVTable,
-            _In_ ULONG cSlots
-            );
+            _In_ ULONG cSlots);
 
-        STDMETHOD(COMClassicVTableDestroyed)(
+        STDMETHOD(COMClassicVTableDestroyed)
+        (
             _In_ ClassID wrappedClassId,
             _In_ REFGUID implementedIID,
-            _In_ void *pVTable
-            );
+            _In_ void *pVTable);
 
-        STDMETHOD(ExceptionCLRCatcherFound)();
+        STDMETHOD(ExceptionCLRCatcherFound)
+        ();
 
-        STDMETHOD(ExceptionCLRCatcherExecute)();
+        STDMETHOD(ExceptionCLRCatcherExecute)
+        ();
 
         // ICorProfilerCallback2 methods
     public:
-        STDMETHOD(ThreadNameChanged)(
+        STDMETHOD(ThreadNameChanged)
+        (
             _In_ ThreadID threadId,
             _In_ ULONG cchName,
-            _In_reads_opt_(cchName) WCHAR name[]
-            );
+            _In_reads_opt_(cchName) WCHAR name[]);
 
-        STDMETHOD(GarbageCollectionStarted)(
+        STDMETHOD(GarbageCollectionStarted)
+        (
             _In_ int cGenerations,
             _In_reads_(cGenerations) BOOL generationCollected[],
-            _In_ COR_PRF_GC_REASON reason
-            );
+            _In_ COR_PRF_GC_REASON reason);
 
-        STDMETHOD(SurvivingReferences)(
+        STDMETHOD(SurvivingReferences)
+        (
             _In_ ULONG cSurvivingObjectIDRanges,
             _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
-            _In_reads_(cSurvivingObjectIDRanges) ULONG cObjectIDRangeLength[]
-            );
+            _In_reads_(cSurvivingObjectIDRanges) ULONG cObjectIDRangeLength[]);
 
-        STDMETHOD(GarbageCollectionFinished)();
+        STDMETHOD(GarbageCollectionFinished)
+        ();
 
-        STDMETHOD(FinalizeableObjectQueued)(
+        STDMETHOD(FinalizeableObjectQueued)
+        (
             _In_ DWORD finalizerFlags,
-            _In_ ObjectID objectID
-            );
+            _In_ ObjectID objectID);
 
-        STDMETHOD(RootReferences2)(
+        STDMETHOD(RootReferences2)
+        (
             _In_ ULONG cRootRefs,
             _In_reads_(cRootRefs) ObjectID rootRefIds[],
             _In_reads_(cRootRefs) COR_PRF_GC_ROOT_KIND rootKinds[],
             _In_reads_(cRootRefs) COR_PRF_GC_ROOT_FLAGS rootFlags[],
-            _In_reads_(cRootRefs) UINT_PTR rootIds[]
-            );
+            _In_reads_(cRootRefs) UINT_PTR rootIds[]);
 
-        STDMETHOD(HandleCreated)(
+        STDMETHOD(HandleCreated)
+        (
             _In_ GCHandleID handleId,
-            _In_ ObjectID initialObjectId
-            );
+            _In_ ObjectID initialObjectId);
 
-        STDMETHOD(HandleDestroyed)(
-            _In_ GCHandleID handleId
-            );
+        STDMETHOD(HandleDestroyed)
+        (
+            _In_ GCHandleID handleId);
 
         // ICorProfilerCallback3 methods
     public:
-        STDMETHOD(InitializeForAttach)(
+        STDMETHOD(InitializeForAttach)
+        (
             _In_ IUnknown *pCorProfilerInfoUnk,
             _In_ void *pvClientData,
-            _In_ UINT cbClientData
-            );
+            _In_ UINT cbClientData);
 
-        STDMETHOD(ProfilerAttachComplete)(void);
+        STDMETHOD(ProfilerAttachComplete)
+        (void);
 
-        STDMETHOD(ProfilerDetachSucceeded)(void);
+        STDMETHOD(ProfilerDetachSucceeded)
+        (void);
 
         // ICorProfilerCallback4 methods
     public:
-        STDMETHOD(ReJITCompilationStarted)(
+        STDMETHOD(ReJITCompilationStarted)
+        (
             _In_ FunctionID functionId,
             _In_ ReJITID rejitId,
-            _In_ BOOL fIsSafeToBlock
-            );
+            _In_ BOOL fIsSafeToBlock);
 
-        STDMETHOD(GetReJITParameters)(
+        STDMETHOD(GetReJITParameters)
+        (
             _In_ ModuleID moduleId,
             _In_ mdMethodDef methodToken,
-            _In_ ICorProfilerFunctionControl* pFunctionControl
-            );
+            _In_ ICorProfilerFunctionControl *pFunctionControl);
 
-        STDMETHOD(ReJITCompilationFinished)(
+        STDMETHOD(ReJITCompilationFinished)
+        (
             _In_ FunctionID functionId,
             _In_ ReJITID rejitId,
             _In_ HRESULT hrStatus,
-            _In_ BOOL fIsSafeToBlock
-            );
+            _In_ BOOL fIsSafeToBlock);
 
-        STDMETHOD(ReJITError)(
+        STDMETHOD(ReJITError)
+        (
             _In_ ModuleID moduleId,
             _In_ mdMethodDef methodId,
             _In_ FunctionID functionId,
-            _In_ HRESULT hrStatus
-            );
+            _In_ HRESULT hrStatus);
 
-        STDMETHOD(MovedReferences2)(
+        STDMETHOD(MovedReferences2)
+        (
             _In_ ULONG cMovedObjectIDRanges,
             _In_reads_(cMovedObjectIDRanges) ObjectID oldObjectIDRangeStart[],
             _In_reads_(cMovedObjectIDRanges) ObjectID newObjectIDRangeStart[],
-            _In_reads_(cMovedObjectIDRanges) SIZE_T cObjectIDRangeLength[]
-            );
+            _In_reads_(cMovedObjectIDRanges) SIZE_T cObjectIDRangeLength[]);
 
-        STDMETHOD(SurvivingReferences2)(
+        STDMETHOD(SurvivingReferences2)
+        (
             _In_ ULONG cSurvivingObjectIDRanges,
             _In_reads_(cSurvivingObjectIDRanges) ObjectID objectIDRangeStart[],
-            _In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[]
-            );
-
+            _In_reads_(cSurvivingObjectIDRanges) SIZE_T cObjectIDRangeLength[]);
 
         // ICorProfilerCallback5 methods
     public:
-        STDMETHOD(ConditionalWeakTableElementReferences)(
+        STDMETHOD(ConditionalWeakTableElementReferences)
+        (
             _In_ ULONG cRootRefs,
             _In_reads_(cRootRefs) ObjectID keyRefIds[],
             _In_reads_(cRootRefs) ObjectID valueRefIds[],
-            _In_reads_(cRootRefs) GCHandleID rootIds[]
-            );
+            _In_reads_(cRootRefs) GCHandleID rootIds[]);
 
-        //ICorProfilerCallback6 methods
+        // ICorProfilerCallback6 methods
     public:
-        STDMETHOD(GetAssemblyReferences)(
+        STDMETHOD(GetAssemblyReferences)
+        (
             _In_ const WCHAR *wszAssemblyPath,
             _In_ ICorProfilerAssemblyReferenceProvider *pAsmRefProvider);
 
-        //ICorProfilerCallback7 methods
+        // ICorProfilerCallback7 methods
     public:
-        STDMETHOD(ModuleInMemorySymbolsUpdated)(
+        STDMETHOD(ModuleInMemorySymbolsUpdated)
+        (
             _In_ ModuleID moduleId);
 
         // Internal public methods that are not part of interfaces.
     public:
-        STDMETHOD(LogMessageEx)(_In_ const WCHAR* wszMessage, ...);
+        STDMETHOD(LogMessageEx)
+        (_In_ const WCHAR *wszMessage, ...);
 
-        STDMETHOD(LogErrorEx)(_In_ const WCHAR* wszError, ...);
+        STDMETHOD(LogErrorEx)
+        (_In_ const WCHAR *wszError, ...);
 
-        STDMETHOD(LogDumpMessageEx)(_In_ const WCHAR* wszMessage, ...);
+        STDMETHOD(LogDumpMessageEx)
+        (_In_ const WCHAR *wszMessage, ...);
 
     private:
         // Call ShouldInstrument on each instrumentation method. Return those that return true in pToInstrument
-        HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>>* pToInstrument);
+        HRESULT CallShouldInstrumentOnInstrumentationMethods(_In_ IMethodInfo *pMethodInfo, _In_ BOOL isRejit, _Inout_ vector<CComPtr<IInstrumentationMethod>> *pToInstrument);
 
         // Call CallBeforeInstrumentMethodOnInstrumentationMethods on each instrumentation method.
-        HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        HRESULT CallBeforeInstrumentMethodOnInstrumentationMethods(_In_ IMethodInfo *pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>> &toInstrument);
 
         // Call InstrumentMethod on each instrumentation method.
-        HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>>& toInstrument);
+        HRESULT CallInstrumentOnInstrumentationMethods(_In_ IMethodInfo *pMethodInfo, _In_ BOOL isRejit, _In_ vector<CComPtr<IInstrumentationMethod>> &toInstrument);
 
         // Call InstrumentMethod on each instrumentation method.
-        HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo* pMethodInfo, _In_ BOOL isRejit);
+        HRESULT CallOnInstrumentationComplete(_In_ IMethodInfo *pMethodInfo, _In_ BOOL isRejit);
 
-        HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo* pInlineeMethodInfo, _In_ IMethodInfo* pInlineSiteMethodInfo, _Out_ BOOL* pbShouldInline);
+        HRESULT CallAllowInlineOnInstrumentationMethods(_In_ IMethodInfo *pInlineeMethodInfo, _In_ IMethodInfo *pInlineSiteMethodInfo, _Out_ BOOL *pbShouldInline);
 
         // Registers a new instrumentation method in the profiler manager. Also calls its Initialize() method.
-        HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod* method, _In_ IEnumInstrumentationMethodSettings* pSettingsEnum, _Out_ IInstrumentationMethod** ppInstrumentationMethod);
+        HRESULT AddInstrumentationMethod(_In_ CInstrumentationMethod *method, _In_ IEnumInstrumentationMethodSettings *pSettingsEnum, _Out_ IInstrumentationMethod **ppInstrumentationMethod);
 
         HRESULT ClearILTransformationStatus(_In_ FunctionID functionId);
 
@@ -964,7 +1003,7 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<CProfilerManager> m_pProfilerManager;
 
     public:
-        CInitializeHolder(CProfilerManager* pProfilerManager)
+        CInitializeHolder(CProfilerManager *pProfilerManager)
         {
             m_pProfilerManager = pProfilerManager;
             m_pProfilerManager->SetIsInInitialize(true);
@@ -981,7 +1020,7 @@ namespace MicrosoftInstrumentationEngine
         CComPtr<CProfilerManager> m_pProfilerManager;
 
     public:
-        CInitializeInstrumentationMethodHolder(CProfilerManager* pProfilerManager)
+        CInitializeInstrumentationMethodHolder(CProfilerManager *pProfilerManager)
         {
             m_pProfilerManager = pProfilerManager;
             m_pProfilerManager->SetIsInitializingInstrumentationMethod(true);
@@ -999,25 +1038,24 @@ namespace MicrosoftInstrumentationEngine
 
     // function called when a profiler callback swallows an exception to send the error report to watson as if
     // the app crashed
-    void SendErrorReport(EXCEPTION_POINTERS* pException);
+    void SendErrorReport(EXCEPTION_POINTERS *pException);
 
     // Translator function that is called by the crt when an SEH exception happens so it can be converted into
     // a C++ exception. This is done so C++ functions can invoke watson on seh exceptions.
-    void __cdecl SehTranslatorFunc(unsigned int u, EXCEPTION_POINTERS* pExp);
+    void __cdecl SehTranslatorFunc(unsigned int u, EXCEPTION_POINTERS *pExp);
 
     // Strongly typed class thrown by SehTranslatorFunc and caught by the PROF_CALLBACK_END macro
     class CSehException
     {
     private:
-        EXCEPTION_POINTERS* m_pExceptionPointers;
+        EXCEPTION_POINTERS *m_pExceptionPointers;
 
     public:
-        CSehException(EXCEPTION_POINTERS* pExceptionPointers) : m_pExceptionPointers(pExceptionPointers)
+        CSehException(EXCEPTION_POINTERS *pExceptionPointers) : m_pExceptionPointers(pExceptionPointers)
         {
-
         }
 
-        EXCEPTION_POINTERS* GetExceptionPointers()
+        EXCEPTION_POINTERS *GetExceptionPointers()
         {
             return m_pExceptionPointers;
         }
@@ -1053,41 +1091,41 @@ public:
     }
 };
 
-#define PROF_CALLBACK_BEGIN \
+#define PROF_CALLBACK_BEGIN                \
     CSEHTranslatorHolder translatorHolder; \
-    try \
-    { \
+    try                                    \
+    {
 
-#define PROF_CALLBACK_END \
-    translatorHolder.RestoreSEHTranslator(); \
-    } \
-    catch (CSehException sehException) \
-    { \
-    translatorHolder.RestoreSEHTranslator(); \
-    CLogging::LogError(_T("Exception during profiler callback ") __FUNCTIONW__); \
-    SendErrorReport(sehException.GetExceptionPointers()); \
-    } \
-    catch (...) \
-    { \
-    translatorHolder.RestoreSEHTranslator(); \
-    CLogging::LogError(_T("Exception during profiler callback ") __FUNCTIONW__); \
+#define PROF_CALLBACK_END                                                            \
+    translatorHolder.RestoreSEHTranslator();                                         \
+    }                                                                                \
+    catch (CSehException sehException)                                               \
+    {                                                                                \
+        translatorHolder.RestoreSEHTranslator();                                     \
+        CLogging::LogError(_T("Exception during profiler callback ") __FUNCTIONW__); \
+        SendErrorReport(sehException.GetExceptionPointers());                        \
+    }                                                                                \
+    catch (...)                                                                      \
+    {                                                                                \
+        translatorHolder.RestoreSEHTranslator();                                     \
+        CLogging::LogError(_T("Exception during profiler callback ") __FUNCTIONW__); \
     }
 #else
 #define PROF_CALLBACK_BEGIN \
-    try \
-    { \
+    try                     \
+    {
 
-#define PROF_CALLBACK_END \
-    } \
-    catch (...) \
-    { \
-    CLogging::LogError(_T("Exception during profiler callback ") WCHAR_SPEC, __FUNCTION__); \
+#define PROF_CALLBACK_END                                                                       \
+    }                                                                                           \
+    catch (...)                                                                                 \
+    {                                                                                           \
+        CLogging::LogError(_T("Exception during profiler callback ") WCHAR_SPEC, __FUNCTION__); \
     }
 #endif
 
-#define IGNORE_IN_NET20_BEGIN \
+#define IGNORE_IN_NET20_BEGIN                 \
     if (m_attachedClrVersion != ClrVersion_2) \
-    { \
+    {
 
 #define IGNORE_IN_NET20_END \
     }
