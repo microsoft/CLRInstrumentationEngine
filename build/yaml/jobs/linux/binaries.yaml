@@ -12,7 +12,6 @@ parameters:
 jobs:
 - job: Linux
   displayName: Linux
-  OneESPT: false
 
   strategy:
     matrix:
