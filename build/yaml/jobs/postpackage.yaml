@@ -3,10 +3,12 @@
 
 # Job Template: PostPackage steps
 
+parameters:
+  OneESPT: false
+
 jobs:
 - job: PostPackage
   displayName: PostPackage
-  OneESPT: false
 
   variables:
     Packaging.EnableSBOMSigning: true
