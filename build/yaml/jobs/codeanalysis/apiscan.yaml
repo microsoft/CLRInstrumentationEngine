@@ -13,7 +13,7 @@ jobs:
   # No dependencies. Requires Build Stages to ensure that binaries are built
 
   pool:
-    name: VSEngSS-MicroBuild2019-1ES
+    name: VSEngSS-MicroBuild2022-1ES
     demands:
     - msbuild
     - visualstudio
