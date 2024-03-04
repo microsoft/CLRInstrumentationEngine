@@ -34,7 +34,7 @@ extends:
     - stage: Build
       jobs:
       # Binaries (Windows & Linux)
-      - template: ../jobs/binaries.yaml@self
+      - template: /build/yaml/jobs/binaries.yaml@self
         parameters:
           IndexSources: true
           SignType: $(SignType) # NOTE this string won't be replaced until runtime
@@ -45,7 +45,7 @@ extends:
     - stage: Package
       jobs:
       # Packages (Windows & Linux)
-      - template: ../jobs/packages.yaml@self
+      - template: /build/yaml/jobs/packages.yaml@self
         parameters:
           SignType: $(SignType) # NOTE this string won't be replaced until runtime
           Configuration: Release
@@ -54,6 +54,6 @@ extends:
 
     - stage: PostPackage
       jobs:
-      - template: ../jobs/postpackage.yaml@self
+      - template: /build/yaml/jobs/postpackage.yaml@self
         parameters:
           OneESPT: true
