@@ -8,6 +8,7 @@ parameters:
   SignType: None
   Configuration: Both
   IsMicroBuildInternal: false
+  OneESPT: false
 
 jobs:
 # Windows Packages
@@ -15,6 +16,7 @@ jobs:
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Release_x86:
@@ -46,6 +48,7 @@ jobs:
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

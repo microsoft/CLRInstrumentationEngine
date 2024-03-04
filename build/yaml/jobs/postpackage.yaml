@@ -6,6 +6,7 @@
 jobs:
 - job: PostPackage
   displayName: PostPackage
+  OneESPT: false
 
   variables:
     Packaging.EnableSBOMSigning: true
@@ -34,5 +35,6 @@ jobs:
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\_manifest'
       ArtifactName: 'SBOM-manifest'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - template: ../steps/microbuild/cleanup.yaml

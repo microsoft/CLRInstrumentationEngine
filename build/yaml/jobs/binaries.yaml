@@ -9,6 +9,7 @@ parameters:
   SignType: None
   Configuration: Both
   IsMicroBuildInternal: false
+  OneESPT: false
 
 jobs:
 # Windows Binaries
@@ -17,6 +18,7 @@ jobs:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     # Filter out Tests for Signed Builds
     ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       CopyFilters: |
@@ -58,6 +60,7 @@ jobs:
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

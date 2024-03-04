@@ -22,6 +22,7 @@ jobs:
       demands:
       - msbuild
       - vstest
+      - DiskSizeGiB -equals 20
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
       vmImage: windows-2022
 

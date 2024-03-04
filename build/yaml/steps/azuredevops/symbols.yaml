@@ -5,6 +5,7 @@
 
 parameters:
   PublishSymbols: ''
+  OneESPT: false
 
 steps:
 - task: CopyFiles@2
@@ -35,3 +36,4 @@ steps:
   parameters:
     PathToPublish: '$(Build.ArtifactStagingDirectory)\symbols'
     ArtifactName: 'symbols-windows-$(Configuration)'
+    OneESPT: ${{ parameters.OneESPT }}

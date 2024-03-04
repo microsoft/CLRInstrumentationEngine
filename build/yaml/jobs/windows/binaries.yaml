@@ -12,6 +12,7 @@ parameters:
   MatrixStrategy: {}
   CopyFilters: |
     **
+  OneESPT: false
 
 jobs:
 - job: Windows
@@ -27,6 +28,7 @@ jobs:
       demands:
       - msbuild
       - vstest
+      - DiskSizeGiB -equals 20
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
       vmImage: windows-2022
 
@@ -47,6 +49,7 @@ jobs:
   - template: ../../steps/windows/binaries.yaml
     parameters:
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/codesignverify.yaml
@@ -63,6 +66,7 @@ jobs:
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
         ArtifactName: 'logs'
+        OneESPT: ${{ parameters.OneESPT }}
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
@@ -77,6 +81,7 @@ jobs:
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
         ArtifactName: 'binaries-windows-$(Configuration)'
+        OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

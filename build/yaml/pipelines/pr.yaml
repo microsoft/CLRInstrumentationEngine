@@ -18,6 +18,7 @@ stages:
   - template: ../jobs/binaries.yaml
     parameters:
       Configuration: Both
+      OneESPT: false
 
 - stage: Test
   dependsOn: Build
@@ -34,3 +35,4 @@ stages:
   - template: ../jobs/packages.yaml
     parameters:
       Configuration: Both
+      OneESPT: false

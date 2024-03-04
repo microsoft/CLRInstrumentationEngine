@@ -3,9 +3,13 @@
 
 # Step Template: Run C++ code analysis
 
-steps:
+parameters:
+  OneESPT: false
 
+steps:
 - template: ../windows/binaries.yaml
+  parameters:
+    OneESPT: ${{ parameters.OneESPT }}
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-semmle.Semmle@1
   displayName: 'Run Semmle C++'

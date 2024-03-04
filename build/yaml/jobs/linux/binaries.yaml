@@ -7,10 +7,12 @@ parameters:
   SignType: None
   IsMicroBuildInternal: false
   MatrixStrategy: {}
+  OneESPT: false
 
 jobs:
 - job: Linux
   displayName: Linux
+  OneESPT: false
 
   strategy:
     matrix:
@@ -31,11 +33,14 @@ jobs:
     clean: true
 
   - template: ../../steps/linux/binaries.yaml
+    parameters:
+      OneESPT: ${{ parameters.OneESPT }}
 
   - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

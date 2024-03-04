@@ -7,6 +7,7 @@ parameters:
   SignType: None
   IsMicroBuildInternal: false
   MatrixStrategy: {}
+  OneESPT: false
 
 jobs:
 - job: Linux_Packages
@@ -38,6 +39,8 @@ jobs:
         SignType: ${{ parameters.SignType }}
 
   - template: ../../steps/linux/packages.yaml
+    parameters:
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/codesignverify.yaml
@@ -48,16 +51,19 @@ jobs:
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
       ArtifactName: 'logs'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-linux-$(Distro)-$(Configuration)'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-all'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml

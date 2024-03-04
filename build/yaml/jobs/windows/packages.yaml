@@ -7,6 +7,7 @@ parameters:
   SignType: None
   IsMicroBuildInternal: false
   MatrixStrategy: {}
+  OneESPT: false
 
 jobs:
 - job: Windows_Packages
@@ -21,6 +22,7 @@ jobs:
       demands:
       - msbuild
       - vstest
+      - DiskSizeGiB -equals 20
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
       vmImage: windows-2022
 
@@ -43,6 +45,7 @@ jobs:
   - template: ../../steps/windows/packages.yaml
     parameters:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/codesignverify.yaml
@@ -53,6 +56,7 @@ jobs:
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
       ArtifactName: 'logs'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - task: CopyFiles@2
     displayName: 'Copy Packages'
@@ -75,11 +79,13 @@ jobs:
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-windows-$(Configuration)'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - template: ../../steps/azuredevops/publishbuildartifacts.yaml
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-all'
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml
