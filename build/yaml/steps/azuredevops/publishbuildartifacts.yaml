@@ -14,7 +14,7 @@ steps:
     - task: 1ES.PublishBuildArtifacts@1
       displayName: 'Publish Artifact: ${{ parameters.ArtifactName }}'
       inputs:
-        PathToPublish: ${{ parameters.PathToPublish }}
+        PathtoPublish: ${{ parameters.PathToPublish }}
         ArtifactName: ${{ parameters.ArtifactName }}
       continueOnError: true
       condition: succeededOrFailed()
