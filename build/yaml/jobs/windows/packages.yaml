@@ -34,25 +34,25 @@ jobs:
     clean: true
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/signing.yaml
+    - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
-  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml@self
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
-  - template: ../../steps/windows/packages.yaml
+  - template: ../../steps/windows/packages.yaml@self
     parameters:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/codesignverify.yaml
+    - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
       ArtifactName: 'logs'
@@ -75,19 +75,19 @@ jobs:
     continueOnError: true
     condition: succeededOrFailed()
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-windows-$(Configuration)'
       OneESPT: ${{ parameters.OneESPT }}
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\packages'
       ArtifactName: 'packages-all'
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self
 
-  - template: ../../steps/azuredevops/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml@self

@@ -7,7 +7,7 @@ parameters:
   OneESPT: false
 
 steps:
-- template: ../windows/binaries.yaml
+- template: ../windows/binaries.yaml@self
   parameters:
     OneESPT: ${{ parameters.OneESPT }}
 

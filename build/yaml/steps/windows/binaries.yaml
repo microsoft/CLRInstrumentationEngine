@@ -9,7 +9,7 @@ parameters:
 steps:
 # nuget restore InstrumentationEngine.sln
 - ${{ if eq(parameters.NuGetRestore, true) }}:
-  - template: enginerestore.yaml
+  - template: enginerestore.yaml@self
     parameters:
       BinLogCategory: Build
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

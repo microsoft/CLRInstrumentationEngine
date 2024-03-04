@@ -13,7 +13,7 @@ parameters:
 
 jobs:
 # Windows Binaries
-- template: windows/binaries.yaml
+- template: windows/binaries.yaml@self
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
@@ -56,7 +56,7 @@ jobs:
           Platform: 'ARM64'
 
 # Linux Binaries
-- template: linux/binaries.yaml
+- template: linux/binaries.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

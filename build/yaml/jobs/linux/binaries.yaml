@@ -32,15 +32,15 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/linux/binaries.yaml
+  - template: ../../steps/linux/binaries.yaml@self
     parameters:
       OneESPT: ${{ parameters.OneESPT }}
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.SourcesDirectory)/out/Linux/bin/$(Platform).$(Configuration)'
       ArtifactName: 'binaries-linux-$(Distro)-$(Configuration)'
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self

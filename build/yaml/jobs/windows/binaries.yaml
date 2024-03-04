@@ -39,30 +39,30 @@ jobs:
   - checkout: self
     clean: true
   
-  - template: ../../steps/azuredevops/usedotnet.yaml
+  - template: ../../steps/azuredevops/usedotnet.yaml@self
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/signing.yaml
+    - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
-  - template: ../../steps/windows/binaries.yaml
+  - template: ../../steps/windows/binaries.yaml@self
     parameters:
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/codesignverify.yaml
+    - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
   - ${{ if eq('true', parameters.IndexSources) }}:
-    - template: ../../steps/azuredevops/symbols.yaml
+    - template: ../../steps/azuredevops/symbols.yaml@self
       parameters:
         PublishSymbols: ${{ parameters.PublishSymbols }}
 
   - ${{ if eq('true', parameters.PublishFiles) }}:
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
         ArtifactName: 'logs'
@@ -77,14 +77,14 @@ jobs:
         CleanTargetFolder: true
         OverWrite: true
 
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
         ArtifactName: 'binaries-windows-$(Configuration)'
         OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self
 
-  - template: ../../steps/azuredevops/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml@self
 

@@ -34,38 +34,38 @@ jobs:
     clean: true
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/signing.yaml
+    - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
-  - template: ../../steps/linux/packages.yaml
+  - template: ../../steps/linux/packages.yaml@self
     parameters:
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/codesignverify.yaml
+    - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
   
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
       ArtifactName: 'logs'
       OneESPT: ${{ parameters.OneESPT }}
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-linux-$(Distro)-$(Configuration)'
       OneESPT: ${{ parameters.OneESPT }}
 
-  - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)'
       ArtifactName: 'packages-all'
       OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self
 
-  - template: ../../steps/azuredevops/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml@self

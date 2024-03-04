@@ -32,7 +32,7 @@ steps:
     PublishSymbols: ${{ parameters.PublishSymbols }}
   continueOnError: true # this occasionally fails due to external service issues, and we don't consider it critical
 
-- template: publishbuildartifacts.yaml
+- template: publishbuildartifacts.yaml@self
   parameters:
     PathToPublish: '$(Build.ArtifactStagingDirectory)\symbols'
     ArtifactName: 'symbols-windows-$(Configuration)'

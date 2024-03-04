@@ -12,7 +12,7 @@ parameters:
 
 jobs:
 # Windows Packages
-- template: windows/packages.yaml
+- template: windows/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
@@ -44,7 +44,7 @@ jobs:
           Platform: 'ARM64'
 
 # Linux Packages
-- template: linux/packages.yaml
+- template: linux/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

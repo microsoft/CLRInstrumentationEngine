@@ -5,12 +5,12 @@
 
 steps:
 # download binaries
-- template: ../azuredevops/downloadbuildartifacts.yaml
+- template: ../azuredevops/downloadbuildartifacts.yaml@self
   parameters:
     ArtifactName: binaries-linux-$(Distro)-$(Configuration)
 
 # nuget restore InstrumentationEngine.Nuget.csproj
-- template: ../windows/nugetrestore.yaml
+- template: ../windows/nugetrestore.yaml@self
   parameters:
     Solution: 'src/InstrumentationEngine.NuGet/InstrumentationEngine.Nuget.csproj'
 

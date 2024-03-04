@@ -18,7 +18,7 @@ steps:
     Write-Host "##vso[task.setvariable variable=_PREFAST_CYCLOMATIC;] 83"
   displayName: Set _PREFAST_CYCLOMATIC=83
 
-- template: ../windows/binaries.yaml
+- template: ../windows/binaries.yaml@self
   parameters:
     NuGetRestore: false
     OneESPT: ${{ parameters.OneESPT }}

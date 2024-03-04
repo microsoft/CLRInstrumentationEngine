@@ -38,8 +38,8 @@ steps:
     continueOnError: true
     condition: succeededOrFailed()
 
-  - template: publishlogs.yaml
+  - template: publishlogs.yaml@self
     parameters:
       ArtifactName: ${{ parameters.ArtifactName }}
 
-  - template: postanalysis.yaml
+  - template: postanalysis.yaml@self
