@@ -14,7 +14,7 @@ steps:
     displayName: Set Signing From Parameters
 
 # nuget install MicroBuild.Plugins.Signing
-- task: MicroBuildSigningPlugin@3
+- task: MicroBuildSigningPlugin@4
   displayName: Install Signing Plugin
   condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
   inputs:

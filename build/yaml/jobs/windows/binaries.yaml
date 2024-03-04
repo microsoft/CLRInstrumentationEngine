@@ -60,6 +60,7 @@ jobs:
     - template: ../../steps/azuredevops/symbols.yaml@self
       parameters:
         PublishSymbols: ${{ parameters.PublishSymbols }}
+        OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.PublishFiles) }}:
     - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
