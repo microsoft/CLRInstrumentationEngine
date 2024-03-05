@@ -20,6 +20,6 @@ bin\*\*.wixlib, Ignore wix artifact
 bin\*\*.wixpdb, Ignore wix artifact
 bin\*\*.msidir\*.cab, Ignore embedded cab files
 
-binaries-windows-release\*, Ignore downloaded binary artifacts
+binaries-*-release\*, Ignore downloaded binary artifacts
 
 bin\*\newtonsoft.json.dll, Ignore Newtonsoft.Json
