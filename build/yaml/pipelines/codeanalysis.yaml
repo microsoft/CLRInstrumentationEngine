@@ -22,9 +22,10 @@ stages:
 - stage: Build
   jobs:
   # Binaries (Windows)
-  - template: ../jobs/windows/binaries.yaml
+  - template: ../jobs/windows/binaries.yaml@self
     parameters:
       IsMicroBuildInternal: true
+      OneESPT: false
       MatrixStrategy:
         Release_x86:
           Configuration: 'Release'
@@ -41,42 +42,45 @@ stages:
   dependsOn: []
 
   jobs:
-  - template: ../jobs/codeanalysis/policheck.yaml
-  - template: ../jobs/codeanalysis/psscriptanalyzer.yaml
+  - template: ../jobs/codeanalysis/policheck.yaml@self
+  - template: ../jobs/codeanalysis/psscriptanalyzer.yaml@self
 
 - stage: Analyze_PostBuild
   displayName: Code Analysis (After Build)
   dependsOn: Build
 
   jobs:
-  - template: ../jobs/codeanalysis/apiscan.yaml
-  - template: ../jobs/codeanalysis/binskim.yaml
-  - template: ../jobs/codeanalysis/antimalware.yaml
+  - template: ../jobs/codeanalysis/apiscan.yaml@self
+  - template: ../jobs/codeanalysis/binskim.yaml@self
+  - template: ../jobs/codeanalysis/antimalware.yaml@self
 
 - stage: Run_CS_Analyzers
   displayName: Code Analysis (Build Time Managed)
   dependsOn: []
 
   jobs:
-  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml@self
     parameters:
       Platform: AnyCPU
       Analyzer: csharp
+      OneESPT: false
 
 - stage: Run_PreFast_Analyzers
   displayName: Code Analysis (Build Time C++ PreFast)
   dependsOn: []
 
   jobs:
-  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml@self
     parameters:
       Platform: x64
       Analyzer: prefast
       PublishReport: false
+      OneESPT: false
 
-  - template: ../jobs/codeanalysis/buildanalyzer.yaml
+  - template: ../jobs/codeanalysis/buildanalyzer.yaml@self
     parameters:
       Platform: x86
       Analyzer: prefast
       PublishReport: false
+      OneESPT: false
 

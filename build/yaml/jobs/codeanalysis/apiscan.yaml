@@ -81,14 +81,14 @@ jobs:
       GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\build\yaml\jobs\codeanalysis\apiscanconfig.gdntsa'
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishreports.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml@self
     parameters:
       ArtifactName: ApiScan
 
-  - template: ../../steps/codeanalysis/filebugs.yaml
+  - template: ../../steps/codeanalysis/filebugs.yaml@self
     parameters:
       BuildName: ApiScan
       Tags: CLRIEApiScan
 
   # Microbuild Cleanup
-  - template: ../../steps/microbuild/cleanup.yaml
+  - template: ../../steps/microbuild/cleanup.yaml@self

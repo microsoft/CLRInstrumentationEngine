@@ -11,42 +11,50 @@ name: $(date:yyyyMMdd)$(rev:rr)
 variables:
   TeamName: ClrInstrumentationEngine
 
-stages:
-- stage: BuildDebug
-  jobs:
-  # Binaries (Windows & Linux)
-  - template: ../jobs/binaries.yaml
-    parameters:
-      Configuration: Debug
-      SignType: None # Specifically never sign debug builds
+resources:
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
 
-- stage: TestDebug
-  dependsOn: BuildDebug
-  jobs:
-  # Tests (Windows)
-  - template: ../jobs/tests.yaml
-    parameters:
-      Configuration: Debug
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
+  parameters:
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    sdl:
+      sourceAnalysisPool:
+        name: VSEngSS-MicroBuild2022-1ES
+        os: windows 
+      binskim:
+        scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
 
-- stage: Build
-  jobs:
-  # Binaries (Windows & Linux)
-  - template: ../jobs/binaries.yaml
-    parameters:
-      IndexSources: true
-      SignType: $(SignType) # NOTE this string won't be replaced until runtime
-      Configuration: Release
-      IsMicroBuildInternal: true
+    stages:
+    - stage: Build
+      jobs:
+      # Binaries (Windows & Linux)
+      - template: /build/yaml/jobs/binaries.yaml@self
+        parameters:
+          IndexSources: true
+          SignType: $(SignType) # NOTE this string won't be replaced until runtime
+          Configuration: Release
+          IsMicroBuildInternal: true
+          OneESPT: true
 
-- stage: Package
-  jobs:
-  # Packages (Windows & Linux)
-  - template: ../jobs/packages.yaml
-    parameters:
-      SignType: $(SignType) # NOTE this string won't be replaced until runtime
-      Configuration: Release
-      IsMicroBuildInternal: true
+    - stage: Package
+      jobs:
+      # Packages (Windows & Linux)
+      - template: /build/yaml/jobs/packages.yaml@self
+        parameters:
+          SignType: $(SignType) # NOTE this string won't be replaced until runtime
+          Configuration: Release
+          IsMicroBuildInternal: true
+          OneESPT: true
 
-- stage: PostPackage
-  jobs:
-  - template: ../jobs/postpackage.yaml
+    - stage: PostPackage
+      jobs:
+      - template: /build/yaml/jobs/postpackage.yaml@self
+        parameters:
+          OneESPT: true

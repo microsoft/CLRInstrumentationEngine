@@ -12,6 +12,7 @@ parameters:
   MatrixStrategy: {}
   CopyFilters: |
     **
+  OneESPT: false
 
 jobs:
 - job: Windows
@@ -27,6 +28,7 @@ jobs:
       demands:
       - msbuild
       - vstest
+      - DiskSizeGiB -equals 20
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
       vmImage: windows-2022
 
@@ -37,32 +39,35 @@ jobs:
   - checkout: self
     clean: true
   
-  - template: ../../steps/azuredevops/usedotnet.yaml
+  - template: ../../steps/azuredevops/usedotnet.yaml@self
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/signing.yaml
+    - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
-  - template: ../../steps/windows/binaries.yaml
+  - template: ../../steps/windows/binaries.yaml@self
     parameters:
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/codesignverify.yaml
+    - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
 
   - ${{ if eq('true', parameters.IndexSources) }}:
-    - template: ../../steps/azuredevops/symbols.yaml
+    - template: ../../steps/azuredevops/symbols.yaml@self
       parameters:
         PublishSymbols: ${{ parameters.PublishSymbols }}
+        OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.PublishFiles) }}:
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
         ArtifactName: 'logs'
+        OneESPT: ${{ parameters.OneESPT }}
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
@@ -73,13 +78,14 @@ jobs:
         CleanTargetFolder: true
         OverWrite: true
 
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\bin\$(Configuration)Filtered'
         ArtifactName: 'binaries-windows-$(Configuration)'
+        OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self
 
-  - template: ../../steps/azuredevops/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml@self
 

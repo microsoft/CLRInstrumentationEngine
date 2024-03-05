@@ -22,6 +22,7 @@ jobs:
       demands:
       - msbuild
       - vstest
+      - DiskSizeGiB -equals 20
     ${{ if not(eq('true', parameters.IsMicroBuildInternal)) }}:
       vmImage: windows-2022
 
@@ -32,13 +33,13 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml
+  - template: ../../steps/azuredevops/downloadbuildartifacts.yaml@self
     parameters:
       ArtifactName: binaries-windows-$(Configuration)
 
   - ${{ if eq('Managed', parameters.TestType) }}:
     # Install dotnet runtimes to allow .NET Core and .NET 5+ based unit tests to run.
-    - template: ../../steps/azuredevops/usedotnet.yaml
+    - template: ../../steps/azuredevops/usedotnet.yaml@self
 
     # The UseDotNet task is not sufficient because it will only install the X64 runtimes
     # whereas the tests require both X64 and X86 since they run the test apps with different,
@@ -74,12 +75,12 @@ jobs:
   # When running native tests, include all tests
   # from all folders recursively
   - ${{ if eq('Native', parameters.TestType) }}:
-    - template: ../../steps/windows/vstest.yaml
+    - template: ../../steps/windows/vstest.yaml@self
       parameters:
         SubFolder: '**\'
         RunTitle: '$(Build.BuildNumber)_Windows_$(Platform)_$(Configuration)'
 
-    - template: ../../steps/windows/googletests.yaml
+    - template: ../../steps/windows/googletests.yaml@self
       parameters:
         Exes:
         - CommonLibTests.exe
@@ -90,31 +91,31 @@ jobs:
   # .NET Framework tests only. Minimize by grouping
   # by their runtime version.
   - ${{ if eq('Managed', parameters.TestType) }}:
-    - template: ../../steps/windows/dotnettest.yaml
+    - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
         RunTitle: '$(Build.BuildNumber)_Windows_NetFx_$(Configuration)'
 
-    - template: ../../steps/windows/dotnettest.yaml
+    - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
         SubFolder: 'net4*\'
         RunTitle: '$(Build.BuildNumber)_Windows_Net4X_$(Configuration)'
 
-    - template: ../../steps/windows/dotnettest.yaml
+    - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
         SubFolder: 'netcoreapp3.1\'
         RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)'
     
-    - template: ../../steps/windows/dotnettest.yaml
+    - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
         SubFolder: 'net50\'
         RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)'
     
-    - template: ../../steps/windows/dotnettest.yaml
+    - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
         SubFolder: 'net60\'
         RunTitle: '$(Build.BuildNumber)_Windows_Net60_$(Configuration)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-    - template: ../../steps/microbuild/cleanup.yaml
+    - template: ../../steps/microbuild/cleanup.yaml@self
 
-  - template: ../../steps/azuredevops/componentgovernance.yaml
+  - template: ../../steps/azuredevops/componentgovernance.yaml@self

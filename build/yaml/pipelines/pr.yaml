@@ -15,15 +15,16 @@ stages:
 - stage: Build
   jobs:
   # Binaries (Windows & Linux)
-  - template: ../jobs/binaries.yaml
+  - template: ../jobs/binaries.yaml@self
     parameters:
       Configuration: Both
+      OneESPT: false
 
 - stage: Test
   dependsOn: Build
   jobs:
   # Tests (Windows)
-  - template: ../jobs/tests.yaml
+  - template: ../jobs/tests.yaml@self
     parameters:
       Configuration: Both
 
@@ -31,6 +32,7 @@ stages:
   dependsOn: Build
   jobs:
   # Packages (Windows & Linux)
-  - template: ../jobs/packages.yaml
+  - template: ../jobs/packages.yaml@self
     parameters:
       Configuration: Both
+      OneESPT: false

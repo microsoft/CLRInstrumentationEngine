@@ -8,7 +8,7 @@ parameters:
 
 steps:
 # nuget restore InstrumentationEngine.Packages.sln
-- template: nugetrestore.yaml
+- template: nugetrestore.yaml@self
   parameters:
     Solution: src/InstrumentationEngine.Packages.sln
 

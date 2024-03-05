@@ -38,14 +38,14 @@ jobs:
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishreports.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml@self
     parameters:
       ArtifactName: BinSkim
 
-  - template: ../../steps/codeanalysis/filebugs.yaml
+  - template: ../../steps/codeanalysis/filebugs.yaml@self
     parameters:
       BuildName: BinSkim
       Tags: CLRIEBinSkim
 
   # Microbuild Cleanup
-  - template: ../../steps/microbuild/cleanup.yaml
+  - template: ../../steps/microbuild/cleanup.yaml@self
