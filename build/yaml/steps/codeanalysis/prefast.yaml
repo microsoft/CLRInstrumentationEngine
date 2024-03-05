@@ -3,8 +3,10 @@
 
 # Step Template: Run C++ code analysis
 
-steps:
+parameters:
+  OneESPT: false
 
+steps:
 - task: ms-vseng.MicroBuildShipTasks.9ef02907-718e-41b7-a57e-b10f86130bb8.MicroBuildPrefastPlugin@2
   displayName: 'Install Prefast Plugin'
 
@@ -16,6 +18,7 @@ steps:
     Write-Host "##vso[task.setvariable variable=_PREFAST_CYCLOMATIC;] 83"
   displayName: Set _PREFAST_CYCLOMATIC=83
 
-- template: ../windows/binaries.yaml
+- template: ../windows/binaries.yaml@self
   parameters:
     NuGetRestore: false
+    OneESPT: ${{ parameters.OneESPT }}

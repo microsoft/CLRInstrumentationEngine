@@ -7,6 +7,7 @@ parameters:
   Platform: AnyCPU
   Analyzer: csharp
   PublishReport: true
+  OneESPT: false
 
 jobs:
 - job: BuildAnalyzer_${{ parameters.Analyzer }}_${{ parameters.Platform }}
@@ -36,32 +37,35 @@ jobs:
   - ${{ if eq(parameters.Analyzer, 'csharp') }}:
     - powershell: write-host "##vso[task.setvariable variable=Configuration]CodeAnalysis.Managed"
       displayName: Set Configuration for Managed Code
-    - template: ../../steps/azuredevops/usedotnet.yaml
+    - template: ../../steps/azuredevops/usedotnet.yaml@self
 
   - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
     - powershell: write-host "##vso[task.setvariable variable=Platform]Any CPU"
       displayName: Set Platform for Any CPU
 
-  - template: ../../steps/windows/enginerestore.yaml
+  - template: ../../steps/windows/enginerestore.yaml@self
     parameters:
       BinLogCategory: CodeAnalysis
 
-  - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml
+  - template: ../../steps/codeanalysis/${{ parameters.Analyzer }}.yaml@self
+    parameters:
+      OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq(parameters.Platform, 'AnyCPU') }}:
-    - template: ../../steps/azuredevops/publishbuildartifacts.yaml
+    - template: ../../steps/azuredevops/publishbuildartifacts.yaml@self
       parameters:
         PathToPublish: '$(Build.ArtifactStagingDirectory)\logs'
         ArtifactName: 'logs'
+        OneESPT: ${{ parameters.OneESPT }}
 
   - ${{ if eq(parameters.PublishReport, true) }}:
-    - template: ../../steps/codeanalysis/publishreports.yaml
+    - template: ../../steps/codeanalysis/publishreports.yaml@self
       parameters:
         ArtifactName: CodeAnalysis_${{ parameters.Analyzer }}_${{ parameters.Platform }}
 
-  - template: ../../steps/codeanalysis/filebugs.yaml
+  - template: ../../steps/codeanalysis/filebugs.yaml@self
     parameters:
       BuildName: ${{ parameters.Analyzer }}${{ parameters.Platform }}
       Tags: CLRIE${{ parameters.Analyzer }}${{ parameters.Platform }}
 
-  - template: ../../steps/microbuild/cleanup.yaml
+  - template: ../../steps/microbuild/cleanup.yaml@self

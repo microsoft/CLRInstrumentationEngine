@@ -10,7 +10,7 @@ parameters:
 
 jobs:
 # Test Windows Binaries
-- template: windows/tests.yaml
+- template: windows/tests.yaml@self
   parameters:
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     TestType: 'Native'
@@ -25,7 +25,7 @@ jobs:
           Platform: 'x64'
           RunSettingsFile: 'x64.runsettings'
 
-- template: windows/tests.yaml
+- template: windows/tests.yaml@self
   parameters:
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     TestType: 'Managed'
@@ -37,7 +37,7 @@ jobs:
           RunSettingsFile: 'x64.runsettings'
 
 # Test Linux Binaries
-- template: linux/tests.yaml
+- template: linux/tests.yaml@self
   parameters:
     MatrixStrategy:
       NET_Next:

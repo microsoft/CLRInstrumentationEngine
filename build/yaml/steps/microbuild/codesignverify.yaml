@@ -13,11 +13,11 @@ steps:
       Write-Host "##vso[task.setvariable variable=SignType;]${{ parameters.SignType }}"
     displayName: Set Signing From Parameters
 
-# Verify Real Signed Files
-- task: MicroBuildCodesignVerify@1
-  displayName: Verify Signed Files
-  condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
-  inputs:
-    TargetFolder: $(Build.StagingDirectory)
-    WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
-    WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'
+  # Verify Real Signed Files
+  - task: MicroBuildCodesignVerify@1
+    displayName: Verify Signed Files
+    condition: and(succeeded(), in(variables['SignType'], 'Real', 'Test'))
+    inputs:
+      TargetFolder: $(Build.StagingDirectory)
+      WhiteListPathForCerts: 'build\CodeSign\certificate.ignore'
+      WhiteListPathForSigs: 'build\CodeSign\strongname.ignore'
