@@ -3,6 +3,7 @@
 
 namespace RawProfilerHook.Tests
 {
+#pragma warning disable CA1508 // Avoid dead conditional code
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -98,8 +99,8 @@ namespace RawProfilerHook.Tests
                 { "MicrosoftInstrumentationEngine_FileLog", "Dumps|Errors" },
                 { "MicrosoftInstrumentationEngine_FileLogPath", traceFilePath },
                 { "MicrosoftInstrumentationEngine_UserBuffer", "1" }
-#if ALLOWNOTSIGNED
-                , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "true"}
+#if ALLOWNOTSIGNED || DEBUG
+                , { "MicrosoftInstrumentationEngine_DisableCodeSignatureValidation", "1"}
 #endif
             };
 
@@ -225,4 +226,5 @@ namespace RawProfilerHook.Tests
             }
         }
     }
+#pragma warning restore CA1508 // Avoid dead conditional code
 }

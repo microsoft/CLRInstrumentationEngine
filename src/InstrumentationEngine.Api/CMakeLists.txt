@@ -14,6 +14,7 @@ set(src_files ./InstrumentationEngine_api.cpp)
 
 add_lib(InstrumentationEngine.Api
     STATIC
+    true # use_pal
     false # use_redefines
     false # hide_symbols
     ${src_files}

@@ -10,7 +10,7 @@ MicrosoftInstrumentationEngine::CArrayType::CArrayType(_In_ IType* relatedType, 
     DEFINE_REFCOUNT_NAME(CArrayType);
 }
 
-HRESULT MicrosoftInstrumentationEngine::CArrayType::AddToSignature(_In_ ISignatureBuilder* pSignatureBuilder)
+HRESULT MicrosoftInstrumentationEngine::CArrayType::AddToSignature(_In_ ISignatureBuilder* pSignatureBuilder) // lgtm[cpp/inconsistentsal] SAL annotations match declaration in h file
 {
     HRESULT hr = S_OK;
     IfFailRet(CCompositeType::AddToSignature(pSignatureBuilder));

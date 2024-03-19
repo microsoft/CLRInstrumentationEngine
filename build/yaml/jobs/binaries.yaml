@@ -9,14 +9,16 @@ parameters:
   SignType: None
   Configuration: Both
   IsMicroBuildInternal: false
+  OneESPT: false
 
 jobs:
 # Windows Binaries
-- template: windows/binaries.yaml
+- template: windows/binaries.yaml@self
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     # Filter out Tests for Signed Builds
     ${{ if and( or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') ), notIn(parameters.SignType, '', 'None') )}}:
       CopyFilters: |
@@ -54,10 +56,11 @@ jobs:
           Platform: 'ARM64'
 
 # Linux Binaries
-- template: linux/binaries.yaml
+- template: linux/binaries.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

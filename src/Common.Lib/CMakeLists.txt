@@ -22,6 +22,7 @@ set(src_files
 
 add_lib(${PROJECT_NAME}
     STATIC
+    false # use_pal
     false # use_redefines
     true # hide_symbols
     ${src_files}

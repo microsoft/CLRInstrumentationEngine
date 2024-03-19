@@ -52,7 +52,7 @@
 
 #include "../Common.Headers/CriticalSectionHolder.h"
 
-#include "../Common.Lib/Macros.h"
+#include "../Common.Headers/Macros.h"
 
 using namespace std;
 using namespace MicrosoftInstrumentationEngine;

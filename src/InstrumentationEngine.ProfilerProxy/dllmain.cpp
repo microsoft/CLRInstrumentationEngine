@@ -329,7 +329,7 @@ namespace ProfilerProxy
 
 #ifdef DEBUG
         WCHAR wszEnvVar[MAX_PATH];
-        if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0)
+        if (GetEnvironmentVariable(_T("MicrosoftInstrumentationEngine_DebugWait"), wszEnvVar, MAX_PATH) > 0 && wcscmp(wszEnvVar, _T("1")) == 0)
         {
             while (!IsDebuggerPresent())
             {

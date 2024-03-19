@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 # This image is based on the public Ubuntu 18.04 LTS image
-FROM mcr.microsoft.com/mirror/docker/library/ubuntu:18.04
+FROM mcr.microsoft.com/mirror/docker/library/ubuntu:18.04@sha256:8aa9c2798215f99544d1ce7439ea9c3a6dfd82de607da1cec3a8a2fae005931b
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -20,8 +20,15 @@ RUN apt-get install -y --no-install-recommends apt-transport-https \
     && apt-get update \
     && apt-get install -y --no-install-recommends dotnet-sdk-2.1
 
+# Install .NET 7 SDK
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -c 7.0
+
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
+
+RUN echo 'export DOTNET_ROOT=$HOME/.dotnet' >> ~/.bashrc
+RUN echo 'export DOTNET_EXE=$DOTNET_ROOT/dotnet' >> ~/.bashrc
+RUN echo 'export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH' >> ~/.bashrc
 
 # get the signing key for the kitware (cmake) repository
 RUN curl https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
@@ -40,3 +47,7 @@ RUN apt-get update \
         libxml2-dev \
         make \
         jq
+
+# Git now checks for repository ownership
+RUN git config --global --add safe.directory /root/ClrInstrumentationEngine/out/Linux/Intermediate/x64.Debug/_deps/googletest-src
+RUN git config --global --add safe.directory /root/ClrInstrumentationEngine

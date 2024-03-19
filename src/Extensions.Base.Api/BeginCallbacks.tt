@@ -78,9 +78,11 @@ namespace Microsoft.Diagnostics.Instrumentation.Extensions.Base
 
 }
 
-//Underscore _System assembly will be treated as regular System namespace by ImportModule function of Intstrumentation Engine.
+//Underscore _System assembly will be treated as regular System namespace by ImportModule function of Instrumentation Engine.
 //This is done to avoid conflicts during compilation
+#pragma warning disable CS3008 // Identifier is not CLS-compliant
 namespace _System.Diagnostics
+#pragma warning restore CS3008 // Identifier is not CLS-compliant
 {
     using Microsoft.Diagnostics.Instrumentation.Extensions.Base;
     using System;

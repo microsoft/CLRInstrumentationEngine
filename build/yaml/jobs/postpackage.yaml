@@ -3,6 +3,9 @@
 
 # Job Template: PostPackage steps
 
+parameters:
+  OneESPT: false
+
 jobs:
 - job: PostPackage
   displayName: PostPackage
@@ -11,7 +14,7 @@ jobs:
     Packaging.EnableSBOMSigning: true
 
   pool:
-    name: VSEngSS-MicroBuild2019-1ES
+    name: VSEngSS-MicroBuild2022-1ES
 
   workspace:
     clean: outputs
@@ -19,20 +22,33 @@ jobs:
   steps:
   - checkout: none
 
-  - template: ../steps/azuredevops/downloadbuildartifacts.yaml
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml@self
     parameters:
-      ArtifactName: packages-all
+      ArtifactName: packages-windows-Release
       ItemPattern: |
         **\*.nupkg
         **\*.zip
         **\*.msi
         **\*.msm
-        
-  - template: ../steps/microbuild/sbom.yaml
 
-  - template: ../steps/azuredevops/publishbuildartifacts.yaml
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml@self
+    parameters:
+      ArtifactName: packages-linux-ubuntu-Release
+      ItemPattern: |
+        **\*.nupkg
+
+  - template: ../steps/azuredevops/downloadbuildartifacts.yaml@self
+    parameters:
+      ArtifactName: packages-linux-alpine-Release
+      ItemPattern: |
+        **\*.nupkg
+
+  - template: ../steps/microbuild/sbom.yaml@self
+
+  - template: ../steps/azuredevops/publishbuildartifacts.yaml@self
     parameters:
       PathToPublish: '$(Build.ArtifactStagingDirectory)\_manifest'
       ArtifactName: 'SBOM-manifest'
+      OneESPT: ${{ parameters.OneESPT }}
 
-  - template: ../steps/microbuild/cleanup.yaml
+  - template: ../steps/microbuild/cleanup.yaml@self

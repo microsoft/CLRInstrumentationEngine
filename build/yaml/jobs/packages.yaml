@@ -8,13 +8,15 @@ parameters:
   SignType: None
   Configuration: Both
   IsMicroBuildInternal: false
+  OneESPT: false
 
 jobs:
 # Windows Packages
-- template: windows/packages.yaml
+- template: windows/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Release_x86:
@@ -42,10 +44,11 @@ jobs:
           Platform: 'ARM64'
 
 # Linux Packages
-- template: linux/packages.yaml
+- template: linux/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+    OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
       ${{ if or( eq(parameters.Configuration, 'Both'), eq(parameters.Configuration, 'Release') )}}:
         Alpine_Release_x64:

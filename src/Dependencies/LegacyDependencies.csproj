@@ -20,7 +20,7 @@
   <Import Project="$(MSBuildThisFileDirectory)..\..\build\Common.props" />
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="$(LegacyApplicationInsightsAgentInterceptVersion)">

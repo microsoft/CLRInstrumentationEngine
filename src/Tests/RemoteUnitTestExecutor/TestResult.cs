@@ -24,11 +24,11 @@ namespace RemoteUnitTestExecutor
 
         public IList<MethodInvocationInfo> InvokedMethods { get; }
 
+        public IList<string> ProfilerTraces { get; } = new List<string>();
+
         public bool Succeeded { get; set; }
 
         public string ExceptionString { get; set; }
-
-        private List<string> ProfilerTraces = new List<string>();
 
         public void Serialize(string filename)
         {
@@ -64,11 +64,6 @@ namespace RemoteUnitTestExecutor
             {
                 this.ProfilerTraces.Add(trace);
             }
-        }
-
-        public IList<string> GetProfilerTraces()
-        {
-            return this.ProfilerTraces;
         }
 
         public string InvokedMethodsSequence

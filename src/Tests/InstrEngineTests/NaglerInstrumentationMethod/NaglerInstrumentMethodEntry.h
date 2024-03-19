@@ -66,7 +66,13 @@ public:
         {
             size_t index = buffer.size();
             buffer.resize(buffer.size() + m_opcodeInfo.m_operandLength);
-            memcpy_s(&buffer[index], m_opcodeInfo.m_operandLength, (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
+            #pragma warning(push)
+            #pragma warning(disable: 4995) // disable so that memcpy, wmemcpy can be used
+            // This is safe because the buffer has been resized to allow the operand length
+            // to be added.
+            memcpy(&buffer[index], (BYTE*)&m_operand, m_opcodeInfo.m_operandLength);
+            #pragma warning(pop)
+            
         }
         return S_OK;
     }
@@ -105,12 +111,12 @@ public:
 class CLocalType
 {
     private:
-        std::wstring m_typeName;
+        tstring m_typeName;
     public:
-        CLocalType(const std::wstring& typeName) : m_typeName(typeName)
+        CLocalType(const tstring& typeName) : m_typeName(typeName)
         {
         }
-        const std::wstring& GetTypeName() const
+        const tstring& GetTypeName() const
         {
             return m_typeName;
         }
@@ -118,15 +124,15 @@ class CLocalType
 
 struct CInstrumentMethodPointTo
 {
-    std::wstring m_assemblyName;
-    std::wstring m_typeName;
-    std::wstring m_methodName;
+    tstring m_assemblyName;
+    tstring m_typeName;
+    tstring m_methodName;
 };
 
 struct CInjectAssembly
 {
-    std::wstring m_sourceAssemblyName;
-    std::wstring m_targetAssemblyName;
+    tstring m_sourceAssemblyName;
+    tstring m_targetAssemblyName;
 };
 
 

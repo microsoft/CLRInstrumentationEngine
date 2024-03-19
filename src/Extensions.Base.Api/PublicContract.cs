@@ -344,6 +344,8 @@ namespace _System.Diagnostics
             }
         }
 
+#pragma warning disable CA1506 // Avoid excessive class coupling
+#pragma warning disable CA1502 // Avoid excessive complexity
         public static void ApplicationInsights_RemoveCallbacks(int methodId, int argsCount)
         {
             switch (argsCount)
@@ -644,5 +646,7 @@ namespace _System.Diagnostics
                     break;
             }
         }
+#pragma warning restore CA1506 // Avoid excessive class coupling
+#pragma warning restore CA1502 // Avoid excessive complexity
     }
 }

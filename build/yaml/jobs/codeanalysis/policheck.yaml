@@ -9,7 +9,7 @@ jobs:
   displayName: Code Analysis - PoliCheck
 
   pool:
-    name: VSEngSS-MicroBuild2019-1ES
+    name: VSEngSS-MicroBuild2022-1ES
 
   workspace:
     clean: all
@@ -19,7 +19,7 @@ jobs:
     clean: true
 
   # Run PoliCheck
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
     displayName: 'Run PoliCheck'
     inputs:
       targetType: F
@@ -28,14 +28,14 @@ jobs:
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
-  - template: ../../steps/codeanalysis/publishreports.yaml
+  - template: ../../steps/codeanalysis/publishreports.yaml@self
     parameters:
       ArtifactName: PoliCheck
 
-  - template: ../../steps/codeanalysis/filebugs.yaml
+  - template: ../../steps/codeanalysis/filebugs.yaml@self
     parameters:
       BuildName: PoliCheck
       Tags: CLRIEPoliCheck
 
   # Microbuild Cleanup
-  - template: ../../steps/microbuild/cleanup.yaml
+  - template: ../../steps/microbuild/cleanup.yaml@self

@@ -27,13 +27,13 @@ parameters:
 
 steps:
 # restore InstrumentationEngine.sln packages
-- template: dotnetrestore.yaml
+- template: dotnetrestore.yaml@self
   parameters:
     Solution: InstrumentationEngine.sln
     BinLogCategory: ${{ parameters.BinLogCategory }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
 
-- template: nugetrestore.yaml
+- template: nugetrestore.yaml@self
   parameters:
     Solution: NativeNugetRestore.sln
     Condition: and(succeeded(), ne(variables['Platform'], 'Any CPU'))

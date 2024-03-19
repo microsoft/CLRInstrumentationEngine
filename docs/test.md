@@ -35,5 +35,22 @@ Verbose|Sets msbuild verbosity to `normal`. By default, verbosity is set to `Err
 
 ### Linux
 
-Currently there are no unit tests support for Linux. However, Linux builds will run via PR validations. Please contact
-clrieowners@microsoft.com for more details.
+#### Prerequisites
+
+The following technologies/tools are required in order to run Linux tests on Windows. These instructions were tested for Ubuntu 18.04 LTS and may require adjustments for other distros/versions.
+
+* WSL (Windows Subsystem for Linux) 2.0 with Ubuntu 18.04 LTS
+  - WSL is available on Windows 10 Build 19041+ and Windows 11.
+  - Run this in a command prompt `wsl --install -d Ubuntu-18.04` or download Ubuntu 18.04 from the Microsoft Store. Restart as needed and setup a user/pass for your account.
+* Docker Desktop for Linux (Ubuntu)
+  - Follow the instructions from the official docs https://docs.docker.com/engine/install/ubuntu/
+
+#### Steps
+
+1. On Windows, build InstrumentationEngine for Debug AnyCPU (which builds managed projects and dlls) 
+  - You can also run `dotnet build InstrumentationEngine.sln` in the interactive container session from step 2 instead. 
+2. Run `src\scripts\DockerLocalBuild.ps1 -Wsl -BuildDockerImage -Interactive -RebuildImage`. This will build a docker container and drop you in an interactive session. By default builds for Ubuntu/Debian; set `-CLib musl` if you want to build for Alpine Linux instead.
+3. Run `./src/build.sh` within the interactive session. This builds the native shared object files (.so).
+4. Run `dotnet test bin/Debug/AnyCPU/net70/InstrEngineTests.dll`
+
+Please contact clrieowners@microsoft.com for any details or questions.

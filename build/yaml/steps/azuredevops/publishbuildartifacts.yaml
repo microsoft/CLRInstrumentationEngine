@@ -6,13 +6,23 @@
 parameters:
   PathToPublish: ''
   ArtifactName: ''
+  OneESPT: false # Indicates that this is running under the 1ES Pipeline Template
 
 steps:
 # publish Artifacts
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: ${{ parameters.ArtifactName }}'
-  inputs:
-    PathToPublish: ${{ parameters.PathToPublish }}
-    ArtifactName: ${{ parameters.ArtifactName }}
-  continueOnError: true
-  condition: succeededOrFailed()
+- ${{ if eq(parameters.OneESPT, true) }}:
+    - task: 1ES.PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: ${{ parameters.ArtifactName }}'
+      inputs:
+        PathtoPublish: ${{ parameters.PathToPublish }}
+        ArtifactName: ${{ parameters.ArtifactName }}
+      continueOnError: true
+      condition: succeededOrFailed()
+- ${{ else }}:
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ parameters.ArtifactName }}'
+    inputs:
+      PathToPublish: ${{ parameters.PathToPublish }}
+      ArtifactName: ${{ parameters.ArtifactName }}
+    continueOnError: true
+    condition: succeededOrFailed()
