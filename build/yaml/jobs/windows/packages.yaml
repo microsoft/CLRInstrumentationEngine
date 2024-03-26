@@ -33,7 +33,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - ${{ if and(eq('true', parameters.IsMicroBuildInternal), notIn(parameters.SignType, '', 'None')) }}:
     - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
@@ -47,7 +47,7 @@ jobs:
       WindowsBinRoot: $(Build.ArtifactStagingDirectory)\binaries-windows-$(Configuration)
       OneESPT: ${{ parameters.OneESPT }}
 
-  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - ${{ if and(eq('true', parameters.IsMicroBuildInternal), notIn(parameters.SignType, '', 'None')) }}:
     - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
