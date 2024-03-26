@@ -8,7 +8,7 @@ steps:
 - task: Docker@2
   displayName: Docker Login
   inputs:
-    containerRegistry: VS Diagnostics Dev (ProdDiagBuild)
+    containerRegistry: VS Diagnostics Dev (ProdDiagBuild) MSI
     command: login
 
 # Build binaries
