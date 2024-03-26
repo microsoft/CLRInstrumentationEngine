@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Build Pipeline: Continuous Integration
+# Build Pipeline: Continuous Integration (Internal)
 # Validates:
 # - binaries can be built for all platforms and configurations
 # - packages can be built for all platforms and configurations
@@ -11,8 +11,28 @@ name: $(date:yyyyMMdd)$(rev:rr)
 variables:
   TeamName: ClrInstrumentationEngine
 
-stages:
-- template: ../stages/ci_stage.yaml@self
+resources:
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
+
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Unofficial.yml@MicroBuildTemplate
   parameters:
-    OneESPT: false
-    IsMicroBuildInternal: false
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    sdl:
+      sourceAnalysisPool:
+        name: VSEngSS-MicroBuild2022-1ES
+        os: windows 
+      binskim:
+        scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
+
+    stages:
+    - template: ../stages/ci_stage.yaml@self
+      parameters:
+        OneESPT: true
+        IsMicroBuildInternal: true
