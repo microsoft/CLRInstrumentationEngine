@@ -24,7 +24,7 @@ stages:
       IndexSources: true
       Configuration: Both
       OneESPT: ${{ parameters.OneESPT }}
-      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal}}
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
 
 - stage: Test
   dependsOn: Build
@@ -33,7 +33,7 @@ stages:
   - template: ../jobs/tests.yaml@self
     parameters:
       Configuration: Both
-      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
 
 - stage: Package
   dependsOn: Build
@@ -43,4 +43,4 @@ stages:
     parameters:
       Configuration: Both
       OneESPT: ${{ parameters.OneESPT }}
-      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
