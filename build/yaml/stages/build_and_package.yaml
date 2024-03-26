@@ -3,6 +3,7 @@ parameters:
   IsMicroBuildInternal: false
   IncludeTests: true
   Configuration: Both
+  SignType: None
 
 stages:
 - stage: Build
@@ -10,7 +11,7 @@ stages:
   # Binaries (Windows & Linux)
   - template: ../jobs/binaries.yaml@self
     parameters:
-      SignType: $(SignType) # NOTE this string won't be replaced until runtime
+      SignType: ${{ parameters.SignType}}
       IndexSources: true
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
@@ -32,7 +33,7 @@ stages:
   # Packages (Windows & Linux)
   - template: ../jobs/packages.yaml@self
     parameters:
-      SignType: $(SignType) # NOTE this string won't be replaced until runtime
+      SignType: ${{ parameters.SignType}}
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

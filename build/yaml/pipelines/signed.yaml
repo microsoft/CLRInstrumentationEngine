@@ -38,6 +38,7 @@ extends:
         IsMicroBuildInternal: true
         IncludeTests: false
         Configuration: Release
+        SignType: $(SignType) # NOTE this string won't be replaced until runtime
 
     - stage: PostPackage
       jobs:
