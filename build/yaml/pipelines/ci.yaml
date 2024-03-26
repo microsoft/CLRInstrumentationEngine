@@ -8,6 +8,10 @@
 
 name: $(date:yyyyMMdd)$(rev:rr)
 
+parameters:
+  OneESPT: false
+  IsMicroBuildInternal: false
+
 variables:
   TeamName: ClrInstrumentationEngine
 
@@ -19,7 +23,8 @@ stages:
     parameters:
       IndexSources: true
       Configuration: Both
-      OneESPT: false
+      OneESPT: ${{ parameters.OneESPT }}
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal}}
 
 - stage: Test
   dependsOn: Build
@@ -28,6 +33,7 @@ stages:
   - template: ../jobs/tests.yaml@self
     parameters:
       Configuration: Both
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal
 
 - stage: Package
   dependsOn: Build
@@ -36,4 +42,5 @@ stages:
   - template: ../jobs/packages.yaml@self
     parameters:
       Configuration: Both
-      OneESPT: false
+      OneESPT: ${{ parameters.OneESPT }}
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal
