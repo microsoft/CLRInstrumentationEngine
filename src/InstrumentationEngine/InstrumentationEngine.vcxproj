@@ -98,7 +98,6 @@
       <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
       <RunCodeAnalysis>true</RunCodeAnalysis>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <ControlFlowGuard>Guard</ControlFlowGuard>
     </ClCompile>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -115,7 +114,6 @@
       <PreprocessorDefinitions Condition="'$(Platform)'=='Win32'">X86;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <ControlFlowGuard>Guard</ControlFlowGuard>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
