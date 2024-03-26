@@ -32,26 +32,12 @@ extends:
         scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
 
     stages:
-    - stage: Build
-      jobs:
-      # Binaries (Windows & Linux)
-      - template: /build/yaml/jobs/binaries.yaml@self
-        parameters:
-          IndexSources: true
-          SignType: $(SignType) # NOTE this string won't be replaced until runtime
-          Configuration: Release
-          IsMicroBuildInternal: true
-          OneESPT: true
-
-    - stage: Package
-      jobs:
-      # Packages (Windows & Linux)
-      - template: /build/yaml/jobs/packages.yaml@self
-        parameters:
-          SignType: $(SignType) # NOTE this string won't be replaced until runtime
-          Configuration: Release
-          IsMicroBuildInternal: true
-          OneESPT: true
+    - template: ../stages/build_and_package.yaml@self
+      parameters:
+        OneESPT: true
+        IsMicroBuildInternal: true
+        IncludeTests: false
+        Configuration: Release
 
     - stage: PostPackage
       jobs:

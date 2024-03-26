@@ -1,0 +1,38 @@
+parameters:
+  OneESPT: false
+  IsMicroBuildInternal: false
+  IncludeTests: true
+  Configuration: Both
+
+stages:
+- stage: Build
+  jobs:
+  # Binaries (Windows & Linux)
+  - template: ../jobs/binaries.yaml@self
+    parameters:
+      SignType: $(SignType) # NOTE this string won't be replaced until runtime
+      IndexSources: true
+      Configuration: ${{ parameters.Configuration }}
+      OneESPT: ${{ parameters.OneESPT }}
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+
+- ${{ if eq('true', parameters.IncludeTests) }}:
+  - stage: Test
+    dependsOn: Build
+    jobs:
+    # Tests (Windows)
+    - template: ../jobs/tests.yaml@self
+      parameters:
+        Configuration: ${{ parameters.Configuration }}
+        IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+
+- stage: Package
+  dependsOn: Build
+  jobs:
+  # Packages (Windows & Linux)
+  - template: ../jobs/packages.yaml@self
+    parameters:
+      SignType: $(SignType) # NOTE this string won't be replaced until runtime
+      Configuration: ${{ parameters.Configuration }}
+      OneESPT: ${{ parameters.OneESPT }}
+      IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

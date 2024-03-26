@@ -12,27 +12,4 @@ variables:
   TeamName: ClrInstrumentationEngine
 
 stages:
-- stage: Build
-  jobs:
-  # Binaries (Windows & Linux)
-  - template: ../jobs/binaries.yaml@self
-    parameters:
-      Configuration: Both
-      OneESPT: false
-
-- stage: Test
-  dependsOn: Build
-  jobs:
-  # Tests (Windows)
-  - template: ../jobs/tests.yaml@self
-    parameters:
-      Configuration: Both
-
-- stage: Package
-  dependsOn: Build
-  jobs:
-  # Packages (Windows & Linux)
-  - template: ../jobs/packages.yaml@self
-    parameters:
-      Configuration: Both
-      OneESPT: false
+- template: ../stages/build_and_package.yaml@self

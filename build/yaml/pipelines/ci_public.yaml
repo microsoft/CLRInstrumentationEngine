@@ -12,7 +12,7 @@ variables:
   TeamName: ClrInstrumentationEngine
 
 stages:
-- template: ../stages/ci_stage.yaml@self
+- template: ../stages/build_and_package.yaml@self
   parameters:
     OneESPT: false
     IsMicroBuildInternal: false
