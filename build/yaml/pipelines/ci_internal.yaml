@@ -32,7 +32,7 @@ extends:
         scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
 
     stages:
-    - template: ./ci.yaml@self
+    - template: ../stages/ci_stage.yaml@self
       parameters:
         OneESPT: true
         IsMicroBuildInternal: true
