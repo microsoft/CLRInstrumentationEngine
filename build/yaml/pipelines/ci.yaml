@@ -30,6 +30,16 @@ extends:
         os: windows 
       binskim:
         scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
+        AnalyzeTargetBinskim: |
+          **\?(*.dll|*.exe)
+          !**\AnyCPU\**
+          !**\RawProfilerHook.Tests\**
+          !**\Intercept.Latest.Tests\**
+          !**\Intercept.2.0.1.Tests\**
+          !**\Tools\**
+          !**\*Nagler*
+          !**\*Test*
+          !**\*.txt
 
     stages:
     - template: ../stages/build_and_package.yaml@self
