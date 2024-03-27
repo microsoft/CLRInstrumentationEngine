@@ -41,7 +41,7 @@ jobs:
   
   - template: ../../steps/azuredevops/usedotnet.yaml@self
 
-  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - ${{ if and(eq('true', parameters.IsMicroBuildInternal), notIn(parameters.SignType, '', 'None')) }}:
     - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
@@ -51,7 +51,7 @@ jobs:
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
       OneESPT: ${{ parameters.OneESPT }}
 
-  - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
+  - ${{ if and(eq('true', parameters.IsMicroBuildInternal), notIn(parameters.SignType, '', 'None')) }}:
     - template: ../../steps/microbuild/codesignverify.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
