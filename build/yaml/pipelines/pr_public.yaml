@@ -1,0 +1,18 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Build Pipeline: Pull Request
+# Validates:
+# - binaries can be built for all platforms and configurations
+# - packages can be built for all platforms and configurations
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+variables:
+  TeamName: ClrInstrumentationEngine
+
+stages:
+- template: ../stages/build_and_package.yaml@self
+  parameters:
+    OneESPT: false
+    IsMicroBuildInternal: false
