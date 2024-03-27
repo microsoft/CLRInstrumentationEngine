@@ -29,17 +29,8 @@ extends:
         name: VSEngSS-MicroBuild2022-1ES
         os: windows 
       binskim:
-        scanOutputDirectoryOnly: true # BinSkim will complain about VC.Tools not being Spectre compliant, but we use that for builds. This toggles for BinSkim to only scan the output files/folders.
-        AnalyzeTargetBinskim: |
-          **\?(*.dll|*.exe)
-          !**\AnyCPU\**
-          !**\RawProfilerHook.Tests\**
-          !**\Intercept.Latest.Tests\**
-          !**\Intercept.2.0.1.Tests\**
-          !**\Tools\**
-          !**\*Nagler*
-          !**\*Test*
-          !**\*.txt
+        enabled: false
+        justificationForDisabling: 'Currently fails for debug builds. Disabling because we run binSkim in a separate pipeline.'
 
     stages:
     - template: ../stages/build_and_package.yaml@self
