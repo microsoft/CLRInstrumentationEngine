@@ -50,4 +50,5 @@ RUN apt-get update \
 
 # Git now checks for repository ownership
 RUN git config --global --add safe.directory /root/ClrInstrumentationEngine/out/Linux/Intermediate/x64.Debug/_deps/googletest-src
+RUN git config --global --add safe.directory /root/ClrInstrumentationEngine/out/Linux/Intermediate/x64.Release/_deps/googletest-src
 RUN git config --global --add safe.directory /root/ClrInstrumentationEngine
