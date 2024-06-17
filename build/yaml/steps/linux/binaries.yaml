@@ -5,11 +5,13 @@
 
 steps:
 # Login to ACR
-- task: Docker@2
+- task: AzureCLI@2
   displayName: Docker Login
   inputs:
-    containerRegistry: VS Diagnostics Dev (ProdDiagBuild)
-    command: login
+    azureSubscription: 'VS Diagnostics Dev (ProdDiagBuild)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: 'az acr login --name proddiagbuild'
 
 # Build binaries
 - task: Bash@3
