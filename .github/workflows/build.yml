@@ -16,7 +16,10 @@ jobs:
         # Note OSX isn't officially supported yet, but might be in the future.
         # The build here will help ensure no changes are introduced that
         # would make it difficult.
-        os: [ macos-latest ]
+        #
+        # macos-latest is now tied to arm64 images. Choose the latest x64 image that has the prerequisites for CLRIE.
+        # Available images: https://github.com/actions/runner-images/blob/main/README.md#available-images
+        os: [ macos-13 ]
 
     runs-on: ${{ matrix.os }}
 
