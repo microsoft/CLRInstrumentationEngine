@@ -16,6 +16,13 @@
     <OutputName>InstrumentationEngine.Installer_$(Platform).$(PackageVersion)$(MsiSuffix)</OutputName>
     <DefineConstants>$(DefineConstants);OutputPath=$(OutputPath)</DefineConstants>
   </PropertyGroup>
+  <!-- 
+    LGHT0217 errors appear in AzDO (but not local builds)
+    See http://wixtoolset.org/documentation/error217/ 
+  -->
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <SuppressValidation>true</SuppressValidation>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="InstrumentationEngine.Installer.wxs" />
   </ItemGroup>

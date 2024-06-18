@@ -15,6 +15,13 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>InstrumentationEngine.Module_$(Platform).$(PackageVersion)$(MsiSuffix)</OutputName>
   </PropertyGroup>
+  <!-- 
+    LGHT0217 errors appear in AzDO (but not local builds)
+    See http://wixtoolset.org/documentation/error217/ 
+  -->
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <SuppressValidation>true</SuppressValidation>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="InstrumentationEngine.Module.wxs" />
   </ItemGroup>

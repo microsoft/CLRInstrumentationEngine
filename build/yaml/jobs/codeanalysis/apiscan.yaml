@@ -25,10 +25,6 @@ jobs:
   - checkout: self
     clean: true
 
-  # Expire ApiScan one day before declared expirary, to make sure that we update it before
-  # it expires, regardless of timezone
-  - powershell: if ((Get-Date).Add((New-TimeSpan -Days 1)) -ge (Get-Date -Date "$(ApiScanExpiration)")) { throw "ApiScan key expired. Please update" }
-
   - task: DownloadBuildArtifacts@0
     displayName: Download Windows Files (Release)
     inputs:
@@ -73,7 +69,7 @@ jobs:
       isLargeApp: false
     continueOnError: true
     env:
-      AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientId);TenantId=$(TenantId);AppKey=$(AppKey)
+      AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientId)
 
   - task: TSAUpload@2
     inputs:
