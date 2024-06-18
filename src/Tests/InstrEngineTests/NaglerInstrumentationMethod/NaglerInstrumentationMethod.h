@@ -5,9 +5,10 @@
 
 #include "stdafx.h"
 #include "NaglerInstrumentMethodEntry.h"
+#include "ModuleInfo.h"
 
 class __declspec(uuid("D2959618-F9B6-4CB6-80CF-F3B0E3263888"))
-CInstrumentationMethod :
+    CInstrumentationMethod :
     public IInstrumentationMethod,
     public IInstrumentationMethodExceptionEvents,
     public CModuleRefCount
@@ -33,6 +34,7 @@ private:
 
     CComPtr<IProfilerManager> m_pProfilerManager;
     CComPtr<IProfilerStringManager> m_pStringManager;
+    vector<int> indexes;
 
     // CModuleRefCount
 public:
@@ -72,10 +74,10 @@ public:
 
         { _T("System.String"), ELEMENT_TYPE_STRING },
         { _T("System.Object"), ELEMENT_TYPE_OBJECT },
-    }),
-    m_bExceptionTrackingEnabled(false),
-    m_bTestInstrumentationMethodLogging(false),
-    m_spInjectAssembly(nullptr)
+        }),
+        m_bExceptionTrackingEnabled(false),
+        m_bTestInstrumentationMethodLogging(false),
+        m_spInjectAssembly(nullptr)
     {
     }
 
@@ -95,18 +97,18 @@ public:
         _In_ COR_PRF_FRAME_INFO frameInfo,
         _In_ ULONG32 contextSize,
         _In_reads_(contextSize) BYTE context[],
-        _In_ void *clientData
-        );
+        _In_ void* clientData
+    );
 
     // IInstrumentationMethod
 public:
     virtual HRESULT STDMETHODCALLTYPE Initialize(_In_ IProfilerManager* pProfilerManager) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnAppDomainCreated(
-        _In_ IAppDomainInfo *pAppDomainInfo) override;
+        _In_ IAppDomainInfo* pAppDomainInfo) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnAppDomainShutdown(
-        _In_ IAppDomainInfo *pAppDomainInfo) override;
+        _In_ IAppDomainInfo* pAppDomainInfo) override;
 
     virtual HRESULT STDMETHODCALLTYPE OnAssemblyLoaded(_In_ IAssemblyInfo* pAssemblyInfo) override;
     virtual HRESULT STDMETHODCALLTYPE OnAssemblyUnloaded(_In_ IAssemblyInfo* pAssemblyInfo) override;
@@ -130,39 +132,39 @@ public:
     virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherEnter(
         _In_ IMethodInfo* pMethodInfo,
         _In_ UINT_PTR   objectId
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionCatcherLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchCatcherFound(
         _In_ IMethodInfo* pMethodInfo
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterEnter(
         _In_ IMethodInfo* pMethodInfo
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFilterLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionEnter(
         _In_ IMethodInfo* pMethodInfo
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionSearchFunctionLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionThrown(
         _In_ UINT_PTR thrownObjectId
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyEnter(
         _In_ IMethodInfo* pMethodInfo
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFinallyLeave() override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionEnter(
         _In_ IMethodInfo* pMethodInfo
-        ) override;
+    ) override;
 
     virtual HRESULT STDMETHODCALLTYPE ExceptionUnwindFunctionLeave() override;
 
@@ -175,15 +177,21 @@ private:
     HRESULT ProcessInjectAssembly(CXmlNode* pNode, shared_ptr<CInjectAssembly>& injectAssembly);
 
     HRESULT InstrumentLocals(IMethodInfo* pMethodInfo, shared_ptr<CInstrumentMethodEntry> pMethodEntry);
-    HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType &localType, IType** pType);
+    HRESULT GetType(IModuleInfo* moduleInfo, const CLocalType& localType, IType** pType);
 
     HRESULT ConvertOpcode(LPCWSTR zwOpcode, ILOrdinalOpcode* pOpcode, ILOpcodeInfo* pOpcodeInfo);
     HRESULT AddExceptionHandler(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
     HRESULT PerformSingleReturnInstrumentation(IMethodInfo* pMethodInfo, IInstructionGraph* pInstructionGraph);
+    HRESULT STDMETHODCALLTYPE ModuleFlagsAllowInstrumentation(DWORD dwModuleFlags);
+    HRESULT GetTypeRef(LPCWSTR typeName, mdToken sourceLibraryReference, IMetaDataEmit* pEmit, mdTypeRef* ptr);
+    HRESULT STDMETHODCALLTYPE AddTracingReferencesToModule(IMetaDataAssemblyImport* pAssemblyImport, IMetaDataAssemblyEmit* pAssemblyEmit, IMetaDataEmit* pEmit, ModuleInfo* pModuleInfo);
+    BOOL FindMscorlibReference(IMetaDataAssemblyImport* pAssemblyImport, mdAssemblyRef* rgAssemblyRefs, ULONG cAssemblyRefs, mdAssemblyRef* parMscorlib);
+    bool IsSystemLib(tstring assemblyName);
+    WCHAR* copyWideChars(WCHAR* dest, const WCHAR* src);
 
     static DWORD WINAPI LoadInstrumentationMethodXml(
         _In_  LPVOID lpParameter
-        );
+    );
 
     HRESULT HandleStackSnapshotCallbackExceptionThrown(
         _In_ FunctionID funcId,
@@ -191,5 +199,5 @@ private:
         _In_ COR_PRF_FRAME_INFO frameInfo,
         _In_ ULONG32 contextSize,
         _In_reads_(contextSize) BYTE context[]
-        );
+    );
 };
