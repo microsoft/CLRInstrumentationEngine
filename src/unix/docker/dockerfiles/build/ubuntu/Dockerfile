@@ -10,18 +10,17 @@ RUN apt-get update \
         curl \
         software-properties-common
 
-# Install .NET Core 2.1 SDK
-# https://www.microsoft.com/net/download/linux-package-manager/ubuntu18-04/sdk-2.1.403
+# Install .NET SDKs
+# https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository
 RUN curl -SL --output packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb \
     && rm packages-microsoft-prod.deb
 
 RUN apt-get install -y --no-install-recommends apt-transport-https \
     && apt-get update \
-    && apt-get install -y --no-install-recommends dotnet-sdk-2.1
-
-# Install .NET 7 SDK
-RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -c 7.0
+    && apt-get install -y --no-install-recommends \
+        dotnet-sdk-6.0 \
+        dotnet-sdk-7.0
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
