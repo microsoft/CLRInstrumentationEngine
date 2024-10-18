@@ -88,7 +88,7 @@ if ([string]::IsNullOrEmpty($BaseImage))
 {
     if ($CLib -eq "gnu")
     {
-        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu:latest"
+        $BaseImage = "proddiagbuild.azurecr.io/clrie-build-ubuntu-jander:latest"
     }
     elseif ($CLib -eq "musl")
     {
