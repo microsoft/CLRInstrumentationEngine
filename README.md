@@ -1,6 +1,6 @@
 ﻿# CLR Instrumentation Engine
 
-Main Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status%2FClrInstrumentationEngine%2FClrInstrumentationEngine-CI-Yaml?repoName=microsoft%2FCLRInstrumentationEngine&branchName=main)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11310&repoName=microsoft%2FCLRInstrumentationEngine&branchName=main)
+Main Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/ClrInstrumentationEngine-CI-Yaml?&branchName=main)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11310&branchName=main)
 
 Release Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=release)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=release)
 
