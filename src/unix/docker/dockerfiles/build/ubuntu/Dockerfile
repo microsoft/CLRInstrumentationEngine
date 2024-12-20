@@ -32,14 +32,14 @@ RUN apt-get update \
 
 RUN \
     # Install .NET 6 SDK
-    curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$DOTNET_6_SDK_VERSION/dotnet-sdk-$DOTNET_6_SDK_VERSION-linux-x64.tar.gz \
+    curl -fSL --output dotnet.tar.gz https://builds.dotnet.microsoft.com/dotnet/Sdk/$DOTNET_6_SDK_VERSION/dotnet-sdk-$DOTNET_6_SDK_VERSION-linux-x64.tar.gz \
     && dotnet_sha512='a9cd1e5ccc3c5d847aca2ef21dd145f61c6b18c4e75a3c2fc9aed592c6066d511b8b658c54c2cd851938fe5aba2386e5f6f51005f6406b420110c0ec408a8401' \
     && echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
     && tar -oxzf dotnet.tar.gz -C /usr/share/dotnet \
     && rm dotnet.tar.gz \
     # Install .NET 7 SDK
-    && curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/$DOTNET_7_SDK_VERSION/dotnet-sdk-$DOTNET_7_SDK_VERSION-linux-x64.tar.gz \
+    && curl -fSL --output dotnet.tar.gz https://builds.dotnet.microsoft.com/dotnet/Sdk/$DOTNET_7_SDK_VERSION/dotnet-sdk-$DOTNET_7_SDK_VERSION-linux-x64.tar.gz \
     && dotnet_sha512='20b8e02979328e4c4a14493f7791ed419aabd0175233db80cd60e2c004b829b3e8301281ea86b27ba818372473accf5a6d553e5354c54917c8e84d25f5855caa' \
     && echo "$dotnet_sha512  dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
