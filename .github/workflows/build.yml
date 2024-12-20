@@ -16,7 +16,7 @@ jobs:
         # Note OSX isn't officially supported yet, but might be in the future.
         # The build here will help ensure no changes are introduced that
         # would make it difficult.
-        os: [ macos-latest-large ]
+        os: [ macos-13-large, ubuntu-20.04 ]
 
     runs-on: ${{ matrix.os }}
 
@@ -36,14 +36,14 @@ jobs:
     - run: src/build.sh x64 release
 
     - name: archive so
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-20.04'
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: libInstrumentationEngine.so
         path: out/Linux/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.so
 
     - name: archive dylib
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'macos-13-large'
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
       with:
         name: libInstrumentationEngine.dylib
