@@ -1,6 +1,6 @@
 ﻿# CLR Instrumentation Engine
 
-Main Branch: [![Build Status](https://dev.azure.com/ms/CLRInstrumentationEngine/_apis/build/status/CI-Yaml?branchName=main)](https://dev.azure.com/ms/CLRInstrumentationEngine/_build/latest?definitionId=275&branchName=main)
+Main Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/ClrInstrumentationEngine-CI-Yaml?branchName=main)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11310&branchName=main)
 
 Release Branch: [![Build Status](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/ClrInstrumentationEngine/GitHub/ClrInstrumentationEngine-Signed-Yaml?branchName=release)](https://devdiv.visualstudio.com/DevDiv/_build/latest?definitionId=11311&branchName=release)
 
@@ -16,10 +16,10 @@ For more information about our current and future project scope and to track our
 
 The CLR Instrumentation Engine is a profiler implementation and is enabled and configured via environment variables for the running process.
 
-* [Getting Started](docs/getting_started.md) for details on how use the CLR Instrumentation Engine.
-* [Environment Variables](docs/environment_variables.md)
-* [Configure Instrumentation Methods](docs/configuration.md)
-* [CLRIE Releases](docs/releases.md)
+-   [Getting Started](docs/getting_started.md) for details on how use the CLR Instrumentation Engine.
+-   [Environment Variables](docs/environment_variables.md)
+-   [Configure Instrumentation Methods](docs/configuration.md)
+-   [CLRIE Releases](docs/releases.md)
 
 ## Contributing
 
@@ -27,19 +27,19 @@ Please read [Contributing](CONTRIBUTING.md) for details on the Contributor Licen
 
 This repo builds using Visual Studio 2022 and requires the following components:
 
-|Component Id|Component Friendly Name|
-|:--|:--
-Microsoft.Component.MSBuild|MSBuild
-Microsoft.VisualStudio.Workload.NativeDesktop|Desktop development with C++ (Workload)
-Microsoft.VisualStudio.Component.VC.ATL.Spectre|C++ ATL for latest v143 build tools with Spectre Mitigations (x86 & x64)
-Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre|MSVC v143 - VS 2022 C++ x64/x86 Spectre-mitigated libs (Latest)
+| Component Id                                                 | Component Friendly Name                                                  |
+| :----------------------------------------------------------- | :----------------------------------------------------------------------- |
+| Microsoft.Component.MSBuild                                  | MSBuild                                                                  |
+| Microsoft.VisualStudio.Workload.NativeDesktop                | Desktop development with C++ (Workload)                                  |
+| Microsoft.VisualStudio.Component.VC.ATL.Spectre              | C++ ATL for latest v143 build tools with Spectre Mitigations (x86 & x64) |
+| Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre | MSVC v143 - VS 2022 C++ x64/x86 Spectre-mitigated libs (Latest)          |
 
 Optionally, in order to develop Wixproj files in Visual Studio, you will need to install the [Wix Toolset Visual 2022 Extension](https://marketplace.visualstudio.com/items?itemName=WixToolset.WixToolsetVisualStudio2022Extension), also known as the "Votive" extension.
 
-* [Design Notes](DESIGN-NOTES.md) - the overall design for CLR Instrumentation Engine.
-* [Build](docs/build.md) - how to run local builds.
-* [Test](docs/test.md) - how to run tests.
-* [Release Process](docs/release_process.md) - how to release CLRIE to various platforms.
+-   [Design Notes](DESIGN-NOTES.md) - the overall design for CLR Instrumentation Engine.
+-   [Build](docs/build.md) - how to run local builds.
+-   [Test](docs/test.md) - how to run tests.
+-   [Release Process](docs/release_process.md) - how to release CLRIE to various platforms.
 
 ## Versioning
 
