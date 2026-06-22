@@ -18,9 +18,11 @@ Based on the changes and targeted platform releases, impacted scenarios and part
 ### Release Phase
 1.  Once testing completes, PR to merge `main` branch to `release` branch
 2.  Manually run the [Signed](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=11311) build to create release artifacts
-3.  Manually run the
-[CLR Instrumentation Engine Release](https://devdiv.visualstudio.com/DevDiv/_releases2?view=all&definitionId=901)
-pipeline which publishes artifacts with release version (eg. 1.0.15)
+3.  Manually run the **CLR Instrumentation Engine Release** YAML pipeline
+([build/yaml/pipelines/release.yaml](../build/yaml/pipelines/release.yaml)) to publish NuGets to the internal
+InstrumentationEngine feed. This pipeline consumes the `Signed` build artifacts. The remaining release steps below
+are still performed via the legacy classic release definition
+([definitionId=901](https://devdiv.visualstudio.com/DevDiv/_releases2?view=all&definitionId=901)) until they are migrated.
     +  Publish NuGets to the internal NuGet feed and MSAzure (for Azure VM/VMSS WAD)
     +  Publish Preinstalled CLR Instrumentation Engine zip file to Azure App Service
     +  Publish msi/msm files to CDN and expose aka.ms links on this repo.
