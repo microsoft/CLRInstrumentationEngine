@@ -1,0 +1,75 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Release Pipeline: CLR Instrumentation Engine Release
+#
+# Migrated from the classic release definition "CLR Instrumentation Engine Release"
+# (https://devdiv.visualstudio.com/DevDiv/_release?definitionId=901).
+#
+# Consumes the signed build artifacts produced by the "Signed" build
+# (build definition 11311 / ClrInstrumentationEngine-Signed-Yaml, see signed.yaml)
+# and publishes the release.
+#
+# Currently only the first classic stage is migrated:
+#   - Publish NuGets to the internal InstrumentationEngine feed (+ optional promote to Release view)
+# The remaining classic environments (preinstalled zip, drop upload/retain, NuGet.org headers,
+# VS feed, VS insertion, symbol/source archival) will be migrated separately.
+#
+# NOTE: This pipeline must be run manually after the Signed build completes.
+# Stage approvals are enforced via Azure DevOps Environment checks (see stages/release.yaml).
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+trigger: none
+pr: none
+
+variables:
+  TeamName: VS Production Diagnostics
+
+  # Map the classic $(System.ArtifactsDirectory) onto the YAML pipeline-resource workspace.
+  # Pipeline-resource artifacts download to $(Pipeline.Workspace)\<resource alias>\<artifact name>.
+  ArtifactsDirectory: $(Pipeline.Workspace)
+
+  # ---- Artifact path patterns (relative to ArtifactsDirectory) ----
+  WindowsInstrumentationEngineNuGetArtifactPathPattern: ClrInstrumentationEngine-Signed-Yaml\packages-windows-Release\**\Microsoft.InstrumentationEngine*.nupkg
+  LinuxInstrumentationEngineNuGetArtifactPathPattern: ClrInstrumentationEngine-Signed-Yaml\packages-linux-*-Release\**\Microsoft.InstrumentationEngine*.nupkg
+
+  # ---- Contacts ----
+  TeamContact: clrieowners@microsoft.com
+
+  # Set to 'True' (e.g. at queue time) to promote the published packages to the Release view.
+  PromoteToRelease: 'False'
+
+resources:
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
+
+  pipelines:
+  # The signed build that produces the release artifacts (build definition 11311).
+  # The alias is kept identical to the classic release artifact alias so that the
+  # downloaded artifact paths line up with the patterns above.
+  - pipeline: ClrInstrumentationEngine-Signed-Yaml
+    project: DevDiv
+    source: ClrInstrumentationEngine-Signed-Yaml
+    trigger: none
+
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
+  parameters:
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    sdl:
+      sourceAnalysisPool:
+        name: VSEngSS-MicroBuild2022-1ES
+        os: windows
+      # This pipeline only consumes already-signed/scanned artifacts and publishes them.
+      binskim:
+        enabled: false
+        justificationForDisabling: 'Release pipeline only consumes already-scanned signed artifacts; BinSkim runs in the build pipeline.'
+
+    stages:
+    - template: ../stages/release.yaml@self

@@ -1,0 +1,85 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Stages Template: CLR Instrumentation Engine Release
+#
+# Migrated from the classic release definition 901. Only the first classic environment,
+# "Publish NuGets to internal InstrumentationEngine Feed", is migrated for now; the
+# remaining environments (preinstalled zip, drop upload/retain, NuGet.org headers, VS feed,
+# VS insertion, symbol/source archival) will be migrated separately.
+#
+# The stage has a pre-deploy approval in the classic definition and is modeled as a
+# deployment job targeting an Azure DevOps Environment; configure the matching approval
+# check on that environment:
+#
+#   Environment                         Classic pre-deploy approver
+#   ----------------------------------  ----------------------------------------
+#   CLRIE-Release-Internal-NuGet-Feed   [DevDiv]\CLR Instrumentation Engine
+
+stages:
+
+# =====================================================================================
+# Publish NuGets to internal InstrumentationEngine Feed
+# =====================================================================================
+- stage: PublishNuGetsInternalFeed
+  displayName: Publish NuGets to internal InstrumentationEngine Feed
+  dependsOn: []
+  jobs:
+  - deployment: Publish
+    displayName: Publish NuGets to internal InstrumentationEngine Feed
+    environment: CLRIE-Release-Internal-NuGet-Feed
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
+          - download: ClrInstrumentationEngine-Signed-Yaml
+            artifact: packages-windows-Release
+            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
+            displayName: Download Windows packages
+          - download: ClrInstrumentationEngine-Signed-Yaml
+            artifact: packages-linux-ubuntu-Release
+            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
+            displayName: Download Linux (ubuntu) packages
+          - download: ClrInstrumentationEngine-Signed-Yaml
+            artifact: packages-linux-alpine-Release
+            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
+            displayName: Download Linux (alpine) packages
+
+          - task: NuGetAuthenticate@1
+            displayName: NuGet Authenticate
+
+          - task: NuGetCommand@2
+            displayName: Push to DevDiv InstrumentationEngine feed
+            inputs:
+              command: push
+              nuGetFeedType: internal
+              publishVstsFeed: 59c1dfae-dea5-4ea5-ac83-c9abcb4ac339
+              packagesToPush: $(ArtifactsDirectory)\$(WindowsInstrumentationEngineNuGetArtifactPathPattern);$(ArtifactsDirectory)\$(LinuxInstrumentationEngineNuGetArtifactPathPattern)
+              allowPackageConflicts: true
+              publishPackageMetadata: true
+              verbosityPush: Detailed
+
+          # Classic equivalent: "Promote package to Release View" (deprecated marketplace task,
+          # gated on PromoteToRelease). Implemented here against the Azure Artifacts packaging
+          # REST API; only runs when PromoteToRelease is set to 'True'.
+          - task: PowerShell@2
+            displayName: Promote package to Release View
+            condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'))
+            env:
+              SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+            inputs:
+              targetType: inline
+              script: |
+                $feedId = '59c1dfae-dea5-4ea5-ac83-c9abcb4ac339'
+                $headers = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+                $root = Join-Path $env:ArtifactsDirectory 'ClrInstrumentationEngine-Signed-Yaml'
+                Get-ChildItem -Path $root -Recurse -Filter *.nupkg | ForEach-Object {
+                  if ($_.Name -match '^(?<id>.+?)\.(?<ver>\d+\..*)\.nupkg$') {
+                    $id = $Matches.id; $ver = $Matches.ver
+                    $uri = "https://pkgs.dev.azure.com/DevDiv/_apis/packaging/feeds/$feedId/nuget/packages/$id/versions/$ver?api-version=7.1-preview.1"
+                    $body = @{ views = @{ op = 'add'; path = '/views/-'; value = 'Release' } } | ConvertTo-Json -Depth 5
+                    Write-Host "Promoting $id $ver to Release view"
+                    Invoke-RestMethod -Uri $uri -Method Patch -Headers $headers -Body $body -ContentType 'application/json'
+                  }
+                }
