@@ -42,9 +42,9 @@ variables:
 
 resources:
   repositories:
-  - repository: MicroBuildTemplate
+  - repository: 1ESPipelineTemplates
     type: git
-    name: 1ESPipelineTemplates/MicroBuildTemplate
+    name: 1ESPipelineTemplates/1ESPipelineTemplates
     ref: refs/tags/release
 
   pipelines:
@@ -57,7 +57,7 @@ resources:
     trigger: none
 
 extends:
-  template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
+  template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     pool:
       name: VSEngSS-Microbuild2022-1ES
