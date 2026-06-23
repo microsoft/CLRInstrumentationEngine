@@ -28,7 +28,7 @@ jobs:
 
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
 
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: out/packages
         key: nuget
@@ -37,14 +37,14 @@ jobs:
 
     - name: archive so
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: libInstrumentationEngine.so
         path: out/Linux/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.so
 
     - name: archive dylib
       if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: libInstrumentationEngine.dylib
         path: out/OSX/bin/x64.Release/ClrInstrumentationEngine/libInstrumentationEngine.dylib
