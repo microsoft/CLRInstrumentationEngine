@@ -19,9 +19,11 @@ pipelines:
         credscan:
           lastModifiedDate: 2024-10-17
         eslint:
-          lastModifiedDate: 2024-10-17
+          lastModifiedDate: 2026-06-25
         armory:
-          lastModifiedDate: 2024-10-17
+          lastModifiedDate: 2026-06-25
+        accessibilityinsights:
+          lastModifiedDate: 2026-06-25
       binary:
         credscan:
           lastModifiedDate: 2024-10-17
