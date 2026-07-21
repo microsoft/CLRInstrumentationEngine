@@ -35,6 +35,7 @@ jobs:
       AnalyzeTarget: '$(Build.ArtifactStagingDirectory)\binaries-windows-Release\**\*.dll;$(Build.ArtifactStagingDirectory)\binaries-windows-Release\**\*.exe;'
       AnalyzeVerbose: true
       AnalyzeHashes: true
+      toolVersion: 'Latest'
     continueOnError: true
 
   # Publish SecurityAnalysis Logs
