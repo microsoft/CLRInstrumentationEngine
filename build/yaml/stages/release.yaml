@@ -32,6 +32,8 @@ stages:
       name: VSEngSS-Microbuild2022-1ES
       os: windows
     templateContext:
+      type: releaseJob
+      isProduction: true
       outputs:
       - output: nuget
         displayName: Push to DevDiv InstrumentationEngine feed
