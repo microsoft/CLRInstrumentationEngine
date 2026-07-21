@@ -34,19 +34,6 @@ stages:
     templateContext:
       type: releaseJob
       isProduction: true
-      outputs:
-      - output: nuget
-        displayName: Push to DevDiv InstrumentationEngine feed
-        nuGetFeedType: internal
-        publishVstsFeed: 59c1dfae-dea5-4ea5-ac83-c9abcb4ac339
-        # 1ES requires every packagesToPush entry to live under packageParentPath, which must be
-        # an existing folder (no wildcards). $(ArtifactsDirectory) == $(Pipeline.Workspace), the
-        # root all pipeline-resource artifacts download into.
-        packageParentPath: $(ArtifactsDirectory)
-        packagesToPush: $(ArtifactsDirectory)\$(WindowsInstrumentationEngineNuGetArtifactPathPattern);$(ArtifactsDirectory)\$(LinuxInstrumentationEngineNuGetArtifactPathPattern)
-        allowPackageConflicts: true
-        publishPackageMetadata: true
-        verbosityPush: Detailed
     strategy:
       runOnce:
         deploy:
@@ -67,8 +54,17 @@ stages:
 
           - task: NuGetAuthenticate@1
             displayName: NuGet Authenticate
-          # The 'nuget' output declared in templateContext.outputs pushes the packages here,
-          # immediately after these deploy steps complete.
+
+          - task: NuGetCommand@2
+            displayName: Push to DevDiv InstrumentationEngine feed
+            inputs:
+              command: push
+              nuGetFeedType: internal
+              publishVstsFeed: 59c1dfae-dea5-4ea5-ac83-c9abcb4ac339
+              packagesToPush: $(ArtifactsDirectory)\$(WindowsInstrumentationEngineNuGetArtifactPathPattern);$(ArtifactsDirectory)\$(LinuxInstrumentationEngineNuGetArtifactPathPattern)
+              allowPackageConflicts: true
+              publishPackageMetadata: true
+              verbosityPush: Detailed
         on:
           # The 'on success' hook runs after the deploy phase (including the NuGet push above)
           # has succeeded, so the promote step always runs after the packages are published.
