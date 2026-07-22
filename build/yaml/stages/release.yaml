@@ -25,8 +25,14 @@ stages:
   displayName: Publish NuGets to internal InstrumentationEngine Feed
   dependsOn: []
   jobs:
-  - deployment: Publish
-    displayName: Publish NuGets to internal InstrumentationEngine Feed
+  # ---------------------------------------------------------------------------------
+  # Approval gate. A release (deployment) job targeting the gated environment so the
+  # classic pre-deploy approval still applies before anything is published. It performs
+  # no work itself -- 1ES release jobs cannot declare outputs, so the actual NuGet push
+  # lives on the separate plain 'Publish' job below (output: nuget).
+  # ---------------------------------------------------------------------------------
+  - deployment: ApprovalGate
+    displayName: Approval gate (internal NuGet feed)
     environment: CLRIE-Release-Internal-NuGet-Feed
     pool:
       name: VSEngSS-Microbuild2022-1ES
@@ -39,32 +45,82 @@ stages:
         deploy:
           steps:
           - download: none
-          - download: ClrInstrumentationEngine-Signed-Yaml
-            artifact: packages-windows-Release
-            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
-            displayName: Download Windows packages
-          - download: ClrInstrumentationEngine-Signed-Yaml
-            artifact: packages-linux-ubuntu-Release
-            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
-            displayName: Download Linux (ubuntu) packages
-          - download: ClrInstrumentationEngine-Signed-Yaml
-            artifact: packages-linux-alpine-Release
-            patterns: '**/Microsoft.InstrumentationEngine*.nupkg'
-            displayName: Download Linux (alpine) packages
 
-          - task: NuGetAuthenticate@1
-            displayName: NuGet Authenticate
+  # ---------------------------------------------------------------------------------
+  # Publish. Plain job (runs only after the gate is approved). Artifacts are downloaded
+  # via templateContext.inputs (the 1ES-sanctioned replacement for '- download:') and
+  # published via the only construct 1ES allows for pushing NuGet packages: output: nuget.
+  # ---------------------------------------------------------------------------------
+  - job: Publish
+    displayName: Publish NuGets to internal InstrumentationEngine Feed
+    dependsOn: ApprovalGate
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    templateContext:
+      inputs:
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-windows-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-windows-Release
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-linux-ubuntu-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-linux-ubuntu-Release
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-linux-alpine-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-linux-alpine-Release
+      outputs:
+      - output: nuget
+        displayName: Push to DevDiv InstrumentationEngine feed
+        # Dry run: skip the actual push (nothing is published) while the rest of the job
+        # -- artifact download above and the promote logic downstream -- still runs.
+        condition: ne(variables['DryRun'], 'True')
+        packageParentPath: $(ArtifactsDirectory)
+        packagesToPush: $(ArtifactsDirectory)\$(WindowsInstrumentationEngineNuGetArtifactPathPattern);$(ArtifactsDirectory)\$(LinuxInstrumentationEngineNuGetArtifactPathPattern)
+        nuGetFeedType: internal
+        publishVstsFeed: 59c1dfae-dea5-4ea5-ac83-c9abcb4ac339
+        allowPackageConflicts: true
+        publishPackageMetadata: true
+        verbosityPush: Detailed
+    steps:
+    - checkout: none
 
-          - task: NuGetCommand@2
-            displayName: Push to DevDiv InstrumentationEngine feed
-            inputs:
-              command: push
-              nuGetFeedType: internal
-              publishVstsFeed: 59c1dfae-dea5-4ea5-ac83-c9abcb4ac339
-              packagesToPush: $(ArtifactsDirectory)\$(WindowsInstrumentationEngineNuGetArtifactPathPattern);$(ArtifactsDirectory)\$(LinuxInstrumentationEngineNuGetArtifactPathPattern)
-              allowPackageConflicts: true
-              publishPackageMetadata: true
-              verbosityPush: Detailed
+  # ---------------------------------------------------------------------------------
+  # Promote (optional). Release (deployment) job, only runs when PromoteToRelease=True.
+  # Artifacts are downloaded via templateContext.inputs; the promote REST call runs in
+  # the on.success hook below.
+  # ---------------------------------------------------------------------------------
+  - deployment: Promote
+    displayName: Promote package to Release View
+    dependsOn: Publish
+    condition: eq(variables['PromoteToRelease'], 'True')
+    environment: CLRIE-Release-Promote-Internal-NuGet-Feed
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    templateContext:
+      type: releaseJob
+      isProduction: true
+      inputs:
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-windows-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-windows-Release
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-linux-ubuntu-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-linux-ubuntu-Release
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: packages-linux-alpine-Release
+        targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-linux-alpine-Release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
         on:
           # The 'on success' hook runs after the deploy phase (including the NuGet push above)
           # has succeeded, so the promote step always runs after the packages are published.

@@ -40,6 +40,11 @@ variables:
   # Set to 'True' (e.g. at queue time) to promote the published packages to the Release view.
   PromoteToRelease: 'False'
 
+  # Set to 'True' (e.g. at queue time) for a dry run: the full pipeline runs (artifact
+  # download, approval gate, and -- if enabled -- the promote logic), but the NuGet push
+  # (output: nuget) is skipped so nothing is actually published to the feed.
+  DryRun: 'False'
+
 resources:
   repositories:
   - repository: 1ESPipelineTemplates
