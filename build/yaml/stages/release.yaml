@@ -95,7 +95,7 @@ stages:
   - deployment: Promote
     displayName: Promote package to Release View
     dependsOn: Publish
-    condition: eq(variables['PromoteToRelease'], 'True')
+    condition: and(eq(variables['PromoteToRelease'], 'True'), ne(variables['DryRun'], 'True'))
     environment: CLRIE-Release-Promote-Internal-NuGet-Feed
     pool:
       name: VSEngSS-Microbuild2022-1ES
@@ -128,10 +128,10 @@ stages:
             steps:
             # Classic equivalent: "Promote package to Release View" (deprecated marketplace task,
             # gated on PromoteToRelease). Implemented here against the Azure Artifacts packaging
-            # REST API; only runs when PromoteToRelease is set to 'True'.
+            # REST API; only runs when PromoteToRelease is 'True' and this is not a dry run.
             - task: PowerShell@2
               displayName: Promote package to Release View
-              condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'))
+              condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'), ne(variables['DryRun'], 'True'))
               env:
                 SYSTEM_ACCESSTOKEN: $(System.AccessToken)
               inputs:
