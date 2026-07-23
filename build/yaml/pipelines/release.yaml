@@ -23,6 +23,16 @@ name: $(date:yyyyMMdd)$(rev:rr)
 trigger: none
 pr: none
 
+parameters:
+- name: dryRun
+  displayName: 'Dry run: run everything but skip the NuGet publish (nothing is published)'
+  type: boolean
+  default: false
+- name: promoteToRelease
+  displayName: 'Promote the published packages to the Release view'
+  type: boolean
+  default: false
+
 variables:
   TeamName: VS Production Diagnostics
 
@@ -37,8 +47,17 @@ variables:
   # ---- Contacts ----
   TeamContact: clrieowners@microsoft.com
 
-  # Set to 'True' (e.g. at queue time) to promote the published packages to the Release view.
-  PromoteToRelease: 'False'
+  # Queue-time toggles. YAML variables alone are NOT settable at queue time, so these map the
+  # runtime parameters (declared above, shown in the "Run pipeline" dialog) onto the variable
+  # names the stage conditions already use. A boolean parameter expands to 'True'/'False'.
+  #
+  # Promote the published packages to the Release view.
+  PromoteToRelease: ${{ parameters.promoteToRelease }}
+
+  # Dry run: the full pipeline runs (artifact download, approval gate, and -- if enabled --
+  # the promote logic), but the NuGet push (output: nuget) is skipped so nothing is
+  # actually published to the feed.
+  DryRun: ${{ parameters.dryRun }}
 
 resources:
   repositories:
