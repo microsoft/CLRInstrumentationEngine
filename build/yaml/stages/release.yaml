@@ -95,7 +95,7 @@ stages:
   - deployment: Promote
     displayName: Promote package to Release View
     dependsOn: Publish
-    condition: and(eq(variables['PromoteToRelease'], 'True'), ne(variables['DryRun'], 'True'))
+    condition: eq(variables['PromoteToRelease'], 'True')
     environment: CLRIE-Release-Promote-Internal-NuGet-Feed
     pool:
       name: VSEngSS-Microbuild2022-1ES
