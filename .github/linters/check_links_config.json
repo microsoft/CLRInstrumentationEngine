@@ -1,8 +1,0 @@
-{
-    "ignorePatterns": [
-        {
-          "pattern": "^https://www\\.microsoft\\.com.*"
-        }
-      ],
-    "aliveStatusCodes": [200, 203]
-}

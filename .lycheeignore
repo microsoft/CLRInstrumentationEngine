@@ -1,0 +1,8 @@
+# URLs excluded from markdown link checking (lychee).
+# Each line is a regular expression matched against the link.
+
+# www.microsoft.com blocks automated requests and returns non-200 responses.
+^https://www\.microsoft\.com.*
+
+# Not publicly resolvable:
+^https://github\.com/Microsoft/InstrumentationEngine-Intercept.*
