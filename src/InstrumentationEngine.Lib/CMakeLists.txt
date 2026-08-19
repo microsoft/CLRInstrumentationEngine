@@ -3,9 +3,8 @@
 
 cmake_minimum_required(VERSION 3.14)
 project(InstrumentationEngine.Lib)
-find_package(LibXml2 REQUIRED)
 
-include_directories(. ${LIBXML2_INCLUDE_DIR})
+include_directories(.)
 
 build_init(CPP InstrumentationEngine.Lib)
 
@@ -31,3 +30,8 @@ add_lib(${PROJECT_NAME}
     false # hide_symbols
     ${src_files}
     )
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+    LibXml2::LibXml2
+)

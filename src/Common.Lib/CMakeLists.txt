@@ -3,9 +3,8 @@
 
 cmake_minimum_required(VERSION 3.14)
 project(Common.Lib)
-find_package(LibXml2 REQUIRED)
 
-include_directories(. ${LIBXML2_INCLUDE_DIR})
+include_directories(.)
 build_init(CPP Common.Lib)
 
 #note: we purposfully exclude windows-only files,
@@ -27,5 +26,10 @@ add_lib(${PROJECT_NAME}
     true # hide_symbols
     ${src_files}
     )
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    LibXml2::LibXml2
+)
 
 #target_compile_options(Common.Lib PUBLIC "-H")

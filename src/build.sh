@@ -134,15 +134,13 @@ get_cmake()
     echo "found cmake version $cmakeVersion"
     cmakeMajor=$(echo $cmakeVersion | sed 's/^.*[^0-9]\([0-9]*\)\..*$/\1'/)
     cmakeMinor=$(echo $cmakeVersion | sed 's/^.*[^0-9]*\.\([0-9]*\)\..*$/\1'/)
-    if (( $cmakeMajor > 3 )); then
-        if (( $cmakeMinor >= 14 )); then
-            # found sufficient cmake, continue.
-            echo $cmakeLocation
-            return
-        fi
+    if (( $cmakeMajor > 3 || ($cmakeMajor == 3 && $cmakeMinor >= 18) )); then
+        # found sufficient cmake, continue.
+        echo $cmakeLocation
+        return
     fi
 
-    echo "Insufficient cmake version. Ensure cmake version 3.14 or later is installed"
+    echo "Insufficient cmake version. Ensure cmake version 3.18 or later is installed"
     exit 1
 }
 

@@ -5,9 +5,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(InstrumentationEngine)
 
-find_package(LibXml2 REQUIRED)
-
-include_directories(. ../InstrumentationEngine.Lib ${LIBXML2_INCLUDE_DIR})
+include_directories(. ../InstrumentationEngine.Lib)
 
 build_init(CPP InstrumentationEngine)
 
@@ -90,7 +88,6 @@ endif()
 target_link_libraries(${PROJECT_NAME}
     pthread
     stdc++
-    ${LIBXML2_LIBRARIES}
     ${CORECLRPAL}
     ${LINUXPAL}
     ${ATL}
