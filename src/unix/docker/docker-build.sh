@@ -104,6 +104,23 @@ invoke_build()
     fi
     docker_run_args="$docker_run_args -v $LocalBuildPath:/root/ClrInstrumentationEngine/build:ro"
 
+    local VcpkgCachePath="${VCPKG_CACHE_ROOT:-${TMPDIR:-/tmp}/clrie-vcpkg-cache}"
+    mkdir -p "$VcpkgCachePath"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: failed to create vcpkg cache at '$VcpkgCachePath'."
+        exit 1
+    fi
+    docker_run_args="$docker_run_args -v $VcpkgCachePath:/root/ClrInstrumentationEngine/out/vcpkg-cache"
+    docker_run_args="$docker_run_args --env VCPKG_CACHE_ROOT=/root/ClrInstrumentationEngine/out/vcpkg-cache"
+
+    if [[ -n "$X_VCPKG_ASSET_SOURCES" ]]; then
+        docker_run_args="$docker_run_args --env X_VCPKG_ASSET_SOURCES"
+    fi
+
+    if [[ -n "$VCPKG_BINARY_SOURCES" ]]; then
+        docker_run_args="$docker_run_args --env VCPKG_BINARY_SOURCES"
+    fi
+
     build_cmd="bash /root/ClrInstrumentationEngine/src/build.sh $__BuildArch $__BuildType clean $__UnprocessedBuildArgs"
     docker_run_args="$docker_run_args --net=host $__DockerImage $build_cmd"
 

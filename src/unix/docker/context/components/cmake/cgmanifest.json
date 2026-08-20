@@ -6,9 +6,9 @@
         "Type": "other",
         "other": {
           "Name": "cmake",
-          "Version": "3.20.2",
-          "DownloadUrl": " https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz",
-          "SHA256CHECK": "aecf6ecb975179eb3bb6a4a50cae192d41e92b9372b02300f9e8f1d5f559544e"
+          "Version": "3.31.10",
+          "DownloadUrl": "https://github.com/Kitware/CMake/releases/download/v3.31.10/cmake-3.31.10.tar.gz",
+          "SHA256CHECK": "cf06fadfd6d41fa8e1ade5099e54976d1d844fd1487ab99942341f91b13d3e29"
         }
       },
       "DevelopmentDependency": true

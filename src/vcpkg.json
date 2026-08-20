@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "clr-instrumentation-engine-native-dependencies",
+  "version-string": "1.0",
+  "builtin-baseline": "2d318737bc7daa8a872f4469955a0559686f7580",
+  "dependencies": [
+    {
+      "name": "libxml2",
+      "default-features": false,
+      "features": [
+        "iconv"
+      ]
+    }
+  ]
+}

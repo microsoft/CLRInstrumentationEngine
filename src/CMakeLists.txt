@@ -1,8 +1,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-# Require at least version 3.18 of CMake
-cmake_minimum_required(VERSION 3.18)
+# Require at least version 3.14 of CMake
+cmake_minimum_required(VERSION 3.14)
 
 IF(NOT EXISTS "${CMAKE_INSTALL_PREFIX}" OR NOT IS_DIRECTORY "${CMAKE_INSTALL_PREFIX}")
     message(FATAL_ERROR "Required property CMAKE_INSTALL_PREFIX not correctly defined.")
@@ -233,53 +233,6 @@ function(generate_exports_file inputFilename versionName outputFilename)
                               PROPERTIES GENERATED TRUE)
 endfunction()
 
-function(fetch_libxml2)
-    include(FetchContent)
-
-    set(BUILD_SHARED_LIBS OFF)
-    set(LIBXML2_WITH_C14N OFF)
-    set(LIBXML2_WITH_CATALOG OFF)
-    set(LIBXML2_WITH_DEBUG OFF)
-    set(LIBXML2_WITH_DOCS OFF)
-    set(LIBXML2_WITH_HTML OFF)
-    set(LIBXML2_WITH_HTTP OFF)
-    set(LIBXML2_WITH_ICU OFF)
-    set(LIBXML2_WITH_MODULES OFF)
-    set(LIBXML2_WITH_OUTPUT OFF)
-    set(LIBXML2_WITH_PATTERN OFF)
-    set(LIBXML2_WITH_PROGRAMS OFF)
-    set(LIBXML2_WITH_PYTHON OFF)
-    set(LIBXML2_WITH_READER OFF)
-    set(LIBXML2_WITH_REGEXPS OFF)
-    set(LIBXML2_WITH_RELAXNG OFF)
-    set(LIBXML2_WITH_SCHEMAS OFF)
-    set(LIBXML2_WITH_SCHEMATRON OFF)
-    set(LIBXML2_WITH_TESTS OFF)
-    set(LIBXML2_WITH_WRITER OFF)
-    set(LIBXML2_WITH_XINCLUDE OFF)
-    set(LIBXML2_WITH_XPATH OFF)
-    set(LIBXML2_WITH_XPTR OFF)
-    set(LIBXML2_WITH_ZLIB OFF)
-
-    FetchContent_Declare(
-        libxml2
-        URL https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.3.tar.xz
-        URL_HASH SHA256=78262a6e7ac170d6528ebfe2efccdf220191a5af6a6cd61ea4a9a9a5042c7a07
-    )
-    FetchContent_MakeAvailable(libxml2)
-
-    set_target_properties(LibXml2 PROPERTIES
-        C_VISIBILITY_PRESET hidden
-        VISIBILITY_INLINES_HIDDEN true
-    )
-
-    if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-        target_link_options(LibXml2 INTERFACE
-            "LINKER:--exclude-libs,libxml2.a"
-        )
-    endif()
-endfunction()
-
 macro (fetch_google_test)
     include(FetchContent)
     FetchContent_Declare(
@@ -412,7 +365,14 @@ add_library_pal(coreclrpal true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libc
 add_library_pal(palrt true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libpalrt.a)
 add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcorguids.a)
 
-fetch_libxml2()
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    find_package(LibXml2 CONFIG REQUIRED)
+    target_link_options(LibXml2::LibXml2 INTERFACE
+        "LINKER:--exclude-libs,libxml2.a"
+    )
+else()
+    find_package(LibXml2 REQUIRED)
+endif()
 
 add_subdirectory(unix/src)
 add_subdirectory(unix/src/atl)

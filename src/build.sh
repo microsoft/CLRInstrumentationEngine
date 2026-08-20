@@ -134,13 +134,13 @@ get_cmake()
     echo "found cmake version $cmakeVersion"
     cmakeMajor=$(echo $cmakeVersion | sed 's/^.*[^0-9]\([0-9]*\)\..*$/\1'/)
     cmakeMinor=$(echo $cmakeVersion | sed 's/^.*[^0-9]*\.\([0-9]*\)\..*$/\1'/)
-    if (( $cmakeMajor > 3 || ($cmakeMajor == 3 && $cmakeMinor >= 18) )); then
+    if (( $cmakeMajor > 3 || ($cmakeMajor == 3 && $cmakeMinor >= 14) )); then
         # found sufficient cmake, continue.
         echo $cmakeLocation
         return
     fi
 
-    echo "Insufficient cmake version. Ensure cmake version 3.18 or later is installed"
+    echo "Insufficient cmake version. Ensure cmake version 3.14 or later is installed"
     exit 1
 }
 
@@ -186,6 +186,10 @@ locate_build_tools()
     if [[ -e "$linux_id_file" ]]; then
         source $linux_id_file
         cmake_extra_defines="$cmake_extra_defines -DCLR_CMAKE_LINUX_ID=$ID"
+    fi
+
+    if [[ -n "$__VcpkgInstalledDir" ]]; then
+        cmake_extra_defines="$cmake_extra_defines -DCMAKE_PREFIX_PATH=$__VcpkgInstalledDir/$__VcpkgTriplet"
     fi
 
     locate_google_test
@@ -354,6 +358,47 @@ restore_build_dependencies()
     if [ $? -ne 0 ]; then
         echo "ERROR: Unable to copy ALRoot/lib contents."
         exit 1
+    fi
+}
+
+restore_vcpkg_dependencies()
+{
+    if [ -z "$VCPKG_ROOT" ] || [ ! -x "$VCPKG_ROOT/vcpkg" ]; then
+        echo "ERROR: VCPKG_ROOT must point to a bootstrapped vcpkg installation."
+        exit 1
+    fi
+
+    __VcpkgInstalledDir="$__IntermediatesDir/vcpkg_installed"
+    __VcpkgTriplet=x64-linux
+
+    "$VCPKG_ROOT/vcpkg" install \
+        --x-manifest-root="$EnlistmentRoot/src" \
+        --x-install-root="$__VcpkgInstalledDir" \
+        --triplet="$__VcpkgTriplet" \
+        --clean-after-build
+
+    if [ $? -ne 0 ]; then
+        echo "ERROR: vcpkg dependency restore failed."
+        exit 1
+    fi
+}
+
+configure_vcpkg_cache()
+{
+    local cacheRoot="${VCPKG_CACHE_ROOT:-$EnlistmentRoot/out/vcpkg-cache}"
+
+    mkdir -p "$cacheRoot/assets" "$cacheRoot/archives"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Unable to create vcpkg cache at '$cacheRoot'."
+        exit 1
+    fi
+
+    if [ -z "$X_VCPKG_ASSET_SOURCES" ]; then
+        export X_VCPKG_ASSET_SOURCES="clear;x-azurl,file://$cacheRoot/assets/,,readwrite"
+    fi
+
+    if [ -z "$VCPKG_BINARY_SOURCES" ]; then
+        export VCPKG_BINARY_SOURCES="clear;files,$cacheRoot/archives,readwrite"
     fi
 }
 
@@ -568,6 +613,10 @@ setup_dirs
 check_prereqs
 
 restore_build_dependencies
+if [ "$OSName" == "Linux" ]; then
+    configure_vcpkg_cache
+    restore_vcpkg_dependencies
+fi
 
 pwd
 

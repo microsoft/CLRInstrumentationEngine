@@ -13,12 +13,23 @@ steps:
     scriptLocation: inlineScript
     inlineScript: 'az acr login --name proddiagbuild'
 
+# Restore vcpkg source and binary caches
+- task: Cache@2
+  displayName: Restore vcpkg cache
+  inputs:
+    key: '"vcpkg" | "$(Agent.OS)" | "$(Distro)" | src/vcpkg.json | src/unix/docker/context/components/vcpkg/cgmanifest.json'
+    restoreKeys: |
+      "vcpkg" | "$(Agent.OS)" | "$(Distro)"
+    path: $(Pipeline.Workspace)/vcpkg-cache
+
 # Build binaries
 - task: Bash@3
   displayName: Docker Build
   inputs:
     filePath: src/unix/docker/docker-build.sh
     arguments: $(Distro) $(Configuration) $(Platform) verbose
+  env:
+    VCPKG_CACHE_ROOT: $(Pipeline.Workspace)/vcpkg-cache
 
 # Cleanup containers
 - task: Bash@3

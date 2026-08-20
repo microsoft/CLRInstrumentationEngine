@@ -68,9 +68,25 @@ RUN apt-get update \
         clang-3.9 \
         cmake \
         git \
-        libxml2-dev \
         make \
-        jq
+        jq \
+        ninja-build \
+        pkg-config \
+        unzip \
+        zip
+
+ENV VCPKG_ROOT=/opt/vcpkg
+ENV PATH="$VCPKG_ROOT:$PATH"
+
+COPY "components/vcpkg/cgmanifest.json" /tmp/vcpkg-cgmanifest.json
+RUN vcpkg_repo=$(jq -r '.Registrations[0].Component.git.RepositoryUrl' /tmp/vcpkg-cgmanifest.json) \
+    && vcpkg_commit=$(jq -r '.Registrations[0].Component.git.CommitHash' /tmp/vcpkg-cgmanifest.json) \
+    && git init "$VCPKG_ROOT" \
+    && git -C "$VCPKG_ROOT" remote add origin "$vcpkg_repo" \
+    && git -C "$VCPKG_ROOT" fetch --depth 1 origin "$vcpkg_commit" \
+    && git -C "$VCPKG_ROOT" checkout --detach FETCH_HEAD \
+    && "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics \
+    && rm /tmp/vcpkg-cgmanifest.json
 
 # Git now checks for repository ownership
 RUN git config --global --add safe.directory /root/ClrInstrumentationEngine/out/Linux/Intermediate/x64.Debug/_deps/googletest-src
