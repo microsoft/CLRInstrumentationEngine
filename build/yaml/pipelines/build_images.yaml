@@ -1,0 +1,81 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+# Build Pipeline: Linux Build Images
+# Manually rebuilds and publishes the Ubuntu and Alpine images used by Linux CI.
+
+trigger: none
+pr: none
+
+name: $(date:yyyyMMdd)$(rev:rr)
+
+parameters:
+- name: ImageTag
+  displayName: Container image tag
+  type: string
+  default: latest
+
+variables:
+  TeamName: ClrInstrumentationEngine
+  RegistryName: proddiagbuild
+  RegistryServer: proddiagbuild.azurecr.io
+
+jobs:
+- job: BuildImages
+  displayName: Build Linux images
+
+  pool:
+    ${{ if eq(variables['System.TeamProject'], 'devdiv') }}:
+      name: AzurePipelines-EO
+      image: 1ESPT-Ubuntu20.04
+      os: linux
+    ${{ else }}:
+      vmImage: ubuntu-latest
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: |
+      set -e
+      if [[ ! "$IMAGE_TAG" =~ ^[A-Za-z0-9_.-]+$ ]]; then
+        echo "Invalid image tag: $IMAGE_TAG"
+        exit 1
+      fi
+    displayName: Validate image tag
+    env:
+      IMAGE_TAG: ${{ parameters.ImageTag }}
+
+  - task: AzureCLI@2
+    displayName: Docker login
+    inputs:
+      azureSubscription: 'VS Diagnostics Dev (ProdDiagBuild)'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: az acr login --name $(RegistryName)
+
+  - bash: |
+      set -e
+      image="$(RegistryServer)/clrie-build-ubuntu:$IMAGE_TAG"
+      docker build --pull \
+        --label "org.opencontainers.image.revision=$(Build.SourceVersion)" \
+        --tag "$image" \
+        --file src/unix/docker/dockerfiles/build/ubuntu/Dockerfile \
+        src/unix/docker/context
+      docker push "$image"
+    displayName: Build and push Ubuntu image
+    env:
+      IMAGE_TAG: ${{ parameters.ImageTag }}
+
+  - bash: |
+      set -e
+      image="$(RegistryServer)/clrie-build-alpine:$IMAGE_TAG"
+      docker build --pull \
+        --label "org.opencontainers.image.revision=$(Build.SourceVersion)" \
+        --tag "$image" \
+        --file src/unix/docker/dockerfiles/build/alpine/Dockerfile \
+        src/unix/docker/context
+      docker push "$image"
+    displayName: Build and push Alpine image
+    env:
+      IMAGE_TAG: ${{ parameters.ImageTag }}
