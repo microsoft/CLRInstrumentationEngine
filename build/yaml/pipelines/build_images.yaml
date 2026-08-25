@@ -42,6 +42,11 @@ extends:
       image: 1ESPT-Ubuntu20.04
       os: linux
 
+    sdl:
+      sourceAnalysisPool:
+        name: VSEngSS-Microbuild2022-1ES
+        os: windows
+
     stages:
     - stage: BuildImages
       displayName: Build Linux images
