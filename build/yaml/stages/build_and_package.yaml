@@ -4,7 +4,7 @@ parameters:
   IncludeTests: true
   Configuration: Both
   SignType: None
-  SigningPMEServiceConnection: ''
+  ConnectedPMEServiceName: ''
 
 stages:
 - stage: Build
@@ -13,7 +13,7 @@ stages:
   - template: ../jobs/binaries.yaml@self
     parameters:
       SignType: ${{ parameters.SignType}}
-      SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+      ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
       IndexSources: true
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
@@ -37,7 +37,7 @@ stages:
   - template: ../jobs/packages.yaml@self
     parameters:
       SignType: ${{ parameters.SignType}}
-      SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+      ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

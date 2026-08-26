@@ -10,7 +10,7 @@ parameters:
   Configuration: Both
   IsMicroBuildInternal: false
   OneESPT: false
-  SigningPMEServiceConnection: ''
+  ConnectedPMEServiceName: ''
 
 jobs:
 # Windows Binaries
@@ -18,7 +18,7 @@ jobs:
   parameters:
     IndexSources: ${{ parameters.IndexSources }}
     SignType: ${{ parameters.SignType }}
-    SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+    ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     OneESPT: ${{ parameters.OneESPT }}
     # Filter out Tests for Signed Builds

@@ -8,7 +8,7 @@ parameters:
   IsMicroBuildInternal: false
   MatrixStrategy: {}
   OneESPT: false
-  SigningPMEServiceConnection: ''
+  ConnectedPMEServiceName: ''
 
 jobs:
 - job: Windows_Packages
@@ -38,7 +38,7 @@ jobs:
     - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
-        SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+        ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
 
   - template: ../../steps/azuredevops/downloadbuildartifacts.yaml@self
     parameters:

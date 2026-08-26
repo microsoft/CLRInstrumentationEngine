@@ -39,7 +39,7 @@ extends:
         IncludeTests: false
         Configuration: Release
         SignType: $(SignType) # NOTE this string won't be replaced until runtime
-        SigningPMEServiceConnection: 6cc74545-d7b9-4050-9dfa-ebefcc8961ea
+        ConnectedPMEServiceName: 6cc74545-d7b9-4050-9dfa-ebefcc8961ea
 
     - stage: PostPackage
       jobs:

@@ -9,14 +9,14 @@ parameters:
   Configuration: Both
   IsMicroBuildInternal: false
   OneESPT: false
-  SigningPMEServiceConnection: ''
+  ConnectedPMEServiceName: ''
 
 jobs:
 # Windows Packages
 - template: windows/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
-    SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+    ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
@@ -49,7 +49,7 @@ jobs:
 - template: linux/packages.yaml@self
   parameters:
     SignType: ${{ parameters.SignType }}
-    SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
+    ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
     IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
     OneESPT: ${{ parameters.OneESPT }}
     MatrixStrategy:
