@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/component-detection-manifest.json",
+  "Registrations": [
+    {
+      "Component": {
+        "Type": "git",
+        "git": {
+          "RepositoryUrl": "https://github.com/microsoft/vcpkg",
+          "CommitHash": "2d318737bc7daa8a872f4469955a0559686f7580"
+        }
+      },
+      "DevelopmentDependency": true
+    }
+  ]
+}

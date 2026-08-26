@@ -7,10 +7,9 @@ cmake_minimum_required(VERSION 3.14)
 fetch_google_test()
 
 project(Common.LibTests)
-find_package(LibXml2 REQUIRED)
 
 # the midl directory is needed to replace the rpc headers referenced by midl generated headers.
-include_directories(. ${REPOSITORY_ROOT}/src/unix/inc/midl ${REPOSITORY_ROOT}/src ${LIBXML2_INCLUDE_DIR})
+include_directories(. ${REPOSITORY_ROOT}/src/unix/inc/midl ${REPOSITORY_ROOT}/src)
 
 build_init(CPP Common.LibTests)
 
@@ -29,7 +28,6 @@ add_executable(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    ${LIBXML2_LIBRARIES}
     Common.Lib
     gtest_main
 )

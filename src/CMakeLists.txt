@@ -365,6 +365,15 @@ add_library_pal(coreclrpal true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libc
 add_library_pal(palrt true ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libpalrt.a)
 add_library_pal(corguids false ${CORECLR_PAL_ROOT}/lib/${CMAKE_BUILD_TYPE}/libcorguids.a)
 
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    find_package(LibXml2 CONFIG REQUIRED)
+    target_link_options(LibXml2::LibXml2 INTERFACE
+        "LINKER:--exclude-libs,libxml2.a"
+    )
+else()
+    find_package(LibXml2 REQUIRED)
+endif()
+
 add_subdirectory(unix/src)
 add_subdirectory(unix/src/atl)
 add_subdirectory(Common.Lib)

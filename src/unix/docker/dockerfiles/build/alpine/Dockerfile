@@ -35,11 +35,14 @@ RUN wget -O dotnet.tar.gz https://builds.dotnet.microsoft.com/dotnet/Sdk/$DOTNET
     && dotnet help
 
 # CLR Instrumentation Engine Build Prerequisites
-RUN apk update \
-    && apk add --no-cache libxml2-dev
-
-# Add jq to make it easer to read json in shell scripts
-RUN apk add --no-cache jq
+RUN apk add --no-cache \
+    git \
+    jq \
+    ninja \
+    patchelf \
+    pkgconf \
+    unzip \
+    zip
 
 # Install newer version of cmake. We need to run make commands inside the directory
 # that it is extracted to, so WORKDIR is the easiest context to use.
@@ -63,3 +66,17 @@ RUN cmakeurl=$(cat cgmanifest.json | jq '.Registrations[0].Component.other.Downl
 # Delete the cmake installer it is no longer needed.
 WORKDIR /
 RUN rm -rf /usr/share/cmakeinst
+
+ENV VCPKG_ROOT=/opt/vcpkg
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
+ENV PATH="$VCPKG_ROOT:$PATH"
+
+COPY "components/vcpkg/cgmanifest.json" /tmp/vcpkg-cgmanifest.json
+RUN vcpkg_repo=$(jq -r '.Registrations[0].Component.git.RepositoryUrl' /tmp/vcpkg-cgmanifest.json) \
+    && vcpkg_commit=$(jq -r '.Registrations[0].Component.git.CommitHash' /tmp/vcpkg-cgmanifest.json) \
+    && git init "$VCPKG_ROOT" \
+    && git -C "$VCPKG_ROOT" remote add origin "$vcpkg_repo" \
+    && git -C "$VCPKG_ROOT" fetch --depth 1 origin "$vcpkg_commit" \
+    && git -C "$VCPKG_ROOT" checkout --detach FETCH_HEAD \
+    && "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics \
+    && rm /tmp/vcpkg-cgmanifest.json

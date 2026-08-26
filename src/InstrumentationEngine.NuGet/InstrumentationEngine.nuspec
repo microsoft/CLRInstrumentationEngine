@@ -26,6 +26,7 @@
 
     <!-- Licensing -->
     <file src="$enlistmentroot$\$licenseFile$*" target="" />
+    <file src="$enlistmentroot$\THIRD-PARTY-NOTICES.txt" target="" />
 
     <!-- Icon -->
     <file src="$enlistmentroot$\src\SharedNuGetAssets\icon.png" target="" />

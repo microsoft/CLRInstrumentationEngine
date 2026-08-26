@@ -7,9 +7,8 @@ cmake_minimum_required(VERSION 3.14)
 fetch_google_test()
 
 project(InstrumentationEngine.LibTests)
-find_package(LibXml2 REQUIRED)
 
-include_directories(. ${REPOSITORY_ROOT}/src ${LIBXML2_INCLUDE_DIR})
+include_directories(. ${REPOSITORY_ROOT}/src)
 
 # don't use the PAL for tests
 build_init(CPP InstrumentationEngine.LibTests)
@@ -58,7 +57,6 @@ target_link_libraries(
     ${PROJECT_NAME}
     pthread
     stdc++
-    ${LIBXML2_LIBRARIES}
     ${CORECLRPAL}
     ${LINUXPAL}
     ${ATL}
