@@ -14,8 +14,8 @@ parameters:
   displayName: Container image tag
   type: string
   default: latest
-- name: RegistryServiceConnection
-  displayName: ACR Docker service connection
+- name: RegistryArmServiceConnection
+  displayName: ACR Azure Resource Manager service connection
   type: string
   default: 'VS Diagnostics Dev (ProdDiagBuild)'
 
@@ -42,6 +42,11 @@ extends:
       image: 1ESPT-Ubuntu20.04
       os: linux
 
+    sdl:
+      sourceAnalysisPool:
+        name: VSEngSS-MicroBuild2022-1ES
+        os: windows
+
     stages:
     - stage: BuildImages
       displayName: Build Linux images
@@ -52,7 +57,8 @@ extends:
 
         templateContext:
           authenticatedContainerRegistries:
-          - serviceConnection: ${{ parameters.RegistryServiceConnection }}
+          - armServiceConnection: ${{ parameters.RegistryArmServiceConnection }}
+            acrName: proddiagbuild
 
           outputs:
           - output: containerImage
@@ -78,7 +84,8 @@ extends:
 
         templateContext:
           authenticatedContainerRegistries:
-          - serviceConnection: ${{ parameters.RegistryServiceConnection }}
+          - armServiceConnection: ${{ parameters.RegistryArmServiceConnection }}
+            acrName: proddiagbuild
 
           outputs:
           - output: containerImage
