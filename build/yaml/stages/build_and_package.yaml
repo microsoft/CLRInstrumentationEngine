@@ -4,6 +4,7 @@ parameters:
   IncludeTests: true
   Configuration: Both
   SignType: None
+  SigningPMEServiceConnection: ''
 
 stages:
 - stage: Build
@@ -12,10 +13,12 @@ stages:
   - template: ../jobs/binaries.yaml@self
     parameters:
       SignType: ${{ parameters.SignType}}
+      SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
       IndexSources: true
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}
+
 
 - ${{ if eq('true', parameters.IncludeTests) }}:
   - stage: Test
@@ -34,6 +37,7 @@ stages:
   - template: ../jobs/packages.yaml@self
     parameters:
       SignType: ${{ parameters.SignType}}
+      SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
       Configuration: ${{ parameters.Configuration }}
       OneESPT: ${{ parameters.OneESPT }}
       IsMicroBuildInternal: ${{ parameters.IsMicroBuildInternal }}

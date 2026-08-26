@@ -5,6 +5,7 @@
 
 parameters:
   SignType: None
+  SigningPMEServiceConnection: ''
 
 steps:
 
@@ -20,3 +21,5 @@ steps:
     inputs:
       signType: ${{ parameters.SignType }}
       zipSources: false
+      ${{ if ne(parameters.SigningPMEServiceConnection, '') }}:
+        ConnectedPMEServiceName: ${{ parameters.SigningPMEServiceConnection }}

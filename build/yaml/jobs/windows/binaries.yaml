@@ -13,6 +13,7 @@ parameters:
   CopyFilters: |
     **
   OneESPT: false
+  SigningPMEServiceConnection: ''
 
 jobs:
 - job: Windows
@@ -45,6 +46,7 @@ jobs:
     - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
+        SigningPMEServiceConnection: ${{ parameters.SigningPMEServiceConnection }}
 
   - template: ../../steps/windows/binaries.yaml@self
     parameters:
@@ -88,4 +90,3 @@ jobs:
     - template: ../../steps/microbuild/cleanup.yaml@self
 
   - template: ../../steps/azuredevops/componentgovernance.yaml@self
-
