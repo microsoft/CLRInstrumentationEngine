@@ -14,8 +14,8 @@ parameters:
   displayName: Container image tag
   type: string
   default: latest
-- name: RegistryServiceConnection
-  displayName: ACR Docker service connection
+- name: RegistryArmServiceConnection
+  displayName: ACR Azure Resource Manager service connection
   type: string
   default: 'VS Diagnostics Dev (ProdDiagBuild)'
 
@@ -57,7 +57,8 @@ extends:
 
         templateContext:
           authenticatedContainerRegistries:
-          - serviceConnection: ${{ parameters.RegistryServiceConnection }}
+          - armServiceConnection: ${{ parameters.RegistryArmServiceConnection }}
+            acrName: proddiagbuild
 
           outputs:
           - output: containerImage
@@ -83,7 +84,8 @@ extends:
 
         templateContext:
           authenticatedContainerRegistries:
-          - serviceConnection: ${{ parameters.RegistryServiceConnection }}
+          - armServiceConnection: ${{ parameters.RegistryArmServiceConnection }}
+            acrName: proddiagbuild
 
           outputs:
           - output: containerImage
