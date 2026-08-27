@@ -7,6 +7,10 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.47
++ BugFixes:
+  + Fix libInstrumentationEngine.so loading on Ubuntu 26.04 (#599)
+
 ## 1.0.46
 + BugFixes:
   + Check the values for configuration variables

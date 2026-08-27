@@ -12,7 +12,7 @@
     -->
     <SemanticVersionMajor>1</SemanticVersionMajor>
     <SemanticVersionMinor>0</SemanticVersionMinor>
-    <SemanticVersionPatch>46</SemanticVersionPatch>
+    <SemanticVersionPatch>47</SemanticVersionPatch>
 
     <FileVersionMajor>15</FileVersionMajor>
     <FileVersionMinor>1</FileVersionMinor>
@@ -38,7 +38,7 @@
       Update for every public release.
       Format is YYYY-MM-DD
     -->
-    <SemanticVersionDate>2022-03-22</SemanticVersionDate>
+    <SemanticVersionDate>2026-08-27</SemanticVersionDate>
 
     <!--
       Build version is used to distinguish internally built NuGet packages.
