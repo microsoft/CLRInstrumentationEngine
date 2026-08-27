@@ -7,6 +7,8 @@ Please format the changes as follows:
 + BugFixes:
 + Updates:
 
+## 1.0.47
+
 ## 1.0.46
 + BugFixes:
   + Check the values for configuration variables
