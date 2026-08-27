@@ -8,6 +8,7 @@ parameters:
   IsMicroBuildInternal: false
   MatrixStrategy: {}
   OneESPT: false
+  ConnectedPMEServiceName: ''
 
 jobs:
 - job: Linux_Packages
@@ -37,6 +38,7 @@ jobs:
     - template: ../../steps/microbuild/signing.yaml@self
       parameters:
         SignType: ${{ parameters.SignType }}
+        ConnectedPMEServiceName: ${{ parameters.ConnectedPMEServiceName }}
 
   - template: ../../steps/linux/packages.yaml@self
     parameters:
