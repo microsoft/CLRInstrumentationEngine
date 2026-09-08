@@ -10,10 +10,11 @@
 # (build definition 11311 / ClrInstrumentationEngine-Signed-Yaml, see signed.yaml)
 # and publishes the release.
 #
-# Currently only the first classic stage is migrated:
+# Currently these classic stages are migrated:
 #   - Publish NuGets to the internal InstrumentationEngine feed (+ optional promote to Release view)
+#   - Archive Windows symbols to Symweb/MSDL
 # The remaining classic environments (preinstalled zip, drop upload/retain, NuGet.org headers,
-# VS feed, VS insertion, symbol/source archival) will be migrated separately.
+# VS feed, and VS insertion) will be migrated separately.
 #
 # NOTE: This pipeline must be run manually after the Signed build completes.
 # Stage approvals are enforced via Azure DevOps Environment checks (see stages/release.yaml).

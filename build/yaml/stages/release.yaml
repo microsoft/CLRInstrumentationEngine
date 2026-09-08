@@ -3,10 +3,10 @@
 
 # Stages Template: CLR Instrumentation Engine Release
 #
-# Migrated from the classic release definition 901. Only the first classic environment,
-# "Publish NuGets to internal InstrumentationEngine Feed", is migrated for now; the
-# remaining environments (preinstalled zip, drop upload/retain, NuGet.org headers, VS feed,
-# VS insertion, symbol/source archival) will be migrated separately.
+# Migrated from the classic release definition 901. The internal NuGet publication and
+# symbol archival environments are migrated; the remaining environments (preinstalled zip,
+# drop upload/retain, NuGet.org headers, VS feed, and VS insertion) will be migrated
+# separately.
 #
 # The stage has a pre-deploy approval in the classic definition and is modeled as a
 # deployment job targeting an Azure DevOps Environment; configure the matching approval
@@ -15,6 +15,7 @@
 #   Environment                         Classic pre-deploy approver
 #   ----------------------------------  ----------------------------------------
 #   CLRIE-Release-Internal-NuGet-Feed   [DevDiv]\CLR Instrumentation Engine
+#   CLRIE-Release-Archive-Symbols       [DevDiv]\CLR Instrumentation Engine
 
 stages:
 
@@ -88,12 +89,11 @@ stages:
     - checkout: none
 
   # ---------------------------------------------------------------------------------
-  # Promote (optional). Release (deployment) job, only runs when PromoteToRelease=True.
-  # Artifacts are downloaded via templateContext.inputs; the promote REST call runs in
-  # the on.success hook below.
+  # Promotion approval gate (optional). The release job intentionally consumes no
+  # artifacts because 1ES release jobs do not support legacy Container artifacts.
   # ---------------------------------------------------------------------------------
-  - deployment: Promote
-    displayName: Promote package to Release View
+  - deployment: PromotionGate
+    displayName: Approval gate (promote to Release view)
     dependsOn: Publish
     condition: eq(variables['PromoteToRelease'], 'True')
     environment: CLRIE-Release-Promote-Internal-NuGet-Feed
@@ -103,6 +103,24 @@ stages:
     templateContext:
       type: releaseJob
       isProduction: true
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
+
+  # ---------------------------------------------------------------------------------
+  # Promote. This plain job runs after approval so it can consume the Container artifacts
+  # without 1ES release-job validation rejecting their artifact type.
+  # ---------------------------------------------------------------------------------
+  - job: Promote
+    displayName: Promote package to Release View
+    dependsOn: PromotionGate
+    condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'))
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    templateContext:
       inputs:
       - input: pipelineArtifact
         pipeline: ClrInstrumentationEngine-Signed-Yaml
@@ -116,27 +134,20 @@ stages:
         pipeline: ClrInstrumentationEngine-Signed-Yaml
         artifactName: packages-linux-alpine-Release
         targetPath: $(Pipeline.Workspace)\ClrInstrumentationEngine-Signed-Yaml\packages-linux-alpine-Release
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: none
-        on:
-          # The 'on success' hook runs after the deploy phase (including the NuGet push above)
-          # has succeeded, so the promote step always runs after the packages are published.
-          success:
-            steps:
-            # Classic equivalent: "Promote package to Release View" (deprecated marketplace task,
-            # gated on PromoteToRelease). Implemented here against the Azure Artifacts packaging
-            # REST API; only runs when PromoteToRelease is 'True' and this is not a dry run.
-            - task: PowerShell@2
-              displayName: Promote package to Release View
-              condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'), ne(variables['DryRun'], 'True'))
-              env:
-                SYSTEM_ACCESSTOKEN: $(System.AccessToken)
-              inputs:
-                targetType: inline
-                script: |
+    steps:
+    - checkout: none
+
+    # Classic equivalent: "Promote package to Release View" (deprecated marketplace task,
+    # gated on PromoteToRelease). Implemented here against the Azure Artifacts packaging
+    # REST API; only runs when PromoteToRelease is 'True' and this is not a dry run.
+    - task: PowerShell@2
+      displayName: Promote package to Release View
+      condition: and(succeeded(), eq(variables['PromoteToRelease'], 'True'), ne(variables['DryRun'], 'True'))
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      inputs:
+        targetType: inline
+        script: |
                   $feedId = '59c1dfae-dea5-4ea5-ac83-c9abcb4ac339'
                   $headers = @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
                   $root = Join-Path $env:ArtifactsDirectory 'ClrInstrumentationEngine-Signed-Yaml'
@@ -149,3 +160,58 @@ stages:
                       Invoke-RestMethod -Uri $uri -Method Patch -Headers $headers -Body $body -ContentType 'application/json'
                     }
                   }
+
+# =====================================================================================
+# Archive Windows symbols to Symweb/MSDL
+# =====================================================================================
+- stage: ArchiveSymbols
+  displayName: Archive Windows symbols to Symweb/MSDL
+  dependsOn: []
+  jobs:
+  # ---------------------------------------------------------------------------------
+  # Approval gate. Symbol archival is a public release operation, but the work runs in
+  # a plain job because 1ES release jobs cannot consume the legacy Container artifact.
+  # ---------------------------------------------------------------------------------
+  - deployment: ArchiveSymbolsApprovalGate
+    displayName: Approval gate (archive symbols)
+    environment: CLRIE-Release-Archive-Symbols
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    templateContext:
+      type: releaseJob
+      isProduction: true
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
+
+  # ---------------------------------------------------------------------------------
+  # Archive. The selected signed build already contains the post-signing binaries and
+  # matching PDBs, so this job does not rebuild or publish any release packages.
+  # ---------------------------------------------------------------------------------
+  - job: ArchiveSymbols
+    displayName: Upload symbols to Symweb/MSDL
+    dependsOn: ArchiveSymbolsApprovalGate
+    pool:
+      name: VSEngSS-Microbuild2022-1ES
+      os: windows
+    templateContext:
+      inputs:
+      - input: pipelineArtifact
+        pipeline: ClrInstrumentationEngine-Signed-Yaml
+        artifactName: symbols-windows-Release
+        targetPath: $(Pipeline.Workspace)\Symbols
+    steps:
+    - checkout: none
+
+    - task: MicroBuildArchiveSymbols@6
+      displayName: Upload symbols to Symweb/MSDL
+      inputs:
+        azureSubscription: VSEng-SymbolsUpload
+        SymbolsFeatureName: CLR Instrumentation Engine
+        SymbolsProject: DDE
+        SymbolsAgentPath: $(Pipeline.Workspace)\Symbols
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
