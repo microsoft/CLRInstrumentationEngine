@@ -3,13 +3,8 @@
 
 #include "stdafx.h"
 #include "systemstring.h"
-#include <vector>
+#include <stdint.h>
 #include <memory>
-
-#ifdef PLATFORM_UNIX
-#include <errno.h>
-#include <iconv.h>
-#endif
 
 using namespace std;
 
@@ -18,31 +13,7 @@ namespace CommonLib
 #ifdef PLATFORM_UNIX
 
     static const SIZE_T MAX_STRING_LEN = 10000;
-    struct Ciconv {
-        iconv_t m_iconv;
-        Ciconv(const iconv_t& iconv) : m_iconv(iconv) {}
-        ~Ciconv()
-        {
-            iconv_close(m_iconv);
-        }
-    };
-
-    HRESULT ErrnoToHResult(int& err)
-    {
-        HRESULT hr;
-        switch (err)
-        {
-            case 0:
-                return S_OK;
-            case E2BIG:
-                return E_BOUNDS;
-            case EILSEQ:
-                return E_INVALIDARG;
-            case EINVAL:
-                return E_INVALIDARG;
-        }
-        return E_FAIL;
-    }
+    static_assert(sizeof(WCHAR) == 2, "SystemString requires 16-bit WCHAR values");
 
     HRESULT SystemString::Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result)
     {
@@ -52,30 +23,90 @@ namespace CommonLib
             return E_INVALIDARG;
         }
 
-        Ciconv icnv(iconv_open("UTF-16LE", "UTF-8"));
-
-        // Include the null terminator.
-        size_t inputLength = strnlen(lpzStr, MAX_STRING_LEN)  + 1;
-
-        if (inputLength >= MAX_STRING_LEN)
+        size_t inputLength = 0;
+        while (inputLength < MAX_STRING_LEN && lpzStr[inputLength] != '\0')
+        {
+            ++inputLength;
+        }
+        if (inputLength + 1 >= MAX_STRING_LEN)
         {
             return E_BOUNDS;
         }
 
-        size_t outputMax = (inputLength + 1) * 4;
-        unique_ptr<WCHAR[]> buffer(new WCHAR[outputMax]);
-
-        const char* pOrig = lpzStr;
-        char* pNew = (char*)buffer.get();
-        size_t count = iconv(icnv.m_iconv, (char**)&pOrig, &inputLength, &pNew, &outputMax);
-        if (count == (size_t)-1)
+        tstring converted;
+        converted.reserve(inputLength);
+        for (size_t i = 0; i < inputLength;)
         {
-            HRESULT hr = ErrnoToHResult(errno);
-            result = u"";
-            return hr;
+            const unsigned char lead = static_cast<unsigned char>(lpzStr[i++]);
+            uint32_t codePoint;
+            size_t continuationCount;
+            if (lead <= 0x7F)
+            {
+                codePoint = lead;
+                continuationCount = 0;
+            }
+            else if ((lead & 0xE0) == 0xC0)
+            {
+                codePoint = lead & 0x1F;
+                continuationCount = 1;
+            }
+            else if ((lead & 0xF0) == 0xE0)
+            {
+                codePoint = lead & 0x0F;
+                continuationCount = 2;
+            }
+            else if ((lead & 0xF8) == 0xF0)
+            {
+                codePoint = lead & 0x07;
+                continuationCount = 3;
+            }
+            else
+            {
+                result.clear();
+                return E_INVALIDARG;
+            }
+
+            if (i + continuationCount > inputLength)
+            {
+                result.clear();
+                return E_INVALIDARG;
+            }
+
+            for (size_t j = 0; j < continuationCount; ++j)
+            {
+                const unsigned char continuation = static_cast<unsigned char>(lpzStr[i++]);
+                if ((continuation & 0xC0) != 0x80)
+                {
+                    result.clear();
+                    return E_INVALIDARG;
+                }
+                codePoint = (codePoint << 6) | (continuation & 0x3F);
+            }
+
+            const uint32_t minimumCodePoint = continuationCount == 1 ? 0x80
+                : continuationCount == 2 ? 0x800
+                : continuationCount == 3 ? 0x10000
+                : 0;
+            if (codePoint < minimumCodePoint || codePoint > 0x10FFFF ||
+                (codePoint >= 0xD800 && codePoint <= 0xDFFF))
+            {
+                result.clear();
+                return E_INVALIDARG;
+            }
+
+            if (codePoint <= 0xFFFF)
+            {
+                converted.push_back(static_cast<WCHAR>(codePoint));
+            }
+            else
+            {
+                codePoint -= 0x10000;
+                converted.push_back(static_cast<WCHAR>(0xD800 + (codePoint >> 10)));
+                converted.push_back(static_cast<WCHAR>(0xDC00 + (codePoint & 0x3FF)));
+            }
         }
 
-        result = buffer.get();
+        result.swap(converted);
         return S_OK;
     }
 
@@ -87,40 +118,73 @@ namespace CommonLib
             return E_INVALIDARG;
         }
 
-        size_t i = 0;
-        const WCHAR* p = lpzwStr;
-        // scan to a resonable length for the end of the string.
-        for (i = 0; i < MAX_STRING_LEN; ++i, ++p)
+        size_t inputLength = 0;
+        for (; inputLength < MAX_STRING_LEN; ++inputLength)
         {
-            if (*p == (WCHAR)0)
+            if (lpzwStr[inputLength] == static_cast<WCHAR>(0))
             {
                 break;
             }
         }
 
-        if (i >= MAX_STRING_LEN)
+        if (inputLength >= MAX_STRING_LEN)
         {
-            result = "";
+            result.clear();
             return E_BOUNDS;
         }
 
-
-        Ciconv icnv(iconv_open("UTF-8", "UTF-16LE"));
-
-        // include the null terminator in the input string.
-        size_t inbytes = (i+1)*2;
-        size_t outbytes = (i+1)*4;
-        unique_ptr<char[]> buffer(new char[outbytes]);
-        char* input = (char*)lpzwStr;
-        char* output = buffer.get();
-        size_t count = iconv(icnv.m_iconv, &input, &inbytes, &output, &outbytes);
-        if (count == (size_t)-1)
+        string converted;
+        converted.reserve(inputLength);
+        for (size_t i = 0; i < inputLength; ++i)
         {
-            result = "";
-            return ErrnoToHResult(errno);
+            uint32_t codePoint = static_cast<uint16_t>(lpzwStr[i]);
+            if (codePoint >= 0xD800 && codePoint <= 0xDBFF)
+            {
+                if (++i >= inputLength)
+                {
+                    result.clear();
+                    return E_INVALIDARG;
+                }
+
+                const uint32_t lowSurrogate = static_cast<uint16_t>(lpzwStr[i]);
+                if (lowSurrogate < 0xDC00 || lowSurrogate > 0xDFFF)
+                {
+                    result.clear();
+                    return E_INVALIDARG;
+                }
+                codePoint = 0x10000 + ((codePoint - 0xD800) << 10) + (lowSurrogate - 0xDC00);
+            }
+            else if (codePoint >= 0xDC00 && codePoint <= 0xDFFF)
+            {
+                result.clear();
+                return E_INVALIDARG;
+            }
+
+            if (codePoint <= 0x7F)
+            {
+                converted.push_back(static_cast<char>(codePoint));
+            }
+            else if (codePoint <= 0x7FF)
+            {
+                converted.push_back(static_cast<char>(0xC0 | (codePoint >> 6)));
+                converted.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+            }
+            else if (codePoint <= 0xFFFF)
+            {
+                converted.push_back(static_cast<char>(0xE0 | (codePoint >> 12)));
+                converted.push_back(static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F)));
+                converted.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+            }
+            else
+            {
+                converted.push_back(static_cast<char>(0xF0 | (codePoint >> 18)));
+                converted.push_back(static_cast<char>(0x80 | ((codePoint >> 12) & 0x3F)));
+                converted.push_back(static_cast<char>(0x80 | ((codePoint >> 6) & 0x3F)));
+                converted.push_back(static_cast<char>(0x80 | (codePoint & 0x3F)));
+            }
         }
 
-        result = buffer.get();
+        result.swap(converted);
         return S_OK;
     }
 #else
