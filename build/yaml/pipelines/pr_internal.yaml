@@ -8,18 +8,27 @@
 
 name: $(date:yyyyMMdd)$(rev:rr)
 
+trigger: none
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+    - main
+  drafts: false
+
 variables:
   TeamName: ClrInstrumentationEngine
 
 resources:
   repositories:
-  - repository: MicroBuildTemplate
+  - repository: 1ESPipelineTemplates
     type: git
-    name: 1ESPipelineTemplates/MicroBuildTemplate
+    name: 1ESPipelineTemplates/1ESPipelineTemplates
     ref: refs/tags/release
 
 extends:
-  template: azure-pipelines/MicroBuild.1ES.Unofficial.yml@MicroBuildTemplate
+  template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     pool:
       name: VSEngSS-Microbuild2022-1ES
