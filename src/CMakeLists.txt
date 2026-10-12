@@ -374,6 +374,8 @@ else()
     find_package(LibXml2 REQUIRED)
 endif()
 
+find_package(utf8cpp CONFIG REQUIRED)
+
 add_subdirectory(unix/src)
 add_subdirectory(unix/src/atl)
 add_subdirectory(Common.Lib)
