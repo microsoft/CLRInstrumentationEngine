@@ -79,11 +79,11 @@ extends:
   template: v1/1ES.Official.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
     pool:
-      name: VSEngSS-Microbuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       os: windows
     sdl:
       sourceAnalysisPool:
-        name: VSEngSS-MicroBuild2022-1ES
+        name: VSEng-MicroBuildVSStable
         os: windows
       # This pipeline only consumes already-signed/scanned artifacts and publishes them.
       binskim:
