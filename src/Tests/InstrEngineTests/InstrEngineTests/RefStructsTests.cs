@@ -4,7 +4,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// This file is only compiled for net70
+// This file is only compiled for .NET 7 and later.
 namespace InstrEngineTests
 {
     [TestClass]
