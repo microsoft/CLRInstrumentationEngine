@@ -16,6 +16,11 @@ tests launch applications of both bitnesses. Test binaries are written to the `n
 and `net11.0` output folders, respectively.
 On Linux, use a supported distribution such as Ubuntu 22.04 or later.
 
+`InstrEngineTests` runs from portable build artifacts and does not generate a
+`runtimeconfig.dev.json` with build-machine NuGet probing settings. Exception stack
+baselines exclude the test runner and the .NET 11 `System.Environment.CallEntryPoint`
+bootstrap frame; application frames and exception callback ordering remain checked.
+
 ### Windows
 
 There are two ways to run the CLR Instrumentation Engine unit tests - Visual Studio Test Explorer and `build.ps1` script.
