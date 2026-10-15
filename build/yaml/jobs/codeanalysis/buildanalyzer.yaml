@@ -14,7 +14,7 @@ jobs:
   displayName: Run build analyzer (${{ parameters.Analyzer }}, ${{ parameters.Platform }})
 
   pool:
-      name: VSEngSS-MicroBuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       demands:
       - msbuild
       - vstest

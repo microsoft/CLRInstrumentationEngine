@@ -36,7 +36,7 @@ stages:
     displayName: Approval gate (internal NuGet feed)
     environment: CLRIE-Release-Internal-NuGet-Feed
     pool:
-      name: VSEngSS-Microbuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       os: windows
     templateContext:
       type: releaseJob
@@ -56,7 +56,7 @@ stages:
     displayName: Publish NuGets to internal InstrumentationEngine Feed
     dependsOn: ApprovalGate
     pool:
-      name: VSEngSS-Microbuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       os: windows
     templateContext:
       inputs:
@@ -98,7 +98,7 @@ stages:
     condition: eq(variables['PromoteToRelease'], 'True')
     environment: CLRIE-Release-Promote-Internal-NuGet-Feed
     pool:
-      name: VSEngSS-Microbuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       os: windows
     templateContext:
       type: releaseJob
