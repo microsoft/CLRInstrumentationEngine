@@ -1633,13 +1633,21 @@ HRESULT CInstrumentationMethod::HandleStackSnapshotCallbackExceptionThrown(
     CInstrStr clrieStrModuleName;
     IfFailRet(pModuleInfo->GetModuleName(&clrieStrModuleName.m_bstr));
 
+    bool isRuntimeEntryPoint = false;
+    if (wcscmp(clrieStrModuleName, _T("System.Private.CoreLib.dll")) == 0 &&
+        wcscmp(clrieStrMethodName, _T("CallEntryPoint")) == 0)
+    {
+        CInstrStr clrieStrFullName;
+        IfFailRet(pMethodInfo->GetFullName(&clrieStrFullName.m_bstr));
+        isRuntimeEntryPoint = wcscmp(clrieStrFullName, _T("System.Environment.CallEntryPoint")) == 0;
+    }
+
     CComPtr<IProfilerManagerLogging> spLogger;
     m_pProfilerManager->GetLoggingInstance(&spLogger);
 
     tstring strMessage;
-    // Add [TestIgnore] for the TestAppRunner. This module is used for bootstrapping
-    // .NET Core test assemblies and is not intended to be used in test baselines.
-    if (wcscmp(clrieStrModuleName, _T("TestAppRunner.dll")) == 0)
+    // Ignore bootstrap frames, including the managed runtime entry point added in .NET 11.
+    if (wcscmp(clrieStrModuleName, _T("TestAppRunner.dll")) == 0 || isRuntimeEntryPoint)
     {
         strMessage.append(_T("[TestIgnore]"));
     }
