@@ -41,8 +41,8 @@ jobs:
   parameters:
     MatrixStrategy:
       NET_Next:
-        TargetFrameworkFolder: net70
-        NetSdkVersion: 7.x
+        TargetFrameworkFolder: net11.0
+        NetSdkVersion: 11.0.x
       NET_LTS:
-        TargetFrameworkFolder: net60
-        NetSdkVersion: 6.x
+        TargetFrameworkFolder: net10.0
+        NetSdkVersion: 10.0.x

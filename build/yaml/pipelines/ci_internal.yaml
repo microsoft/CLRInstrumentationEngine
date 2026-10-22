@@ -22,11 +22,11 @@ extends:
   template: azure-pipelines/MicroBuild.1ES.Unofficial.yml@MicroBuildTemplate
   parameters:
     pool:
-      name: VSEngSS-Microbuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       os: windows
     sdl:
       sourceAnalysisPool:
-        name: VSEngSS-MicroBuild2022-1ES
+        name: VSEng-MicroBuildVSStable
         os: windows 
       binskim:
         enabled: false

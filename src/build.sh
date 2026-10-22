@@ -17,8 +17,9 @@ print_install_instructions()
         echo ""
     elif [ "$OSName" == "Darwin" ]; then
         echo ""
-        echo "See the following for instructions on preparing a machine for building ClrInstrumentationEngine:"
-        echo "https://microsoft.sharepoint.com/teams/DD_VSPlat/Diagnostics/_layouts/15/WopiFrame.aspx?sourcedoc={57593dcb-cb9c-4761-9981-a048d9896671}&action=edit&wd=target%283%2E%20Feature%20Design%2FMDD%2FXPlat%25%20%20%20%2020CLR%2Eone%7C282BD224%2D3E32%2D4984%2DB3F3%2D4325AB3F4ACC%2FBuilding%20vsdbg%20on%20MacOS%7C6B4DE44E%2DA2D8%2D4BD9%2D8B33%2D60AC8951F474%2F%29"
+        echo "To prepare a Mac for building ClrInstrumentationEngine, install the .NET SDK,"
+        echo "CMake, Clang, and a bootstrapped vcpkg checkout."
+        echo "Set VCPKG_ROOT to the vcpkg checkout before running this script."
         echo ""
     fi
 }
@@ -369,7 +370,18 @@ restore_vcpkg_dependencies()
     fi
 
     __VcpkgInstalledDir="$__IntermediatesDir/vcpkg_installed"
-    __VcpkgTriplet=x64-linux
+    case $__BuildOS in
+        Linux)
+            __VcpkgTriplet="$__BuildArch-linux"
+            ;;
+        OSX)
+            __VcpkgTriplet="$__BuildArch-osx"
+            ;;
+        *)
+            echo "ERROR: vcpkg restore is not supported for $__BuildOS.$__BuildArch."
+            exit 1
+            ;;
+    esac
 
     "$VCPKG_ROOT/vcpkg" install \
         --x-manifest-root="$EnlistmentRoot/src" \
@@ -613,7 +625,7 @@ setup_dirs
 check_prereqs
 
 restore_build_dependencies
-if [ "$OSName" == "Linux" ]; then
+if [ "$OSName" == "Linux" -o "$OSName" == "Darwin" ]; then
     configure_vcpkg_cache
     restore_vcpkg_dependencies
 fi

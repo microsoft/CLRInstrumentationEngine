@@ -30,6 +30,8 @@ add_lib(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
     LibXml2::LibXml2
+    PRIVATE
+    utf8cpp::utf8cpp
 )
 
 #target_compile_options(Common.Lib PUBLIC "-H")

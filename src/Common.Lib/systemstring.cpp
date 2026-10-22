@@ -3,12 +3,11 @@
 
 #include "stdafx.h"
 #include "systemstring.h"
-#include <vector>
 #include <memory>
 
 #ifdef PLATFORM_UNIX
-#include <errno.h>
-#include <iconv.h>
+#include <string.h>
+#include <utf8.h>
 #endif
 
 using namespace std;
@@ -17,31 +16,10 @@ namespace CommonLib
 {
 #ifdef PLATFORM_UNIX
 
-    static const SIZE_T MAX_STRING_LEN = 10000;
-    struct Ciconv {
-        iconv_t m_iconv;
-        Ciconv(const iconv_t& iconv) : m_iconv(iconv) {}
-        ~Ciconv()
-        {
-            iconv_close(m_iconv);
-        }
-    };
-
-    HRESULT ErrnoToHResult(int& err)
+    namespace
     {
-        HRESULT hr;
-        switch (err)
-        {
-            case 0:
-                return S_OK;
-            case E2BIG:
-                return E_BOUNDS;
-            case EILSEQ:
-                return E_INVALIDARG;
-            case EINVAL:
-                return E_INVALIDARG;
-        }
-        return E_FAIL;
+        static const SIZE_T MAX_STRING_LEN = 10000;
+        static_assert(sizeof(WCHAR) == 2, "SystemString requires 16-bit WCHAR values");
     }
 
     HRESULT SystemString::Convert(_In_z_ const CHAR* lpzStr, _Inout_ tstring& result)
@@ -52,30 +30,25 @@ namespace CommonLib
             return E_INVALIDARG;
         }
 
-        Ciconv icnv(iconv_open("UTF-16LE", "UTF-8"));
-
-        // Include the null terminator.
-        size_t inputLength = strnlen(lpzStr, MAX_STRING_LEN)  + 1;
-
-        if (inputLength >= MAX_STRING_LEN)
+        const size_t inputLength = strnlen(lpzStr, MAX_STRING_LEN);
+        if (inputLength >= MAX_STRING_LEN - 1)
         {
             return E_BOUNDS;
         }
 
-        size_t outputMax = (inputLength + 1) * 4;
-        unique_ptr<WCHAR[]> buffer(new WCHAR[outputMax]);
-
-        const char* pOrig = lpzStr;
-        char* pNew = (char*)buffer.get();
-        size_t count = iconv(icnv.m_iconv, (char**)&pOrig, &inputLength, &pNew, &outputMax);
-        if (count == (size_t)-1)
+        tstring converted;
+        converted.reserve(inputLength);
+        try
         {
-            HRESULT hr = ErrnoToHResult(errno);
-            result = u"";
-            return hr;
+            utf8::utf8to16(lpzStr, lpzStr + inputLength, back_inserter(converted));
+        }
+        catch (const utf8::exception&)
+        {
+            result.clear();
+            return E_INVALIDARG;
         }
 
-        result = buffer.get();
+        result.swap(converted);
         return S_OK;
     }
 
@@ -87,40 +60,34 @@ namespace CommonLib
             return E_INVALIDARG;
         }
 
-        size_t i = 0;
-        const WCHAR* p = lpzwStr;
-        // scan to a resonable length for the end of the string.
-        for (i = 0; i < MAX_STRING_LEN; ++i, ++p)
+        size_t inputLength = 0;
+        for (; inputLength < MAX_STRING_LEN; ++inputLength)
         {
-            if (*p == (WCHAR)0)
+            if (lpzwStr[inputLength] == static_cast<WCHAR>(0))
             {
                 break;
             }
         }
 
-        if (i >= MAX_STRING_LEN)
+        if (inputLength >= MAX_STRING_LEN)
         {
-            result = "";
+            result.clear();
             return E_BOUNDS;
         }
 
-
-        Ciconv icnv(iconv_open("UTF-8", "UTF-16LE"));
-
-        // include the null terminator in the input string.
-        size_t inbytes = (i+1)*2;
-        size_t outbytes = (i+1)*4;
-        unique_ptr<char[]> buffer(new char[outbytes]);
-        char* input = (char*)lpzwStr;
-        char* output = buffer.get();
-        size_t count = iconv(icnv.m_iconv, &input, &inbytes, &output, &outbytes);
-        if (count == (size_t)-1)
+        string converted;
+        converted.reserve(inputLength);
+        try
         {
-            result = "";
-            return ErrnoToHResult(errno);
+            utf8::utf16to8(lpzwStr, lpzwStr + inputLength, back_inserter(converted));
+        }
+        catch (const utf8::exception&)
+        {
+            result.clear();
+            return E_INVALIDARG;
         }
 
-        result = buffer.get();
+        result.swap(converted);
         return S_OK;
     }
 #else

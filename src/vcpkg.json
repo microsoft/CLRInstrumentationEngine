@@ -9,7 +9,12 @@
       "default-features": false,
       "features": [
         "iconv"
-      ]
+      ],
+      "platform": "linux"
+    },
+    {
+      "name": "utfcpp",
+      "platform": "linux | osx"
     }
   ]
 }

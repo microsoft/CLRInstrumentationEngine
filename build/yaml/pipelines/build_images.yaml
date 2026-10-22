@@ -44,7 +44,7 @@ extends:
 
     sdl:
       sourceAnalysisPool:
-        name: VSEngSS-MicroBuild2022-1ES
+        name: VSEng-MicroBuildVSStable
         os: windows
 
     stages:

@@ -18,7 +18,7 @@ jobs:
 
   pool:
     ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
-      name: VSEngSS-MicroBuild2022-1ES
+      name: VSEng-MicroBuildVSStable
       demands:
       - msbuild
       - vstest
@@ -38,7 +38,7 @@ jobs:
       ArtifactName: binaries-windows-$(Configuration)
 
   - ${{ if eq('Managed', parameters.TestType) }}:
-    # Install dotnet runtimes to allow .NET Core and .NET 5+ based unit tests to run.
+    # Install .NET SDKs for CoreCLR tests.
     - template: ../../steps/azuredevops/usedotnet.yaml@self
 
     # The UseDotNet task is not sufficient because it will only install the X64 runtimes
@@ -56,16 +56,14 @@ jobs:
         # Install x64 runtimes
         $dotnetX64Dir = Join-Path -Path $dotnetDir -ChildPath 'x64'
         New-Item -Path $dotnetX64Dir -ItemType 'Directory' | Out-Null
-        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x64' -InstallDir $dotnetX64Dir
-        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
-        & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '10.0' -Architecture 'x64' -InstallDir $dotnetX64Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '11.0' -Quality 'preview' -Architecture 'x64' -InstallDir $dotnetX64Dir
         $dotnetX64Path = Join-Path -Path $dotnetX64Dir -ChildPath 'dotnet.exe' -Resolve
         # Install x86 runtimes
         $dotnetX86Dir = Join-Path -Path $dotnetDir -ChildPath 'x86'
         New-Item -Path $dotnetX86Dir -ItemType 'Directory' | Out-Null
-        & $scriptPath -Runtime 'dotnet' -Channel '3.1' -Architecture 'x86' -InstallDir $dotnetX86Dir
-        & $scriptPath -Runtime 'dotnet' -Channel '5.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
-        & $scriptPath -Runtime 'dotnet' -Channel '6.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '10.0' -Architecture 'x86' -InstallDir $dotnetX86Dir
+        & $scriptPath -Runtime 'dotnet' -Channel '11.0' -Quality 'preview' -Architecture 'x86' -InstallDir $dotnetX86Dir
         $dotnetX86Path = Join-Path -Path $dotnetX86Dir -ChildPath 'dotnet.exe' -Resolve
         # Set job variables
         Write-Host "##vso[task.setvariable variable=DOTNET_EXE_X64;]$dotnetX64Path"
@@ -102,18 +100,13 @@ jobs:
 
     - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
-        SubFolder: 'netcoreapp3.1\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Core31_$(Configuration)'
-    
+        SubFolder: 'net10.0\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net100_$(Configuration)'
+
     - template: ../../steps/windows/dotnettest.yaml@self
       parameters:
-        SubFolder: 'net50\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Net50_$(Configuration)'
-    
-    - template: ../../steps/windows/dotnettest.yaml@self
-      parameters:
-        SubFolder: 'net60\'
-        RunTitle: '$(Build.BuildNumber)_Windows_Net60_$(Configuration)'
+        SubFolder: 'net11.0\'
+        RunTitle: '$(Build.BuildNumber)_Windows_Net110_$(Configuration)'
 
   - ${{ if eq('true', parameters.IsMicroBuildInternal) }}:
     - template: ../../steps/microbuild/cleanup.yaml@self
