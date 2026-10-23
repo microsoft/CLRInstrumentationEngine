@@ -28,6 +28,12 @@ jobs:
   workspace:
     clean: outputs
 
+  ${{ if eq(parameters.OneESPT, true) }}:
+    templateContext:
+      authenticatedContainerRegistries:
+      - armServiceConnection: 'VS Diagnostics Dev (ProdDiagBuild)'
+        acrName: proddiagbuild
+
   steps:
   - checkout: self
     clean: true

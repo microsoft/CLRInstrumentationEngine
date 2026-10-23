@@ -29,6 +29,12 @@ The yaml files are located in the $RepoRoot$/build/yaml folder. The code is stru
   * Jobs/Binaries.yaml and Jobs/Packages.yaml reference the corresponding files in the Windows and Linux folders for parallelization
 * Steps – The task to run (eg. Nuget restore, msbuild solution, copy files).
 
+Linux binary jobs running under 1ES authenticate to the build-image registry through
+`templateContext.authenticatedContainerRegistries`, before network isolation starts.
+Keep this authentication in the job context rather than adding an `az acr login` user
+step: network isolation blocks that login to `proddiagbuild.azurecr.io`. Non-1ES
+pipelines retain an explicit Azure CLI login step.
+
 We restrict access of running the above builds to Microsoft and close contributors as to avoid malicious code from running. The signed build requires internal processes (signing and security checks) and will not be exposed to the public. If you require
 modifications or changes to the build, you are free to update the yaml files.
 

@@ -3,15 +3,19 @@
 
 # Step Template: Build Linux Binaries
 
+parameters:
+  OneESPT: false
+
 steps:
-# Login to ACR
-- task: AzureCLI@2
-  displayName: Docker Login
-  inputs:
-    azureSubscription: 'VS Diagnostics Dev (ProdDiagBuild)'
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: 'az acr login --name proddiagbuild'
+# 1ES authenticates through the job's templateContext before network isolation.
+- ${{ if ne(parameters.OneESPT, true) }}:
+  - task: AzureCLI@2
+    displayName: Docker Login
+    inputs:
+      azureSubscription: 'VS Diagnostics Dev (ProdDiagBuild)'
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: 'az acr login --name proddiagbuild'
 
 # Restore vcpkg source and binary caches
 - task: Cache@2
